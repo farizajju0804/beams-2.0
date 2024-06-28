@@ -5,7 +5,7 @@ import { SparklesCore } from "@/ui/Sparkles";
 export function SparklesSection() {
   return (
     <div className="h-[40rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden ">
-      <h1 className="text-7xl lg:text-9xl font-display font-bold text-center text-white relative z-20">
+      <h1 className="md:text-7xl lg:text-9xl font-display font-bold text-center text-white relative z-20">
         Beams
       </h1>
       <div className="w-[40rem] h-40 relative">
