@@ -2,19 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-
-}
 
 @media (prefers-color-scheme: dark) {
-  :root {
-   
-  }
+  
 }
 
-body {
 
-}
 
 *{
   margin: 0;

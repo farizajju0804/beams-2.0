@@ -1,9 +1,14 @@
 import React from "react";
 import { SparklesCore } from "@/ui/Sparkles";
+import { Spotlight } from "@/ui/Spotlight";
 
 export function SparklesSection() {
   return (
     <div className="h-[40rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden ">
+       <Spotlight
+        className="-top-10 left-5 md:left-60 md:-top-20"
+        fill="white"
+      />
       <h1 className="text-7xl lg:text-9xl font-display font-bold text-center text-white relative z-20">
         Beams
       </h1>

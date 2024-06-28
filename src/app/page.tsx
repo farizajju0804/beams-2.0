@@ -4,6 +4,7 @@ import { PinCard } from '@/components/PinCard'
 import ScrollPath from '@/components/ScrollPath'
 import { SparklesSection } from '@/components/SparklesSection'
 import FullScreenVideoBackground from '@/components/VideoSection'
+import { Spotlight } from '@/ui/Spotlight'
 import React from 'react'
 
 const page = () => {
@@ -12,6 +13,7 @@ const page = () => {
     <SparklesSection/>
     <FullScreenVideoBackground/>
     <PinCard/>
+   
     {/* <ScrollPath/> */}
     </div>
   )
