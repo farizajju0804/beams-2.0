@@ -85,7 +85,7 @@ export const FloatingNav = ({
             <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
           </button>
           <button
-            className="sm:hidden text-white"
+            className="sm:hidden text-white pr-4"
             onClick={() => setMenuOpen(true)}
           >
             <IconMenuDeep stroke={1} />
@@ -102,7 +102,7 @@ export const FloatingNav = ({
             className="fixed inset-0 bg-black  z-[6000] flex flex-col items-center justify-center"
           >
             <button
-              className="absolute top-4 right-4 text-white"
+              className="absolute top-4 right-4  text-white"
               onClick={() => setMenuOpen(false)}
             >
               <IconX size={32} />
