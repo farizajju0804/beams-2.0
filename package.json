@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.1",
     "@tabler/icons-react": "^3.7.0",
     "@tsparticles/engine": "^3.4.0",
     "@tsparticles/react": "^3.0.0",
@@ -17,15 +18,21 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.12",
     "gsap": "^3.12.5",
+    "gsap-trial": "^3.12.5",
+    "matter-js": "^0.20.0",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-slick": "^0.30.2",
+    "swiper": "^11.1.4",
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
+    "@types/matter-js": "^0.19.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-slick": "^0.23.13",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
