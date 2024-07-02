@@ -49,7 +49,6 @@ const LoginForm = () => {
   };
 
   return (
-    <Suspense>
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
@@ -104,7 +103,6 @@ const LoginForm = () => {
         </form>
       </Form>
     </CardWrapper>
-    </Suspense>
   );
 };
 
