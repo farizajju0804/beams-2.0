@@ -19,7 +19,7 @@ import { useSearchParams } from "next/navigation";
 import { Input } from "@nextui-org/react";
 import { login } from "@/actions/auth/login";
 import { useState, useTransition } from "react";
-
+import { Suspense } from 'react'
 const LoginForm = () => {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""
@@ -49,6 +49,7 @@ const LoginForm = () => {
   };
 
   return (
+    <Suspense>
     <CardWrapper
       headerLabel="Welcome back"
       backButtonLabel="Don't have an account?"
@@ -103,6 +104,7 @@ const LoginForm = () => {
         </form>
       </Form>
     </CardWrapper>
+    </Suspense>
   );
 };
 
