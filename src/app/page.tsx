@@ -1,31 +1,18 @@
+'use client'
 
-import { ThreeDCardSection } from '@/components/3dCardSection'
-import { ModulesStickyScroll } from '@/components/ModulesStickyScroll'
-import Navbar from '@/components/Navbar'
-import { PinCard } from '@/components/PinCard'
-import ScrollPath from '@/components/ScrollPath'
-import ScrollyComponent from '@/components/ScrollyComponent'
-import { SparklesSection } from '@/components/SparklesSection'
-import Testimonial from '@/components/Testimonial'
-import FullScreenVideoBackground from '@/components/VideoSection'
-import { CardContainer } from '@/ui/3d-Card'
-import { Spotlight } from '@/ui/Spotlight'
-import React from 'react'
-
-const page = () => {
+import { LoginButton } from "@/components/auth/login-button";
+export default function Home() {
   return (
-    <div className='w-full min-h-[130vh] '>
-    <SparklesSection/>
-    {/* <FullScreenVideoBackground/> */}
-    <PinCard/>
-    <ModulesStickyScroll/>
-    <Testimonial/>
-    <ThreeDCardSection/>
-
-    {/* <ScrollyComponent/> */}
-    {/* <ScrollPath/> */}
-    </div>
-  )
+    <main className="flex h-screen flex-col justify-center items-center gap-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800">
+      <div className="space-y-6 text-center">
+        <h1 className="text-6xl font-semibold font-display text-white drop-shadow-xl">
+          Beams
+        </h1>
+      </div>
+      <p className="text-white text-lg">Next gen Learning Platform</p>
+      <div>
+        <LoginButton asChild />
+      </div>
+    </main>
+  );
 }
-
-export default page

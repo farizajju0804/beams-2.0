@@ -1,36 +1,6 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
+  @tailwind components;
+  @tailwind utilities;
 
+ 
 
-@media (prefers-color-scheme: dark) {
-  
-}
-
-
-
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .no-scrollbar {
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-    scrollbar-width: none; /* Firefox */
-  }
-}
-
-
-@font-face {
-  font-family: 'Clover';
-  src: url('/fonts/CloverDisplay-Regular.woff');
-}
