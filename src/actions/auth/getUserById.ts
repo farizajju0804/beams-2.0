@@ -1,4 +1,4 @@
-import db from '@/libs/db';
+import {db} from '@/libs/db';
 
 export const getUserById = async(id: string) =>{
     try{
