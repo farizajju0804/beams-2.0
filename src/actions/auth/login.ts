@@ -4,7 +4,7 @@ import { LoginSchema } from "@/schema";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
-import { getUserByEmail } from "./getUserByEmail";
+import { getUserByEmail, getUserByUsername } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail } from "@/libs/mail";
 
@@ -14,22 +14,30 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Invalid Fields!", success: undefined };
   }
 
-  const { email, password } = validatedFields.data;
+  const { identifier, password } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(email);
-  if(!existingUser || !existingUser.email || !existingUser.password){
-    return {error : "Invaild Credentials"}
+  let existingUser = await getUserByEmail(identifier);
+  if (!existingUser) {
+    existingUser = await getUserByUsername(identifier);
   }
 
-  if(!existingUser.emailVerified){
+  if (!existingUser || !existingUser.email) {
+    return { error: "No account found", success: undefined };
+  }
+
+  if (!existingUser.password) {
+    return { error: "Your account may be linked with other providers", success: undefined };
+  }
+
+  if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
-    await sendVerificationEmail (verificationToken.email,verificationToken.token)
-    return {success : "Confirmation email sent!"}
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    return { success: "You haven't verified your email. Confirmation email sent!", error: undefined };
   }
 
   try {
     await signIn("credentials", {
-      email,
+      identifier,
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });

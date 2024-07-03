@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LoginSchema } from "@/schema/index";
+import { ForgotUsernameEmailSchema } from "@/schema/index";
 import {
   Form,
   FormControl,
@@ -15,32 +15,34 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
-import { Input } from "@nextui-org/react";
-import { login } from "@/actions/auth/login";
 import { useState, useTransition } from "react";
-import Link from "next/link";
+import { Input, Select, SelectItem } from "@nextui-org/react";
+import { forgotUsernameEmail } from "@/actions/auth/forgotUsernameEmail";
 
-const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""
+const securityQuestions = [
+  { key: "petName", label: "What was your first pet's name?" },
+  { key: "motherMaidenName", label: "What is your mother's maiden name?" },
+  { key: "firstSchool", label: "What was the name of your first school?" },
+];
+
+const ForgotUsernameEmailForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+
+  const form = useForm<z.infer<typeof ForgotUsernameEmailSchema>>({
+    resolver: zodResolver(ForgotUsernameEmailSchema),
     defaultValues: {
-      identifier: "",
-      password: "",
+      securityQuestion: "",
+      securityAnswer: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof ForgotUsernameEmailSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      login(values).then((data) => {
+      forgotUsernameEmail(values).then((data) => {
         if (data) {
           setError(data.error);
           setSuccess(data.success);
@@ -51,23 +53,40 @@ const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
-      showSocial
+      headerLabel="Recover your account"
+      backButtonLabel="Back to login"
+      backButtonHref="/auth/login"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="identifier"
+              name="securityQuestion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select {...field} disabled={isPending} label="Security Question">
+                      {securityQuestions.map((question) => (
+                        <SelectItem key={question.key} value={question.key}>
+                          {question.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="securityAnswer"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       isRequired
-                      label="Email or Username"
+                      label="Security Answer"
                       {...field}
                       type="text"
                       disabled={isPending}
@@ -77,33 +96,11 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      isRequired
-                      label="Password"
-                      {...field}
-                      type="password"
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="w-full flex justify-between">
-              <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
-              <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot username or email?</Link>
-            </div>
           </div>
-          <FormError message={error || urlError} />
+          <FormError message={error} />
           <FormSuccess message={success} />
           <Button type="submit" color="secondary" className="w-full">
-            Login
+            Submit
           </Button>
         </form>
       </Form>
@@ -111,4 +108,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default ForgotUsernameEmailForm;

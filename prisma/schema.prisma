@@ -22,9 +22,12 @@ model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String?         @unique
+  username      String?         @unique
   emailVerified DateTime?
   image         String?
   password      String?
+  securityQuestion String?      
+  securityAnswer String? 
   accounts      Account[]
   role          UserRole  @default(USER)
   createdAt DateTime @default(now())

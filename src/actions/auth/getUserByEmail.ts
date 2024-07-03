@@ -17,3 +17,22 @@ catch {
     return null;
 }
 } 
+
+
+export const getUserByUsername = async (username:string) => {
+    return await db.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  };
+  
+
+  export const getUserBySecurityQuestion = async (securityQuestion:string , securityAnswer:string) => {
+    return await db.user.findFirst({
+      where: {
+        securityQuestion,
+        securityAnswer,
+      },
+    });
+  };

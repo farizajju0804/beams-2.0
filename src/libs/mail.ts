@@ -72,3 +72,42 @@ sendEmailBrevo({ payload });
 
 
 }
+
+
+export const sendUsernameEmail = async (
+  email : string,
+  username : string
+)  => {
+  const link = `${process.env.URL}/auth/login}`
+ 
+
+const payload = {
+  sender: {
+    email: "innbrieff@gmail.com",
+    name: "Beams",
+  },
+  subject: "Your username",
+  templateId: 10,
+  params: {
+    link : link,
+    username : username
+  },
+  messageVersions: [
+    {
+      to: [
+        {
+          email: email
+        },
+      ],
+      params: {
+        link : link,
+        username : username
+      },
+      subject: `Your Username`,
+    },
+  ],
+};
+sendEmailBrevo({ payload });
+
+
+}

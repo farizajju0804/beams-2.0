@@ -1,12 +1,13 @@
 "use client";
 
 import * as z from "zod";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 
 import { RegisterSchema } from "@/schema";
-import { Input } from "@nextui-org/react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
 import {
   Form,
   FormControl,
@@ -19,12 +20,20 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { Button } from "@nextui-org/react";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { register } from "@/actions/auth/register";
+import { register, validateUsername } from "@/actions/auth/register";
+
+const securityQuestions = [
+  { key: "petName", label: "What was your first pet's name?" },
+  { key: "motherMaidenName", label: "What is your mother's maiden name?" },
+  { key: "firstSchool", label: "What was the name of your first school?" },
+];
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [usernameValid, setUsernameValid] = useState(true);
+  const [securityQuestionSelected, setSecurityQuestionSelected] = useState(false);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -32,8 +41,24 @@ export const RegisterForm = () => {
       email: "",
       password: "",
       name: "",
+      username: "",
+      securityQuestion: "",
+      securityAnswer: "",
     },
   });
+
+  const validateUsernameFromDb = async (username: string) => {
+    const isValid = await validateUsername(username);
+    setUsernameValid(isValid);
+    if (!isValid) {
+      form.setError("username", {
+        type: "manual",
+        message: "Username is already taken",
+      });
+    } else {
+      form.clearErrors("username");
+    }
+  };
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
@@ -46,6 +71,18 @@ export const RegisterForm = () => {
       });
     });
   };
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "username") {
+        validateUsernameFromDb(value.username as string); 
+      }
+      if (name === "securityQuestion") {
+        setSecurityQuestionSelected(!!value.securityQuestion);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   return (
     <CardWrapper
@@ -62,13 +99,24 @@ export const RegisterForm = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Name</FormLabel> */}
+                  <FormControl>
+                    <Input {...field} disabled={isPending} label="Name" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                    //   placeholder="imskanand"
-                    label="Name"
+                      label="Username"
+                      isInvalid={!usernameValid}
                     />
                   </FormControl>
                   <FormMessage />
@@ -80,14 +128,8 @@ export const RegisterForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Email</FormLabel> */}
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      type="email"
-                      label="Email"
-                    />
+                    <Input {...field} disabled={isPending} type="email" label="Email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,19 +140,45 @@ export const RegisterForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Password</FormLabel> */}
                   <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      label="Password"
-                      type="password"
-                    />
+                    <Input {...field} disabled={isPending} label="Password" type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="securityQuestion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select {...field} disabled={isPending} label="Security Question">
+                      {securityQuestions.map((question) => (
+                        <SelectItem key={question.key} value={question.key}>
+                          {question.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {securityQuestionSelected && (
+              <FormField
+                control={form.control}
+                name="securityAnswer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} label="Security Answer" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
