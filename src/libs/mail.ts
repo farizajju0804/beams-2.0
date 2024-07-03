@@ -1,113 +1,188 @@
-import { sendEmailBrevo } from "@/libs/brewo";
+import { sendEmailBrevo } from '@/libs/brewoEmail';
 
-export const sendVerificationEmail = async (
-    email : string,
-    token : string
-)  => {
-    const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`
+export const sendVerificationEmail = async (email: string, token: string) => {
+  const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`;
 
-
-const payload = {
+  const payload = {
     sender: {
       email: "innbrieff@gmail.com",
       name: "Beams",
     },
+    to: [
+      {
+        email: email,
+      },
+    ],
     subject: "Sign up Confirm",
     templateId: 8,
     params: {
-      link : confirmLink
+      link: confirmLink,
     },
-    messageVersions: [
+  };
+  return sendEmailBrevo(payload);
+};
+
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const confirmLink = `${process.env.URL}/auth/new-password?token=${token}`;
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
       {
-        to: [
-          {
-            email: email
-          },
-        ],
-        params: {
-          link : confirmLink
-        },
-        subject: `Sign up Confirm"`,
+        email: email,
       },
     ],
+    subject: "Reset Password",
+    templateId: 9,
+    params: {
+      link: confirmLink,
+    },
   };
-  sendEmailBrevo({ payload });
+  return sendEmailBrevo(payload);
+};
+
+export const sendUsernameEmail = async (email: string, username: string) => {
+  const link = `${process.env.URL}/auth/login}`;
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Your username",
+    templateId: 10, // Adjust the templateId if different
+    params: {
+      link: link,
+      username: username,
+    },
+  };
+  return sendEmailBrevo(payload);
+};
 
 
-}
+
+// import { sendEmailBrevo } from "@/libs/brewo";
+
+// export const sendVerificationEmail = async (
+//     email : string,
+//     token : string
+// )  => {
+//     const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`
 
 
-export const sendPasswordResetEmail = async (
-  email : string,
-  token : string
-)  => {
-  const confirmLink = `${process.env.URL}/auth/new-password?token=${token}`
+// const payload = {
+//     sender: {
+//       email: "innbrieff@gmail.com",
+//       name: "Beams",
+//     },
+//     subject: "Sign up Confirm",
+//     templateId: 8,
+//     params: {
+//       link : confirmLink
+//     },
+//     messageVersions: [
+//       {
+//         to: [
+//           {
+//             email: email
+//           },
+//         ],
+//         params: {
+//           link : confirmLink
+//         },
+//         subject: `Sign up Confirm"`,
+//       },
+//     ],
+//   };
+//   sendEmailBrevo({ payload });
+
+
+// }
+
+
+// export const sendPasswordResetEmail = async (
+//   email : string,
+//   token : string
+// )  => {
+//   const confirmLink = `${process.env.URL}/auth/new-password?token=${token}`
  
 
-const payload = {
-  sender: {
-    email: "innbrieff@gmail.com",
-    name: "Beams",
-  },
-  subject: "Reset Password",
-  templateId: 9,
-  params: {
-    link : confirmLink
-  },
-  messageVersions: [
-    {
-      to: [
-        {
-          email: email
-        },
-      ],
-      params: {
-        link : confirmLink
-      },
-      subject: `Reset password"`,
-    },
-  ],
-};
-sendEmailBrevo({ payload });
+// const payload = {
+//   sender: {
+//     email: "innbrieff@gmail.com",
+//     name: "Beams",
+//   },
+//   subject: "Reset Password",
+//   templateId: 9,
+//   params: {
+//     link : confirmLink
+//   },
+//   messageVersions: [
+//     {
+//       to: [
+//         {
+//           email: email
+//         },
+//       ],
+//       params: {
+//         link : confirmLink
+//       },
+//       subject: `Reset password"`,
+//     },
+//   ],
+// };
+// sendEmailBrevo({ payload });
 
 
-}
+// }
 
 
-export const sendUsernameEmail = async (
-  email : string,
-  username : string
-)  => {
-  const link = `${process.env.URL}/auth/login}`
+// export const sendUsernameEmail = async (
+//   email : string,
+//   username : string
+// )  => {
+//   const link = `${process.env.URL}/auth/login}`
  
 
-const payload = {
-  sender: {
-    email: "innbrieff@gmail.com",
-    name: "Beams",
-  },
-  subject: "Your username",
-  templateId: 10,
-  params: {
-    link : link,
-    username : username
-  },
-  messageVersions: [
-    {
-      to: [
-        {
-          email: email
-        },
-      ],
-      params: {
-        link : link,
-        username : username
-      },
-      subject: `Your Username`,
-    },
-  ],
-};
-sendEmailBrevo({ payload });
+// const payload = {
+//   sender: {
+//     email: "innbrieff@gmail.com",
+//     name: "Beams",
+//   },
+//   subject: "Your username",
+//   templateId: 9,
+//   params: {
+//     link : link,
+//     username : username
+//   },
+//   messageVersions: [
+//     {
+//       to: [
+//         {
+//           email: email
+//         },
+//       ],
+//       params: {
+//         link : link,
+//         username : username
+//       },
+//       subject: `Your Username`,
+//     },
+//   ],
+// };
+// sendEmailBrevo({ payload });
 
 
-}
+// }
+
+
+
+
