@@ -22,14 +22,23 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const { name, email, password, username, securityQuestion, securityAnswer } = validatedFields.data;
 
   const existingUser = await getUserByEmail(email);
-  const existingUsername = await getUserByUsername(username);
-
   if (existingUser) {
-    return { error: "User already exists, Try Different Email!" };
+    const linkedAccount = await db.account.findFirst({
+      where: {
+        userId: existingUser.id,
+      },
+    });
+
+    if (linkedAccount) {
+      return { error: `Your account is linked with ${linkedAccount.provider}. Try logging in with that.` };
+    }
+
+    return { error: "Account already exists. Try using a different email." };
   }
 
+  const existingUsername = await getUserByUsername(username);
   if (existingUsername) {
-    return { error: "Username already taken, Try Different Username!" };
+    return { error: "Username already taken. Try a different username!" };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
