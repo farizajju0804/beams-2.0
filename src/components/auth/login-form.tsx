@@ -26,7 +26,7 @@ const LoginForm = () => {
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
+  const [showTwoFactor,setShowTwoFactor] = useState(false)
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -41,11 +41,20 @@ const LoginForm = () => {
     setSuccess("");
     startTransition(() => {
       login(values).then((data) => {
-        if (data) {
+        if (data?.error) {
+         
           setError(data.error);
+        }
+        if(data?.success){
+      
           setSuccess(data.success);
         }
-      });
+
+        if(data?.twoFactor){
+          setShowTwoFactor(true);
+        }
+      })
+      .catch(() => setError("Something went wrong!"))
     });
   };
 
@@ -59,6 +68,29 @@ const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="space-y-4">
+            {
+              showTwoFactor && (
+                <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        isRequired
+                        label="Two Factor Code"
+                        {...field}
+                        disabled={isPending}
+                      ></Input>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              )
+            }
+            {!showTwoFactor && (
+            <>
             <FormField
               control={form.control}
               name="identifier"
@@ -95,6 +127,7 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
+            </>)}
             <div className="w-full flex justify-between">
               <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
               <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot username or email?</Link>
@@ -103,7 +136,7 @@ const LoginForm = () => {
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <Button type="submit" color="secondary" className="w-full">
-            Login
+            {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
       </Form>

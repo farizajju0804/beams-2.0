@@ -1,5 +1,8 @@
 import { sendEmailBrevo } from '@/libs/brewoEmail';
 
+
+
+
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`;
 
@@ -68,6 +71,26 @@ export const sendUsernameEmail = async (email: string, username: string) => {
 };
 
 
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Confirmation Code",
+    templateId: 11,
+    params: {
+      token: token,
+    },
+  };
+  return sendEmailBrevo(payload);
+};
 
 // import { sendEmailBrevo } from "@/libs/brewo";
 
