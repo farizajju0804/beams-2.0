@@ -4,16 +4,16 @@ export const sendVerificationEmail = async (
     email : string,
     token : string
 )  => {
-    const confirmLink = `localhost:3000/auth/new-verification?token=${token}`
-
+    const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`
+    console.log(confirmLink)
 
 const payload = {
     sender: {
-      email: "ajfariz13@gmail.com",
+      email: "innbrieff@gmail.com",
       name: "Beams",
     },
     subject: "Sign up Confirm",
-    templateId: 11,
+    templateId: 8,
     params: {
       link : confirmLink
     },
