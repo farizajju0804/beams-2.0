@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LoginSchema } from "@/schema/index";
+import { NewPasswordSchema} from "@/schema/index";
 import {
   Form,
   FormControl,
@@ -15,32 +15,29 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@nextui-org/react";
-import { login } from "@/actions/auth/login";
+import { newPassword } from "@/actions/auth/new-password";
 import { useState, useTransition } from "react";
-import { Suspense } from 'react'
-import Link from "next/link";
-const LoginForm = () => {
+import { useSearchParams } from "next/navigation";
+const NewPasswordForm = () => {
   const searchParams = useSearchParams();
-  const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""
+  const token = searchParams.get("token")
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof NewPasswordSchema>>({
+    resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      password: ""
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      login(values).then((data) => {
+      newPassword(values,token).then((data) => {
         if (data) {
           setError(data.error);
           setSuccess(data.success);
@@ -51,32 +48,13 @@ const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
-      showSocial
+      headerLabel="Enter a new password"
+      backButtonLabel="Back to login"
+      backButtonHref="/auth/login"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      isRequired
-                      label="Email"
-                      {...field}
-                      type="email"
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="password"
@@ -91,20 +69,15 @@ const LoginForm = () => {
                       disabled={isPending}
                     ></Input>
                   </FormControl>
-                  {/* <Button size="sm" className="bg-transparent pt-3"> */}
-                  {/* </Button> */}
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="w-full flex justify-end">
-          <Link className="font-normal text-xs " href='/auth/reset'>Forgot password?</Link>
           </div>
-          </div>
-          <FormError message={error || urlError} />
+          <FormError message={error} />
           <FormSuccess message={success} />
           <Button type="submit" color="secondary" className="w-full">
-            Login
+            Reset Password
           </Button>
         </form>
       </Form>
@@ -112,4 +85,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default NewPasswordForm;
