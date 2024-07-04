@@ -26,12 +26,15 @@ const LoginForm = () => {
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-  const [showTwoFactor,setShowTwoFactor] = useState(false)
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
-      identifier: "",
+      email: "",
       password: "",
     },
   });
@@ -42,19 +45,16 @@ const LoginForm = () => {
     startTransition(() => {
       login(values).then((data) => {
         if (data?.error) {
-         
           setError(data.error);
         }
-        if(data?.success){
-      
+        if (data?.success) {
           setSuccess(data.success);
         }
-
-        if(data?.twoFactor){
+        if (data?.twoFactor) {
           setShowTwoFactor(true);
         }
       })
-      .catch(() => setError("Something went wrong!"))
+      .catch(() => setError("Something went wrong!"));
     });
   };
 
@@ -68,9 +68,8 @@ const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="space-y-4">
-            {
-              showTwoFactor && (
-                <FormField
+            {showTwoFactor && (
+              <FormField
                 control={form.control}
                 name="code"
                 render={({ field }) => (
@@ -81,56 +80,56 @@ const LoginForm = () => {
                         label="Two Factor Code"
                         {...field}
                         disabled={isPending}
-                      ></Input>
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              )
-            }
+            )}
             {!showTwoFactor && (
-            <>
-            <FormField
-              control={form.control}
-              name="identifier"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      isRequired
-                      label="Email or Username"
-                      {...field}
-                      type="text"
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      isRequired
-                      label="Password"
-                      {...field}
-                      type="password"
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            </>)}
+              <>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          label="Email"
+                          {...field}
+                          type="email"
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          label="Password"
+                          {...field}
+                          type="password"
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
             <div className="w-full flex justify-between">
               <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
-              <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot username or email?</Link>
+              <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>
           </div>
           <FormError message={error || urlError} />

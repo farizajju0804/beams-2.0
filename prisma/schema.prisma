@@ -22,12 +22,13 @@ model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String?         @unique
-  username      String?         @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  securityQuestion String?      
-  securityAnswer String? 
+  securityQuestion1 String?
+  securityAnswer1 String?
+  securityQuestion2 String?
+  securityAnswer2 String?
   accounts      Account[]
   role          UserRole  @default(USER)
   isTwoFactorEnabled Boolean @default(false)

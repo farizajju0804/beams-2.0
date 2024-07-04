@@ -5,7 +5,7 @@ import { LoginSchema } from "@/schema";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
-import { getUserByEmail, getUserByUsername } from "@/actions/auth/getUserByEmail";
+import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken, getTwoFactorToken } from "@/libs/tokens";
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/libs/mail";
 import { getTwoFactorTokenByEmail } from "./two-factor-token";
@@ -18,18 +18,28 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Invalid Fields!", success: undefined };
   }
 
-  const { identifier, password, code } = validatedFields.data;
+  const { email, password, code } = validatedFields.data;
 
-  let existingUser = await getUserByEmail(identifier);
-  if (!existingUser) {
-    existingUser = await getUserByUsername(identifier);
-  }
+  let existingUser = await getUserByEmail(email);
+
+  
 
   if (!existingUser || !existingUser.email) {
     return { error: "No account found", success: undefined };
   }
 
   if (!existingUser.password) {
+    // Check if the account is linked with another provider
+    const linkedAccount = await db.account.findFirst({
+      where: {
+        userId: existingUser.id,
+      },
+    });
+
+    if (linkedAccount) {
+      return { error: `Your account is linked with ${linkedAccount.provider}. Try logging in with that.`, success: undefined };
+    }
+
     return { error: "Your account may be linked with other providers", success: undefined };
   }
 
@@ -92,7 +102,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   try {
     await signIn("credentials", {
-      identifier,
+      email,
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });

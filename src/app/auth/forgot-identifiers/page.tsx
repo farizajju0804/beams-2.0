@@ -1,9 +1,9 @@
-import ForgotUsernameEmailForm from '@/components/auth/forgot-identifier-form'
+import ForgotEmailForm from '@/components/auth/forgot-email-form'
 import React from 'react'
 
 const page = () => {
   return (
-    <ForgotUsernameEmailForm/>
+    <ForgotEmailForm/>
   )
 }
 

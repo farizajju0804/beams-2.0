@@ -2,7 +2,7 @@ import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from "next-auth";
 import { LoginSchema } from '@/schema';
-import { getUserByEmail, getUserByUsername } from './actions/auth/getUserByEmail';
+import { getUserByEmail} from '@/actions/auth/getUserByEmail';
 import bcrypt from 'bcryptjs';
 
 export default {
@@ -22,11 +22,8 @@ export default {
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
         if (validatedFields.success) {
-          const { identifier, password } = validatedFields.data;
-          let user = await getUserByEmail(identifier);
-          if (!user) {
-            user = await getUserByUsername(identifier);
-          }
+          const { email, password } = validatedFields.data;
+          let user = await getUserByEmail(email);
           if (!user || !user.password) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
           if (passwordsMatch) return user;

@@ -2,16 +2,11 @@
 
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import { RegisterSchema } from "@/schema";
+import { RegisterSchema, SecuritySchema } from "@/schema";
 import { db } from "@/libs/db";
-import { getUserByEmail, getUserByUsername } from "@/actions/auth/getUserByEmail";
+import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail } from "@/libs/mail";
-
-export const validateUsername = async (username: string) => {
-  const existingUser = await getUserByUsername(username);
-  return !existingUser;
-};
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
@@ -19,7 +14,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid Fields!" };
   }
 
-  const { name, email, password, username, securityQuestion, securityAnswer } = validatedFields.data;
+  const { name, email, password } = validatedFields.data;
 
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
@@ -36,20 +31,33 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Account already exists. Try using a different email." };
   }
 
-  const existingUsername = await getUserByUsername(username);
-  if (existingUsername) {
-    return { error: "Username already taken. Try a different username!" };
-  }
-
   const hashedPassword = await bcrypt.hash(password, 10);
   await db.user.create({
     data: {
       email,
       password: hashedPassword,
       name,
-      username,
-      securityQuestion,
-      securityAnswer,
+    },
+  });
+
+  return { success: "Please answer the security questions!" };
+};
+
+export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
+  const validatedFields = SecuritySchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Invalid Fields!" };
+  }
+
+  const { securityAnswer1, securityAnswer2 } = validatedFields.data;
+
+  await db.user.update({
+    where: { email },
+    data: {
+      securityQuestion1: "What was your first pet's name?",
+      securityAnswer1,
+      securityQuestion2: "What is your mother's maiden name?",
+      securityAnswer2,
     },
   });
 

@@ -24,7 +24,27 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   };
   return sendEmailBrevo(payload);
 };
+export const sendVerificationEmail2 = async (email: string, token: string) => {
+  const confirmLink = `${process.env.URL}/auth/new-email?token=${token}`;
 
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Sign up Confirm",
+    templateId: 8,
+    params: {
+      link: confirmLink,
+    },
+  };
+  return sendEmailBrevo(payload);
+};
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const confirmLink = `${process.env.URL}/auth/new-password?token=${token}`;
 
