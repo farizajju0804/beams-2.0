@@ -17,11 +17,11 @@ export const newEmail = async (token: string) => {
         return { error: "Token has expired!" };
     }
 
-    const existingUser = await getUserByEmail(existingToken.email);
+    // const existingUser = await getUserByEmail(existingToken.email);
 
-    if (!existingUser) {
-        return { error: "Email does not exist!" };
-    }
+    // if (!existingUser) {
+    //     return { error: "Email does not exist!" };
+    // }
 
     const user = await currentUser();
 

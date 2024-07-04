@@ -6,6 +6,7 @@ import { Suspense, useCallback, useEffect, useState } from "react"
 import { newVerification } from "@/actions/auth/new-verification"
 import FormError from "@/components/form-error"
 import FormSuccess from "@/components/form-success"
+import { newEmail } from "@/actions/auth/new-email"
 const NewVerification = () => {
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState<string | undefined>()  
@@ -20,7 +21,7 @@ const NewVerification = () => {
       setError("Missing Token")
       return;
      } 
-     newVerification(token)
+     newEmail(token)
      .then((data) => {
       setSuccess(data.success)
       setError(data.error)

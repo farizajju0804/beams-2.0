@@ -112,6 +112,29 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   return sendEmailBrevo(payload);
 };
 
+export const sendPasswordResetReminderEmail = async (email: string) => {
+
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Your Password has been changed",
+    templateId: 12,
+    params: {
+    },
+  };
+  return sendEmailBrevo(payload);
+};
+
+
+
 // import { sendEmailBrevo } from "@/libs/brewo";
 
 // export const sendVerificationEmail = async (

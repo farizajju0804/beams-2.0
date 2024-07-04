@@ -5,6 +5,7 @@ import { NewPasswordSchema } from "@/schema"
 import { getPasswordResetTokenByToken } from "./getPasswordToken"
 import { getUserByEmail } from "./getUserByEmail"
 import { db } from "@/libs/db"
+import { sendPasswordResetReminderEmail } from "@/libs/mail"
 
 export const newPassword = async( values : z.infer<typeof NewPasswordSchema>,token?: string|null ) => {
 
@@ -55,6 +56,8 @@ export const newPassword = async( values : z.infer<typeof NewPasswordSchema>,tok
             id : existingToken.id
         }
     })
+
+    await sendPasswordResetReminderEmail(existingToken.email)
 
     return {success : "Password Updated"}
 } 
