@@ -128,6 +128,7 @@ export const sendPasswordResetReminderEmail = async (email: string) => {
     subject: "Your Password has been changed",
     templateId: 12,
     params: {
+      email : email
     },
   };
   return sendEmailBrevo(payload);

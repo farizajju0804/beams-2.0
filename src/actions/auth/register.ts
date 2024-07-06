@@ -64,5 +64,5 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
   const verificationToken = await getVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
-  return { success: "Confirmation email sent!" };
+  return { success: "Account Created, Confirmation email sent!" };
 };

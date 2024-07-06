@@ -2,7 +2,7 @@ import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from "next-auth";
 import { LoginSchema } from '@/schema';
-import { getUserByEmail} from '@/actions/auth/getUserByEmail';
+import { getUserByEmail } from '@/actions/auth/getUserByEmail';
 import bcrypt from 'bcryptjs';
 
 export default {
@@ -25,8 +25,15 @@ export default {
           const { email, password } = validatedFields.data;
           let user = await getUserByEmail(email);
           if (!user || !user.password) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
-          if (passwordsMatch) return user;
+          
+          // Skip password check for automatic login
+          if (!credentials.isAutoLogin) {
+            const passwordsMatch = await bcrypt.compare(password, user.password);
+            if (!passwordsMatch) return null;
+          }
+          
+          
+          return user;
         }
         return null;
       },

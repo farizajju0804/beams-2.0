@@ -1,30 +1,41 @@
 "use server"
 
-import * as z from "zod"
-import { ResetSchema } from "@/schema"
+import * as z from "zod";
+import { ResetSchema } from "@/schema";
+import { getUserByEmail } from "@/actions/auth/getUserByEmail";
+import { getPasswordResetToken } from "@/libs/tokens";
+import { sendPasswordResetEmail } from "@/libs/mail";
+import { db } from "@/libs/db"; // Make sure to import your database instance
 
-import { getUserByEmail } from "@/actions/auth/getUserByEmail"
-import { getPasswordResetToken } from "@/libs/tokens"
-import { sendPasswordResetEmail } from "@/libs/mail"
+export const reset = async (values: z.infer<typeof ResetSchema>) => {
+  const validatedFields = ResetSchema.safeParse(values);
 
-export const reset = async(values :  z.infer<typeof ResetSchema>) => {
-   const validatedFields = ResetSchema.safeParse(values);
+  if (!validatedFields.success) {
+    return { error: "Invalid email" };
+  }
 
-   if(!validatedFields.success){
-    return {error :"Ïnvalid email" }
-   }
+  const { email } = validatedFields.data;
+  const existingUser = await getUserByEmail(email);
+  
+  if (!existingUser) {
+    return { error: "No account found" };
+  }
 
-   const {email} = validatedFields.data;
-   const existingUser = await getUserByEmail(email);
-   if(!existingUser){
-    return {error :"No account found" }
-   }
+  const linkedAccount = await db.account.findFirst({
+    where: {
+      userId: existingUser.id,
+    },
+  });
 
-   const passwordResetToken = await getPasswordResetToken(email);
-   await sendPasswordResetEmail(
+  if (linkedAccount) {
+    return { error: `Your account is linked with ${linkedAccount.provider}. Try logging in with that.` };
+  }
+
+  const passwordResetToken = await getPasswordResetToken(email);
+  await sendPasswordResetEmail(
     passwordResetToken.email,
     passwordResetToken.token
-   )
+  );
 
-   return {success : "Email Sent!"}
-}
+  return { success: "Email Sent!" };
+};

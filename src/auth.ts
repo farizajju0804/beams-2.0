@@ -77,9 +77,15 @@ export const {
     token.role = existingUser.role;
     token.isTwoFactorEnabled =  existingUser.isTwoFactorEnabled
     return token;
+    },  
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return `${baseUrl}/settings`;
     }
   },
   adapter : PrismaAdapter(db),
   session: { strategy: "jwt" },
+  debug:true,
   ...authConfig,
 });

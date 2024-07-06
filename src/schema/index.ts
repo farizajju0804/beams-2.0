@@ -4,8 +4,8 @@ export const NewPasswordSchema = z.object({
 	password: z
 		.string()
 		.trim()
-		.min(1, { message: 'Password required!' })
-		.min(8, { message: 'Password must have at least 8 characters!' })
+		.min(1, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' })
+		.min(8, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' })
 		.regex(/[A-Z]/, { message: "Must include an uppercase letter" })
 		.regex(/[a-z]/, { message: "Must include a lowercase letter" })
 		.regex(/[0-9]/, { message: "Must include a number" })
@@ -29,8 +29,8 @@ export const LoginSchema = z.object({
 	password: z
 	  .string()
 	  .trim()
-	  .min(1, { message: 'Password required!' })
-	  .min(8, { message: 'Password must have at least 8 characters!' }),
+	  .min(1, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' })
+	  .min(8, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' }),
 	code: z.optional(z.string())
 });
 
@@ -42,7 +42,7 @@ export const RegisterSchema = z.object({
 	  message: "Email is required",
 	}),
 	password: z.string().min(8, {
-	  message: "Password must be of minimum of 8 characters",
+	  message: "Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!",
 	}).regex(/[A-Z]/, { message: "Must include an uppercase letter" })
 	.regex(/[a-z]/, { message: "Must include a lowercase letter" })
 	.regex(/[0-9]/, { message: "Must include a number" })
