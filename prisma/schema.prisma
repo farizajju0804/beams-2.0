@@ -35,8 +35,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
-
- 
+  notes                BeamsTodayUserNote[]
 }
 
 model Account {
@@ -99,7 +98,6 @@ model TwoFactorConfirmation {
 }
 
 //// Beams Today
-
 model BeamsToday {
   id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
   date                  DateTime                   @unique
@@ -115,26 +113,25 @@ model BeamsToday {
   categoryId            String                     @db.ObjectId
   categories            BeamsTodayCategory         @relation(fields: [categoryId], references: [id])
   polls                 BeamsTodayPoll[]
-  // puzzles               BeamsTodayPuzzle[]
+  // puzzles             BeamsTodayPuzzle[]
   exclusiveContents     BeamsTodayExclusiveContent[]
   downloadableResources BeamsTodayDownloadableResource[]
+  userNotes             BeamsTodayUserNote[]
 
   @@index([categoryId])
 }
 
 model BeamsTodayWatchedContent {
-  id                String    @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
   userId            String    @unique @db.ObjectId
   watchedVideos     String[]  @default([])
   watchedArticles   String[]  @default([])
   listenedAudios    String[]  @default([])
   updatedAt         DateTime  @default(now())
-
-
 }
 
 model BeamsTodayCategory {
-  id                String       @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
   name              String
   beamsTodayContent BeamsToday[]
 
@@ -142,7 +139,7 @@ model BeamsTodayCategory {
 }
 
 model BeamsTodayPoll {
-  id                String     @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
   question          String
   options           String[]
   date              DateTime   @default(now())
@@ -165,7 +162,7 @@ model BeamsTodayPoll {
 // }
 
 model BeamsTodayExclusiveContent {
-  id                String     @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
   title             String
   contentUrl        String
   format            String
@@ -177,7 +174,7 @@ model BeamsTodayExclusiveContent {
 }
 
 model BeamsTodayDownloadableResource {
-  id                String     @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
   title             String
   resourceUrl       String
   format            String
@@ -189,10 +186,15 @@ model BeamsTodayDownloadableResource {
 }
 
 model BeamsTodayUserNote {
-  id                String     @id @default(uuid()) @map("_id") @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
   userId            String     @db.ObjectId
+  user              User       @relation(fields: [userId], references: [id])
   note              String
   date              DateTime   @default(now())
+  beamsTodayId      String     @db.ObjectId
+  beamsToday        BeamsToday @relation(fields: [beamsTodayId], references: [id])
 
   @@index([userId])
 }
+
+

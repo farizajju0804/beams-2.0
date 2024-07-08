@@ -5,7 +5,7 @@ import TabsComponent from "@/components/beams-today/TabsComponent";
 
 const VideoPlayerPage = async ({ params }:any) => {
   const { id } = params;
-  const video = await getVideoById(id);
+  const video:any = await getVideoById(id);
 
   return (
     <div className="container mx-auto my-8">
