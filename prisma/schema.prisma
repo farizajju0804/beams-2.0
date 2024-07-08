@@ -36,6 +36,7 @@ model User {
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   notes                BeamsTodayUserNote[]
+  beamsTodayFavorites  BeamsTodayFavorite[]
 }
 
 model Account {
@@ -117,7 +118,7 @@ model BeamsToday {
   exclusiveContents     BeamsTodayExclusiveContent[]
   downloadableResources BeamsTodayDownloadableResource[]
   userNotes             BeamsTodayUserNote[]
-
+  favourites            BeamsTodayFavorite[]
   @@index([categoryId])
 }
 
@@ -198,3 +199,16 @@ model BeamsTodayUserNote {
 }
 
 
+model BeamsTodayFavorite {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  beamsTodayId String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  beamsToday  BeamsToday @relation(fields: [beamsTodayId], references: [id])
+
+  @@index([userId])
+  @@index([beamsTodayId])
+  @@unique([userId, beamsTodayId])
+}

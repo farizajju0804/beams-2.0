@@ -2,6 +2,7 @@ import React from 'react';
 import ShareButton from '@/components/beams-today/ShareButton';
 import FormattedDate from '@/components/beams-today/FormattedDate';
 import NoteModal from '@/components/beams-today/NoteModal';
+import FavoriteButton from '@/components/beams-today/FavoriteButton'; // Import the new component
 import { BeamsToday } from '@/types/beamsToday';
 
 interface VideoDetailsProps {
@@ -18,6 +19,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
           Date: {video?.date ? <FormattedDate date={video.date.toISOString().split('T')[0]} /> : 'Unknown date'}
         </p>
         <div className="flex items-center gap-4">
+          <FavoriteButton beamsTodayId={video.id} /> {/* Include the favorite button */}
           <NoteModal videoId={video.id} videoTitle={video.title} />
           <ShareButton video={video} />
         </div>
