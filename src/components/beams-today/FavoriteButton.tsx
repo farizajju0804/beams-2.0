@@ -26,8 +26,8 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
   };
 
   return (
-    <Button isIconOnly color="danger" aria-label="Like" onClick={handleFavoriteToggle}>
-      <Heart size={24} color="white" variant={isFavorite ? "Bold" : "Linear"} />
+    <Button isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
+      <Heart size={24} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
     </Button>
   );
 };
