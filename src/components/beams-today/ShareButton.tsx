@@ -1,12 +1,16 @@
 'use client';
 import React from 'react';
 import { Button } from '@nextui-org/react';
+import { BeamsToday } from '@/types/beamsToday';
 
-const ShareButton = ({ video }:any) => {
+interface ShareButtonProps {
+  data: BeamsToday;
+}
+const ShareButton:React.FC<ShareButtonProps> = ({ data }) => {
   const handleShare = async () => {
     const shareData = {
-      title: `Hey, Check out this fascinating content on Beams! ${video?.title}`,
-      text: `Hey, Check out this fascinating content on Beams! ${video?.title}\n\n${video?.shortDesc}`,
+      title: `Hey, Check out this fascinating content on Beams! ${data?.title}`,
+      text: `Hey, Check out this fascinating content on Beams! ${data?.title}\n\n${data?.shortDesc}`,
       url: window.location.href,
     };
 

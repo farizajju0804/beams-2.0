@@ -7,11 +7,11 @@ import { saveNote } from '@/actions/beams-today/saveUserNote';
 import { toast, Toaster } from 'react-hot-toast';
 
 interface NoteModalProps {
-  videoId: string;
-  videoTitle: string;
+  id: string;
+  title: string;
 }
 
-const NoteModal: React.FC<NoteModalProps> = ({ videoId, videoTitle }) => {
+const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   const user = useCurrentUser(); // Ensure this returns an object with a user property
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [note, setNote] = useState('');
@@ -28,7 +28,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ videoId, videoTitle }) => {
 
   const handleSaveNote = async () => {
     if (user) {
-      await saveNote(videoId, note);
+      await saveNote(id, note);
       toast.success('Note saved successfully!');
       onClose();
     }
@@ -44,14 +44,14 @@ const NoteModal: React.FC<NoteModalProps> = ({ videoId, videoTitle }) => {
             <ModalHeader className="flex flex-col gap-1">Take a Note</ModalHeader>
             <ModalBody>
               <h1>Hi {user?.name}, have a nice day!</h1>
-              <h2>Topic: {videoTitle}</h2>
+              <h2>Topic: {title}</h2>
               <Textarea
                 value={note}
                 onChange={handleNoteChange}
                 placeholder="Type your note here..."
                 width="100%"
                 maxLength={1000}
-                rows={10} // Set rows to make the textarea larger
+                rows={10} 
               />
               <p className="text-right">{1000 - charCount} characters remaining</p>
             </ModalBody>

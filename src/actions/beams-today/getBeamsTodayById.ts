@@ -2,7 +2,7 @@
 
 import { db } from "@/libs/db";
 
-export const getVideoById = async (id: string) => {
+export const getBeamsTodayById = async (id: string) => {
   try {
     const video = await db.beamsToday.findUnique({
       where: { id: id },
