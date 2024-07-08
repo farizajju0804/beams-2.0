@@ -4,3 +4,24 @@
 
  
 
+  .door {
+    transform-origin: left;
+    transition: transform 0.5s ease-in-out;
+    background: linear-gradient(145deg, #6b4f4f, #8d6e63);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+ 
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .doorOpen {
+    transform: perspective(1200px) rotateY(-105deg);
+  }
+  
+  .light-ray {
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .doorOpen ~ .light-ray {
+    opacity: 1;
+  }
+  
