@@ -234,3 +234,18 @@ model UserBeamPoints {
 
   @@index([userId])
 }
+
+
+
+//Analytics
+
+
+
+model UserAnalytics {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique   @db.ObjectId
+  totalWatchTimeBeamsToday Int @default(0)
+  totalWatchTimeBeamsTheatre Int @default(0)
+  individualWatchTimesBeamsToday Json? @default("{}")
+  individualWatchTimesTheatre Json? @default("{}")
+}

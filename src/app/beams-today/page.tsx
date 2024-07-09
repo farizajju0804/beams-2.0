@@ -1,5 +1,3 @@
-// app/beams-today/page.tsx
-
 import { getcompletedBeamsToday } from "@/actions/beams-today/completedActions";
 import { currentUser } from "@/libs/auth";
 import BeamsTodayPage from "@/components/beams-today/BeamsTodayPage";

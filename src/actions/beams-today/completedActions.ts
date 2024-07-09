@@ -9,7 +9,7 @@ export const markTopicAsCompleted = async (userId: string, beamsTodayId: string)
     });
 
     if (!watchedContent) {
-      // If the user entry doesn't exist, create it with the new topic ID
+      // If the user entry doesn't exist, create it with the new topic ID and increment view count
       await db.beamsTodayWatchedContent.create({
         data: {
           userId,
@@ -17,8 +17,17 @@ export const markTopicAsCompleted = async (userId: string, beamsTodayId: string)
           updatedAt: new Date()
         }
       });
+
+      await db.beamsToday.update({
+        where: { id: beamsTodayId },
+        data: {
+          viewCount: {
+            increment: 1
+          }
+        }
+      });
     } else if (!watchedContent.completedBeamsToday.includes(beamsTodayId)) {
-      // If the topic ID is not already in the array, add it
+      // If the topic ID is not already in the array, add it and increment view count
       await db.beamsTodayWatchedContent.update({
         where: { userId },
         data: {
@@ -26,6 +35,15 @@ export const markTopicAsCompleted = async (userId: string, beamsTodayId: string)
             push: beamsTodayId
           },
           updatedAt: new Date()
+        }
+      });
+
+      await db.beamsToday.update({
+        where: { id: beamsTodayId },
+        data: {
+          viewCount: {
+            increment: 1
+          }
         }
       });
     }
