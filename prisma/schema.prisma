@@ -127,11 +127,10 @@ model BeamsToday {
 model BeamsTodayWatchedContent {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   userId            String    @unique @db.ObjectId
-  watchedVideos     String[]  @default([])
-  watchedArticles   String[]  @default([])
-  listenedAudios    String[]  @default([])
+  completedBeamsToday   String[]  @default([])
   updatedAt         DateTime  @default(now())
 }
+
 
 model BeamsTodayCategory {
   id                String       @id @default(auto()) @map("_id") @db.ObjectId

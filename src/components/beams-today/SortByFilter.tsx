@@ -10,7 +10,7 @@ const SortByFilter: React.FC<{ sortBy: string; setSortBy: (value: string) => voi
   ];
 
   return (
-    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+    <div className="flex w-[150px] gap-4">
       <SortBy sortBy={sortBy} setSortBy={setSortBy} options={sortOptions} />
     </div>
   );
