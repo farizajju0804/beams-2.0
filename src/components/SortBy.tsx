@@ -8,17 +8,19 @@ interface Option {
 
 interface SortByProps {
   sortBy: string;
+  disabled : boolean;
   setSortBy: (value: string) => void;
   options: Option[];
 }
 
-const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options }) => {
+const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) => {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSortBy(event.target.value);
   };
 
   return (
     <Select
+      isDisabled={disabled}
       placeholder="Sort by"
       value={sortBy}
       onChange={handleChange}

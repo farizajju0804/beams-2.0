@@ -1,7 +1,7 @@
 "use server"
 import { db } from "@/libs/db";
 
-export const getVideoOfTheDay = async (clientDate: string) => {
+export const getTopicOfTheDay = async (clientDate: string) => {
   const today = new Date(clientDate);
   today.setUTCHours(0, 0, 0, 0);
  
