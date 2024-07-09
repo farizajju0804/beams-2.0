@@ -15,7 +15,7 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({ tabs }) => {
   return (
-    <Tabs aria-label="Options" color="primary" variant="bordered">
+    <Tabs aria-label="Options" color="primary" variant="bordered" >
       {tabs.map((tab) => (
         <Tab
           key={tab.key}

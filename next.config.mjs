@@ -1,22 +1,32 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'res.cloudinary.com',
-          port: '',
-          pathname: '/drlyyxqh9/**',
-        },
-        {
-          protocol: 'https',
-          hostname: 'picsum.photos',
-          port: '',
-          pathname: '/**',
-        },
-      ],
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+    return config;
+  },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        canvas: './empty-module.ts',
+      },
     },
-  };
-  
-  export default nextConfig;
-  
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/drlyyxqh9/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+};
+
+export default nextConfig;
