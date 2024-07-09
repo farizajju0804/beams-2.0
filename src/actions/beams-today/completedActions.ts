@@ -1,7 +1,10 @@
 'use server'
+import { currentUser } from "@/libs/auth";
 import { db } from "@/libs/db";
 
-export const markTopicAsCompleted = async (userId: string, beamsTodayId: string) => {
+export const markTopicAsCompleted = async (beamsTodayId: string) => {
+  const user:any = await currentUser(); 
+  const userId = user.id;
   try {
     const watchedContent = await db.beamsTodayWatchedContent.findUnique({
       where: { userId },

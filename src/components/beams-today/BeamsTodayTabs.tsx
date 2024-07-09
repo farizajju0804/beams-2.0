@@ -14,13 +14,13 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       key: 'video',
       title: 'Video',
       icon: <VideoPlay size="24" color="black" />,
-      content: <VideoPlayerComponent videoUrl={beamsToday?.videoUrl} type="video" />,
+      content: <VideoPlayerComponent beamsTodayId={beamsToday.id} videoUrl={beamsToday?.videoUrl} type="video" />,
     },
     {
       key: 'audio',
       title: 'Audio',
       icon: <Headphone size="24" color="black" />,
-      content: <VideoPlayerComponent videoUrl={beamsToday?.videoUrl} type="audio" />,
+      content: <VideoPlayerComponent beamsTodayId={beamsToday.id} videoUrl={beamsToday?.videoUrl} type="audio" />,
     },
     {
       key: 'article',

@@ -3,7 +3,7 @@ import React from 'react';
 import Plyr from 'plyr-react';
 import 'plyr/dist/plyr.css';
 
-const VideoPlayerComponent = ({ videoUrl, type }:any) => {
+const VideoPlayerComponent = ({beamsTodayId, videoUrl, type }:any) => {
   return (
     <div className="relative w-full">
       <Plyr

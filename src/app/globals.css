@@ -3,7 +3,9 @@
   @tailwind utilities;
 
  
-
+:root{
+  --plyr-color-main: #f96f2e;
+}
   .door {
     transform-origin: left;
     transition: transform 0.5s ease-in-out;
