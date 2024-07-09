@@ -3,7 +3,7 @@ import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
 import { getPoll } from "@/actions/beams-today/pollActions";
 import { markTopicAsCompleted } from "@/actions/beams-today/completedActions";
 import BeamsTodayTabs from "@/components/beams-today/BeamsTodayTabs";
-import BarPoll from "@/components/beams-today/BarPoll";
+// import BarPoll from "@/components/beams-today/BarPoll";
 import BeamsTodayDetails from "@/components/beams-today/BeamsTodayDetails";
 import { currentUser } from "@/libs/auth";
 
@@ -14,7 +14,7 @@ interface BeamsTodayPlayerPageProps {
 const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ params }) => {
   const { id } = params;
   const beamsToday: any = await getBeamsTodayById(id);
-  const poll: any = await getPoll(id);
+  // const poll: any = await getPoll(id);
   const user:any = await currentUser(); 
 
   if (user) {
@@ -25,7 +25,7 @@ const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ param
     <div className="container mx-auto my-8">
       <BeamsTodayTabs beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
-      <BarPoll poll={poll} />
+      {/* <BarPoll poll={poll} /> */}
     </div>
   );
 };
