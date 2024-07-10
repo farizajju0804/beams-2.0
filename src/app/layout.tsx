@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Beams - Next-gen Learning Platform",
   description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
 };
-
+import { GoogleAnalytics } from '@next/third-parties/google'
 export default function RootLayout({
   children,
 }: {
@@ -21,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
     
       <body className={quicksand.className}>
+      <GoogleAnalytics gaId="G-W7VPHJY727" />
       {/* <Navbar/> */}
       <Providers>
         {children}
