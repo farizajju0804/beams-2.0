@@ -10,9 +10,10 @@ export default async function Page() {
   }
 
   const completedTopics = await getcompletedBeamsToday(user.id);
-
+  
   return (
     <BeamsTodayPage
+  
       completedTopics={completedTopics}
       user={user}
     />

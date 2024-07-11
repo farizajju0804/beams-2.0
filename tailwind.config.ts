@@ -18,6 +18,9 @@ const config = {
           950: '#f96f2e',
           100: '#FFF5ED'
         },
+        secondary : {
+          900 : '#ffd25d'
+        },
         black : '#181818'
       },
       fontFamily: {

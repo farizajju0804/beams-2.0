@@ -17,7 +17,7 @@ export interface BeamsToday {
   viewCount: number;
   totalWatchTime: number;
   transcript?: any;
-  category: { name: string } 
+  category: { id:string, name: string } 
   // transcript?: any; // Replace 'any' with appropriate type if available
 }
 

@@ -9,16 +9,18 @@ import CustomPagination from "@/components/Pagination";
 import { BeamsToday } from "@/types/beamsToday";
 import { DateValue, parseDate } from "@internationalized/date";
 import { format } from "date-fns";
-import { Spinner } from "@nextui-org/react";
+import { Spinner, Chip } from "@nextui-org/react";
 
 interface BeamsTodayListContainerProps {
   completedTopics: string[];
+  categories: any;
   user: any;
 }
 
 const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   completedTopics,
   user,
+  categories
 }) => {
   const [allUploads, setAllUploads] = useState<BeamsToday[]>([]);
   const [recentUploads, setRecentUploads] = useState<BeamsToday[]>([]);
@@ -27,8 +29,9 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   const [sortBy, setSortBy] = useState("dateDesc");
   const [beamedStatus, setBeamedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const itemsPerPage = 9;
-  const isMobile = window.innerWidth < 767;
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 767 : false;
 
   useEffect(() => {
     const fetchRecentUploads = async () => {
@@ -40,12 +43,9 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     fetchRecentUploads();
   }, []);
 
-  useEffect(() => {
-    applyFiltersAndSorting(allUploads, completedTopics, currentPage);
-  }, [allUploads, completedTopics, currentPage, selectedDate, sortBy, beamedStatus]);
-
   const applyFiltersAndSorting = (uploads: BeamsToday[], completed: string[], page: number) => {
     let filteredUploads = uploads;
+
     if (selectedDate) {
       const selectedDateString = `${selectedDate.year}-${String(selectedDate.month).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
       filteredUploads = filteredUploads.filter(
@@ -61,6 +61,12 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     } else if (beamedStatus === "unbeamed") {
       filteredUploads = filteredUploads.filter((topic) =>
         !completed.includes(topic.id)
+      );
+    }
+
+    if (selectedCategories.length > 0) {
+      filteredUploads = filteredUploads.filter((topic) =>
+        selectedCategories.includes(topic.category.id)
       );
     }
 
@@ -110,15 +116,29 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     setCurrentPage(page);
   };
 
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategories(prevSelected =>
+      prevSelected.includes(categoryId)
+        ? prevSelected.filter(id => id !== categoryId)
+        : [...prevSelected, categoryId]
+    );
+  };
+
   const handleReset = () => {
     setSelectedDate(null);
     setSortBy("dateDesc");
     setBeamedStatus("all");
+    setSelectedCategories([]);
     setCurrentPage(1);
+    applyFiltersAndSorting(allUploads, completedTopics, 1);
   };
 
+  useEffect(() => {
+    applyFiltersAndSorting(allUploads, completedTopics, currentPage);
+  }, [allUploads, selectedDate, sortBy, beamedStatus, selectedCategories, currentPage]);
+
   const highlightDates1 = allUploads.map((topic) =>
-    topic.date.toISOString().split("T")[0]
+    new Date(topic.date).toISOString().split("T")[0]
   );
 
   const highlightDates = highlightDates1.map((dateString) => {
@@ -151,6 +171,19 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     <div className="w-full max-w-6xl pb-8 px-6 md:px-12">
       <h1 className="text-xl md:text-3xl font-bold mb-2">Trending Topics</h1>
       <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      <div className="my-4">
+        <div className="flex flex-wrap gap-2 my-4">
+          {categories.map((category: any) => (
+            <Chip
+              key={category.id}
+              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-secondary-900 text-black' : 'bg-gray-200 text-black'}`}
+              onClick={() => handleCategoryClick(category.id)}
+            >
+              {category.name}
+            </Chip>
+          ))}
+        </div>
+      </div>
       <div className="flex flex-col items-start lg:flex-row gap-4 justify-between lg:items-center w-full mb-4">
         <BeamedFilter
           beamedStatus={beamedStatus}
@@ -181,26 +214,19 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           )}
         </div>
       </div>
-      {recentUploads.length > 0 ? (
-        <>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12">
-            {recentUploads.map((topic) => (
-              <BeamsTodayCard key={topic.id} topic={topic} />
-            ))}
-          </div>
-          <div className="mt-8">
-            <CustomPagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(allUploads.length / itemsPerPage)}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </>
-      ) : (
-        <div className="text-center text-lg font-bold mt-8">
-          No recent uploads available.
-        </div>
-      )}
+      
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+        {recentUploads.map((topic) => (
+          <BeamsTodayCard key={topic.id} topic={topic} />
+        ))}
+      </div>
+      <div className="mt-8">
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(allUploads.length / itemsPerPage)}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };
