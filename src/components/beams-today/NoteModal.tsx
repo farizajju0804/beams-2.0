@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Textarea, Chip } from '@nextui-org/react';
 import { Note } from 'iconsax-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { saveNote } from '@/actions/beams-today/saveUserNote';
+import { getNote, saveNote } from '@/actions/beams-today/saveUserNote';
 import { toast, Toaster } from 'react-hot-toast';
 import FormattedDate from './FormattedDate'; // Importing the FormattedDate component
 
@@ -17,10 +17,26 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [note, setNote] = useState('');
   const [charCount, setCharCount] = useState(0);
+  const [isExistingNote, setIsExistingNote] = useState(false);
 
-  const handleNoteChange = (e: React.ChangeEvent<unknown>) => {
-    const target = e.target as HTMLTextAreaElement;
-    const value = target.value;
+  useEffect(() => {
+    const fetchNote = async () => {
+      if (user) {
+        const existingNote = await getNote(id);
+        if (existingNote) {
+          setNote(existingNote.note);
+          setCharCount(existingNote.note.length);
+          setIsExistingNote(true);
+        }
+      }
+    };
+    if (isOpen) {
+      fetchNote();
+    }
+  }, [id, user, isOpen]);
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
     if (value.length <= 1000) {
       setNote(value);
       setCharCount(value.length);
@@ -40,38 +56,39 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   return (
     <>
       <Toaster position="top-center" />
-      <Button startContent={<Note className='text-white'/>} color='primary' className='text-white' onPress={onOpen}>Note</Button>
-      <Modal isOpen={isOpen} onClose={onClose} size='3xl' className='h-[70vh]'>
+      <Button startContent={<Note className='text-white' />} color='primary' className='text-white' onPress={onOpen}>
+        {isExistingNote ? 'View Note' : 'Note'}
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose} size='3xl' className=''>
         <ModalContent className='py-2 px-6'>
           <>
             <ModalHeader className="flex justify-start items-center">
               <div className="flex flex-col">
                 <span className="text-xl font-bold">{title}</span>
               </div>
-              
             </ModalHeader>
-            <ModalBody className="bg-brand-100 rounded-3xl w-full flex flex-col justify-between pb-4 px-4">
+            <ModalBody className="bg-brand-100 rounded-3xl w-full flex flex-col justify-between pb-4 px-4 flex-grow">
               <Textarea
                 value={note}
                 color={'secondary'}
-                onChange={handleNoteChange}
+                onChange={(e) => handleNoteChange(e as unknown as React.ChangeEvent<HTMLTextAreaElement>)} // Explicitly cast the event to unknown first
                 placeholder="Type your note here..."
                 width="100%"
                 maxLength={1000}
                 minRows={120}
                 size='lg'
-                classNames={{base: 'border-none' }}
+                classNames={{ base: 'border-none' }}
                 className="bg-transparent w-full rounded-md border-none flex-grow"
               />
-              <div className='flex items-center justify-between w-full'>
-              <Chip className="text-sm bg-black text-white py-1 px-3">
-                <FormattedDate date={currentDate} />
-              </Chip>
-              <Chip size='sm' className="text-right bg-white text-sm mt-2">{1000 - charCount} Remaining</Chip>
+              <div className='flex items-center justify-between w-full mt-4'>
+                <Chip className="text-sm bg-black text-white py-1 px-3">
+                  <FormattedDate date={currentDate} />
+                </Chip>
+                <Chip size='sm' className="text-right bg-white text-sm mt-2">{1000 - charCount} Remaining</Chip>
               </div>
             </ModalBody>
             <ModalFooter className="flex justify-between">
-              <Button  variant="light" onPress={onClose}>
+              <Button variant="light" onPress={onClose}>
                 Cancel
               </Button>
               <Button color="primary" className='text-white' onPress={handleSaveNote}>
