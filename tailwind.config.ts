@@ -38,7 +38,8 @@ const config = {
       light: {
         colors: {
           primary : "#f96f2e",
-          warning : "#ffd25d"
+          warning : "#ffd25d",
+          secondary : "#FFF5ED"
         },
       },
       dark: {
