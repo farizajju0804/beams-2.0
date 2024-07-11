@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Textarea, Chip } from '@nextui-org/react';
-import { Note } from 'iconsax-react';
+import {  Edit2, Note } from 'iconsax-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { getNote, saveNote } from '@/actions/beams-today/saveUserNote';
 import { toast, Toaster } from 'react-hot-toast';
@@ -56,8 +56,8 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   return (
     <>
       <Toaster position="top-center" />
-      <Button startContent={<Note className='text-white' />} color='primary' className='text-white' onPress={onOpen}>
-        {isExistingNote ? 'View Note' : 'Note'}
+      <Button startContent={isExistingNote ? <Edit2 className='text-white' /> :<Note className='text-white' />} color='primary' className='text-white' onPress={onOpen}>
+        {isExistingNote ? 'Edit Note' : 'Note'}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size='3xl' className=''>
         <ModalContent className='py-2 px-6'>
