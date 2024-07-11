@@ -52,6 +52,7 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
     "react-pdf": "^9.1.0",
+    "react-share": "^5.1.0",
     "react-slick": "^0.30.2",
     "react-spinners": "^0.14.1",
     "sib-api-v3-sdk": "^8.5.0",

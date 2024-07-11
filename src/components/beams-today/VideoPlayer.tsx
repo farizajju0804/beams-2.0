@@ -46,7 +46,7 @@ const VideoPlayerComponent = forwardRef<APITypes, VideoPlayerComponentProps>(
     };
 
     return (
-      <div className="relative w-full">
+      <div className="relative w-full rounded-3xl">
         <Plyr ref={ref} source={source} options={options} />
       </div>
     );

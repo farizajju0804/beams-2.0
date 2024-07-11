@@ -15,10 +15,11 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({ tabs }) => {
   return (
-    <Tabs aria-label="Options" color="primary" variant="bordered" >
+    <Tabs aria-label="Options" radius='full' color="warning" variant="bordered" className='mx-auto mb-4' >
       {tabs.map((tab) => (
         <Tab
           key={tab.key}
+          className=''
           title={
             <div className="flex items-center space-x-2">
               {tab.icon}
@@ -30,7 +31,8 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs }) => {
         </Tab>
       ))}
     </Tabs>
-  );
+
+      );
 };
 
 export default TabsComponent;

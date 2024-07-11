@@ -30,7 +30,12 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     },
   ];
 
-  return <TabsComponent tabs={tabs} />;
+  return (
+   <div className="flex w-full items-center justify-center flex-col m-0">
+    <TabsComponent tabs={tabs} />;
+   </div>
+
+  )
 };
 
 export default BeamsTodayTabs;

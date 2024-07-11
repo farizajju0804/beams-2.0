@@ -22,8 +22,8 @@ const Article: React.FC<ArticleProps> = ({ articleUrl }) => {
   }
 
   return (
-    <div className="my-8 p-4 bg-gray-100 rounded-lg">
-      <h2 className="text-2xl font-bold my-2">Article</h2>
+    <div className="my-4 rounded-lg w-[80vw]">
+      {/* <h2 className="text-2xl font-bold my-2">Article</h2> */}
       <div style={{ height: '750px' }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer

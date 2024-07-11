@@ -117,11 +117,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   };
 
   const handleCategoryClick = (categoryId: string) => {
-    setSelectedCategories(prevSelected =>
-      prevSelected.includes(categoryId)
-        ? prevSelected.filter(id => id !== categoryId)
-        : [...prevSelected, categoryId]
-    );
+    if (!selectedDate) {
+      setSelectedCategories(prevSelected =>
+        prevSelected.includes(categoryId)
+          ? prevSelected.filter(id => id !== categoryId)
+          : [...prevSelected, categoryId]
+      );
+    }
   };
 
   const handleReset = () => {
@@ -178,6 +180,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
               key={category.id}
               className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-secondary-900 text-black' : 'bg-gray-200 text-black'}`}
               onClick={() => handleCategoryClick(category.id)}
+              isDisabled={!!selectedDate}
             >
               {category.name}
             </Chip>

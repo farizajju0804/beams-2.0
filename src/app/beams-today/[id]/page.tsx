@@ -20,7 +20,7 @@ const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ param
   await markTopicAsCompleted(id);
   
   return (
-    <div className="container mx-auto my-8">
+    <div className="container mx-auto px-4 my-8">
       <BeamsTodayTabs beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
       {/* <BarPoll poll={poll} /> */}

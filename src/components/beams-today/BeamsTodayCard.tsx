@@ -3,12 +3,14 @@ import FavoriteButton from './FavoriteButton'; // Make sure this path is correct
 import FormattedDate from './FormattedDate'; // Make sure this path is correct
 import { BeamsToday } from '@/types/beamsToday';
 import {Chip} from "@nextui-org/react";
+import Link from 'next/link';
 interface BeamsTodayCardProps {
   topic: BeamsToday;
   className?: string;
 }
 
 const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }) => (
+  <Link href={`/beams-today/${topic.id}`}>
   <div
     className={`w-full aspect-[9/16] h-[420px] rounded-3xl flex flex-col  justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]`}
     style={{ 
@@ -33,6 +35,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
       </div>
     </section>
   </div>
+  </Link>
 );
 
 export default BeamsTodayCard;

@@ -37,7 +37,8 @@ const config = {
     themes: {
       light: {
         colors: {
-          primary : "#f96f2e"
+          primary : "#f96f2e",
+          warning : "#ffd25d"
         },
       },
       dark: {

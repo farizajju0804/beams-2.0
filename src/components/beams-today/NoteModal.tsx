@@ -37,7 +37,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   return (
     <>
       <Toaster position="top-center" />
-      <Button endContent={<Note />} onPress={onOpen}>Note</Button>
+      <Button startContent={<Note className='text-white'/>} color='primary' className='text-white' onPress={onOpen}>Note</Button>
       <Modal isOpen={isOpen} onClose={onClose} className="w-[70%]">
         <ModalContent>
           <>
