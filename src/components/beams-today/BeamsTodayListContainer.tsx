@@ -178,7 +178,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           {categories.map((category: any) => (
             <Chip
               key={category.id}
-              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-secondary-900 text-black' : 'bg-gray-200 text-black'}`}
+              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
               onClick={() => handleCategoryClick(category.id)}
               isDisabled={!!selectedDate}
             >

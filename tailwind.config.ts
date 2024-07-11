@@ -18,7 +18,7 @@ const config = {
           950: '#f96f2e',
           100: '#FFF5ED'
         },
-        secondary : {
+        yellow : {
           900 : '#ffd25d'
         },
         black : '#181818'
