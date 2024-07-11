@@ -1,4 +1,4 @@
-'use server'
+"use server";
 import { db } from "@/libs/db";
 
 export const getRecentUploads = async (clientDate: string) => {
@@ -18,12 +18,11 @@ export const getRecentUploads = async (clientDate: string) => {
         thumbnailUrl: true,
         title: true,
         date: true,
+        category: true,
       }
     });
 
-    return recentVideos.map(video => ({
-      ...video, 
-    }));
+    return recentVideos;
   } catch (error) {
     throw new Error(`Error fetching recent uploads: ${(error as Error).message}`);
   }

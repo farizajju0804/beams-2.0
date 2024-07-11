@@ -11,12 +11,38 @@ const config = {
 	],
   prefix: "",
   theme: {
+    
     extend: {
-
+      colors: {
+        brand: {
+          950: '#f96f2e',
+          100: '#FFF5ED'
+        },
+        black : '#181818'
+      },
+      fontFamily: {
+        'display' : 'Clover'
+      },
+      aspectRatio: {
+        '9/16': '9 / 16',
+      },
       
     },
   },
-  plugins: [require("tailwindcss-animate"),nextui()],
+  plugins: [require("tailwindcss-animate"),nextui(
+ {
+    themes: {
+      light: {
+        colors: {
+          primary : "#f96f2e"
+        },
+      },
+      dark: {
+        colors: {},
+      },
+    },
+  } 
+  )],
 } satisfies Config
 
 export default config

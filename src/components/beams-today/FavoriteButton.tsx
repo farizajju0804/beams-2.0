@@ -6,9 +6,10 @@ import { toggleFavorite, isFavoriteBeamsToday } from '@/actions/beams-today/favo
 
 interface FavoriteButtonProps {
   beamsTodayId: string;
+  size : "sm" | "md" | "lg" | undefined
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId,size }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -26,8 +27,8 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
   };
 
   return (
-    <Button isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
-      <Heart size={24} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
+    <Button size={size} isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
+      <Heart size={size ==='sm' ? 16 : 24} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
     </Button>
   );
 };

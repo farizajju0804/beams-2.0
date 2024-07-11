@@ -20,11 +20,14 @@ const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) 
 
   return (
     <Select
+      color="primary"
       isDisabled={disabled}
       placeholder="Sort by"
       value={sortBy}
+      variant="bordered"
+      radius="lg"
       onChange={handleChange}
-      className="shadow-lg rounded-lg"
+      
     >
       {options.map((option) => (
         <SelectItem key={option.value} value={option.value}>

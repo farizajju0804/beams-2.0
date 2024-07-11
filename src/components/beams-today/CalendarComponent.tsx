@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar } from "@nextui-org/react";
+import { Button, Calendar } from "@nextui-org/react";
 import { Calendar as CalendarIcon } from 'iconsax-react';
 import { DateValue, CalendarDate } from '@internationalized/date';
 
@@ -24,9 +24,9 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDate, onD
 
   return (
     <div className="relative">
-      <button onClick={handleIconClick}>
-        <CalendarIcon size="24" />
-      </button>
+      <Button className='bg-brand-100' isIconOnly onClick={handleIconClick}>
+        <CalendarIcon size="24" className='text-brand-950' />
+      </Button>
       {isCalendarOpen && (
         <div className="absolute top-6 -right-4 z-10 mt-2 rounded-md p-4">
           <Calendar value={selectedDate} onChange={handleDateChange} minValue={minValue} maxValue={maxValue} />

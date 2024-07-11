@@ -8,7 +8,7 @@ interface BeamedFilterProps {
   setBeamedStatus: (status: string) => void;
   disabled: boolean;
 }
-
+const isMobile = window.innerWidth < 767;
 const BeamedFilter: React.FC<BeamedFilterProps> = ({ beamedStatus, setBeamedStatus, disabled }) => {
   return (
     <RadioGroup
@@ -17,6 +17,7 @@ const BeamedFilter: React.FC<BeamedFilterProps> = ({ beamedStatus, setBeamedStat
       orientation="horizontal"
       className="flex gap-4"
       isDisabled={disabled}
+      size={isMobile ? 'sm' : 'md'}
     >
       <Radio value="all">All</Radio>
       <Radio value="beamed">Beamed</Radio>

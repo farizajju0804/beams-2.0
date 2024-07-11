@@ -1,39 +1,50 @@
 import React from "react";
 import Image from "next/image";
-import { FaPlay } from "react-icons/fa";
+import { Button } from "@nextui-org/react";
 import { BeamsToday } from "@/types/beamsToday";
+import DateComponent from "./DateComponent";
+import FavoriteButton from "./FavoriteButton";
+import { Chip } from "@nextui-org/react";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;
   clientDate: string;
 }
 
+const isMobile = typeof window !== "undefined" ? window.innerWidth < 767 : false;
+
 const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
   return (
-    <div className="w-full max-w-5xl mb-8 text-left">
-      <h1 className="text-2xl font-bold mb-4">Topic Of The Day</h1>
+    <div className="w-full py-4 text-left relative max-w-6xl mx-auto">
+      <div className="pl-6 md:pl-12">
+        <h1 className="text-xl md:text-3xl font-bold">Topic Of the Day</h1>
+        <div className="border-b-2 border-brand-950 mt-2 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      </div>
       {topic ? (
-        // <a href={`/beams-today/${clientDate}`} className="block">
-        <a href={`/beams-today/${topic.id}`} className="block">
-
-          <div className="flex flex-row items-start justify-center gap-8 border border-gray-200 rounded-lg shadow-lg p-4 transition ease-in-out duration-200 hover:bg-gray-100 cursor-pointer">
-            <div className="relative">
-              <FaPlay className="absolute top-2 right-2 bg-black text-white" />
-              <Image
-                src={topic.thumbnailUrl}
-                alt={topic.title}
-                objectFit="cover"
-                width={200}
-                height={140}
-                className="w-full rounded-lg"
-              />
-            </div>
-            <div className="text-left p-4">
-              <h2 className="text-lg font-bold">{topic.title}</h2>
-              <p className="text-base">{topic.shortDesc}</p>
+        <div className="relative w-full h-96 md:h-[500px]">
+          <Image
+            src={topic.thumbnailUrl}
+            alt={topic.title}
+            priority={true}
+            fill={true}
+            style={{ objectFit: "cover" }}
+            className="z-2 aspect-auto md:aspect-video rounded-none"
+          />
+          <div className="absolute inset-0 rounded-none"></div>
+          <div className="absolute bottom-0 w-full p-4 px-6 md:px-12 bg-gradient-to-t from-black to-black/30 text-white">
+            <Chip className="mb-2 bg-black text-white">{topic.category.name}</Chip>
+            <h2 className="text-xl md:text-3xl mb-2 font-bold">{topic.title}</h2>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-6">
+                <Button size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
+                  Beam Now
+                </Button>
+                <FavoriteButton size={isMobile ? 'sm' : 'lg'} beamsTodayId={topic.id} />
+              </div>
+              <DateComponent date={clientDate} />
             </div>
           </div>
-        </a>
+        </div>
       ) : (
         <p className="text-lg font-bold text-gray-500">
           No topic available for today

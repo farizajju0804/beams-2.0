@@ -13,8 +13,8 @@ interface BeamsTodayPageProps {
 
 const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user }) => {
   return (
-    <div className="flex flex-col items-center w-full p-8 gap-8">
-      <Header />
+    <div className="flex flex-col items-center w-full gap-4">
+      {/* <Header /> */}
       <TopicOfTheDayContainer user={user} />
       <BeamsTodayListContainer completedTopics={completedTopics} user={user} />
     </div>

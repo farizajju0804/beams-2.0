@@ -1,16 +1,16 @@
-"use server"
+"use server";
 import { db } from "@/libs/db";
 
 export const getTopicOfTheDay = async (clientDate: string) => {
   const today = new Date(clientDate);
   today.setUTCHours(0, 0, 0, 0);
- 
-
-
 
   try {
     const video = await db.beamsToday.findUnique({
       where: { date: today },
+      include: {
+        category: true, // Include the related category
+      },
     });
     return video;
   } catch (error) {

@@ -19,7 +19,7 @@ const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = ({ data }) => {
           Date: {data?.date ? <FormattedDate date={data.date.toISOString().split('T')[0]} /> : 'Unknown date'}
         </p>
         <div className="flex items-center gap-4">
-          <FavoriteButton beamsTodayId={data.id} /> {/* Include the favorite button */}
+          <FavoriteButton size='md' beamsTodayId={data.id} /> {/* Include the favorite button */}
           <NoteModal id={data.id} title={data.title} />
           <ShareButton data={data} />
         </div>
