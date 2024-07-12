@@ -37,7 +37,7 @@ export default function UserButton() {
             <p className="font-bold">Signed in with</p>
             <p className="font-bold">{user?.email}</p>
           </DropdownItem>
-          <DropdownItem key="library" onClick={() => handleNavigation("/library")}>
+          <DropdownItem key="library" onClick={() => handleNavigation("/beams-today/library")}>
             My Library
           </DropdownItem>
           <DropdownItem key="profile" onClick={() => handleNavigation("/profile")}>

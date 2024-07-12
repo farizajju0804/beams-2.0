@@ -20,7 +20,9 @@ export default function Nav() {
           className="sm:hidden"
         /> */}
         <NavbarBrand>
+          <Link href="/beams-today">
           <Image src={Logo} alt="logo"  width={isMobile ? 100 : 140} height={isMobile ? 70 :100}/>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">

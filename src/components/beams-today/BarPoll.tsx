@@ -127,7 +127,7 @@ const Question = ({
             onClick={() => handleIncrementVote(vote)}
             key={vote.id}
             className={`flex items-center text-base lg:text-lg justify-center h-[130px] w-[130px] md:h-[200px] md:w-[200px] rounded-full ${vote.color} text-white font-medium`}
-            disabled={hasVoted} // Disable button if user has already voted
+            disabled={hasVoted}
           >
             {vote.title}
           </motion.button>

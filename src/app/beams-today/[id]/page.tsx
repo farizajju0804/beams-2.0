@@ -20,7 +20,7 @@ const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ param
 
   await markTopicAsCompleted(id);
   
-  // Fetch related topics
+
   const relatedTopics = await fetchCategoryRelatedTopics(beamsToday.category.id);
   const filteredRelatedTopics:any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
 
