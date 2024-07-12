@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User, Avatar } from "@nextui-org/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation"; // Import useRouter
@@ -20,7 +20,7 @@ export default function UserButton() {
     <div className="flex items-center gap-4">
       <Dropdown placement="bottom-start" size="sm">
         <DropdownTrigger>
-          <User
+          {/* <User
             as="button"
             avatarProps={{
               isBordered: true,
@@ -29,7 +29,8 @@ export default function UserButton() {
             className="transition-transform"
             description={user?.email}
             name={user?.name}
-          />
+          /> */}
+          <Avatar isBordered  src={user?.image || "https://i.pravatar.cc/150?u=a042581f4e29026024d"}/>
         </DropdownTrigger>
         <DropdownMenu aria-label="User Actions" variant="flat">
           <DropdownItem key="profile" className="h-14 gap-2">

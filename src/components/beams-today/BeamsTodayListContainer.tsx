@@ -187,15 +187,16 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           )}
         </div>
       </div>
-      <div className="flex items-start flex-row gap-4 justify-between lg:items-center w-full mb-4">
-        <Button
-          startContent={<Filter size={24} />}
-          onPress={() => setIsFilterModalOpen(true)}
-          className="w-full"
-        >
-          Filters
-        </Button>
-        <div className="flex gap-4 items-center lg:justify-normal justify-between lg:w-fit w-full">
+      <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-4">
+        <div className="flex flex-wrap gap-4 items-center justify-between min-w-full">
+          <Button
+            startContent={<Filter className="text-gray-600 w-full" size={24} />}
+            onPress={() => setIsFilterModalOpen(true)}
+            className="bg-gray-200"
+            disabled={!!selectedDate}
+          >
+            Filters
+          </Button>
           <SortByFilter
             sortBy={sortBy}
             setSortBy={handleSortChange}
@@ -209,15 +210,15 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
               maxValue={maxDate}
             />
           )}
-          {selectedDate && (
-            <button
-              onClick={handleReset}
-              className="bg-red-500 text-white px-4 py-2 rounded-md"
-            >
-              Reset
-            </button>
-          )}
         </div>
+        {selectedDate && (
+          <button
+            onClick={handleReset}
+            className="bg-red-500 text-white px-4 py-2 rounded-md"
+          >
+            Reset
+          </button>
+        )}
       </div>
       
       <FilterDrawer

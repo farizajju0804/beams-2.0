@@ -24,7 +24,7 @@ export default function Nav() {
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem>
+        <NavbarItem className="">
            <UserButton/>
         </NavbarItem>
       </NavbarContent>
