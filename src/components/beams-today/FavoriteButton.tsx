@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import { Button } from '@nextui-org/react';
 import { Heart } from 'iconsax-react'; // Assuming you are using iconsax-react
@@ -23,7 +23,8 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId, size }) =
     checkFavorite();
   }, [beamsTodayId]);
 
-  const handleFavoriteToggle = async () => {
+  const handleFavoriteToggle = async (event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent the event from propagating to parent elements
     await toggleFavorite(beamsTodayId);
     setIsAnimating(true);
     setIsFavorite((prev) => !prev);

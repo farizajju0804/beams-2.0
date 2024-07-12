@@ -50,7 +50,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   };
 
   return (
-    <Popover placement="right">
+    <Popover placement="top">
       <PopoverTrigger>
         <Button color='primary' startContent={<Share className='text-white' />} className='text-white'>
           Share

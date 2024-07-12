@@ -24,8 +24,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDate, onD
 
   return (
     <div className="relative">
-      <Button className='bg-brand-100' isIconOnly onClick={handleIconClick}>
-        <CalendarIcon size="24" className='text-brand-950' />
+      <Button className='bg-gray-200' isIconOnly onClick={handleIconClick}>
+        <CalendarIcon size="24" className='text-gray-600' />
       </Button>
       {isCalendarOpen && (
         <div className="absolute top-6 -right-4 z-10 mt-2 rounded-md p-4">

@@ -3,23 +3,31 @@
 //     type: "title" | "subtitle" | "paragraph" | "quote" | "italic";
 //     text: string;
 //   }
-  
+// src/types/beamsToday.ts
 export interface BeamsToday {
   id: string;
   date: Date;
   title: string;
   shortDesc: string;
+  viewCount: number;
+  totalWatchTime: number;
+  transcript?: Record<string, any>;
   videoUrl?: string;
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
   articleUrl?: string;
   audioUrl?: string;
   categoryId: string;
-  viewCount: number;
-  totalWatchTime: number;
-  transcript?: any;
-  category: { id:string, name: string } 
-  // transcript?: any; // Replace 'any' with appropriate type if available
+  category: {
+    id: string;
+    name: string;
+  };
+  poll?: any;
+  exclusiveContents?: any[];
+  downloadableResources?: any[];
+  userNotes?: any[];
+  favourites?: any[];
 }
+
 
 export interface BeamsTodayCreateInput {
   date: string;

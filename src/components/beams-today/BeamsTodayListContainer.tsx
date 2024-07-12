@@ -171,8 +171,8 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
 
   return (
     <div className="w-full max-w-6xl pb-8 px-6 md:px-12">
-      <h1 className="text-xl md:text-3xl font-bold mb-2">Trending Topics</h1>
-      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      <h1 className="text-xl md:text-3xl font-bold mb-1">Trending Topics</h1>
+      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '13%' }}></div>
       <div className="my-4">
         <div className="flex flex-wrap gap-2 my-4">
           {categories.map((category: any) => (
