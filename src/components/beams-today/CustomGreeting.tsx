@@ -3,7 +3,7 @@ import { currentUser } from "@/libs/auth";
 const messages = [
   "Have a great day, {name}!",
   "Wishing you a productive day, {name}!",
-  "Good morning, {name}! Let's make today amazing.",
+  "Hello {name}! Let's make today amazing.",
   "Hello, {name}! Ready to tackle the day?",
   "Hi, {name}! Hope you have a fantastic day ahead.",
   "Hey there, {name}! Keep shining today.",

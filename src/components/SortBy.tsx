@@ -27,6 +27,7 @@ const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) 
       variant="bordered"
       radius="lg"
       onChange={handleChange}
+      className="w-[220px]"
       
     >
       {options.map((option,index) => (

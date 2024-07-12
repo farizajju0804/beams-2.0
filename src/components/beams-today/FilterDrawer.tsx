@@ -25,7 +25,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
   handleReset,
   applyFilters,
 }) => {
-  const [activeFilter, setActiveFilter] = useState<string | null>("category");
+  const [activeFilter, setActiveFilter] = useState<string | null>("beamedStatus");
 
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategories((prevSelected) =>
@@ -93,10 +93,10 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
         <ModalBody className="flex flex-row">
           <div className="w-1/3 pr-2 border-r">
             <div className="flex flex-col gap-4">
-              <Button onPress={() => setActiveFilter("beamedStatus")}>
+              <Button size="sm" onPress={() => setActiveFilter("beamedStatus")}>
                 Beamed Status
               </Button>
-              <Button onPress={() => setActiveFilter("category")}>
+              <Button size="sm" onPress={() => setActiveFilter("category")}>
                 Category
               </Button>
             </div>

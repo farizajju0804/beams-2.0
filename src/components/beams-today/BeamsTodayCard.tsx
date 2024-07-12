@@ -29,7 +29,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
             {topic.category.name}
           </Chip>
         )}
-        <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start">
+        <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
           <FavoriteButton beamsTodayId={topic.id} size={'md'} />
         </div>
       </div>

@@ -169,15 +169,8 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   return (
     <div className="w-full max-w-6xl pb-8 px-6 md:px-12">
       <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
-      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '13%' }}></div>
-      <div className="my-4">
-        <Button
-          startContent={<Filter size={24} />}
-          onPress={() => setIsFilterModalOpen(true)}
-          className="lg:hidden"
-        >
-          Filters
-        </Button>
+      <div className="border-b-2 border-brand-950 mb-2 w-full" style={{ maxWidth: '13%' }}></div>
+      <div className="">
         <div className="flex flex-wrap gap-2 my-4 lg:flex">
           {selectedCategories.map((categoryId) => {
             const category = categories.find((cat: any) => cat.id === categoryId);
@@ -194,11 +187,11 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           )}
         </div>
       </div>
-      <div className="flex flex-col items-start lg:flex-row gap-4 justify-between lg:items-center w-full mb-4">
+      <div className="flex items-start flex-row gap-4 justify-between lg:items-center w-full mb-4">
         <Button
           startContent={<Filter size={24} />}
           onPress={() => setIsFilterModalOpen(true)}
-          className="hidden lg:flex"
+          className="w-full"
         >
           Filters
         </Button>
