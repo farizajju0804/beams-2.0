@@ -29,8 +29,8 @@ const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) 
       onChange={handleChange}
       
     >
-      {options.map((option) => (
-        <SelectItem key={option.value} value={option.value}>
+      {options.map((option,index) => (
+        <SelectItem key={option.value} value={option.value} className={index < options.length - 1 ? 'border-b' : ''}>
           {option.label}
         </SelectItem>
       ))}

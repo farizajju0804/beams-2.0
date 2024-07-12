@@ -1,18 +1,24 @@
 import React from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User } from "@nextui-org/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { signOut } from "next-auth/react"; // Import from next-auth/react
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function UserButton() {
   const user = useCurrentUser();
+  const router = useRouter(); // Initialize router
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/auth/login" });
   };
 
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <div className="flex items-center gap-4">
-      <Dropdown placement="bottom-start">
+      <Dropdown placement="bottom-start" size="sm">
         <DropdownTrigger>
           <User
             as="button"
@@ -30,8 +36,11 @@ export default function UserButton() {
             <p className="font-bold">Signed in with</p>
             <p className="font-bold">{user?.email}</p>
           </DropdownItem>
-          <DropdownItem key="settings">
-            My Settings
+          <DropdownItem key="library" onClick={() => handleNavigation("/library")}>
+            My Library
+          </DropdownItem>
+          <DropdownItem key="profile" onClick={() => handleNavigation("/profile")}>
+            My Profile
           </DropdownItem>
           <DropdownItem onClick={handleSignOut} key="logout" color="danger">
             Log Out

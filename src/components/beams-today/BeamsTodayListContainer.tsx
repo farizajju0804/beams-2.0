@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
 import SortByFilter from "@/components/beams-today/SortByFilter";
-import BeamedFilter from "@/components/beams-today/BeamedFilter";
 import CalendarComponent from "@/components/beams-today/CalendarComponent";
 import CustomPagination from "@/components/Pagination";
 import { BeamsToday } from "@/types/beamsToday";
 import { DateValue, parseDate } from "@internationalized/date";
 import { format } from "date-fns";
-import { Spinner, Chip } from "@nextui-org/react";
+import { Spinner, Button, Chip } from "@nextui-org/react";
+import { Filter } from 'iconsax-react';
+import FilterDrawer from "@/components/beams-today/FilterDrawer";
 
 interface BeamsTodayListContainerProps {
   completedTopics: string[];
@@ -30,8 +31,8 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   const [beamedStatus, setBeamedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const itemsPerPage = 9;
-  const isMobile = typeof window !== "undefined" ? window.innerWidth < 767 : false;
 
   useEffect(() => {
     const fetchRecentUploads = async () => {
@@ -108,22 +109,8 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     setSortBy(sortOption);
   };
 
-  const handleBeamedStatusChange = (status: string) => {
-    setBeamedStatus(status);
-  };
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handleCategoryClick = (categoryId: string) => {
-    if (!selectedDate) {
-      setSelectedCategories(prevSelected =>
-        prevSelected.includes(categoryId)
-          ? prevSelected.filter(id => id !== categoryId)
-          : [...prevSelected, categoryId]
-      );
-    }
   };
 
   const handleReset = () => {
@@ -133,6 +120,16 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     setSelectedCategories([]);
     setCurrentPage(1);
     applyFiltersAndSorting(allUploads, completedTopics, 1);
+  };
+
+  const removeCategoryFilter = (categoryId: string) => {
+    setSelectedCategories(prevSelected =>
+      prevSelected.filter(id => id !== categoryId)
+    );
+  };
+
+  const removeBeamedStatusFilter = () => {
+    setBeamedStatus("all");
   };
 
   useEffect(() => {
@@ -171,28 +168,40 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
 
   return (
     <div className="w-full max-w-6xl pb-8 px-6 md:px-12">
-      <h1 className="text-xl md:text-3xl font-bold mb-1">Trending Topics</h1>
+      <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
       <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '13%' }}></div>
       <div className="my-4">
-        <div className="flex flex-wrap gap-2 my-4">
-          {categories.map((category: any) => (
-            <Chip
-              key={category.id}
-              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
-              onClick={() => handleCategoryClick(category.id)}
-              isDisabled={!!selectedDate}
-            >
-              {category.name}
+        <Button
+          startContent={<Filter size={24} />}
+          onPress={() => setIsFilterModalOpen(true)}
+          className="lg:hidden"
+        >
+          Filters
+        </Button>
+        <div className="flex flex-wrap gap-2 my-4 lg:flex">
+          {selectedCategories.map((categoryId) => {
+            const category = categories.find((cat: any) => cat.id === categoryId);
+            return (
+              <Chip key={categoryId} onClose={() => removeCategoryFilter(categoryId)}>
+                {category?.name}
+              </Chip>
+            );
+          })}
+          {beamedStatus !== "all" && (
+            <Chip onClose={removeBeamedStatusFilter}>
+              {beamedStatus === "beamed" ? "Beamed" : "Unbeamed"}
             </Chip>
-          ))}
+          )}
         </div>
       </div>
       <div className="flex flex-col items-start lg:flex-row gap-4 justify-between lg:items-center w-full mb-4">
-        <BeamedFilter
-          beamedStatus={beamedStatus}
-          setBeamedStatus={handleBeamedStatusChange}
-          disabled={!!selectedDate}
-        />
+        <Button
+          startContent={<Filter size={24} />}
+          onPress={() => setIsFilterModalOpen(true)}
+          className="hidden lg:flex"
+        >
+          Filters
+        </Button>
         <div className="flex gap-4 items-center lg:justify-normal justify-between lg:w-fit w-full">
           <SortByFilter
             sortBy={sortBy}
@@ -218,6 +227,21 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         </div>
       </div>
       
+      <FilterDrawer
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        categories={categories}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
+        beamedStatus={beamedStatus}
+        setBeamedStatus={setBeamedStatus}
+        handleReset={handleReset}
+        applyFilters={() => {
+          applyFiltersAndSorting(allUploads, completedTopics, currentPage);
+          setIsFilterModalOpen(false);
+        }}
+      />
+
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12">
         {recentUploads.map((topic) => (
           <BeamsTodayCard key={topic.id} topic={topic} />

@@ -15,10 +15,10 @@ const isMobile = typeof window !== "undefined" ? window.innerWidth < 767 : false
 
 const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
   return (
-    <div className="w-full py-4 text-left relative max-w-6xl mx-auto">
+    <div className="w-full pt-2 pb-4 text-left relative max-w-6xl mx-auto">
       
       <div className="pl-6 md:pl-12">
-        <h1 className="text-xl md:text-3xl font-bold mb-1">Topic of the Day</h1>
+        <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Topic of the Day</h1>
         <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
       {topic ? (
