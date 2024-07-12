@@ -2,6 +2,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/pollActions";
+import { Chip } from "@nextui-org/react";
 
 type VoteType = {
   id: string;
@@ -80,93 +81,96 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   };
 
   return (
-    <section className="bg-white px-4 py-12">
-      <div className="mx-auto grid max-w-4xl grid-cols-1 gap-2 md:grid-cols-[1fr_400px] md:gap-12">
-        {showResults ? (
-          <Bars votes={votes} />
-        ) : (
-          <Options votes={votes} setVotes={setVotes} handleIncrementVote={handleIncrementVote} poll={poll} hasVoted={hasVoted} />
-        )}
-      </div>
+    <section className="bg-brand-100 p-6 rounded-3xl">
+      {showResults ? (
+        <Results votes={votes} />
+      ) : (
+        <Question
+          poll={poll}
+          votes={votes}
+          handleIncrementVote={handleIncrementVote}
+          hasVoted={hasVoted}
+        />
+      )}
     </section>
   );
 };
 
-const Options = ({
-  votes,
-  setVotes,
-  handleIncrementVote,
+const Question = ({
   poll,
+  votes,
+  handleIncrementVote,
   hasVoted
 }: {
-  votes: VoteType[];
-  setVotes: Dispatch<SetStateAction<VoteType[]>>;
-  handleIncrementVote: (vote: VoteType) => void;
   poll: Poll;
+  votes: VoteType[];
+  handleIncrementVote: (vote: VoteType) => void;
   hasVoted: boolean;
 }) => {
   const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0);
 
   return (
-    <div className="col-span-1 py-12">
-      <h3 className="mb-6 text-3xl font-semibold text-black">
-        {poll.question}
-      </h3>
-      <div className="mb-6 space-y-2">
+    <>
+      <div className="mb-6 w-full flex-col-reverse flex md:flex-row items-start md:items-center gap-4">
+        <div>
+          <h3 className="text-xl md:text-4xl text-left font-semibold text-black w-5/6">
+            {poll.question}
+          </h3>
+        </div>
+        <Chip className="text-white bg-black">{totalVotes} Votes</Chip>
+      </div>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {votes.map((vote) => (
           <motion.button
-            whileHover={{ scale: 1.015 }}
-            whileTap={{ scale: 0.985 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => handleIncrementVote(vote)}
             key={vote.id}
-            className={`w-full rounded-md ${vote.color} py-2 font-medium text-white`}
+            className={`flex items-center text-base lg:text-lg justify-center h-[130px] w-[130px] md:h-[200px] md:w-[200px] rounded-full ${vote.color} text-white font-medium`}
             disabled={hasVoted} // Disable button if user has already voted
           >
             {vote.title}
           </motion.button>
         ))}
       </div>
-      <div className="flex items-center justify-between">
-        <span className="mb-2 italic text-slate-400">{totalVotes} votes</span>
-      </div>
-    </div>
+    </>
   );
 };
 
-const Bars = ({ votes }: { votes: VoteType[] }) => {
+const Results = ({ votes }: { votes: VoteType[] }) => {
   const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0);
 
   return (
-    <div
-      className="col-span-1 grid min-h-[200px] gap-2"
-      style={{
-        gridTemplateColumns: `repeat(${votes.length}, minmax(0, 1fr))`,
-      }}
-    >
-      {votes.map((vote) => {
-        const height = vote.votes
-          ? ((vote.votes / totalVotes) * 100).toFixed(2)
-          : 0;
-        return (
-          <div key={vote.id} className="col-span-1">
-            <div className="relative flex h-full w-full items-end overflow-hidden rounded-2xl bg-gradient-to-b from-slate-700 to-slate-800">
-              <motion.span
-                animate={{ height: `${height}%` }}
-                className={`relative z-0 w-full ${vote.color}`}
-                transition={{ type: "spring" }}
-              />
-              <span className="absolute bottom-0 left-[50%] mt-2 inline-block w-full -translate-x-[50%] p-2 text-center text-sm text-slate-50">
-                <b>{vote.title}</b>
-                <br />
-                <span className="text-xs text-slate-200">
-                  {vote.votes} votes
-                </span>
-              </span>
+    <>
+      <div className="mb-6 w-full flex items-center gap-4">
+        <h3 className="text-xl md:text-4xl text-left font-semibold text-black w-5/6">
+          Poll Results
+        </h3>
+        <Chip className="text-white bg-black">{totalVotes} Votes</Chip>
+      </div>
+      <div className="col-span-1 grid gap-4">
+        {votes.map((vote) => {
+          const width = vote.votes
+            ? ((vote.votes / totalVotes) * 100).toFixed(2)
+            : 0;
+          return (
+            <div key={vote.id} className="w-full">
+              <div className="flex items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">{vote.title}</span>
+                <span className="ml-2 text-xs text-gray-500">{vote.votes} votes</span>
+              </div>
+              <div className="relative h-8 rounded-full bg-gray-300">
+                <motion.span
+                  animate={{ width: `${width}%` }}
+                  className={`absolute top-0 left-0 h-full rounded-full ${vote.color}`}
+                  transition={{ type: "spring" }}
+                />
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 

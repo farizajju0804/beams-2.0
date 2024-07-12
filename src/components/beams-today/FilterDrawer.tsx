@@ -93,10 +93,18 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
         <ModalBody className="flex flex-row">
           <div className="w-1/3 pr-2 border-r">
             <div className="flex flex-col gap-4">
-              <Button size="sm" onPress={() => setActiveFilter("beamedStatus")}>
+              <Button
+                size="sm"
+                className={`bg-transparent ${activeFilter === "beamedStatus" ? 'border border-yellow-900' : ''}`}
+                onPress={() => setActiveFilter("beamedStatus")}
+              >
                 Beamed Status
               </Button>
-              <Button size="sm" onPress={() => setActiveFilter("category")}>
+              <Button
+                size="sm"
+                className={`bg-transparent ${activeFilter === "category" ? 'border border-yellow-900' : ''}`}
+                onPress={() => setActiveFilter("category")}
+              >
                 Category
               </Button>
             </div>

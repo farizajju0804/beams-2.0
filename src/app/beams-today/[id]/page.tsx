@@ -7,6 +7,7 @@ import BeamsTodayDetails from "@/components/beams-today/BeamsTodayDetails";
 import RelatedSection from "@/components/beams-today/RelatedSection";
 import { fetchCategoryRelatedTopics } from '@/actions/beams-today/categoryActions';
 import { BeamsToday } from '@/types/beamsToday';
+import BarPoll from "@/components/beams-today/BarPoll";
 
 interface BeamsTodayPlayerPageProps {
   params: { id: string };
@@ -15,7 +16,7 @@ interface BeamsTodayPlayerPageProps {
 const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ params }) => {
   const { id } = params;
   const beamsToday: any = await getBeamsTodayById(id);
-  // const poll: any = await getPoll(id);
+  const poll: any = await getPoll(id);
 
   await markTopicAsCompleted(id);
   
@@ -24,10 +25,10 @@ const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ param
   const filteredRelatedTopics:any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
 
   return (
-    <div className="container mx-auto px-4 my-8">
+    <div className="container mx-auto px-4 mt-4 mb-8">
       <BeamsTodayTabs beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
-      {/* <BarPoll poll={poll} /> */}
+      <BarPoll poll={poll} />
       <RelatedSection topics={filteredRelatedTopics} categoryName={beamsToday.category.name} />
     </div>
   );
