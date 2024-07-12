@@ -189,6 +189,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
       </div>
       <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-4">
         <div className="flex flex-wrap gap-4 items-center justify-between min-w-full">
+          <div className="flex flex-row gap-4">
           <Button
             startContent={<Filter className="text-gray-600 w-full" size={24} />}
             onPress={() => setIsFilterModalOpen(true)}
@@ -202,6 +203,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
             setSortBy={handleSortChange}
             disabled={!!selectedDate}
           />
+          </div>
           {minDate && maxDate && (
             <CalendarComponent
               selectedDate={selectedDate}
