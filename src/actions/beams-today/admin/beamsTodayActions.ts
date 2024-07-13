@@ -7,7 +7,7 @@ import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput } from "@/type
 export const getBeamsTodayEntries = async (): Promise<BeamsToday[]> => {
   try {
     const entries = await db.beamsToday.findMany();
-    return entries as BeamsToday[];
+    return entries as any;
   } catch (error) {
     throw new Error(`Error fetching beamsToday entries: ${(error as Error).message}`);
   }
@@ -22,7 +22,7 @@ export const createBeamsToday = async (data: BeamsTodayCreateInput): Promise<Bea
         date: new Date(data.date),
       },
     });
-    return newEntry as BeamsToday;
+    return newEntry as any;
   } catch (error) {
     throw new Error(`Error creating beamsToday entry: ${(error as Error).message}`);
   }
@@ -39,7 +39,7 @@ export const updateBeamsToday = async (id: string, data: BeamsTodayUpdateInput):
         date: date ? new Date(date) : undefined,
       },
     });
-    return updatedEntry as BeamsToday;
+    return updatedEntry as any;
   } catch (error) {
     throw new Error(`Error updating beamsToday entry: ${(error as Error).message}`);
   }
