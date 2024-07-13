@@ -39,6 +39,7 @@ model User {
   notes                BeamsTodayUserNote[]
   beamsTodayFavorites  BeamsTodayFavorite[]
   beamPoints           UserBeamPoints[]
+  beamsTodayUserAnalytics BeamsTodayUserAnalytics[] 
 }
 
 model Account {
@@ -258,4 +259,5 @@ model BeamsTodayUserAnalytics {
   individualWatchTimesVideo  Json?  @default("{}")  // New field
   individualWatchTimesAudio  Json?  @default("{}")  // New field
   individualWatchTimesText   Json?  @default("{}")  // New field
+  user                       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

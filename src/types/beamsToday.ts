@@ -11,7 +11,13 @@ export interface BeamsToday {
   shortDesc: string;
   viewCount: number;
   totalWatchTime: number;
-  transcript?: Record<string, any>;
+  transcript?: any; // Allow null
+  videoViewCount: number;
+  audioViewCount: number;
+  textViewCount: number;
+  totalVideoWatchTime: number;
+  totalAudioListenTime: number;
+  totalTextSpentTime: number;
   videoUrl?: string;
   thumbnailUrl?: string;
   articleUrl?: string;
