@@ -19,6 +19,11 @@ const AdminAnalyticsPage = () => {
     fetchAnalyticsData();
   }, []);
 
+  const getTopicTitle = (id: string) => {
+    const topic = topics.find((topic:any) => topic.id === id);
+    return topic ? topic.title : 'Unknown Topic';
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Beams Today Analytics</h1>
@@ -130,6 +135,25 @@ const AdminAnalyticsPage = () => {
                     <TableCell>Text Spent Time</TableCell>
                     <TableCell>{user.totalTextSpentTime} seconds</TableCell>
                   </TableRow>
+                </TableBody>
+              </Table>
+              <h2 className="text-xl font-bold mt-4">Individual Watch Times</h2>
+              <Table aria-label="Individual Watch Times Data" className="mt-2">
+                <TableHeader>
+                  <TableColumn>Topic</TableColumn>
+                  <TableColumn>Video Time</TableColumn>
+                  <TableColumn>Audio Time</TableColumn>
+                  <TableColumn>Text Time</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {Object.entries(user.individualWatchTimesVideo || {}).map(([topicId, time]) => (
+                    <TableRow key={topicId}>
+                      <TableCell>{getTopicTitle(topicId)}</TableCell>
+                      <TableCell>{time as number} seconds</TableCell>
+                      <TableCell>{user.individualWatchTimesAudio?.[topicId] || 0} seconds</TableCell>
+                      <TableCell>{user.individualWatchTimesText?.[topicId] || 0} seconds</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardBody>
