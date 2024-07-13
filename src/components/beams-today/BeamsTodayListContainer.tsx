@@ -216,7 +216,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         {selectedDate && (
           <button
             onClick={handleReset}
-            className="bg-red-500 text-white px-4 py-2 rounded-md"
+            className="bg-gray-200 text-gray-600 px-4 py-2 rounded-md"
           >
             Reset
           </button>

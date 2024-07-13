@@ -24,8 +24,9 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
       {topic ? (
         <div className="relative w-full h-96 md:h-[500px]">
             <div className="absolute top-6 right-6 z-[3]">
-      <FavoriteButton size={isMobile ? 'sm' : 'md'} beamsTodayId={topic.id} />
+      <FavoriteButton  beamsTodayId={topic.id} />
       </div>
+      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-gray-200 text-black">{topic.category.name}</Chip>
           <Image
             src={topic.thumbnailUrl as string}
             alt={topic.title}
@@ -36,16 +37,15 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           />
           <div className="absolute inset-0 rounded-none"></div>
           <div className="absolute bottom-0 w-full p-4 px-6 md:px-12 bg-gradient-to-t from-black to-black/30 text-white">
-            <Chip size="sm" className="mb-2 bg-gray-200 text-black">{topic.category.name}</Chip>
             <h2 className="text-2xl md:text-4xl mb-2 font-bold">{topic.title}</h2>
             <div className="flex justify-between items-center">
-              <div className="flex items-center gap-6">
-                <Button className="font-bold" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
+              <div className="flex items-center gap-6 mt-2 justify-between w-full">
+                <Button className="font-semibold text-lg" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>
+              <DateComponent date={clientDate} />
                 
               </div>
-              <DateComponent date={clientDate} />
             </div>
           </div>
         </div>

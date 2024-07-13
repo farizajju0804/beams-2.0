@@ -7,10 +7,10 @@ import { motion } from 'framer-motion';
 
 interface FavoriteButtonProps {
   beamsTodayId: string;
-  size: "sm" | "md" | "lg" | undefined;
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId, size }) => {
+
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId}) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -36,13 +36,13 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId, size }) =
   };
 
   return (
-    <Button size={size} isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
+    <Button size={"sm"} isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
       <motion.div
         initial={{ scale: 1 }}
-        animate={{ scale: isAnimating ? 1.3 : 1 }}
+        animate={{ scale: isAnimating ? 1.4 : 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Heart size={size === 'sm' ? 16 : 24} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
+        <Heart size={20} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
       </motion.div>
     </Button>
   );

@@ -2,7 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
- 
+@layer base {
+  @font-face {
+    font-family: 'Clover';
+    font-style: normal;
+    src: url(/fonts/CloverDisplay-Regular.woff) format('woff');
+  }
+
+}
 :root{
   --plyr-color-main: #f96f2e;
   --primary : #f96f2e
@@ -20,6 +27,14 @@
   border-radius: 24px !important;
 }
 
+.video-js{
+  border-radius: 24px !important;
+  width: 80vw !important;
+  height: auto !important;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
   .doorOpen {
     transform: perspective(1200px) rotateY(-105deg);
   }
@@ -32,12 +47,61 @@
     opacity: 1;
   }
   
-  @layer base {
-    @font-face {
-      font-family: 'Clover';
-      font-style: normal;
-      src: url(/fonts/CloverDisplay-Regular.woff) format('woff');
-    }
+  .audio-player-card {
+    max-width: 500px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .thumbnail-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
 
-   
+  .rhap_container {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+ 
+  
+  .rhap_loop-button {
+    display: none !important;
+  }
+  
+  .rhap_main-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - 50px); /* Adjust the width to leave space for the volume button */
+  }
+  
+  .rhap_volume-container {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+  }
+  
+  .rhap_volume-bar {
+    display: none;
+  }
+  
+  .rhap_volume-button {
+    margin-right: 0 !important;
+    display: none !important;
+  }
+  .rhap_progress-bar {
+    margin-bottom: 15px !important; /* Adjust this value to add more space between slider and controls */
+  }
+  
+  .rhap_controls {
+    margin-bottom: 0px !important; /* Adjust this value to reduce the space below the controls */
   }

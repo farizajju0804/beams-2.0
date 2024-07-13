@@ -1,41 +1,130 @@
 'use client'
+import React, { useRef, useEffect } from "react";
 import TabsComponent from "@/components/TabsComponent";
-import VideoPlayerComponent from "@/components/beams-today/VideoPlayer";
+import VideoPlayer from "@/components/beams-today/VideoPlayer";
 import ArticleComponent from "@/components/beams-today/Article";
 import { Book1, VideoPlay, Headphone } from 'iconsax-react';
+import { markTopicAsCompleted } from "@/actions/beams-today/completedActions";
+import AudioPlayer from "@/components/beams-today/AudioPlayer";
+import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime';
 
 interface BeamsTodayTabsProps {
   beamsToday: any;
 }
 
 const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
+  const videoPlayerRef = useRef<any>(null);
+  const audioPlayerRef = useRef<any>(null);
+  const articleRef = useRef<any>(null);
+
+  const handleTabChange = async (tabKey: string) => {
+    let format: 'video' | 'audio' | 'text' = 'video';
+
+    if (tabKey === 'audio') {
+      format = 'audio';
+    } else if (tabKey === 'text') {
+      format = 'text';
+    }
+
+    // Update watch time when switching tabs
+    if (videoPlayerRef.current && format !== 'video') {
+      const elapsedTime = videoPlayerRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        await updateWatchTime(beamsToday.id, elapsedTime, 'video');
+      }
+    }
+
+    if (audioPlayerRef.current && format !== 'audio') {
+      const elapsedTime = audioPlayerRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        await updateWatchTime(beamsToday.id, elapsedTime, 'audio');
+      }
+    }
+
+    if (articleRef.current && format !== 'text') {
+      const elapsedTime = articleRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        console.log(`Switching tabs: Time spent on article: ${elapsedTime}ms`);
+        await updateWatchTime(beamsToday.id, elapsedTime, 'text');
+      }
+    }
+
+    await markTopicAsCompleted(beamsToday.id, format);
+  };
+
+  const videoJsOptions = {
+    autoplay: false,
+    width: 1020,
+    height: 600,
+    controls: true,
+    responsive: true,
+    fluid: true,
+    playbackRates: [0.5, 1, 1.5, 2],
+    sources: [
+      {
+        src: beamsToday?.videoUrl,
+        type: 'video/mp4',
+      },
+    ],
+  };
+
   const tabs = [
     {
       key: 'video',
       title: 'Video',
       icon: <VideoPlay size="24" color="black" />,
-      content: <VideoPlayerComponent  videoUrl={beamsToday?.videoUrl} type="video" />,
+      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} options={videoJsOptions} />,
     },
     {
       key: 'audio',
       title: 'Audio',
       icon: <Headphone size="24" color="black" />,
-      content: <VideoPlayerComponent  videoUrl={beamsToday?.videoUrl} type="audio" />,
+      content: <AudioPlayer ref={audioPlayerRef} audioUrl={beamsToday?.audioUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
-      key: 'article',
-      title: 'Article',
+      key: 'text',
+      title: 'Text',
       icon: <Book1 size="24" color="black" />,
-      content: <ArticleComponent articleUrl={beamsToday?.articleUrl} />,
+      content: <ArticleComponent ref={articleRef} articleUrl={beamsToday?.articleUrl} />,
     },
   ];
 
-  return (
-   <div className="flex w-full items-center justify-center flex-col m-0">
-    <TabsComponent tabs={tabs} />;
-   </div>
+  const handleUnload = async () => {
+    if (videoPlayerRef.current) {
+      const elapsedTime = videoPlayerRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        await updateWatchTime(beamsToday.id, elapsedTime, 'video');
+      }
+    }
 
-  )
+    if (audioPlayerRef.current) {
+      const elapsedTime = audioPlayerRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        await updateWatchTime(beamsToday.id, elapsedTime, 'audio');
+      }
+    }
+
+    if (articleRef.current) {
+      const elapsedTime = articleRef.current.getElapsedTime();
+      if (elapsedTime > 0) {
+        await updateWatchTime(beamsToday.id, elapsedTime, 'text');
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, []);
+
+  return (
+    <div className="flex w-full items-center justify-center flex-col m-0">
+      <TabsComponent tabs={tabs} onTabChange={handleTabChange} />
+    </div>
+  );
 };
 
 export default BeamsTodayTabs;

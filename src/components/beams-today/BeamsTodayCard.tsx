@@ -33,7 +33,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
           </Chip>
         )}
         <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
-          <FavoriteButton  beamsTodayId={topic.id}  size={isMobile ? 'sm' : 'md'} />
+          <FavoriteButton  beamsTodayId={topic.id} />
         </div>
       </div>
       <section className="self-stretch mt-auto [backdrop-filter:blur(20px)] rounded-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-xl text-black">

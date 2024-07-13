@@ -9,17 +9,18 @@ interface BeamsTodayDetailsProps {
   data: BeamsToday;
 }
 
+
 const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = ({ data }) => {
   return (
-    <div className="mb-8 -mt-4 p-4 bg-brand-100 rounded-3xl">
+    <div className="mb-8 p-4 rounded-3xl">
       <h1 className="text-2xl md:text-3xl font-bold my-2">{data?.title}</h1>
-      <p className="text-base md:text-lg text-gray-800">{data?.shortDesc}</p>
-      <div className="flex justify-between items-start gap-8 lg:items-center flex-col lg:flex-row w-full mt-4">
-        <p className="text-gray-700">
+      <p className="text-sm md:text-base text-gray-800">{data?.shortDesc}</p>
+      <div className="flex justify-between items-start gap-4 lg:items-center flex-col lg:flex-row w-full mt-2">
+        <p className="text-gray-400 text-xs">
           {data?.date ? <FormattedDate date={data.date.toISOString().split('T')[0]} /> : 'Unknown date'}
         </p>
         <div className="flex items-center gap-4">
-          <FavoriteButton size='md' beamsTodayId={data.id} /> {/* Include the favorite button */}
+          <FavoriteButton  beamsTodayId={data.id} /> {/* Include the favorite button */}
           <NoteModal id={data.id} title={data.title} />
           <ShareButton data={data} />
         </div>

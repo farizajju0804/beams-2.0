@@ -18,6 +18,7 @@ interface ShareButtonProps {
   data: BeamsToday;
 }
 
+
 const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   const shareUrl = window.location.href;
   const shareTitle = `Hey, Check out this fascinating content on Beams! ${data?.title}`;
@@ -52,8 +53,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   return (
     <Popover placement="top">
       <PopoverTrigger>
-        <Button color='primary' startContent={<Share className='text-white' />} className='text-white'>
-          Share
+        <Button size={"sm"} isIconOnly startContent={<Share size={20} className='text-gray-600' />} className='text-gray-60 bg-gray-200'>
         </Button>
       </PopoverTrigger>
       <PopoverContent>

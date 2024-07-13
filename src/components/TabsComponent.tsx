@@ -11,15 +11,29 @@ interface TabConfig {
 
 interface TabsComponentProps {
   tabs: TabConfig[];
+  onTabChange: (tabKey: string) => void;
 }
 
-const TabsComponent: React.FC<TabsComponentProps> = ({ tabs }) => {
+const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
+  const handleTabChange = (key: React.Key) => {
+    if (typeof key === 'string') {
+      onTabChange(key);
+    } else {
+      console.error('Unexpected key type:', key);
+    }
+  };
+
   return (
-    <Tabs aria-label="Options" radius='full' color="warning" variant="bordered" className='mx-auto mb-4' >
+    <Tabs
+      aria-label="Options"
+      radius='full'
+      color="warning"
+      className='mx-auto mb-4'
+      onSelectionChange={handleTabChange}
+    >
       {tabs.map((tab) => (
         <Tab
           key={tab.key}
-          className=''
           title={
             <div className="flex items-center space-x-2">
               {tab.icon}
@@ -31,8 +45,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs }) => {
         </Tab>
       ))}
     </Tabs>
-
-      );
+  );
 };
 
 export default TabsComponent;

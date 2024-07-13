@@ -95,14 +95,14 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
             <div className="flex flex-col gap-4">
               <Button
                 size="sm"
-                className={`bg-transparent ${activeFilter === "beamedStatus" ? 'border border-yellow-900' : ''}`}
+                className={` ${activeFilter === "beamedStatus" ? 'bg-yellow-900' : 'bg-transparent'}`}
                 onPress={() => setActiveFilter("beamedStatus")}
               >
                 Beamed Status
               </Button>
               <Button
                 size="sm"
-                className={`bg-transparent ${activeFilter === "category" ? 'border border-yellow-900' : ''}`}
+                className={` ${activeFilter === "category" ? ' bg-yellow-900' : 'bg-transparent'}`}
                 onPress={() => setActiveFilter("category")}
               >
                 Category
@@ -114,8 +114,8 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           </div>
         </ModalBody>
         <ModalFooter className="flex items-center justify-between">
-          <Button color="danger" onPress={handleReset}>Clear All</Button>
-          <Button color="primary" className="text-white" onPress={applyFilters}>
+          <Button className="bg-transparent text-gray-500" onPress={handleReset}>Clear All</Button>
+          <Button  className="text-white bg-black" onPress={applyFilters}>
             Show Items
           </Button>
         </ModalFooter>

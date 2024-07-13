@@ -108,6 +108,12 @@ model BeamsToday {
   shortDesc             String
   viewCount             Int                        @default(0)
   totalWatchTime        Int                        @default(0)
+  videoViewCount        Int                        @default(0) 
+  audioViewCount        Int                        @default(0)  
+  textViewCount         Int                        @default(0) 
+  totalVideoWatchTime   Int                        @default(0)  
+  totalAudioListenTime  Int                        @default(0)  
+  totalTextSpentTime    Int                        @default(0)  
   transcript            Json?
   videoUrl              String?
   thumbnailUrl          String?
@@ -128,6 +134,7 @@ model BeamsTodayWatchedContent {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   userId            String    @unique @db.ObjectId
   completedBeamsToday   String[]  @default([])
+  completedFormats   Json     @default("{}")
   updatedAt         DateTime  @default(now())
 }
 
@@ -241,11 +248,14 @@ model UserBeamPoints {
 
 
 
-model UserAnalytics {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @unique   @db.ObjectId
-  totalWatchTimeBeamsToday Int @default(0)
-  totalWatchTimeBeamsTheatre Int @default(0)
-  individualWatchTimesBeamsToday Json? @default("{}")
-  individualWatchTimesTheatre Json? @default("{}")
+model BeamsTodayUserAnalytics {
+  id                         String @id @default(auto()) @map("_id") @db.ObjectId
+  userId                     String @unique @db.ObjectId
+  totalWatchTimeBeamsToday   Int    @default(0)
+  totalVideoWatchTime        Int    @default(0)  // New field
+  totalAudioListenTime       Int    @default(0)  // New field
+  totalTextSpentTime         Int    @default(0)  // New field
+  individualWatchTimesVideo  Json?  @default("{}")  // New field
+  individualWatchTimesAudio  Json?  @default("{}")  // New field
+  individualWatchTimesText   Json?  @default("{}")  // New field
 }

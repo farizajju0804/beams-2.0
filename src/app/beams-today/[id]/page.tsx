@@ -1,7 +1,6 @@
 import React from "react";
 import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
 import { getPoll } from "@/actions/beams-today/pollActions";
-import { markTopicAsCompleted } from "@/actions/beams-today/completedActions";
 import BeamsTodayTabs from "@/components/beams-today/BeamsTodayTabs";
 import BeamsTodayDetails from "@/components/beams-today/BeamsTodayDetails";
 import RelatedSection from "@/components/beams-today/RelatedSection";
@@ -18,18 +17,17 @@ const BeamsTodayPlayerPage: React.FC<BeamsTodayPlayerPageProps> = async ({ param
   const beamsToday: any = await getBeamsTodayById(id);
   const poll: any = await getPoll(id);
 
-  await markTopicAsCompleted(id);
-  
-
   const relatedTopics = await fetchCategoryRelatedTopics(beamsToday.category.id);
-  const filteredRelatedTopics:any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
+  const filteredRelatedTopics: any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
 
   return (
-    <div className="container mx-auto px-4 mt-4 mb-8">
+    <div className="container flex w-full flex-col mx-auto px-4 mt-4 mb-8">
       <BeamsTodayTabs beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
       <BarPoll poll={poll} />
-      <RelatedSection topics={filteredRelatedTopics} categoryName={beamsToday.category.name} />
+      {filteredRelatedTopics.length > 0 && (
+        <RelatedSection topics={filteredRelatedTopics} categoryName={beamsToday.category.name} />
+      )}
     </div>
   );
 };

@@ -12,6 +12,8 @@ interface NoteModalProps {
   title: string;
 }
 
+
+
 const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   const user = useCurrentUser(); // Ensure this returns an object with a user property
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -56,8 +58,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   return (
     <>
       <Toaster position="top-center" />
-      <Button startContent={isExistingNote ? <Edit2 className='text-white' /> :<Note className='text-white' />} color='primary' className='text-white' onPress={onOpen}>
-        {isExistingNote ? 'Edit Note' : 'Note'}
+      <Button size="sm" isIconOnly startContent={isExistingNote ? <Edit2  size={20} className='text-gray-600' /> :<Note  size={20}  className='text-gray-600' />} className='text-gray-600 bg-gray-200' onPress={onOpen}>
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size='3xl' className=''>
         <ModalContent className='py-2 px-6'>
