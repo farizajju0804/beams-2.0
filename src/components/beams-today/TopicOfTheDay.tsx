@@ -40,10 +40,14 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
             <h2 className="text-2xl md:text-4xl mb-2 font-bold">{topic.title}</h2>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-6 mt-2 justify-between w-full">
+                <div className="flex items-center justify-center flex-1">
                 <Button className="font-semibold text-lg" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>
-              <DateComponent date={clientDate} />
+                </div>
+                
+                <div><DateComponent date={clientDate} /></div>
+              
                 
               </div>
             </div>

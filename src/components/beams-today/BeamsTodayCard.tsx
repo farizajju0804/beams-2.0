@@ -1,30 +1,35 @@
 'use client'
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import FavoriteButton from './FavoriteButton';
 import FormattedDate from './FormattedDate';
 import { BeamsToday } from '@/types/beamsToday';
 import { Chip } from "@nextui-org/react";
-import Link from 'next/link';
 
 interface BeamsTodayCardProps {
   topic: BeamsToday;
   className?: string;
 }
 
-const isMobile = window.innerWidth < 767;
+const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }) => {
+  const router = useRouter();
 
-const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }) => (
-   
-  <Link href={`/beams-today/${topic.id}`}>
+  const handleCardClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    router.push(`/beams-today/${topic.id}`);
+  };
+
+  return (
     <div
-      className={`w-full aspect-[9/16] h-[420px] rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
+      className={`w-full cursor-pointer aspect-[9/16] h-[420px] rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
       style={{ 
         backgroundImage: `url(${topic.thumbnailUrl})`, 
         backgroundSize: 'cover', 
         backgroundRepeat: 'no-repeat', 
         backgroundPosition: 'center' 
       }}
-      onClick={(event) => event.stopPropagation()} // Stop event propagation
+      onClick={handleCardClick} // Navigate to the topic page
     >
       <div className="flex flex-row items-center justify-between py-0 px-1">
         {topic.category && (
@@ -33,7 +38,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
           </Chip>
         )}
         <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
-          <FavoriteButton  beamsTodayId={topic.id} />
+          <FavoriteButton beamsTodayId={topic.id} />
         </div>
       </div>
       <section className="self-stretch mt-auto [backdrop-filter:blur(20px)] rounded-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-xl text-black">
@@ -45,7 +50,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
         </div>
       </section>
     </div>
-  </Link>
-);
+  );
+};
 
 export default BeamsTodayCard;

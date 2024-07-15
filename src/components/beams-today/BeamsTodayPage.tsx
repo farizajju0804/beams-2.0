@@ -18,7 +18,7 @@ interface BeamsTodayPageProps {
 const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async ({ completedTopics, user, greeting }) => {
   const categories = await getAllCategories();
   return (
-    <div className="flex flex-col items-center w-full gap-4">
+    <div className="flex flex-col items-center w-full gap-12">
       {/* <Header /> */}
       {/* <div className="w-full pl-6 md:pl-12 mt-4">
         <h1 className={`text-base md:text-xl text-left pr-2 italic font-bold ${cormorantGaramond.className}`}>{greeting}</h1>

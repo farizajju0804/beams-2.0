@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
@@ -9,9 +9,10 @@ interface VideoPlayerProps {
   options: any;
   onReady?: (player: any) => void;
   id: string; // Add videoId prop to uniquely identify the video
+  posterUrl: string;
 }
 
-const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id }, ref) => {
+const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, posterUrl }, ref) => {
   const videoRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<any | null>(null);
   const lastTimeRef = useRef(0);
@@ -28,7 +29,6 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id },
       const elapsedTime = currentTime - lastTimeRef.current;
       playTimeRef.current += elapsedTime;
       lastTimeRef.current = currentTime;
-    
     }
   };
 
@@ -49,6 +49,12 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id },
       lastTimeRef.current = player.currentTime();
     }
   };
+  const handleEnded = () => {
+    const player = playerRef.current;
+    if (player) {
+      player.posterImage.show();
+    }
+  };
 
   useEffect(() => {
     if (!playerRef.current) {
@@ -58,7 +64,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id },
         videoRef.current.appendChild(videoElement);
       }
 
-      const player = (playerRef.current = videojs(videoElement, options, () => {
+      const player = (playerRef.current = videojs(videoElement, { ...options, poster: posterUrl }, () => {
         videojs.log('player is ready');
         if (onReady) {
           onReady(player);
@@ -70,14 +76,11 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id },
       player.on('play', handlePlay);
       player.on('pause', handlePause);
       player.on('seeked', handleSeeked);
+      player.on('ended', handleEnded);
 
-      player.on('waiting', () => {
-      
-      });
+      player.on('waiting', () => {});
 
-      player.on('dispose', () => {
-        
-      });
+      player.on('dispose', () => {});
     } else {
       const player = playerRef.current;
       player.autoplay(options.autoplay || false);
@@ -91,11 +94,11 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id },
         playerRef.current = null;
       }
     };
-  }, [options, onReady, id]);
+  }, [options, onReady, id, posterUrl]);
 
   return (
-    <div data-vjs-player className=''>
-      <div ref={videoRef} className='video-js vjs-default-skin' />
+    <div data-vjs-player className="">
+      <div ref={videoRef} className="video-js vjs-default-skin" />
     </div>
   );
 });

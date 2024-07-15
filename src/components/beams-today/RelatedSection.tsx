@@ -8,7 +8,7 @@ interface RelatedSectionProps {
 }
 
 const RelatedSection: React.FC<RelatedSectionProps> = ({ topics, categoryName }) => (
-  <div className="p-4 mt-6">
+  <div className="p-4 mb-6">
     <h1 className="text-xl md:text-3xl font-display font-bold mb-1">More on {categoryName}</h1>
     <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

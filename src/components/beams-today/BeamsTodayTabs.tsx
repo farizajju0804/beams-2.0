@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useRef, useEffect } from "react";
 import TabsComponent from "@/components/TabsComponent";
 import VideoPlayer from "@/components/beams-today/VideoPlayer";
@@ -26,7 +26,6 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       format = 'text';
     }
 
-    // Update watch time when switching tabs
     if (videoPlayerRef.current && format !== 'video') {
       const elapsedTime = videoPlayerRef.current.getElapsedTime();
       if (elapsedTime > 0) {
@@ -44,7 +43,6 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     if (articleRef.current && format !== 'text') {
       const elapsedTime = articleRef.current.getElapsedTime();
       if (elapsedTime > 0) {
-        console.log(`Switching tabs: Time spent on article: ${elapsedTime}ms`);
         await updateWatchTime(beamsToday.id, elapsedTime, 'text');
       }
     }
@@ -55,10 +53,13 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
   const videoJsOptions = {
     autoplay: false,
     width: 1020,
+    enableSmoothSeeking: true,
     height: 600,
     controls: true,
     responsive: true,
+    poster : beamsToday.thumbnailUrl,
     fluid: true,
+    playsinline: true,
     playbackRates: [0.5, 1, 1.5, 2],
     sources: [
       {
@@ -73,7 +74,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       key: 'video',
       title: 'Video',
       icon: <VideoPlay size="24" color="black" />,
-      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} options={videoJsOptions} />,
+      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} options={videoJsOptions} posterUrl={beamsToday.thumbnailUrl} />,
     },
     {
       key: 'audio',

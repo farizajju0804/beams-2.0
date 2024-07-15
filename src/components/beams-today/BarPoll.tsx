@@ -31,14 +31,10 @@ interface PollComponentProps {
 
 const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   const colors = [
-    "bg-red-500",
     "bg-blue-500",
     "bg-green-500",
     "bg-yellow-500",
     "bg-purple-500",
-    "bg-pink-500",
-    "bg-indigo-500",
-    "bg-teal-500"
   ];
 
   const [votes, setVotes] = useState<VoteType[]>(
@@ -80,10 +76,10 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
     }
   };
 
-  const optionLabels = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const optionLabels = ["A", "B", "C", "D"];
 
   return (
-    <section className="bg-brand-100 p-6 rounded-3xl">
+    <section className="bg-brand-100 p-6 mb-12 rounded-3xl">
       {showResults ? (
         <Results votes={votes} poll={poll} optionLabels={optionLabels} />
       ) : (
@@ -147,8 +143,8 @@ const Results = ({ votes, poll, optionLabels }: { votes: VoteType[]; poll: Poll;
 
   return (
     <>
-     <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Poll</h1>
-     <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Poll</h1>
+      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 w-full flex flex-col-reverse md:flex-row items-start md:items-center gap-4">
         <h3 className="text-xl md:text-4xl text-left font-semibold text-black w-full md:w-5/6">
           {poll.question}

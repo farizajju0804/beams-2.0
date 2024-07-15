@@ -187,14 +187,14 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           )}
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-4">
+      <div className="flex flex-wrap gap-4 items-end justify-end w-full mb-4">
         <div className="flex flex-wrap gap-4 items-center justify-between min-w-full">
           <div className="flex flex-row gap-4">
           <Button
             startContent={<Filter className="text-gray-600 w-full" size={24} />}
             onPress={() => setIsFilterModalOpen(true)}
             className="bg-gray-200"
-            disabled={!!selectedDate}
+            isDisabled={!!selectedDate}
           >
             Filters
           </Button>
@@ -243,7 +243,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           <BeamsTodayCard key={topic.id} topic={topic} />
         ))}
       </div>
-      <div className="mt-8">
+      <div className="mt-12">
         <CustomPagination
           currentPage={currentPage}
           totalPages={Math.ceil(allUploads.length / itemsPerPage)}
