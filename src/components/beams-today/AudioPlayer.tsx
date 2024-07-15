@@ -54,7 +54,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
   };
 
   return (
-    <div className="audio-player-card p-4 bg-white shadow-lg rounded-lg flex flex-col items-center">
+    <div className="audio-player-card bg-white shadow-lg rounded-lg flex flex-col items-center">
       <div className="thumbnail-container mb-4">
         <Image src={thumbnailUrl} alt="Thumbnail" className="rounded" width={300} height={300} />
       </div>

@@ -53,7 +53,7 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
 
   if (!articleUrl) {
     return (
-      <div className="my-8 p-4 bg-gray-100 rounded-lg">
+      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-2xl font-bold my-2">Article</h2>
         <p className="text-lg text-gray-800">No article available</p>
       </div>
