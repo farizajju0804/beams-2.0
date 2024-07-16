@@ -66,7 +66,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" color="primary" className="w-full">
+            <Button type="submit" color="primary" className="w-ful text-white">
               Change Email
             </Button>
           </form>

@@ -7,33 +7,18 @@ import { SettingsSchema } from "@/schema";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Avatar } from "@nextui-org/react";
+import { Button, Input, Card, CardHeader, CardBody, Avatar, Spinner } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
-import { getCloudUrl } from "@/libs/cloudinary";
 
-const PersonalInfoForm = ({ user }: { user: any }) => {
+const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [isChangingImage, startChangingImage] = useTransition();
-  const [cloudUrl, setCloudUrl] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string>(user.image || "");
-  const fileInputRef = useRef<any>(null);
-
-  useEffect(() => {
-    const fetchCloudUrl = async () => {
-      try {
-        const url = await getCloudUrl();
-        console.log("Cloudinary URL:", url); // Log the URL for debugging
-        setCloudUrl(url);
-      } catch (err) {
-        console.error("Error fetching Cloudinary URL:", err);
-      }
-    };
-
-    fetchCloudUrl();
-  }, []);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -43,50 +28,59 @@ const PersonalInfoForm = ({ user }: { user: any }) => {
   });
 
   const handleFileInputClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && cloudUrl) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
-
-      try {
-        console.log("Uploading image to Cloudinary...");
-        const res = await fetch(cloudUrl, {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        console.log("Cloudinary response:", data);
-
-        if (data.secure_url) {
-          startChangingImage(() => {
-            changeProfileImage(data.secure_url)
-              .then((res:any) => {
-                console.log("Image URL saved to database:", data.secure_url);
-                setProfileImage(data.secure_url);
-                setSuccess(res);
-                setError("");
-              })
-              .catch((err:any) => {
-                console.error("Error saving image URL to database:", err);
-                setError("Please Try Again");
-              });
-          });
-        } else {
-          console.error("Cloudinary upload failed:", data);
-          setError("Cloudinary upload failed");
-        }
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        setError("Error uploading image");
-      }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Reset file input value to ensure onChange is triggered
+      fileInputRef.current.click();
     }
   };
-
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (file && url) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
+  
+        setIsUploading(true);
+  
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            body: formData,
+          });
+  
+          const data = await res.json();
+  
+          if (data.secure_url) {
+            await changeProfileImageHandler(data.secure_url);
+          } else {
+            setError("Cloudinary upload failed");
+            setIsUploading(false);
+          }
+        } catch (error) {
+          setError("Error uploading image");
+          setIsUploading(false);
+        }
+      }
+    } else {
+      console.error("No files selected.");
+    }
+  };
+  
+  const changeProfileImageHandler = async (url: string) => {
+    try {
+      await changeProfileImage(url);
+      setProfileImage(url);
+      setSuccess("Profile image updated successfully");
+      setError("");
+    } catch (err) {
+      setError("Please try again");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
     startTransition(() => {
       settings(values)
@@ -108,13 +102,18 @@ const PersonalInfoForm = ({ user }: { user: any }) => {
         <p className="text-2xl font-semibold text-center">Edit Profile</p>
       </CardHeader>
       <CardBody>
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center mb-4 relative">
+          {isUploading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-full">
+              <Spinner size="lg" color="primary" />
+            </div>
+          )}
           <Avatar
             src={profileImage}
             alt="Profile Picture"
             size="lg"
             color="primary"
-            className="cursor-pointer"
+            className={`cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
             onClick={handleFileInputClick}
           />
           <Input
@@ -147,7 +146,7 @@ const PersonalInfoForm = ({ user }: { user: any }) => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" color="primary" className="w-full" isLoading={isPending}>
+            <Button type="submit" color="primary" className="w-full text-white" isLoading={isPending}>
               Save
             </Button>
           </form>

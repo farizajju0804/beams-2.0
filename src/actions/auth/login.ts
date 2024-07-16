@@ -107,8 +107,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-    revalidatePath('/beams-today','layout')
-    revalidatePath('/beams-today','page')
+   
 
     return { error: undefined, success: "Login successful!" };
   } catch (error) {

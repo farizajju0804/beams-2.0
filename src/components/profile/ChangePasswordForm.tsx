@@ -86,7 +86,7 @@ const ChangePasswordForm = () => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" color="primary" className="w-full">
+            <Button type="submit" color="primary" className="w-full text-white">
               Change Password
             </Button>
           </form>
