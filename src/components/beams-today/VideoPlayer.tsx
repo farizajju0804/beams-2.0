@@ -9,10 +9,10 @@ interface VideoPlayerProps {
   options: any;
   onReady?: (player: any) => void;
   id: string; // Add videoId prop to uniquely identify the video
-  posterUrl: string;
+ 
 }
 
-const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, posterUrl }, ref) => {
+const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id }, ref) => {
   const videoRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<any | null>(null);
   const lastTimeRef = useRef(0);
@@ -49,12 +49,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, p
       lastTimeRef.current = player.currentTime();
     }
   };
-  const handleEnded = () => {
-    const player = playerRef.current;
-    if (player) {
-      player.posterImage.show();
-    }
-  };
+ 
 
   useEffect(() => {
     if (!playerRef.current) {
@@ -64,7 +59,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, p
         videoRef.current.appendChild(videoElement);
       }
 
-      const player = (playerRef.current = videojs(videoElement, { ...options, poster: posterUrl }, () => {
+      const player = (playerRef.current = videojs(videoElement, { ...options }, () => {
         videojs.log('player is ready');
         if (onReady) {
           onReady(player);
@@ -76,7 +71,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, p
       player.on('play', handlePlay);
       player.on('pause', handlePause);
       player.on('seeked', handleSeeked);
-      player.on('ended', handleEnded);
+  
 
       player.on('waiting', () => {});
 
@@ -94,7 +89,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ options, onReady, id, p
         playerRef.current = null;
       }
     };
-  }, [options, onReady, id, posterUrl]);
+  }, [options, onReady, id]);
 
   return (
     <div data-vjs-player className="">

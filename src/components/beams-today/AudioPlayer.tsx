@@ -54,11 +54,12 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
   };
 
   return (
-    <div className="audio-player-card bg-white shadow-lg rounded-lg flex flex-col items-center">
+    <div className="audio-player-card bg-white shadow-lg rounded-3xl w-full p-4 flex flex-col items-center mb-4">
       <div className="thumbnail-container mb-4">
-        <Image src={thumbnailUrl} alt="Thumbnail" className="rounded" width={300} height={300} />
+        <Image src={thumbnailUrl} alt="Thumbnail" className="rounded-3xl " width={500} height={500} />
       </div>
       <H5AudioPlayer
+        
         src={audioUrl}
         autoPlay={false}
         customIcons={{
@@ -78,7 +79,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
         onPause={handlePause}
         onSeeked={handleSeeked}
         onListen={handleListen}
-        listenInterval={1} // Set the interval for listening in milliseconds
+        listenInterval={1} 
       />
     </div>
   );

@@ -39,8 +39,8 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           <div className="absolute bottom-0 w-full p-4 px-6 md:px-12 bg-gradient-to-t from-black to-black/30 text-white">
             <h2 className="text-2xl md:text-4xl mb-2 font-bold">{topic.title}</h2>
             <div className="flex justify-between items-center">
-              <div className="flex items-center gap-6 mt-2 justify-between w-full">
-                <div className="flex items-center justify-center flex-1">
+              <div className="flex items-center my-4 justify-between w-full">
+                <div className="flex items-center justify-start lg:justify-center flex-1">
                 <Button className="font-semibold text-lg" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>

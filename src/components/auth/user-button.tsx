@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function UserButton() {
   const user = useCurrentUser();
+  console.log('user button',user)
   const router = useRouter(); // Initialize router
 
   const handleSignOut = async () => {
@@ -40,7 +41,7 @@ export default function UserButton() {
           <DropdownItem key="library" onClick={() => handleNavigation("/beams-today/library")}>
             My Library
           </DropdownItem>
-          <DropdownItem key="profile" onClick={() => handleNavigation("/profile")}>
+          <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
           <DropdownItem onClick={handleSignOut} key="logout" color="danger">

@@ -12,11 +12,11 @@ interface BeamsTodayDetailsProps {
 
 const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = ({ data }) => {
   return (
-    <div className="px-10 rounded-3xl -mx-6 mb-12">
+    <div className="px-6 lg:px-[52px] rounded-3xl mb-14 lg:mb-20">
       <h1 className="text-2xl md:text-3xl font-bold my-2">{data?.title}</h1>
-      <p className="text-sm md:text-base text-gray-800">{data?.shortDesc}</p>
+      <p className="text-sm md:text-lg text-gray-800">{data?.shortDesc}</p>
       <div className="flex justify-between items-start gap-4 lg:items-center flex-col lg:flex-row w-full mt-2">
-        <p className="text-gray-400 text-xs">
+        <p className="text-gray-400 text-xs lg:text-base">
           {data?.date ? <FormattedDate date={data.date.toISOString().split('T')[0]} /> : 'Unknown date'}
         </p>
         <div className="flex items-center gap-4">

@@ -28,11 +28,12 @@
 }
 
 .video-js{
-  /* border-radius: 24px !important; */
+  border-radius: 24px !important;
   width: 80vw !important;
   height: auto !important;
   max-width: 1020px;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
 
 .vjs-default-skin{
@@ -41,6 +42,8 @@
 
 .video-js.vjs-ended .vjs-poster {
   display: block;
+  width: 140% !important;
+  height:140% !important;
 }
 
 
@@ -57,12 +60,11 @@
   }
   
   .audio-player-card {
-    max-width: 500px;
+    max-width: 900px;
     background: #fff;
     border-radius: 24px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 0 20px;
+  
   }
   
   .thumbnail-container {

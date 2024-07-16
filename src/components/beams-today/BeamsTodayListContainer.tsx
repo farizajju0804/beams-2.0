@@ -167,7 +167,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   }
 
   return (
-    <div className="w-full max-w-6xl pb-8 px-6 md:px-12">
+    <div className="w-full max-w-6xl pb-8 lg:mt-4  px-6 md:px-12">
       <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
       <div className="border-b-2 border-brand-950 mb-2 w-full" style={{ maxWidth: '13%' }}></div>
       <div className="">
@@ -238,7 +238,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         }}
       />
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         {recentUploads.map((topic) => (
           <BeamsTodayCard key={topic.id} topic={topic} />
         ))}
