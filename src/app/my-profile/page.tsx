@@ -15,7 +15,6 @@ export default async function UserProfilePage() {
   return (
   
   <>
-  <Nav/>
   <UserProfile user={user} />
   </>);
 }

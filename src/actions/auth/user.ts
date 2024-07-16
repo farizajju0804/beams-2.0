@@ -14,6 +14,7 @@ export const changeProfileImage = async (url: string): Promise<string | null> =>
     });
 
     revalidatePath("/my-profile",'page');
+    revalidatePath("/my-profile",'layout');
     revalidatePath('/beams-today', 'layout')
     return "Profile picture changed";
   } catch (error) {

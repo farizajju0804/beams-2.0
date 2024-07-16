@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, User, Avatar } from "@nextui-org/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -6,7 +7,6 @@ import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function UserButton() {
   const user = useCurrentUser();
-  console.log('user button',user)
   const router = useRouter(); // Initialize router
 
   const handleSignOut = async () => {
