@@ -11,6 +11,7 @@ import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/libs/mail";
 import { getTwoFactorTokenByEmail } from "./two-factor-token";
 import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
+import { revalidatePath } from "next/cache";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -106,6 +107,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
+    revalidatePath('/beams-today','layout')
+    revalidatePath('/beams-today','page')
+
     return { error: undefined, success: "Login successful!" };
   } catch (error) {
     if (error instanceof AuthError) {

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function UserButton() {
   const user = useCurrentUser();
+  // console.log("user button", user)
   const router = useRouter(); // Initialize router
 
   const handleSignOut = async () => {

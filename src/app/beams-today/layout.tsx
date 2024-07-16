@@ -18,7 +18,7 @@ export default async function RootLayout({
     <html lang="en">
     
       <body className={quicksand.className}>
-      <Nav user={user}/>
+      <Nav />
     
         {children}
       </body>
