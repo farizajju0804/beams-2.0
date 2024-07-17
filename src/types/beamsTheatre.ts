@@ -114,3 +114,14 @@ export interface BeamsTheatre {
   seasons: BeamsTheatreSeason[];
   episodes: BeamsTheatreEpisode[];
 }
+
+
+export interface BeamsTheatreUserAnalytics {
+  id: string;
+  userId: string;
+  totalWatchTime: number;
+  totalTopicWatchTime: Record<string, any>; 
+  individualWatchTimes?: Record<string, any>; 
+  user: User;
+}
+
