@@ -40,6 +40,8 @@ model User {
   beamsTodayFavorites  BeamsTodayFavorite[]
   beamPoints           UserBeamPoints[]
   beamsTodayUserAnalytics BeamsTodayUserAnalytics[] 
+  beamsTheatreFavorites BeamsTheatreFavorite[]
+  beamsTheatreUserAnalytics BeamsTheatreUserAnalytics[]
 }
 
 model Account {
@@ -115,7 +117,6 @@ model BeamsToday {
   totalVideoWatchTime   Int                        @default(0)  
   totalAudioListenTime  Int                        @default(0)  
   totalTextSpentTime    Int                        @default(0)  
-  transcript            Json?
   videoUrl              String?
   thumbnailUrl          String?
   articleUrl            String?
@@ -260,4 +261,77 @@ model BeamsTodayUserAnalytics {
   individualWatchTimesAudio  Json?  @default("{}")  // New field
   individualWatchTimesText   Json?  @default("{}")  // New field
   user                       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+// Beams Theatre
+model BeamsTheatre {
+  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
+  title                 String
+  description           String
+  posterUrl             String
+  genreId               String                     @db.ObjectId
+  genre                 BeamsTheatreGenre          @relation(fields: [genreId], references: [id])
+  videos                BeamsTheatreVideo[]
+  favorites             BeamsTheatreFavorite[]
+  viewType              BeamsTheatreViewType       @default(DEFAULT)
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  totalWatchTime        Int                        @default(0)
+
+   @@index([viewType])  
+}
+
+enum BeamsTheatreViewType {
+  NOW_SHOWING
+  TRENDING
+  DEFAULT
+  OTHER // Add other view types as needed
+}
+
+model BeamsTheatreGenre {
+  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  beamsTheatre          BeamsTheatre[]
+
+  @@index([name])
+}
+
+model BeamsTheatreVideo {
+  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
+  title                 String
+  description           String
+  url                   String
+  thumbnailUrl          String
+  durationInSeconds     Int
+  beamsTheatreId        String                     @db.ObjectId
+  beamsTheatre          BeamsTheatre               @relation(fields: [beamsTheatreId], references: [id])
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  viewCount             Int                        @default(0)
+  totalWatchTime        Int                        @default(0)
+}
+
+model BeamsTheatreUserAnalytics {
+  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String                     @unique @db.ObjectId
+  totalWatchTime        Int                        @default(0)
+  totalSeriesWatchTime  Json?                      @default("{}")  // Stores total watch time per series
+  individualWatchTimes  Json?                      @default("{}")  // Stores watch times per video
+  user                  User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BeamsTheatreFavorite {
+  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String                     @db.ObjectId
+  beamsTheatreId        String                     @db.ObjectId
+  createdAt             DateTime                   @default(now())
+  
+  user                  User                       @relation(fields: [userId], references: [id])
+  beamsTheatre          BeamsTheatre               @relation(fields: [beamsTheatreId], references: [id])
+
+  @@unique([userId, beamsTheatreId])
+  @@index([userId])
+  @@index([beamsTheatreId])
 }
