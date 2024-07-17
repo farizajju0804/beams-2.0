@@ -63,8 +63,8 @@ const BeamsTheatreListSection: React.FC<BeamsTheatreListSectionProps> = ({ initi
   );
 
   const sortOptions = [
-    { value: 'name-asc', label: 'Name (Asc)' },
-    { value: 'name-desc', label: 'Name (Desc)' },
+    { value: 'name-asc', label: 'Name (A-Z)' },
+    { value: 'name-desc', label: 'Name (Z-A)' },
     { value: 'date-asc', label: 'Date (Asc)' },
     { value: 'date-desc', label: 'Date (Desc)' }
   ];
@@ -72,12 +72,13 @@ const BeamsTheatreListSection: React.FC<BeamsTheatreListSectionProps> = ({ initi
   return (
     <div className="flex items-center flex-col justify-center max-w-5xl w-full 6 gap-12 relative mx-2 lg:mx-4">
       <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-4">
-          <SortBy sortBy={sortBy} setSortBy={setSortBy} options={sortOptions} disabled={false} />
-        </div>
+      
         <Button   className="bg-gray-200" onPress={() => setIsFilterOpen(true)} startContent={<Filter className='text-gray-600' size="20" />}>
           Filter
         </Button>
+        <div className="flex items-center gap-4">
+          <SortBy sortBy={sortBy} setSortBy={setSortBy} options={sortOptions} disabled={false} />
+        </div>
       </div>
       {filteredData.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
