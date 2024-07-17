@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/react";
 let interval: any;
 
 type Card = {
-  id: number;
+  id: string;
   name: string;
   designation: string;
   imageUrl: string; // Add imageUrl property
@@ -26,6 +26,7 @@ export const CardStack = ({
   const SCALE_FACTOR = scaleFactor || 0.04; // Adjusted scale factor
   const [cards, setCards] = useState<Card[]>(items);
   const isMobile =  window.innerWidth <767;
+
   useEffect(() => {
     startFlipping();
 
@@ -63,12 +64,12 @@ export const CardStack = ({
       <Button isIconOnly onClick={handlePrev} className="bg-transparent text-black">
         <ArrowLeft2 size={isMobile ? "16" : "24"} />
       </Button>
-      <div className="relative h-40 w-60 md:h-80 md:w-[30rem] flex items-center justify-center">
+      <div className="relative h-60 w-60 md:h-[20rem] md:w-[20rem] flex items-center justify-center">
         {cards.map((card, index) => {
           return (
             <motion.div
               key={card.id}
-              className="absolute h-40 w-60 md:h-80 md:w-[30rem] rounded-3xl shadow-xl border border-neutral-200 flex items-center justify-center"
+              className="absolute h-60 w-60 md:h-[20rem] md:w-[20rem] rounded-3xl shadow-xl border border-neutral-200 flex items-center justify-center"
               style={{
                 transformOrigin: "top center",
                 backgroundImage: `url(${card.imageUrl})`,

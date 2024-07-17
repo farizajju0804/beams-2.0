@@ -1,66 +1,116 @@
-import {User} from '@/types/user'
+import { User } from '@/types/user';
 
 export enum BeamsTheatreViewType {
-    NOW_SHOWING = 'NOW_SHOWING',
-    TRENDING = 'TRENDING',
-    DEFAULT = 'DEFAULT',
-    OTHER = 'OTHER'
-  }
+  NOW_SHOWING = 'NOW_SHOWING',
+  TRENDING = 'TRENDING',
+  DEFAULT = 'DEFAULT',
+  OTHER = 'OTHER'
+}
 
-  export interface BeamsTheatre {
-    id: string;
-    title: string;
-    description: string;
-    posterUrl: string;
-    genreId: string;
-    genre: BeamsTheatreGenre;
-    videos: BeamsTheatreVideo[];
-    viewType: BeamsTheatreViewType;
-    createdAt: Date;
-    updatedAt: Date;
-    totalWatchTime: number;
-    favorites: BeamsTheatreFavorite[];
-  }
-  
-  // Interface for BeamsTheatreGenre
-  export interface BeamsTheatreGenre {
-    id: string;
-    name: string;
-    beamsTheatre: BeamsTheatre[];
-  }
-  
-  // Interface for BeamsTheatreVideo
-  export interface BeamsTheatreVideo {
-    id: string;
-    title: string;
-    description: string;
-    url: string;
-    thumbnailUrl: string;
-    durationInSeconds: number;
-    beamsTheatreId: string;
-    beamsTheatre: BeamsTheatre;
-    createdAt: Date;
-    updatedAt: Date;
-    viewCount: number;
-    totalWatchTime: number;
-  }
-  
-  // Interface for BeamsTheatreUserAnalytics
-  export interface BeamsTheatreUserAnalytics {
-    id: string;
-    userId: string;
-    totalWatchTime: number;
-    totalSeriesWatchTime: Record<string, number>; // Stores total watch time per series
-    individualWatchTimes: Record<string, number>; // Stores watch times per video
-    user: User;
-  }
-  
-  // Interface for BeamsTheatreFavorite
-  export interface BeamsTheatreFavorite {
-    id: string;
-    userId: string;
-    beamsTheatreId: string;
-    createdAt: Date;
-    user: User;
-    beamsTheatre: BeamsTheatre;
-  }
+export enum BeamsTheatreStructure {
+  SINGLE_VIDEO = 'SINGLE_VIDEO',
+  SERIES_WITH_SEASONS = 'SERIES_WITH_SEASONS',
+  SERIES_WITHOUT_SEASONS = 'SERIES_WITHOUT_SEASONS'
+}
+
+export interface BeamsTheatreGenre {
+  id: string;
+  name: string;
+  beamsTheatre: BeamsTheatre[];
+}
+
+export interface BeamsTheatreFavorite {
+  id: string;
+  userId: string;
+  beamsTheatreId: string;
+  createdAt: Date;
+  user: User;
+  beamsTheatre: BeamsTheatre;
+}
+
+export interface BeamsTheatreSeason {
+  id: string;
+  title: string;
+  beamsTheatreId: string;
+  episodes: BeamsTheatreEpisode[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BeamsTheatreEpisode {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  thumbnailUrl: string;
+  durationInSeconds: number;
+  beamsTheatreId: string;
+  seasonId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BeamsTheatreEpisodeCreateInput {
+  title: string;
+  description: string;
+  url: string;
+  thumbnailUrl: string;
+  durationInSeconds: number;
+  beamsTheatreId: string;
+  seasonId?: string;
+}
+
+export interface BeamsTheatreEpisodeUpdateInput {
+  title?: string;
+  description?: string;
+  url?: string;
+  thumbnailUrl?: string;
+  durationInSeconds?: number;
+  beamsTheatreId?: string;
+  seasonId?: string;
+}
+
+export interface BeamsTheatreSeasonUpdateInput {
+  id: string;
+  title?: string;
+  beamsTheatreId?: string;
+}
+
+export interface BeamsTheatreCreateInput {
+  title: string;
+  description: string;
+  posterUrl: string;
+  genreId: string;
+  viewType: BeamsTheatreViewType;
+  structure: BeamsTheatreStructure;
+}
+
+export interface BeamsTheatreUpdateInput {
+  id: string;
+  title?: string;
+  description?: string;
+  posterUrl?: string;
+  genreId?: string;
+  viewType?: BeamsTheatreViewType;
+  structure?: BeamsTheatreStructure;
+  seasons?: BeamsTheatreSeasonUpdateInput[];
+  episodes?: BeamsTheatreEpisodeUpdateInput[];
+}
+
+export interface BeamsTheatre {
+  id: string;
+  title: string;
+  description: string;
+  posterUrl: string;
+  genreId: string;
+  genre: BeamsTheatreGenre;
+  viewType: BeamsTheatreViewType;
+  structure: BeamsTheatreStructure;
+  createdAt: Date;
+  updatedAt: Date;
+  totalViews?: number;
+  totalWatchTime?: number;
+  favorites: BeamsTheatreFavorite[];
+  seasons: BeamsTheatreSeason[];
+  episodes: BeamsTheatreEpisode[];
+}

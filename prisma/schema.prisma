@@ -275,12 +275,16 @@ model BeamsTheatre {
   genre                 BeamsTheatreGenre          @relation(fields: [genreId], references: [id])
   videos                BeamsTheatreVideo[]
   favorites             BeamsTheatreFavorite[]
+  structure             BeamsTheatreStructure
   viewType              BeamsTheatreViewType       @default(DEFAULT)
   createdAt             DateTime                   @default(now())
   updatedAt             DateTime                   @updatedAt
+  totalViews             Int                        @default(0)
   totalWatchTime        Int                        @default(0)
+  seasons               BeamsTheatreSeason[]       // New relation for seasons
+  episodes              BeamsTheatreEpisode[] 
 
-   @@index([viewType])  
+  @@index([viewType])
 }
 
 enum BeamsTheatreViewType {
@@ -288,6 +292,12 @@ enum BeamsTheatreViewType {
   TRENDING
   DEFAULT
   OTHER // Add other view types as needed
+}
+
+enum BeamsTheatreStructure {
+  SINGLE_VIDEO
+  SERIES_WITH_SEASONS
+  SERIES_WITHOUT_SEASONS
 }
 
 model BeamsTheatreGenre {
@@ -311,6 +321,31 @@ model BeamsTheatreVideo {
   updatedAt             DateTime                   @updatedAt
   viewCount             Int                        @default(0)
   totalWatchTime        Int                        @default(0)
+}
+
+model BeamsTheatreSeason {
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  beamsTheatreId    String                @db.ObjectId
+  beamsTheatre      BeamsTheatre          @relation(fields: [beamsTheatreId], references: [id])
+  episodes          BeamsTheatreEpisode[]
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+}
+
+model BeamsTheatreEpisode {
+  id                String                @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  description       String
+  url               String
+  thumbnailUrl      String
+  durationInSeconds Int
+  beamsTheatreId    String                @db.ObjectId
+  beamsTheatre      BeamsTheatre          @relation(fields: [beamsTheatreId], references: [id])
+  seasonId          String?               @db.ObjectId
+  season            BeamsTheatreSeason?   @relation(fields: [seasonId], references: [id])
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 }
 
 model BeamsTheatreUserAnalytics {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Quicksand } from "next/font/google";
 
 import Nav from "@/components/Navbar";
+const quicksand = Quicksand({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Beams Today - Daily Innovation",
@@ -16,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
     
-      <body>
+      <body className={quicksand.className}>
       <Nav/>
     
         {children}
