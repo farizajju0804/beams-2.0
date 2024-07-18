@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Heart, ArrowLeft2, ArrowRight2 } from 'iconsax-react';
+import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';
 import { Button } from "@nextui-org/react";
+import BeamsTheatreFavoriteButton from "./BeamsTheatreFavoriteButton";
 
 let interval: any;
 
@@ -35,6 +36,7 @@ export const CardStack = ({
   }, []);
 
   const startFlipping = () => {
+    clearInterval(interval); // Clear any existing interval
     interval = setInterval(() => {
       setCards((prevCards: Card[]) => {
         const newArray = [...prevCards];
@@ -50,6 +52,7 @@ export const CardStack = ({
       newArray.unshift(newArray.pop()!);
       return newArray;
     });
+    startFlipping(); // Reset the interval timer
   };
 
   const handlePrev = () => {
@@ -58,6 +61,7 @@ export const CardStack = ({
       newArray.push(newArray.shift()!);
       return newArray;
     });
+    startFlipping(); // Reset the interval timer
   };
 
   const handleCardClick = (id: string) => {
@@ -88,10 +92,8 @@ export const CardStack = ({
               }}
               onClick={() => handleCardClick(card.id)}
             >
-              <div className="absolute top-2 right-2">
-                <button className="text-white">
-                  <Heart size={isMobile ? "16" : "24"} variant="Bold" />
-                </button>
+              <div className="absolute top-4 right-4">
+                <BeamsTheatreFavoriteButton beamsTheatreId={card.id} />
               </div>
             </motion.div>
           );

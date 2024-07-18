@@ -1,7 +1,9 @@
 import React from 'react';
-import { Clock, Folder } from 'iconsax-react'; // Import icons from Iconsax
+import { Clock, Folder } from 'iconsax-react';
 import { BeamsTheatre } from '@/types/beamsTheatre';
 import Link from 'next/link';
+import BeamsTheatreFavoriteButton from './BeamsTheatreFavoriteButton';
+
 
 interface BeamsTheatreWithTotalTime extends BeamsTheatre {
   totalTime: number;
@@ -19,7 +21,11 @@ const BeamsTheatreCard: React.FC<{ data: BeamsTheatreWithTotalTime }> = ({ data 
   return (
     <Link href={`/beams-theatre/${id}`}>
       <div className="flex flex-col items-center overflow-hidden w-full">
-        <div className="w-full h-60 lg:h-80 rounded-[2rem] bg-cover bg-center mb-4" style={{ backgroundImage: `url(${posterUrl})` }}></div>
+        <div className="relative w-full h-60 lg:h-80 rounded-[2rem] bg-cover bg-center mb-4" style={{ backgroundImage: `url(${posterUrl})` }}>
+          <div className="absolute top-4 right-4">
+            <BeamsTheatreFavoriteButton beamsTheatreId={id} />
+          </div>
+        </div>
         <div className='flex w-full justify-between items-start'>
           <div className="flex items-center text-gray-600 text-sm">
             <Clock size="20" className="mr-2" />

@@ -37,6 +37,7 @@ model User {
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   notes                BeamsTodayUserNote[]
+  theatreNotes         BeamsTheatreUserNote[]
   beamsTodayFavorites  BeamsTodayFavorite[]
   beamPoints           UserBeamPoints[]
   beamsTodayUserAnalytics BeamsTodayUserAnalytics[] 
@@ -278,6 +279,7 @@ model BeamsTheatre {
   totalWatchTime Int                     @default(0)
   episodes       BeamsTheatreEpisode[]
   favorites      BeamsTheatreFavorite[]
+  userNotes      BeamsTheatreUserNote[]
 }
 
 enum BeamsTheatreViewType {
@@ -321,6 +323,24 @@ model BeamsTheatreFavorite {
   @@index([userId])
   @@index([beamsTheatreId])
 }
+
+
+
+model BeamsTheatreUserNote {
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String     @db.ObjectId
+  user              User       @relation(fields: [userId], references: [id])
+  note              String
+  date              DateTime   @default(now())
+  beamsTheatreId    String     @db.ObjectId
+  beamsTheatre      BeamsTheatre @relation(fields: [beamsTheatreId], references: [id])
+
+  @@index([userId])
+  @@index([beamsTheatreId])
+}
+
+
+
 
 model BeamsTheatreUserAnalytics {
   id                    String            @id @default(auto()) @map("_id") @db.ObjectId
