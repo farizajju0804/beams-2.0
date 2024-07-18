@@ -264,73 +264,33 @@ model BeamsTodayUserAnalytics {
 }
 
 
-
-// Beams Theatre
 model BeamsTheatre {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
-  title                 String
-  description           String
-  posterUrl             String
-  genreId               String                     @db.ObjectId
-  genre                 BeamsTheatreGenre          @relation(fields: [genreId], references: [id])
-  videos                BeamsTheatreVideo[]
-  favorites             BeamsTheatreFavorite[]
-  structure             BeamsTheatreStructure
-  viewType              BeamsTheatreViewType       @default(DEFAULT)
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
-  totalViews             Int                        @default(0)
-  totalWatchTime        Int                        @default(0)
-  seasons               BeamsTheatreSeason[]       // New relation for seasons
-  episodes              BeamsTheatreEpisode[] 
-
-  @@index([viewType])
+  id             String                  @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String
+  posterUrl      String
+  genreId        String                  @db.ObjectId
+  genre          BeamsTheatreGenre       @relation(fields: [genreId], references: [id])
+  viewType       BeamsTheatreViewType    @default(DEFAULT)
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  totalViews     Int                     @default(0)
+  totalWatchTime Int                     @default(0)
+  episodes       BeamsTheatreEpisode[]
+  favorites      BeamsTheatreFavorite[]
 }
 
 enum BeamsTheatreViewType {
   NOW_SHOWING
   TRENDING
   DEFAULT
-  OTHER // Add other view types as needed
-}
-
-enum BeamsTheatreStructure {
-  SINGLE_VIDEO
-  SERIES_WITH_SEASONS
-  SERIES_WITHOUT_SEASONS
+  OTHER
 }
 
 model BeamsTheatreGenre {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
-  name                  String
-  beamsTheatre          BeamsTheatre[]
-
-  @@index([name])
-}
-
-model BeamsTheatreVideo {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
-  title                 String
-  description           String
-  url                   String
-  thumbnailUrl          String
-  durationInSeconds     Int
-  beamsTheatreId        String                     @db.ObjectId
-  beamsTheatre          BeamsTheatre               @relation(fields: [beamsTheatreId], references: [id])
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
-  viewCount             Int                        @default(0)
-  totalWatchTime        Int                        @default(0)
-}
-
-model BeamsTheatreSeason {
-  id                String                @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  beamsTheatreId    String                @db.ObjectId
-  beamsTheatre      BeamsTheatre          @relation(fields: [beamsTheatreId], references: [id])
-  episodes          BeamsTheatreEpisode[]
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
+  id             String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  beamsTheatre   BeamsTheatre[]
 }
 
 model BeamsTheatreEpisode {
@@ -339,34 +299,34 @@ model BeamsTheatreEpisode {
   description       String
   url               String
   thumbnailUrl      String
+  totalViews        Int                     @default(0)
+  totalWatchTime    Int                     @default(0)
   durationInSeconds Int
   beamsTheatreId    String                @db.ObjectId
   beamsTheatre      BeamsTheatre          @relation(fields: [beamsTheatreId], references: [id])
-  seasonId          String?               @db.ObjectId
-  season            BeamsTheatreSeason?   @relation(fields: [seasonId], references: [id])
+  season            String?
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
 }
 
-model BeamsTheatreUserAnalytics {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
-  userId                String                     @unique @db.ObjectId
-  totalWatchTime        Int                        @default(0)
-  totalSeriesWatchTime  Json?                      @default("{}")  // Stores total watch time per series
-  individualWatchTimes  Json?                      @default("{}")  // Stores watch times per video
-  user                  User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model BeamsTheatreFavorite {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId
-  userId                String                     @db.ObjectId
-  beamsTheatreId        String                     @db.ObjectId
-  createdAt             DateTime                   @default(now())
-  
-  user                  User                       @relation(fields: [userId], references: [id])
-  beamsTheatre          BeamsTheatre               @relation(fields: [beamsTheatreId], references: [id])
+  id             String                  @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String                  @db.ObjectId
+  beamsTheatreId String                  @db.ObjectId
+  createdAt      DateTime                @default(now())
+  user           User                    @relation(fields: [userId], references: [id])
+  beamsTheatre   BeamsTheatre            @relation(fields: [beamsTheatreId], references: [id])
 
   @@unique([userId, beamsTheatreId])
   @@index([userId])
   @@index([beamsTheatreId])
+}
+
+model BeamsTheatreUserAnalytics {
+  id                    String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String            @unique @db.ObjectId
+  totalWatchTime        Int               @default(0)
+  totalSeriesWatchTime  Json?             @default("{}")  // Stores total watch time per series
+  individualWatchTimes  Json?             @default("{}")  // Stores watch times per video
+  user                  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

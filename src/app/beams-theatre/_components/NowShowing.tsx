@@ -4,10 +4,8 @@ import { BeamsTheatre } from '@/types/beamsTheatre';
 import NowShowingCard from './NowShowingCard';
 import Image from "next/image";
 
-
-
 const NowShowing: React.FC = async () => {
-  const nowShowing: any = await getNowShowingBeamsTheatre();
+  const nowShowing: BeamsTheatre = await getNowShowingBeamsTheatre();
 
   return (
     <div className="my-8 flex items-center flex-col justify-start w-full gap-12 relative bg-black">

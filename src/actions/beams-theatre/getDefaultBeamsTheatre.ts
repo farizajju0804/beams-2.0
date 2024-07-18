@@ -1,42 +1,33 @@
 "use server";
 import { db } from "@/libs/db";
-import { BeamsTheatreViewType, BeamsTheatreStructure } from "@/types/beamsTheatre";
+import { BeamsTheatre, BeamsTheatreViewType } from "@/types/beamsTheatre";
 
-export const getDefaultBeamsTheatre = async () => {
+export const getDefaultBeamsTheatre = async (): Promise<BeamsTheatre[]> => {
   try {
     const defaultTheatre = await db.beamsTheatre.findMany({
       where: { viewType: BeamsTheatreViewType.DEFAULT },
       include: {
         genre: true,
-        seasons: {
-          include: {
-            episodes: true,
-          },
-        },
         episodes: true,
-        favorites: true,
       },
     });
 
-    if (!defaultTheatre) {
+    if (defaultTheatre.length === 0) {
       throw new Error("No 'DEFAULT' content found");
     }
 
     // Calculate total time for episodes
     const calculateTotalTime = (theatre: any) => {
-      if (theatre.structure === BeamsTheatreStructure.SINGLE_VIDEO) {
-        return theatre.episodes.reduce((total: number, episode: any) => total + episode.durationInSeconds, 0);
-      } else {
-        return theatre.seasons.reduce((total: number, season: any) => {
-          return total + season.episodes.reduce((seasonTotal: number, episode: any) => seasonTotal + episode.durationInSeconds, 0);
-        }, 0);
-      }
+      return theatre.episodes.reduce((total: number, episode: any) => total + episode.durationInSeconds, 0);
     };
 
-    return defaultTheatre.map(theatre => ({
+    const result = defaultTheatre.map(theatre => ({
       ...theatre,
+      viewType: theatre.viewType as BeamsTheatreViewType, // Cast to your custom enum type
       totalTime: calculateTotalTime(theatre),
     }));
+
+    return result;
   } catch (error) {
     throw new Error(`Error fetching 'DEFAULT' content: ${(error as Error).message}`);
   }

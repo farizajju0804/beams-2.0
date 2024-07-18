@@ -1,29 +1,52 @@
 "use server";
 import { db } from "@/libs/db";
-import { BeamsTheatreViewType } from "@/types/beamsTheatre";
+import { BeamsTheatre, BeamsTheatreViewType } from "@/types/beamsTheatre";
 
-export const getTrendingBeamsTheatre = async () => {
+export const getTrendingBeamsTheatre = async (): Promise<BeamsTheatre[]> => {
   try {
     const trending = await db.beamsTheatre.findMany({
       where: { viewType: BeamsTheatreViewType.TRENDING },
-      include: {
-        genre: true,
-        seasons: {
-          include: {
-            episodes: true,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        posterUrl: true,
+        genre: {
+          select: {
+            id: true,
+            name: true,
           },
         },
-        episodes: true,
-        favorites: true,
-      },
+        viewType: true,
+        createdAt: true,
+        updatedAt: true,
+        totalViews: true,
+        totalWatchTime: true,
+        episodes: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            url: true,
+            thumbnailUrl: true,
+            totalViews: true,
+            totalWatchTime: true,
+            durationInSeconds: true,
+            beamsTheatreId: true,
+            season: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      }
     });
 
-    if (!trending) {
-      throw new Error("No 'TRENDING' content found");
+    if (trending.length === 0) {
+      throw new Error("No 'Trending' content found");
     }
 
-    return trending;
+    return trending as BeamsTheatre[];
   } catch (error) {
-    throw new Error(`Error fetching 'TRENDING' content: ${(error as Error).message}`);
+    throw new Error(`Error fetching 'Trending' content: ${(error as Error).message}`);
   }
 };

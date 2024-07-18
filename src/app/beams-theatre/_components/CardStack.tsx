@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Heart, ArrowLeft2, ArrowRight2 } from 'iconsax-react'; // Import Heart and Arrow icons
+import { Heart, ArrowLeft2, ArrowRight2 } from 'iconsax-react';
 import { Button } from "@nextui-org/react";
 
 let interval: any;
@@ -10,7 +11,7 @@ type Card = {
   id: string;
   name: string;
   designation: string;
-  imageUrl: string; // Add imageUrl property
+  imageUrl: string;
 };
 
 export const CardStack = ({
@@ -22,22 +23,22 @@ export const CardStack = ({
   offset?: number;
   scaleFactor?: number;
 }) => {
-  const CARD_OFFSET = offset || 5; // Adjusted for more overlap
-  const SCALE_FACTOR = scaleFactor || 0.04; // Adjusted scale factor
+  const router = useRouter();
+  const CARD_OFFSET = offset || 5; 
+  const SCALE_FACTOR = scaleFactor || 0.04; 
   const [cards, setCards] = useState<Card[]>(items);
-  const isMobile =  window.innerWidth <767;
+  const isMobile = window.innerWidth < 767;
 
   useEffect(() => {
     startFlipping();
-
     return () => clearInterval(interval);
   }, []);
 
   const startFlipping = () => {
     interval = setInterval(() => {
       setCards((prevCards: Card[]) => {
-        const newArray = [...prevCards]; // create a copy of the array
-        newArray.unshift(newArray.pop()!); // move the last element to the front
+        const newArray = [...prevCards];
+        newArray.unshift(newArray.pop()!);
         return newArray;
       });
     }, 5000);
@@ -59,6 +60,10 @@ export const CardStack = ({
     });
   };
 
+  const handleCardClick = (id: string) => {
+    router.push(`/beams-theatre/${id}`);
+  };
+
   return (
     <div className="flex items-center justify-center gap-0 lg:gap-4">
       <Button isIconOnly onClick={handlePrev} className="bg-transparent text-black">
@@ -69,7 +74,7 @@ export const CardStack = ({
           return (
             <motion.div
               key={card.id}
-              className="absolute h-60 w-60 md:h-[20rem] md:w-[20rem] rounded-3xl shadow-xl border border-neutral-200 flex items-center justify-center"
+              className="absolute h-60 w-60 md:h-[20rem] md:w-[20rem] rounded-3xl shadow-xl border border-neutral-200 flex items-center justify-center cursor-pointer"
               style={{
                 transformOrigin: "top center",
                 backgroundImage: `url(${card.imageUrl})`,
@@ -78,9 +83,10 @@ export const CardStack = ({
               }}
               animate={{
                 top: index * -CARD_OFFSET,
-                scale: 1 - index * SCALE_FACTOR, // decrease scale for cards that are behind
-                zIndex: cards.length - index, // decrease z-index for the cards that are behind
+                scale: 1 - index * SCALE_FACTOR,
+                zIndex: cards.length - index,
               }}
+              onClick={() => handleCardClick(card.id)}
             >
               <div className="absolute top-2 right-2">
                 <button className="text-white">
