@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardHeader, CardBody, Image } from '@nextui-org/react';
 import { BeamsTheatreEpisode } from '@/types/beamsTheatre';
 
 interface EpisodeListProps {
@@ -9,19 +10,22 @@ interface EpisodeListProps {
 
 const EpisodeList: React.FC<EpisodeListProps> = ({ episodes, selectedEpisode, onEpisodeChange }) => {
   return (
-    <div className="episode-list w-full max-w-4xl">
+    <div className="w-full flex flex-col gap-4">
       {episodes.map((episode) => (
-        <div
+        <Card
           key={episode.id}
-          onClick={() => {
-       
-            onEpisodeChange(episode.id);
-          }}
-          className={`episode-item p-2 cursor-pointer ${selectedEpisode === episode.id ? 'bg-gray-300' : ''}`}
+          isPressable
+          onClick={() => onEpisodeChange(episode.id)}
+          className={`border-none flex flex-row lg:flex-col shadow-none cursor-pointer w-full h-full ${selectedEpisode === episode.id ? 'bg-brand-100' : ''}`}
         >
-          <h2 className="text-lg font-semibold">{episode.title}</h2>
-          <p className="text-sm">{episode.description}</p>
-        </div>
+          <CardHeader className="flex lg:flex-row flex-col items-start">
+            <Image src={episode.thumbnailUrl} alt={episode.title} className="hidden mr-6 lg:block w-40 h-full object-cover" />
+            <div  className='flex flex-col my-auto justify-center'>
+              <h2 className="text-left text-base lg:text-lg font-semibold">{episode.title}</h2>
+              <p className="text-left text-xs lg:text-sm">{episode.description}</p>
+            </div>
+          </CardHeader>
+        </Card>
       ))}
     </div>
   );

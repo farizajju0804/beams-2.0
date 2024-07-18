@@ -14,7 +14,7 @@ const BeamsTheatrePage: React.FC<BeamsTheatrePageProps> = async ({ params }) => 
   const filteredRelatedContent = relatedBeamsTheatre.filter(item => item.id !== beamsTheatre.id);
 
   return (
-    <div className='w-full max-w-5xl justify-center items-center mx-auto flex flex-col gap-20 p-4'>
+    <div className='w-full max-w-5xl justify-center items-center mx-auto flex flex-col gap-12 lg:gap-20 p-4'>
       <VideoPlayerPage beamsTheatre={beamsTheatre} />
       <RecommendedSection relatedBeamsTheatre={filteredRelatedContent} />
     </div>

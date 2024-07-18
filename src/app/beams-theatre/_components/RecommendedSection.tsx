@@ -13,7 +13,7 @@ const RecommendedSection: React.FC<RecommendedSectionProps> = ({ relatedBeamsThe
   const filteredData = relatedBeamsTheatre;
 
   return (
-    <div className="flex items-center flex-col justify-center w-full  gap-8 relative mx-2 lg:mx-4 border-2 border-gray-100 px-6 py-4 pb-8 rounded-3xl">
+    <div className="flex items-center  flex-col justify-center w-full  gap-8 relative mx-2 lg:mx-4 border-2 border-gray-100 px-6 mt-8 py-4 pb-8 rounded-3xl">
     <div className="flex items-center w-full">
       <SectionTitle text="Recommended For You" />
     </div>

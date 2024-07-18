@@ -1,4 +1,5 @@
 import React from 'react';
+import { Select, SelectItem } from '@nextui-org/react';
 
 interface SeasonDropdownProps {
   seasons: string[];
@@ -8,17 +9,18 @@ interface SeasonDropdownProps {
 
 const SeasonDropdown: React.FC<SeasonDropdownProps> = ({ seasons, selectedSeason, onSeasonChange }) => {
   return (
-    <select
-      value={selectedSeason || ''}
+    <Select
+      label="Select Season"
+      defaultSelectedKeys={[selectedSeason || 'Season 1']}
+      value={selectedSeason || 'Season 1'}
       onChange={(e) => onSeasonChange(e.target.value)}
-      className="season-dropdown p-2 border rounded"
     >
       {seasons.map((season) => (
-        <option key={season} value={season}>
+        <SelectItem key={season} value={season}>
           {season}
-        </option>
+        </SelectItem>
       ))}
-    </select>
+    </Select>
   );
 };
 

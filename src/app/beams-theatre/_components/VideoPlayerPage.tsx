@@ -9,7 +9,7 @@ import { BeamsTheatre } from '@/types/beamsTheatre';
 import NoteModal from './NoteModal';
 
 const VideoPlayerPage: React.FC<{ beamsTheatre: BeamsTheatre }> = ({ beamsTheatre }) => {
-  const initialSeason = beamsTheatre.episodes.length > 0 && beamsTheatre.episodes[0].season ? beamsTheatre.episodes[0].season : null;
+  const initialSeason = beamsTheatre.episodes.length > 0 && beamsTheatre.episodes[0].season ? beamsTheatre.episodes[0].season : 'Season 1';
   const initialEpisode = beamsTheatre.episodes[0]?.id;
 
   const [selectedSeason, setSelectedSeason] = useState<string | null>(initialSeason);
@@ -37,12 +37,12 @@ const VideoPlayerPage: React.FC<{ beamsTheatre: BeamsTheatre }> = ({ beamsTheatr
   const seasons = Array.from(new Set(beamsTheatre.episodes.map(ep => ep.season).filter((season): season is string => !!season)));
 
   return (
-    <div className="w-full mx-auto justify-center pl-4 flex flex-col items-center gap-4 ">
+    <div className="w-full mx-auto justify-center pl-4 flex flex-col items-center gap-8">
       <VideoPlayer url={selectedEpisodeData?.url || ''} />
-      <div className="metadata text-left w-full ">
+      <div className="metadata text-left w-full">
         <h1 className="text-xl lg:text-2xl font-bold font-display">{beamsTheatre.title}</h1>
         <p className="text-sm lg:text-lg">{beamsTheatre.description}</p>
-        <div className="flex items-center gap-2 mt-4">
+        <div className="flex items-center gap-2 mt-4 mb-6 lg:mb-12">
           <BeamsTheatreFavoriteButton beamsTheatreId={beamsTheatre.id} />
           <BeamsTheatreShareButton title={beamsTheatre.title} description={beamsTheatre.description} id={beamsTheatre.id} />
           <NoteModal id={beamsTheatre.id} title={beamsTheatre.title} />
