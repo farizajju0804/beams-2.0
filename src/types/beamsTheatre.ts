@@ -1,4 +1,5 @@
 // src/types/beamsTheatre.ts
+import {User} from './user'
 export enum BeamsTheatreViewType {
   NOW_SHOWING = 'NOW_SHOWING',
   TRENDING = 'TRENDING',
@@ -42,4 +43,22 @@ export interface BeamsTheatre {
 
 export interface BeamsTheatreWithTotalTime extends BeamsTheatre {
   totalTime: number;
+}
+
+export interface BeamsTheatreFavorite {
+  id: string;
+  userId: string;
+  beamsTheatreId: string;
+  createdAt: Date;
+  user: User;
+  beamsTheatre: BeamsTheatre;
+}
+
+export interface BeamsTheatreUserAnalytics {
+  id: string;
+  userId: string;
+  totalWatchTime: number;
+  totalSeriesWatchTime: Record<string, number>;  // Stores total watch time per series with series ID as the key
+  individualWatchTimes: Record<string, number>;  // Stores watch times per video with video ID as the key
+  user: User;
 }
