@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
-import { Button } from "@nextui-org/react";
+import {  Button } from "@nextui-org/react";
 import { BeamsToday } from "@/types/beamsToday";
 import DateComponent from "./DateComponent";
 import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
+import Breadcrumbs from "../Breadcrumbs";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;
@@ -18,6 +19,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
     <div className="w-full pt-2 pb-4 text-left relative max-w-6xl mx-auto">
       
       <div className="pl-6 md:pl-12">
+    
         <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Topic of the Day</h1>
         <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>

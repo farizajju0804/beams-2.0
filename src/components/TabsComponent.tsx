@@ -1,6 +1,6 @@
 'use client'
 import React, { ReactNode } from 'react';
-import { Tabs, Tab } from '@nextui-org/react';
+import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
 
 interface TabConfig {
   key: string;
@@ -14,6 +14,8 @@ interface TabsComponentProps {
   onTabChange: (tabKey: string) => void;
 }
 
+const isMobile = window.innerWidth < 767;
+
 const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
   const handleTabChange = (key: React.Key) => {
     if (typeof key === 'string') {
@@ -25,6 +27,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
 
   return (
     <Tabs
+      size={isMobile ? "sm" : "md"}
       aria-label="Options"
       radius='full'
       color="warning"
@@ -41,7 +44,13 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
             </div>
           }
         >
-          {tab.content}
+            <div className='w-[85vw] lg:w-[90vw] border-none'>
+            
+              {tab.content}
+              
+          
+          </div>
+        
         </Tab>
       ))}
     </Tabs>

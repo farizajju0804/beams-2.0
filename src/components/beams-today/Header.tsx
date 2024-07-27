@@ -1,27 +1,24 @@
 import Image from "next/image";
 import React from "react";
+import Breadcrumbs from "../Breadcrumbs";
 
 const Header = () => {
   return (
-    <div className="flex justify-between items-center mb-8 bg-yellow-400 rounded-xl max-w-5xl w-full p-4 md:p-8">
-      <div className="flex flex-col items-start justify-center gap-5">
-        <Image
-          src="/images/beams-today/beams-today.png"
-          alt="Beams Today"
-          width={170}
-          height={40}
-        />
-        <p className="text-lg md:text-xl font-semibold text-black">
-          Stay updated with the latest technologies
-        </p>
-      </div>
-      <Image
-        src="/images/beams-today/beams-today-header.png"
-        alt="Beams Today"
-        width={140}
-        height={140}
-        className="h-20 md:h-28"
+    <div className="w-full">
+      <div className="pl-6 md:pl-12 mt-2">
+      <Breadcrumbs
+        items={[
+          { href: "/", name:"Home" },
+          { name: "Beams Today" },
+        ]}
       />
+      </div>
+   
+    <div className="flex gap-4 flex-col justify-center items-center py-8 bg-[#F9D42E] w-full ">
+      <p className="text-black font-medium text-sm md:text-base">Welcome To</p>
+      <div className="rounded-full font-display font-bold text-2xl md:text-3xl  p-4 flex bg-[#370075] text-[#F9D42E] items-center justify-center"><h1>Beams Today</h1></div>
+      <p className="text-black font-medium text-sm md:text-base">Your Daily Dose of Innovation</p>
+    </div>
     </div>
   );
 };

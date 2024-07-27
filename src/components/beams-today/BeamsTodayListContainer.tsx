@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
 import SortByFilter from "@/components/beams-today/SortByFilter";
@@ -9,7 +9,7 @@ import { BeamsToday } from "@/types/beamsToday";
 import { DateValue, parseDate } from "@internationalized/date";
 import { format } from "date-fns";
 import { Spinner, Button, Chip } from "@nextui-org/react";
-import { Filter } from 'iconsax-react';
+import { Filter, ArrowLeft2, ArrowRight2 } from 'iconsax-react';
 import FilterDrawer from "@/components/beams-today/FilterDrawer";
 
 interface BeamsTodayListContainerProps {
@@ -34,6 +34,10 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const itemsPerPage = 9;
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
   useEffect(() => {
     const fetchRecentUploads = async () => {
       const clientDate = new Date().toLocaleDateString("en-CA");
@@ -43,6 +47,37 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     };
     fetchRecentUploads();
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth);
+      }
+    };
+
+    const containerElement = containerRef.current;
+    if (containerElement) {
+      containerElement.addEventListener('scroll', handleScroll);
+      handleScroll(); // Set initial state
+      return () => {
+        containerElement.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, []);
+
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
 
   const applyFiltersAndSorting = (uploads: BeamsToday[], completed: string[], page: number) => {
     let filteredUploads = uploads;
@@ -167,10 +202,22 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   }
 
   return (
-    <div className="w-full max-w-6xl pb-8 lg:mt-4  px-6 md:px-12">
-      <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
-      <div className="border-b-2 border-brand-950 mb-2 w-full" style={{ maxWidth: '13%' }}></div>
-      <div className="">
+    <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12">
+      <div className="flex justify-between items-center mb-4">
+        <div className="w-full">
+        <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
+       <div className="border-b-2 border-brand-950 mb-4 w-full" style={{ maxWidth: '13%' }}></div>
+        </div>
+        <div className="flex space-x-4">
+          <Button size="sm" isIconOnly onClick={scrollLeft}  className={`bg-gray-100 rounded-full p-2 `}>
+            <ArrowLeft2 size={16} />
+          </Button>
+          <Button size="sm" isIconOnly onClick={scrollRight}  className={`bg-gray-100 rounded-full p-2 `}>
+            <ArrowRight2 size={16} />
+          </Button>
+        </div>
+      </div>
+      {/* <div className="">
         <div className="flex flex-wrap gap-2 my-4 lg:flex">
           {selectedCategories.map((categoryId) => {
             const category = categories.find((cat: any) => cat.id === categoryId);
@@ -186,23 +233,23 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
             </Chip>
           )}
         </div>
-      </div>
-      <div className="flex flex-wrap gap-4 items-end justify-end w-full mb-4">
+      </div> */}
+      {/* <div className="flex flex-wrap gap-4 items-end justify-end w-full mb-4">
         <div className="flex flex-wrap gap-4 items-center justify-between min-w-full">
           <div className="flex flex-row gap-4">
-          <Button
-            startContent={<Filter className="text-gray-600 w-full" size={24} />}
-            onPress={() => setIsFilterModalOpen(true)}
-            className="bg-gray-200"
-            isDisabled={!!selectedDate}
-          >
-            Filters
-          </Button>
-          <SortByFilter
-            sortBy={sortBy}
-            setSortBy={handleSortChange}
-            disabled={!!selectedDate}
-          />
+            <Button
+              startContent={<Filter className="text-gray-600 w-full" size={24} />}
+              onPress={() => setIsFilterModalOpen(true)}
+              className="bg-gray-200"
+              isDisabled={!!selectedDate}
+            >
+              Filters
+            </Button>
+            <SortByFilter
+              sortBy={sortBy}
+              setSortBy={handleSortChange}
+              disabled={!!selectedDate}
+            />
           </div>
           {minDate && maxDate && (
             <CalendarComponent
@@ -221,9 +268,9 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
             Reset
           </button>
         )}
-      </div>
+      </div> */}
       
-      <FilterDrawer
+      {/* <FilterDrawer
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         categories={categories}
@@ -236,20 +283,27 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           applyFiltersAndSorting(allUploads, completedTopics, currentPage);
           setIsFilterModalOpen(false);
         }}
-      />
+      /> */}
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {recentUploads.map((topic) => (
-          <BeamsTodayCard key={topic.id} topic={topic} />
-        ))}
+      <div className="relative mt-8">
+        <div
+          ref={containerRef}
+          className="flex gap-8 md:gap-12 overflow-x-auto no-scrollbar"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          {recentUploads.map((topic) => (
+            <BeamsTodayCard key={topic.id} topic={topic} />
+          ))}
+        </div>
       </div>
-      <div className="mt-12">
+
+      {/* <div className="mt-12">
         <CustomPagination
           currentPage={currentPage}
           totalPages={Math.ceil(allUploads.length / itemsPerPage)}
           onPageChange={handlePageChange}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

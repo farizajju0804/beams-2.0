@@ -67,6 +67,12 @@ export interface BeamsTodayCreateInput {
   articleUrl?: string;
   audioUrl?: string;
   categoryId: string;
+  poll: {
+    title: string;
+    description: string;
+    question: string;
+    options: string[];
+  };
 }
 
 export interface BeamsTodayUpdateInput {
@@ -79,7 +85,14 @@ export interface BeamsTodayUpdateInput {
   articleUrl?: string;
   audioUrl?: string;
   categoryId?: string;
+  poll: {
+    title: string;
+    description: string;
+    question: string;
+    options: string[];
+  };
 }
+
     
 
 

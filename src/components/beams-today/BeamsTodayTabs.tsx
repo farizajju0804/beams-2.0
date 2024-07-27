@@ -50,31 +50,31 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     await markTopicAsCompleted(beamsToday.id, format);
   };
 
-  const videoJsOptions = {
-    autoplay: false,
-    width: 1020,
-    enableSmoothSeeking: true,
-    height: 600,
-    controls: true,
-    responsive: true,
-    poster : beamsToday.thumbnailUrl,
-    fluid: true,
-    playsinline: true,
-    playbackRates: [0.5, 1, 1.5, 2],
-    sources: [
-      {
-        src: beamsToday?.videoUrl,
-        type: 'video/mp4',
-      },
-    ],
-  };
+  // const videoJsOptions = {
+  //   autoplay: false,
+  //   width: 1020,
+  //   enableSmoothSeeking: true,
+  //   height: 600,
+  //   controls: true,
+  //   responsive: true,
+  //   poster : beamsToday.thumbnailUrl,
+  //   fluid: true,
+  //   playsinline: true,
+  //   playbackRates: [0.5, 1, 1.5, 2],
+  //   sources: [
+  //     {
+  //       src: beamsToday?.videoUrl,
+  //       type: 'video/mp4',
+  //     },
+  //   ],
+  // };
 
   const tabs = [
     {
       key: 'video',
       title: 'Video',
       icon: <VideoPlay size="24" color="black" />,
-      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} options={videoJsOptions} />,
+      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} videoId={beamsToday?.videoUrl} />,
     },
     {
       key: 'audio',
@@ -122,7 +122,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
   }, []);
 
   return (
-    <div className="flex w-full items-center justify-center flex-col m-0">
+    <div className="flex w-full items-center justify-center flex-col mt-6 ">
       <TabsComponent tabs={tabs} onTabChange={handleTabChange} />
     </div>
   );
