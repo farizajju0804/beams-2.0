@@ -25,7 +25,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [beamedStatus, setBeamedStatus] = useState("all");
-  const [showCalendar, setShowCalendar] = useState(true);
 
   // Calculate highlight dates, min date, and max date
   const highlightDates1 = topics.map((topic: any) =>
@@ -52,12 +51,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
 
   // Filter topics based on query, selected date, and additional filters
   const filterTopics = () => {
-    console.log("Filtering topics with the following state values:");
-    console.log("Query:", query);
-    console.log("Selected Date:", selectedDate);
-    console.log("Selected Categories:", selectedCategories);
-    console.log("Beamed Status:", beamedStatus);
-    console.log("Sort By:", sortBy);
+ 
 
     let filtered = topics;
 
@@ -76,10 +70,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((topic: any) => {
         if (topic.categoryId) {
-          console.log('Topic Category ID:', topic.categoryId);
+     
           return selectedCategories.includes(topic.categoryId);
         } else {
-          console.log('Topic without categoryId:', topic);
+       
           return false;
         }
       });
@@ -122,35 +116,33 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   }, [query, selectedDate, sortBy, selectedCategories, beamedStatus]);
 
   const handleSearch = () => {
-    console.log("Search button clicked");
+
     filterTopics();
   };
 
   const handleDateChange = (date: DateValue | null) => {
-    console.log("Date selected:", date);
+
     setSelectedDate(date);
-    setShowCalendar(false); // Hide calendar when a date is selected
   };
 
   const handleReset = () => {
-    console.log("Reset button clicked");
+
     setSelectedDate(null);
     setQuery('');
     setSelectedCategories([]);
     setBeamedStatus("all");
     setFilteredTopics([]);
     setShowResults(false);
-    setShowCalendar(true); // Show calendar when reset is pressed
   };
 
   const handleSortChange = (sortOption: string) => {
-    console.log("Sort by changed to:", sortOption);
+   
     setSortBy(sortOption);
   };
 
   return (
     <div className="w-full max-w-6xl flex flex-col items-center gap-4">
-      <div className="flex lw-full px-4 g:w-3/6 items-center gap-4">
+      <div className="flex w-full lg:w-3/6 px-4 items-center gap-4">
         <Input
           radius='full'
           placeholder="Search topics"
@@ -159,7 +151,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
           isDisabled={!!selectedDate}
         />
         <Button color="primary" radius='full' isIconOnly startContent={<SearchNormal1 size='16' className='text-white '/>} onPress={handleSearch} disabled={!!selectedDate}></Button>
-        {minDate && maxDate && showCalendar && (
+        {!query && minDate && maxDate && (
+         
           <CalendarComponent
             selectedDate={selectedDate}
             onDateChange={handleDateChange}
@@ -169,24 +162,31 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
         )}
         {selectedDate && <Button onPress={handleReset}>Reset</Button>}
       </div>
-      {showResults && !selectedDate && (
+      {showResults && (
         <>
           <div className='w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12 flex flex-col'>
-            <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-8 mt-4">
-              <div className="flex w-full items-center justify-between flex-row gap-4">
-                <Button
-                  startContent={<Filter className="text-gray-600 w-full" size={24} />}
-                  onPress={() => setIsFilterModalOpen(true)}
-                  className="bg-gray-200"
-                >
-                  Filters
-                </Button>
-                <SortByFilter
-                  sortBy={sortBy}
-                  setSortBy={handleSortChange}
-                />
+          <div className="">
+    
+         <h1 className="text-lg md:text-3xl font-display font-bold mb-[2px]">Search Results</h1>
+         <div className="border-b-2 border-brand-950 mb-8 w-full" style={{ maxWidth: '10%' }}></div>
+         </div>
+            {(!selectedDate && query) && (
+              <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-8 mt-4">
+                <div className="flex w-full items-center justify-between flex-row gap-4">
+                  <Button
+                    startContent={<Filter className="text-gray-600 w-full" size={24} />}
+                    onPress={() => setIsFilterModalOpen(true)}
+                    className="bg-gray-200"
+                  >
+                    Filters
+                  </Button>
+                  <SortByFilter
+                    sortBy={sortBy}
+                    setSortBy={handleSortChange}
+                  />
+                </div>
               </div>
-            </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {filteredTopics.length > 0 ? (
                 filteredTopics.map((topic: any) => (
@@ -209,7 +209,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
         setBeamedStatus={setBeamedStatus}
         handleReset={handleReset}
         applyFilters={() => {
-          console.log("Apply filters button clicked");
+      
           filterTopics();
           setIsFilterModalOpen(false);
         }}
