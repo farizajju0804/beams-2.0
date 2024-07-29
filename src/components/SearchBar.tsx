@@ -168,7 +168,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
           <div className="">
     
          <h1 className="text-lg md:text-3xl font-display font-bold mb-[2px]">Search Results</h1>
-         <div className="border-b-2 border-brand-950 mb-8 w-full" style={{ maxWidth: '10%' }}></div>
+         <div className="border-b-2 border-brand-950 mb-4 w-full" style={{ maxWidth: '10%' }}></div>
          </div>
             {(!selectedDate && query) && (
               <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-8 mt-4">

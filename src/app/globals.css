@@ -12,8 +12,29 @@
 }
 :root{
   --plyr-color-main: #f96f2e;
-  --primary : #f96f2e
+  --primary : #f96f2e;
+
 }
+
+
+:root {
+  --color-white: #ffffff;
+  --color-black: #181818;
+  --color-accent: #f96f2e;
+  --color-brand-light: #FFF5ED;
+  --color-brand-dark: #f96f2e;
+  --color-yellow-light: #ffd25d;
+}
+
+[data-theme="dark"] {
+  --color-white: #181818;
+  --color-black: #ffffff;
+  --color-accent: #f96f2e;
+  --color-brand-light: #f96f2e;
+  --color-brand-dark: #FFF5ED;
+  --color-yellow-light: #ffd25d;
+}
+
   .door {
     transform-origin: left;
     transition: transform 0.5s ease-in-out;
