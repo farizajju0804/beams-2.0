@@ -6,6 +6,7 @@ import DateComponent from "./DateComponent";
 import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
 import Breadcrumbs from "../Breadcrumbs";
+import { MonitorMobbile } from "iconsax-react";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;
@@ -20,8 +21,8 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
       
       <div className="pl-6 md:pl-12">
     
-        <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Topic of the Day</h1>
-        <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+        <h1 className="text-lg md:text-3xl font-display font-bold mb-[2px]">Topic of the Day</h1>
+        <div className="border-b-2 border-brand-950 mb-8 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
       {topic ? (
         <div className="relative w-full h-96 md:h-[500px]">
@@ -39,11 +40,11 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           />
           <div className="absolute inset-0 rounded-none"></div>
           <div className="absolute bottom-0 w-full p-4 px-6 md:px-12 bg-gradient-to-t from-black to-black/30 text-white">
-            <h2 className="text-2xl md:text-4xl mb-2 font-bold">{topic.title}</h2>
+            <h2 className="text-2xl md:text-4xl mb-2 font-semibold">{topic.title}</h2>
             <div className="flex justify-between items-center">
               <div className="flex items-center my-4 justify-between w-full">
                 <div className="flex items-center justify-start lg:justify-center flex-1">
-                <Button className="font-semibold text-lg" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
+                <Button endContent={<MonitorMobbile className="text-white" />} className="font-semibold text-lg py-6" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>
                 </div>

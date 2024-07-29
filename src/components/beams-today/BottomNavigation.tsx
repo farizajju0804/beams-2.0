@@ -28,7 +28,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ currentDate, prevUr
   };
 
   return (
-    <div className="flex justify-between items-center z-[400] p-4 bg-white shadow-lg fixed bottom-0 left-0 right-0">
+    <div className="flex justify-between items-center z-[400] p-4 bg-white ">
       <Button size="sm" className="bg-gray-200 text-black" startContent={<ArrowLeft2 className=" text-black" size="16" /> } onPress={handlePrevClick} isDisabled={!prevUrl}>
        Prev
       </Button>

@@ -1,37 +1,43 @@
-// components/beams-today/BeamsTodayPage.tsx
-
 import React from "react";
 import Header from "@/components/beams-today/Header";
 import TopicOfTheDayContainer from "@/components/beams-today/TopicsOfThedayContainer";
 import BeamsTodayListContainer from "@/components/beams-today/BeamsTodayListContainer";
-import { getAllCategories } from "@/actions/beams-today/categoryActions";
-import { Cormorant_Garamond } from "next/font/google";
-import { Home } from "iconsax-react";
-import Breadcrumbs from "../Breadcrumbs";
-
-
-const cormorantGaramond = Cormorant_Garamond({ subsets: ["latin"], weight: ["700"], style: ["italic"] });
+import SearchBar from "@/components/SearchBar";
+import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
 
 interface BeamsTodayPageProps {
   completedTopics: string[];
   user: any;
   greeting: string;
+  topics: any;
+  searchQuery: string;
+  categories: any;
 }
 
-const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async ({ completedTopics, user, greeting }) => {
-  const categories = await getAllCategories();
+const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, greeting, topics, searchQuery, categories }) => {
+  const filteredTopics = searchQuery
+    ? topics.filter((topic:any) =>
+        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.shortDesc.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : topics;
+
   return (
-    <div className="flex flex-col items-center w-full gap-12">
-      {/* <div className="px-6 md:px-12"> */}
-     
-      {/* </div> */}
-       
+    <div className="flex flex-col items-center w-full gap-10">
       <Header />
-      {/* <div className="w-full pl-6 md:pl-12 mt-4">
-        <h1 className={`text-base md:text-xl text-left pr-2 italic font-bold ${cormorantGaramond.className}`}>{greeting}</h1>
-      </div> */}
-      <TopicOfTheDayContainer user={user} />
-      <BeamsTodayListContainer categories={categories} completedTopics={completedTopics} user={user} />
+      <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
+      {searchQuery ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTopics.map((topic:any) => (
+            <BeamsTodayCard key={topic.id} topic={topic} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <TopicOfTheDayContainer user={user} />
+          <BeamsTodayListContainer categories={categories} completedTopics={completedTopics} user={user} />
+        </>
+      )}
     </div>
   );
 };

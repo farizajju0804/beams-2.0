@@ -9,7 +9,7 @@ interface Option {
 
 interface SortByProps {
   sortBy: string;
-  disabled : boolean;
+  disabled? : boolean;
   setSortBy: (value: string) => void;
   options: Option[];
 }

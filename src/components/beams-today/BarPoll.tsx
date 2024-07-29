@@ -4,12 +4,14 @@ import { motion } from "framer-motion";
 import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/pollActions";
 import { Chip } from "@nextui-org/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { TickCircle } from 'iconsax-react';
 
 type VoteType = {
   id: string;
   title: string;
   votes: number;
   color: string;
+  textcolor : string;
 };
 
 interface PollOption {
@@ -33,10 +35,16 @@ interface PollComponentProps {
 const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
 
   const colors = [
-    "bg-blue-500",
-    "bg-green-500",
-    "bg-yellow-500",
-    "bg-purple-500",
+    "bg-[#F9D42E]",
+    "bg-[#370075]",
+    "bg-[#f96f2e]",
+    "bg-[#620097]",
+  ];
+  const textcolors = [
+    "text-black",
+    "text-white",
+    "text-white",
+    "text-white",
   ];
 
   const [votes, setVotes] = useState<VoteType[]>(
@@ -45,10 +53,13 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
       title: option.optionText,
       votes: option.votes,
       color: colors[index % colors.length], // Assign unique colors for each option
+      textcolor : textcolors[index % textcolors.length]
     }))
   );
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [userResponse, setUserResponse] = useState<string | null>(null);
+
   useEffect(() => {
     const checkUserResponse = async () => {
       try {
@@ -56,6 +67,7 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
         if (response) {
           setHasVoted(true);
           setShowResults(true);
+          setUserResponse(response.pollOptionId);
         }
       } catch (error) {
         console.error("Error checking user response:", error);
@@ -72,17 +84,18 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
       setVotes((pv) => pv.map((v) => (v.id === newVote.id ? newVote : v)));
       setHasVoted(true);
       setShowResults(true); // Show results after voting
+      setUserResponse(vote.id);
     } catch (error) {
       console.error("Error recording vote:", error);
     }
   };
 
-  const optionLabels = ["A", "B", "C", "D"];
+  const optionLabels = ["1", "2", "3", "4"];
   const user:any = useCurrentUser();
   return (
     <section className="bg-brand-100 p-6 mb-10 lg:mb-12 rounded-3xl">
       {showResults ? (
-        <Results votes={votes}  poll={poll} optionLabels={optionLabels} />
+        <Results votes={votes} poll={poll} optionLabels={optionLabels} userResponse={userResponse} />
       ) : (
         <Question
           name={user?.name}
@@ -116,7 +129,7 @@ const Question = ({
 
   return (
     <>
-     <h1 className="text-lg md:text-xl font-display font-bold mb-1">Your Opinion Matters, {name}</h1>
+     <h1 className="text-lg md:text-xl font-display font-bold italic mb-1">Your Opinion Matters, {name}</h1>
      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 mt-2 w-full flex-col-reverse justify-between flex md:flex-row items-start md:items-center gap-4">
      
@@ -127,14 +140,14 @@ const Question = ({
         </div>
         <Chip className="text-white bg-black">{totalVotes} Votes</Chip>
       </div>
-      <div className="flex flex-col mt-4 gap-8">
+      <div className="flex flex-col w-full lg:w-4/6 mt-4 gap-8">
         {votes.map((vote, index) => (
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleIncrementVote(vote)}
             key={vote.id}
-            className={`flex items-center text-sm py-3 lg:text-base justify-center  w-full lg:w-4/6 rounded-lg ${vote.color} text-white font-medium`}
+            className={`flex text-left px-4 items-start text-sm py-3 lg:text-base justify-start  w-full lg:w-4/6 rounded-lg ${vote.color}  ${vote.textcolor} font-medium`}
             disabled={hasVoted}
           >
             <span className="mr-2 text-left">{optionLabels[index]}.</span> {vote.title}
@@ -145,12 +158,12 @@ const Question = ({
   );
 };
 
-const Results = ({ votes, poll, optionLabels }: { votes: VoteType[]; poll: Poll; optionLabels: string[] }) => {
+const Results = ({ votes, poll, optionLabels, userResponse }: { votes: VoteType[]; poll: Poll; optionLabels: string[]; userResponse: string | null }) => {
   const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0);
 
   return (
     <>
-      <h1 className="text-xl md:text-xl font-display font-bold mb-1">Thanks For Your Response</h1>
+      <h1 className="text-xl md:text-xl italic font-display font-bold mb-1">Thanks For Your Response</h1>
       <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 w-full flex flex-col-reverse md:flex-row items-start md:items-center gap-4">
         <h3 className="text-xl md:text-3xl text-left font-medium text-black w-full md:w-5/6">
@@ -163,13 +176,15 @@ const Results = ({ votes, poll, optionLabels }: { votes: VoteType[]; poll: Poll;
           const width = vote.votes
             ? ((vote.votes / totalVotes) * 100).toFixed(2)
             : 0;
+          const userVoteClass = vote.id === userResponse ? 'flex items-center' : '';
           return (
             <div key={vote.id} className="w-full lg:w-4/6">
-              <div className="flex items-center mb-1">
+              <div className={`flex items-center mb-1 ${userVoteClass}`}>
                 <span className="text-sm md:text-lg font-medium text-gray-700">{optionLabels[index]}. {vote.title}</span>
+                {vote.id === userResponse && <TickCircle size="24" color="#34D399" className="ml-2" />}
                 <span className="ml-2 text-xs md:text-base text-gray-500">{vote.votes} votes</span>
               </div>
-              <div className="relative h-8 rounded-full bg-gray-300">
+              <div className="relative h-8 rounded-full bg-gray-200">
                 <motion.span
                   animate={{ width: `${width}%` }}
                   className={`absolute top-0 left-0 h-full rounded-full ${vote.color}`}

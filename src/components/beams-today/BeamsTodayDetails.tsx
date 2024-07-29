@@ -12,7 +12,7 @@ interface BeamsTodayDetailsProps {
 
 const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = ({ data }) => {
   return (
-    <div className="px-4 rounded-3xl mb-14 lg:mb-20">
+    <div className="px-4 mt-4 rounded-3xl mb-14 lg:mb-20">
       <h1 className="text-2xl md:text-3xl font-bold my-2">{data?.title}</h1>
       <p className="text-sm md:text-lg text-gray-800">{data?.shortDesc}</p>
       <div className="flex justify-between items-start gap-4 lg:items-center flex-col lg:flex-row w-full mt-2">

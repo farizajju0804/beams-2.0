@@ -69,13 +69,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: -330, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: 330, behavior: 'smooth' });
     }
   };
 
@@ -205,7 +205,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12">
       <div className="flex justify-between items-center mb-4">
         <div className="w-full">
-        <h1 className="text-xl md:text-3xl font-display font-bold mb-1">Trending Topics</h1>
+        <h1 className="text-lg md:text-3xl font-display font-bold mb-[2px]">Trending Topics</h1>
        <div className="border-b-2 border-brand-950 mb-4 w-full" style={{ maxWidth: '13%' }}></div>
         </div>
         <div className="flex space-x-4">
@@ -288,7 +288,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
       <div className="relative mt-8">
         <div
           ref={containerRef}
-          className="flex gap-8 md:gap-12 overflow-x-auto no-scrollbar"
+          className="flex gap-8 items-center justify-evenly md:gap-16 overflow-x-auto no-scrollbar"
           style={{ scrollBehavior: 'smooth' }}
         >
           {recentUploads.map((topic) => (

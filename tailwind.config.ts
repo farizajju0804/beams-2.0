@@ -27,7 +27,7 @@ const config = {
         'display' : 'Clover'
       },
       aspectRatio: {
-        '9/16': '9 / 16',
+        '4/3': '4 / 3',
       },
       
     },

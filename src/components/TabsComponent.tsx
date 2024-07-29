@@ -44,12 +44,12 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
             </div>
           }
         >
-            <div className='w-[85vw] lg:w-[90vw] border-none'>
+            {/* <div className='w-[85vw] lg:w-[90vw] border-none'> */}
             
               {tab.content}
               
           
-          </div>
+          {/* </div> */}
         
         </Tab>
       ))}

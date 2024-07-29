@@ -6,7 +6,7 @@ import SortBy from "@/components/SortBy";
 interface SortByFilterProps {
   sortBy: string;
   setSortBy: (value: string) => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const SortByFilter: React.FC<SortByFilterProps> = ({ sortBy, setSortBy, disabled }) => {

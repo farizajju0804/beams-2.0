@@ -37,13 +37,13 @@ const RelatedSection: React.FC<RelatedSectionProps> = ({ topics, categoryName })
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: -330, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: 330, behavior: 'smooth' });
     }
   };
 
@@ -63,7 +63,7 @@ const RelatedSection: React.FC<RelatedSectionProps> = ({ topics, categoryName })
       <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div
         ref={containerRef}
-        className="flex gap-8 md:gap-12 overflow-x-auto no-scrollbar"
+        className="flex gap-8 md:gap-16 overflow-x-auto no-scrollbar"
         style={{ scrollBehavior: 'smooth' }}
       >
         {displayedTopics.map((topic) => (

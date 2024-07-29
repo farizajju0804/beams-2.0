@@ -122,7 +122,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
   }, []);
 
   return (
-    <div className="flex w-full items-center justify-center flex-col mt-6 ">
+    <div className="flex w-full items-center justify-center flex-col mt-4 ">
       <TabsComponent tabs={tabs} onTabChange={handleTabChange} />
     </div>
   );

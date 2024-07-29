@@ -13,8 +13,8 @@ export default function Nav() {
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
-      <NavbarContent>
+    <Navbar className="max-w-none w-full" onMenuOpenChange={setIsMenuOpen}>
+      <NavbarContent className=" max-w-none w-full">
         {/* <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"

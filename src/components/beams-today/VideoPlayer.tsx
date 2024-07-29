@@ -101,9 +101,8 @@
 // VideoPlayer.displayName = 'VideoPlayer';
 // export default VideoPlayer;
 
-
 'use client';
-import React, { useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
 
@@ -114,88 +113,39 @@ interface VideoPlayerProps {
 
 const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId }, ref) => {
   const playerRef = useRef<any>(null);
-  const lastTimeRef = useRef(0);
-  const playTimeRef = useRef(0);
-
-  useImperativeHandle(ref, () => ({
-    getElapsedTime: () => playTimeRef.current
-  }));
-
-  const handleTimeUpdate = (event:any) => {
-    const player = event.target;
-    if (player && !player.paused && !player.seeking) {
-      const currentTime = player.currentTime;
-      const elapsedTime = currentTime - lastTimeRef.current;
-      playTimeRef.current += elapsedTime;
-      lastTimeRef.current = currentTime;
-      console.log(`Elapsed time updated: ${playTimeRef.current}`);
-    }
-  };
-
-  const handlePlay = (event:any) => {
-    const player = event.target;
-    if (player) {
-      lastTimeRef.current = player.currentTime;
-      console.log(`Last time updated: ${lastTimeRef.current}`);
-    }
-  };
-
-  const handlePause = (event:any) => {
-    handleTimeUpdate(event);
-    console.log('Video paused');
-  };
-
-  const handleSeeked = (event:any) => {
-    const player = event.target;
-    if (player) {
-      lastTimeRef.current = player.currentTime;
-      console.log(`Seeked to: ${lastTimeRef.current}`);
-    }
-  };
-
-  const handlePercentsPlayed = (event:any) => {
-    console.log(`${event.eventData.percent} percents played`);
-  };
-
-  const handleTimePlayed = (event:any) => {
-    console.log(`${event.eventData.time} seconds played`);
-  };
-
-  const handleSeek = (event:any) => {
-    console.log(`Start: ${event.eventData.seekStart} End: ${event.eventData.seekEnd}`);
-  };
-
-  const handleQualityChanged = (event:any) => {
-    console.log(`Quality changed from: ${event.eventData.from} to: ${event.eventData.to}`);
-  };
+  const videoRef = useRef<any>(null);
 
   useEffect(() => {
-    const player = playerRef.current?.getInternalPlayer();
-    if (player) {
-      player.on('timeupdate', handleTimeUpdate);
-      player.on('play', handlePlay);
-      player.on('pause', handlePause);
-      player.on('seeked', handleSeeked);
-      player.on('percentsplayed', handlePercentsPlayed);
-      player.on('timeplayed', handleTimePlayed);
+    if (videoRef.current && playerRef.current) {
+      const videoElement = videoRef.current;
+      const player = playerRef.current;
+
+      const handlePlay = () => {
+        console.log('Video played');
+      };
+
+      const handlePause = () => {
+        console.log('Video paused');
+      };
+
+      const handleSeek = (event: any) => {
+        console.log(`Seek started at ${event.eventData.seekStart}, ended at ${event.eventData.seekEnd}`);
+      };
+
+      videoElement.addEventListener('play', handlePlay);
+      videoElement.addEventListener('pause', handlePause);
       player.on('seek', handleSeek);
-      player.on('qualitychanged', handleQualityChanged);
 
       return () => {
-        player.off('timeupdate', handleTimeUpdate);
-        player.off('play', handlePlay);
-        player.off('pause', handlePause);
-        player.off('seeked', handleSeeked);
-        player.off('percentsplayed', handlePercentsPlayed);
-        player.off('timeplayed', handleTimePlayed);
+        videoElement.removeEventListener('play', handlePlay);
+        videoElement.removeEventListener('pause', handlePause);
         player.off('seek', handleSeek);
-        player.off('qualitychanged', handleQualityChanged);
       };
     }
   }, []);
 
   return (
-    <div className='min-w-[80vw] w-full  mx-auto'>
+    <div className='min-w-[767px] w-full mx-auto'>
       <CldVideoPlayer
         id="my-video"
         width="1920"
@@ -213,6 +163,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId }, ref) => 
           onClickUrl: 'https://example.com',
         }}
         playerRef={playerRef}
+        videoRef={videoRef}
       />
     </div>
   );
@@ -220,5 +171,3 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId }, ref) => 
 
 VideoPlayer.displayName = 'VideoPlayer';
 export default VideoPlayer;
-
-
