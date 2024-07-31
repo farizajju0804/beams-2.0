@@ -13,7 +13,12 @@
 :root{
   --plyr-color-main: #f96f2e;
   --primary : #f96f2e;
-
+  --brand : 249,111,46;
+  --background : 255, 255, 255;
+  --text-primary :  24, 24, 24;
+  --secondary-1 : 249, 212, 46;
+  --secondary-2 : 55, 0, 117;
+  --secondary-3 : 98, 0, 151;
 }
 
 

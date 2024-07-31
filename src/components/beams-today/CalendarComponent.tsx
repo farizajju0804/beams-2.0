@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Button, Calendar } from "@nextui-org/react";
 import { Calendar as CalendarIcon } from 'iconsax-react';
 import { DateValue, CalendarDate } from '@internationalized/date';
@@ -11,9 +11,17 @@ interface CalendarComponentProps {
   maxValue: CalendarDate;
 }
 
-const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDate, onDateChange, minValue, maxValue }) => {
+interface CalendarComponentHandle {
+  close: () => void;
+}
+
+const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentProps>(({ selectedDate, onDateChange, minValue, maxValue }, ref) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    close: () => setIsCalendarOpen(false),
+  }));
 
   const handleIconClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,6 +69,8 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ selectedDate, onD
       )}
     </div>
   );
-};
+});
+
+CalendarComponent.displayName = 'CalendarComponent';
 
 export default CalendarComponent;
