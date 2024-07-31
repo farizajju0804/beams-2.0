@@ -73,19 +73,19 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     {
       key: 'video',
       title: 'Video',
-      icon: <VideoPlay size="24" color="black" />,
+      icon: <VideoPlay size="24"  />,
       content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} videoId={beamsToday?.videoUrl} />,
     },
     {
       key: 'audio',
       title: 'Audio',
-      icon: <Headphone size="24" color="black" />,
+      icon: <Headphone size="24"  />,
       content: <AudioPlayer ref={audioPlayerRef} audioUrl={beamsToday?.audioUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
       key: 'text',
       title: 'Text',
-      icon: <Book1 size="24" color="black" />,
+      icon: <Book1 size="24"  />,
       content: <ArticleComponent ref={articleRef} articleUrl={beamsToday?.articleUrl} />,
     },
   ];

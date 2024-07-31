@@ -21,15 +21,15 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
       
       <div className="pl-6 md:pl-12">
     
-        <h1 className="text-lg md:text-3xl font-display font-bold mb-[1px]">Topic of the Day</h1>
-        <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+        <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Topic of the Day</h1>
+        <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
       {topic ? (
         <div className="relative w-full h-96 md:h-[500px]">
             <div className="absolute top-6 right-6 z-[3]">
       <FavoriteButton  beamsTodayId={topic.id} />
       </div>
-      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-gray-200 text-black">{topic.category.name}</Chip>
+      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-grey-1 text-grey-2">{topic.category.name}</Chip>
           <Image
             src={topic.thumbnailUrl as string}
             alt={topic.title}

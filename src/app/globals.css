@@ -9,35 +9,54 @@
     src: url(/fonts/CloverDisplay-Regular.woff) format('woff');
   }
 
+  :root{
+    --plyr-color-main: #f96f2e;
+    --primary : #f96f2e;
+    --color-brand : 249,111,46;
+    --color-background : 255, 255, 255;
+    --color-text :  24, 24, 24;
+    --color-secondary-1 : 249, 212, 46;
+    --color-secondary-2 : 55, 0, 117;
+    --color-secondary-3 : 98, 0, 151;
+  }
+
+
+  :root[data-theme="dark"] {
+    --color-brand : 249,111,46;
+    --color-background : 24, 24, 24;
+    --color-text :  255, 255, 255;
+    --color-secondary-1 : 249, 212, 46;
+    --color-secondary-2 : 55, 0, 117;
+    --color-secondary-3 : 98, 0, 151;
+  }
+  
+
 }
 :root{
   --plyr-color-main: #f96f2e;
   --primary : #f96f2e;
-  --brand : 249,111,46;
-  --background : 255, 255, 255;
-  --text-primary :  24, 24, 24;
-  --secondary-1 : 249, 212, 46;
-  --secondary-2 : 55, 0, 117;
-  --secondary-3 : 98, 0, 151;
+  --color-brand : 249,111,46;
+  --color-background : 255, 255, 255;
+  --color-text :  24, 24, 24;
+  --color-secondary-1 : 249, 212, 46;
+  --color-secondary-2 : 55, 0, 117;
+  --color-secondary-3 : 98, 0, 151;
+  --color-grey: 244, 244, 245;
+  --color-grey-2: 63, 63, 70;
+
 }
 
 
-:root {
-  --color-white: #ffffff;
-  --color-black: #181818;
-  --color-accent: #f96f2e;
-  --color-brand-light: #FFF5ED;
-  --color-brand-dark: #f96f2e;
-  --color-yellow-light: #ffd25d;
-}
 
 [data-theme="dark"] {
-  --color-white: #181818;
-  --color-black: #ffffff;
-  --color-accent: #f96f2e;
-  --color-brand-light: #f96f2e;
-  --color-brand-dark: #FFF5ED;
-  --color-yellow-light: #ffd25d;
+  --color-brand : 249,111,46;
+  --color-background : 24, 24, 24;
+  --color-text :  255, 255, 255;
+  --color-secondary-1 : 249, 212, 46;
+  --color-secondary-2 : 55, 0, 117;
+  --color-secondary-3 : 98, 0, 151;
+  --color-grey-2: 244, 244, 245;
+  --color-grey: 63, 63, 70;
 }
 
   .door {

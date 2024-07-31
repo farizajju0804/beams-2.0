@@ -140,12 +140,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     <div className="w-full max-w-6xl flex flex-col items-center gap-4">
       <div className="flex w-full lg:w-3/6 px-4 items-center gap-4">
         <Input
+         classNames={{
+          input: [
+            "placeholder:text-grey-2",
+         ]
+         }}
           radius='full'
           placeholder="Search topics"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           isDisabled={!!selectedDate}
-          endContent={<SearchNormal1 size='16' className='text-gray-600' />}
+          endContent={<SearchNormal1 size='16' className='text-grey-2' />}
         />
         {!query && minDate && maxDate && (
           <CalendarComponent
@@ -156,22 +161,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             maxValue={maxDate}
           />
         )}
-        {selectedDate && <Button onPress={handleReset}>Reset</Button>}
+        {selectedDate && <Button className='' onPress={handleReset}>Reset</Button>}
       </div>
       {showResults && (
         <>
           <div className='w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12 flex flex-col'>
             <div className="">
               <h1 className="text-lg md:text-3xl font-display font-bold mb-[1px]">Search Results</h1>
-              <div className="border-b-2 border-brand-950 mb-4 w-full" style={{ maxWidth: '10%' }}></div>
+              <div className="border-b-2 border-brand mb-4 md:mb-6 w-full" style={{ maxWidth: '10%' }}></div>
             </div>
             {(!selectedDate && query) && (
               <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-6 mt-2">
                 <div className="flex w-full items-center justify-between flex-row gap-4">
-                  <Button
-                    startContent={<Filter className="text-gray-600 w-full" size={24} />}
+                  <Button className='bg-grey-1'
+                    startContent={<Filter className="text-grey-2 w-full" size={24} />}
                     onPress={() => setIsFilterModalOpen(true)}
-                    className="bg-gray-200"
+                  
                   >
                     Filters
                   </Button>

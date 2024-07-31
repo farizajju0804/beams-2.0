@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss"
 import {nextui} from "@nextui-org/react";
 const config = {
-  darkMode: "class",
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -14,10 +13,22 @@ const config = {
     
     extend: {
       colors: {
-        brand: {
-          950: '#f96f2e',
-          100: '#FFF5ED'
+        background : "rgba(var(--color-background))",
+        text : "rgba(var(--color-text))",
+        brand : "rgba(var(--color-brand))",
+        grey: {
+          1 :  "rgba(var(--color-grey))",
+          2 :  "rgba(var(--color-grey-2))"
         },
+        secondary : {
+          1 : "rgba(var(--color-secondary-1)",
+          2 : "rgba(var(--color-secondary-2)",
+          3 : "rgba(var(--color-secondary-3)"
+        },
+        // brand: {
+        //   950: '#f96f2e',
+        //   100: '#FFF5ED'
+        // },
         yellow : {
           900 : '#ffd25d'
         },
@@ -38,12 +49,20 @@ const config = {
       light: {
         colors: {
           primary : "#f96f2e",
-          warning : "#ffd25d",
-          secondary : "#FFF5ED"
+          warning : "#F9D42E",
+          secondary : "#F9D42E",
+          background: "#FFFFFF", 
+          foreground: "#181818",
         },
       },
       dark: {
-        colors: {},
+        colors: {
+          primary : "#f96f2e",
+          warning : "#F9D42E",
+          background: "#181818", 
+          secondary : "#F9D42E",
+          foreground: "#FFFFFF",
+        },
       },
     },
   } 

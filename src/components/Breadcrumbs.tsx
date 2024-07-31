@@ -31,13 +31,13 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                 {item.href ? (
                   <BreadcrumbLink
                     href={item.href}
-                    className={`text-xs lg:text-sm ${isLastItem ? "text-black" : "text-gray-500 hover:text-gray-700}"}`}
+                    className={`text-xs text-grey-2 lg:text-sm  hover:text-text`}
                   >
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.name}
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage className="text-black font-semibold text-xs lg:text-sm">
+                  <BreadcrumbPage className="text-text font-semibold text-xs lg:text-sm">
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.name}
                   </BreadcrumbPage>

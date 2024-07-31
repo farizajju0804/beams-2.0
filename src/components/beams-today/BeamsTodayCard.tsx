@@ -22,9 +22,9 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
 
   return (
     <div
-      className={`cursor-pointer relative h-[300px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
+      className={`cursor-pointer relative h-[260px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
       style={{ 
-        backgroundImage: `url(${topic.thumbnailUrl})`, 
+        backgroundImage: `url(${topic?.thumbnailUrl})`, 
         backgroundSize: 'cover', 
         backgroundRepeat: 'no-repeat', 
         backgroundPosition: 'center' 
@@ -33,7 +33,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
     >
       <div className="flex flex-row items-center justify-between py-0 px-1">
         {topic.category && (
-          <Chip size='sm' className="mb-2 bg-gray-200 text-black">
+          <Chip size='sm' className="mb-2 bg-grey-1 text-grey-2">
             {topic.category.name}
           </Chip>
         )}

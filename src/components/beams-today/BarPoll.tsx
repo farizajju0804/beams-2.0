@@ -130,15 +130,15 @@ const Question = ({
   return (
     <>
      <h1 className="text-lg md:text-xl font-display font-bold italic mb-1">Your Opinion Matters, {name}</h1>
-     <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+     <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 mt-2 w-full flex-col-reverse justify-between flex md:flex-row items-start md:items-center gap-4">
      
         <div>
-          <h3 className="text-xl md:text-3xl text-left font-medium text-black w-full ">
+          <h3 className="text-xl md:text-3xl text-left font-medium text-text w-full ">
             {poll.question}
           </h3>
         </div>
-        <Chip className="text-white bg-black">{totalVotes} Votes</Chip>
+        <Chip className="text-background bg-text">{totalVotes} Votes</Chip>
       </div>
       <div className="flex flex-col w-full lg:w-4/6 mt-4 gap-8">
         {votes.map((vote, index) => (
@@ -164,12 +164,12 @@ const Results = ({ votes, poll, optionLabels, userResponse }: { votes: VoteType[
   return (
     <>
       <h1 className="text-xl md:text-xl italic font-display font-bold mb-1">Thanks For Your Response</h1>
-      <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 w-full flex flex-col-reverse md:flex-row items-start md:items-center gap-4">
-        <h3 className="text-xl md:text-3xl text-left font-medium text-black w-full md:w-5/6">
+        <h3 className="text-xl md:text-3xl text-left font-medium text-text w-full md:w-5/6">
           {poll.question}
         </h3>
-        <Chip className="text-white bg-black">{totalVotes} Votes</Chip>
+        <Chip className="text-background bg-text">{totalVotes} Votes</Chip>
       </div>
       <div className="col-span-1 grid gap-8">
         {votes.map((vote, index) => {
@@ -180,9 +180,9 @@ const Results = ({ votes, poll, optionLabels, userResponse }: { votes: VoteType[
           return (
             <div key={vote.id} className="w-full lg:w-4/6">
               <div className={`flex items-center mb-1 ${userVoteClass}`}>
-                <span className="text-sm md:text-lg font-medium text-gray-700">{optionLabels[index]}. {vote.title}</span>
+                <span className="text-sm md:text-lg font-medium text-grey-2">{optionLabels[index]}. {vote.title}</span>
                 {vote.id === userResponse && <TickCircle size="24" color="#34D399" className="ml-2" />}
-                <span className="ml-2 text-xs md:text-base text-gray-500">{vote.votes} votes</span>
+                <span className="ml-2 text-xs md:text-base text-grey-2/70">{vote.votes} votes</span>
               </div>
               <div className="relative h-8 rounded-full bg-gray-200">
                 <motion.span

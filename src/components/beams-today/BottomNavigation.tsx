@@ -28,12 +28,12 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ currentDate, prevUr
   };
 
   return (
-    <div className="flex justify-between items-center z-[400] p-4 bg-white ">
-      <Button size="sm" className="bg-gray-200 text-black" startContent={<ArrowLeft2 className=" text-black" size="16" /> } onPress={handlePrevClick} isDisabled={!prevUrl}>
+    <div className="flex justify-between items-center z-[400] p-4 ">
+      <Button size="sm" className="bg-grey-1 text-grey-2" startContent={<ArrowLeft2 className="text-grey-2" size="16" /> } onPress={handlePrevClick} isDisabled={!prevUrl}>
        Prev
       </Button>
-      <div className="text-gray-500 text-sm"><FormattedDate date={currentDate.toISOString().split('T')[0]} /></div>
-      <Button  size="sm" className="bg-gray-200 text-black" endContent={<ArrowRight2 className="text-black" size="16"/>}  onPress={handleNextClick} isDisabled={!nextUrl}>
+      <div className="text-gray-1 text-sm"><FormattedDate date={currentDate.toISOString().split('T')[0]} /></div>
+      <Button  size="sm" className="bg-grey-1 text-grey-2" endContent={<ArrowRight2 className="text-grey-2" size="16"/>}  onPress={handleNextClick} isDisabled={!nextUrl}>
         Next
       </Button>
     </div>

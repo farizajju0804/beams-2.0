@@ -23,7 +23,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
     : topics;
 
   return (
-    <div className="flex flex-col items-center w-full gap-4">
+    <div className="flex flex-col items-center w-full bg-background gap-6">
       <Header />
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
       {searchQuery ? (

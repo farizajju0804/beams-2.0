@@ -33,11 +33,11 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
     >
       <div className="flex flex-row items-center justify-between py-0 px-1">
         {topic.category && (
-          <Chip size='sm' className="mb-2 bg-gray-200 text-black">
+          <Chip size='sm' className="mb-2 bg-grey-1 text-grey-2">
             {topic.category.name}
           </Chip>
         )}
-        <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
+        <div className="[backdrop-filter:blur(15px)] rounded-2xl flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
           <FavoriteButton beamsTodayId={topic.id} />
         </div>
       </div>

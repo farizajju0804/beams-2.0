@@ -78,24 +78,24 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12">
       <div className="flex justify-between items-center">
         <div className="w-full">
-          <h1 className="text-lg md:text-3xl font-display font-bold mb-[1px]">Trending Topics</h1>
-          <div className="border-b-2 border-brand-950 mb-6 w-full" style={{ maxWidth: '13%' }}></div>
+          <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Trending Topics</h1>
+          <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '13%' }}></div>
         </div>
       </div>
       
-      <div className="relative mt-4 flex justify-center items-center">
-        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-gray-100 rounded-full p-2 mr-4">
-          <ArrowLeft2 size={16} />
+      <div className="relative mt-2 flex justify-center items-center">
+        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-grey-1 z-20 rounded-full p-2 mr-6 md:mr-8">
+          <ArrowLeft2 className="text-grey-2" size={16} />
         </Button>
         
-        <div className="w-64 flex justify-center items-center mx-4">
-          {allUploads.length > 0 && (
-            <BeamsTodayCard key={allUploads[currentIndex].id} topic={allUploads[currentIndex]} />
+        <div className="w-52 md:w-64 flex justify-center items-center mx-4">
+          {allUploads?.length > 0 && (
+            <BeamsTodayCard key={allUploads[currentIndex]?.id} topic={allUploads[currentIndex]} />
           )}
         </div>
         
-        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-gray-100 rounded-full p-2 ml-4">
-          <ArrowRight2 size={16} />
+        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-grey-1 z-20 rounded-full p-2 ml-6 md:ml-8">
+          <ArrowRight2 className="text-grey-2" size={16} />
         </Button>
       </div>
       
@@ -103,7 +103,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         {allUploads.map((_, index) => (
           <div
             key={index}
-            className={`w-2 h-2 rounded-full mx-1 cursor-pointer ${index === currentIndex ? 'bg-[#f96f2e]' : 'bg-gray-300'}`}
+            className={`w-2 h-2 rounded-full mx-1 cursor-pointer ${index === currentIndex ? 'bg-[#f96f2e]' : 'bg-grey-2'}`}
             onClick={() => handleDotClick(index)}
           ></div>
         ))}

@@ -36,13 +36,13 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId}) => {
   };
 
   return (
-    <Button size={"sm"} isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-white' } aria-label="Like" onClick={handleFavoriteToggle}>
+    <Button size={"sm"} isIconOnly className={isFavorite ? 'bg-red-600' : 'bg-grey-1' } aria-label="Like" onClick={handleFavoriteToggle}>
       <motion.div
         initial={{ scale: 1 }}
         animate={{ scale: isAnimating ? 1.4 : 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Heart size={20} color={isFavorite ? "white" : "black"} variant={isFavorite ? "Bold" : "Linear"} />
+        <Heart size={20} className={isFavorite ? "text-white" : "text-text"} variant={isFavorite ? "Bold" : "Linear"} />
       </motion.div>
     </Button>
   );

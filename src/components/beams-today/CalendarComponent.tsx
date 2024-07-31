@@ -54,11 +54,11 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
 
   return (
     <div className="relative">
-      <Button className='bg-gray-200' isIconOnly onClick={handleIconClick}>
-        <CalendarIcon size="24" className='text-gray-600' />
+      <Button className='bg-grey-1' isIconOnly onClick={handleIconClick}>
+        <CalendarIcon size="24" className='text-grey-2' />
       </Button>
       {isCalendarOpen && (
-        <div ref={calendarRef} className="absolute -bottom-0 right-0 z-10 mt-2 rounded-md p-4 bg-white shadow-lg">
+        <div ref={calendarRef} className="absolute -bottom-0 right-0 z-10 mt-2 rounded-md p-4 bg-background shadow-lg">
           <Calendar 
             value={selectedDate} 
             onChange={handleDateChange} 
