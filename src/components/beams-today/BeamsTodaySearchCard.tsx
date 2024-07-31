@@ -32,8 +32,8 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
       onClick={handleCardClick} // Navigate to the topic page
     >
       <div className="flex flex-row items-center justify-between py-0 px-1">
-        {topic.category && (
-          <Chip size='sm' className="mb-2 bg-grey-1 text-grey-2">
+        {topic?.category && (
+          <Chip size='sm' className="mb-2 bg-white text-black">
             {topic.category.name}
           </Chip>
         )}

@@ -88,7 +88,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           <ArrowLeft2 className="text-grey-2" size={16} />
         </Button>
         
-        <div className="w-52 md:w-64 flex justify-center items-center mx-4">
+        <div className="w-48 md:w-64 flex justify-center items-center mx-4">
           {allUploads?.length > 0 && (
             <BeamsTodayCard key={allUploads[currentIndex]?.id} topic={allUploads[currentIndex]} />
           )}

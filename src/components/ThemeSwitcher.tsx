@@ -9,32 +9,39 @@ import { SunIcon } from "./SunIcon";
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    // Ensure the component is mounted and theme is set from local storage if available
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setTheme(savedTheme);
+      setIsDarkMode(savedTheme === "dark");
     } else {
-      // Default to light theme if no theme is found in local storage
       setTheme("light");
+      setIsDarkMode(false);
     }
     setMounted(true);
+    
   }, [setTheme]);
 
   useEffect(() => {
     if (resolvedTheme) {
       localStorage.setItem("theme", resolvedTheme);
+      setIsDarkMode(resolvedTheme === "dark");
     }
   }, [resolvedTheme]);
 
   if (!mounted) return null;
-
+   console.log(isDarkMode)
   return (
     <div className="flex items-center space-x-4">
       <Switch
-        checked={theme === "dark"}
-        onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+        defaultSelected={isDarkMode}
+        onChange={(e) => {
+          const newTheme = e.target.checked ? "dark" : "light";
+          setTheme(newTheme);
+          setIsDarkMode(e.target.checked);
+        }}
         size="lg"
         color="primary"
         startContent={<SunIcon />}

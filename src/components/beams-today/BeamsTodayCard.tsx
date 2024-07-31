@@ -22,7 +22,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
 
   return (
     <div
-      className={`cursor-pointer relative h-[260px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
+      className={`cursor-pointer relative h-[250px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
       style={{ 
         backgroundImage: `url(${topic?.thumbnailUrl})`, 
         backgroundSize: 'cover', 

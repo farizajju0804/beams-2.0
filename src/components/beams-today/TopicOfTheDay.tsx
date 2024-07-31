@@ -29,7 +29,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
             <div className="absolute top-6 right-6 z-[3]">
       <FavoriteButton  beamsTodayId={topic.id} />
       </div>
-      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-grey-1 text-grey-2">{topic.category.name}</Chip>
+      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-white text-black">{topic.category.name}</Chip>
           <Image
             src={topic.thumbnailUrl as string}
             alt={topic.title}
