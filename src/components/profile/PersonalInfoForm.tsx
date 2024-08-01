@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState, useTransition, useEffect } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
@@ -10,8 +10,18 @@ import FormSuccess from "@/components/form-success";
 import { Button, Input, Card, CardHeader, CardBody, Avatar, Spinner } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
+import { useUserStore } from "@/store/userStore";
 
-const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
+interface PersonalInfoFormProps {
+  user: {
+    name: string | null | undefined;
+    email: string;
+    image: string;
+  };
+  url: string;
+}
+
+const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -19,6 +29,7 @@ const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
   const [profileImage, setProfileImage] = useState<string>(user.image || "");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const updateUserImage = useUserStore((state) => state.updateUserImage);
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -33,25 +44,26 @@ const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
       fileInputRef.current.click();
     }
   };
+
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = event.target as HTMLInputElement;
+    const input = event.target;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       if (file && url) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
-  
+
         setIsUploading(true);
-  
+
         try {
           const res = await fetch(url, {
             method: "POST",
             body: formData,
           });
-  
+
           const data = await res.json();
-  
+
           if (data.secure_url) {
             await changeProfileImageHandler(data.secure_url);
           } else {
@@ -67,11 +79,12 @@ const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
       console.error("No files selected.");
     }
   };
-  
+
   const changeProfileImageHandler = async (url: string) => {
     try {
       await changeProfileImage(url);
       setProfileImage(url);
+      updateUserImage(url); // Update the image in the Zustand store
       setSuccess("Profile image updated successfully");
       setError("");
     } catch (err) {
@@ -80,7 +93,7 @@ const PersonalInfoForm = ({ user, url }: { user: any, url: string }) => {
       setIsUploading(false);
     }
   };
-  
+
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
     startTransition(() => {
       settings(values)

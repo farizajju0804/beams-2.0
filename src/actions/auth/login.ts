@@ -12,6 +12,7 @@ import { getTwoFactorTokenByEmail } from "./two-factor-token";
 import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -105,17 +106,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirect: false, // Do not redirect immediately
+      redirectTo: (DEFAULT_LOGIN_REDIRECT), 
     });
 
-    const session = await auth(); 
-    if (session) {
-      // Perform the redirect after ensuring the session is set
-      revalidatePath(DEFAULT_LOGIN_REDIRECT); // Revalidate the redirect path if needed
-      return { error: undefined, success: "Login successful!", redirectTo: DEFAULT_LOGIN_REDIRECT };
-    } else {
-      return { error: "Failed to fetch session after login", success: undefined };
-    }
 
   } catch (error) {
     if (error instanceof AuthError) {

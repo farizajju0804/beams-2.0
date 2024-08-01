@@ -12,6 +12,7 @@ import BeamsTodaySearchCard from './beams-today/BeamsTodaySearchCard';
 import FilterChips from '@/components/FilterChips';
 import CustomPagination from '@/components/Pagination';
 import Fuse from 'fuse.js';
+
 interface SearchBarProps {
   topics: any;
   categories: any;
@@ -151,6 +152,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     setCurrentPage(page);
   };
 
+  const getResultsCount = () => {
+    const start = (currentPage - 1) * itemsPerPage + 1;
+    const end = Math.min(currentPage * itemsPerPage, filteredTopics.length);
+    return `Showing ${start}-${end} of ${filteredTopics.length} results for`;
+  };
+
   return (
     <div className="w-full max-w-6xl flex flex-col items-center gap-4 overflow-x-hidden">
       <div className="flex w-full lg:w-3/6 px-4 items-center gap-4">
@@ -184,7 +191,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             <div className="">
               <h1 className="text-lg md:text-3xl font-display font-bold mb-[1px]">Search Results</h1>
               <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
-              <span className='font-normal text-grey-2'>Showing {filteredTopics.length} of {topics.length} results for <span className='font-bold'>{query}</span></span>
+              <span className='font-normal text-grey-2'>{getResultsCount()}<span className='font-bold'> {query}</span></span>
             </div>
             {(!selectedDate && query) && (
               <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-2 mt-4">
