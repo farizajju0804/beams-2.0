@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { Button, Calendar } from "@nextui-org/react";
+import React, { forwardRef, useImperativeHandle } from 'react';
+import { Button, Calendar, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react';
 import { Calendar as CalendarIcon } from 'iconsax-react';
 import { DateValue, CalendarDate } from '@internationalized/date';
 
@@ -16,58 +16,33 @@ interface CalendarComponentHandle {
 }
 
 const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentProps>(({ selectedDate, onDateChange, minValue, maxValue }, ref) => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const calendarRef = useRef<HTMLDivElement>(null);
-
   useImperativeHandle(ref, () => ({
-    close: () => setIsCalendarOpen(false),
+    close: () => {},
   }));
-
-  const handleIconClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsCalendarOpen((prev) => !prev);
-  };
 
   const handleDateChange = (date: DateValue | null) => {
     onDateChange(date);
-    setIsCalendarOpen(false);
   };
-
-  const handleClickOutside = (e: MouseEvent) => {
-    if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
-      setIsCalendarOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isCalendarOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isCalendarOpen]);
 
   return (
-    <div className="relative">
-      <Button className='bg-grey-1' isIconOnly onClick={handleIconClick}>
-        <CalendarIcon size="24" className='text-grey-2' />
-      </Button>
-      {isCalendarOpen && (
-        <div ref={calendarRef} className="absolute -bottom-0 right-0 z-10 mt-2 rounded-md p-4 bg-background shadow-lg">
-          <Calendar 
-            value={selectedDate} 
-            onChange={handleDateChange} 
-            minValue={minValue} 
-            maxValue={maxValue} 
+    <Popover placement="bottom">
+      <PopoverTrigger>
+        <Button className='bg-grey-1' isIconOnly>
+          <CalendarIcon size="24" className='text-grey-2' />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='p-0 m-0'>
+       
+          <Calendar
+            value={selectedDate}
+            onChange={handleDateChange}
+            minValue={minValue}
+            maxValue={maxValue}
+            className='border-none m-0'
           />
-        </div>
-      )}
-    </div>
+        
+      </PopoverContent>
+    </Popover>
   );
 });
 
