@@ -78,14 +78,14 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
                 maxLength={1000}
                 minRows={120}
                 size='lg'
-                classNames={{ base: 'border-none', input: 'text-black' }}
-                className="bg-transparent text-black w-full rounded-md border-none flex-grow"
+                classNames={{ base: 'border-none', input: 'text-text' }}
+                className="bg-transparent w-full rounded-md border-none flex-grow"
               />
               <div className='flex items-center justify-between w-full mt-4'>
-                <Chip className="text-sm bg-black text-white py-1 px-3">
+                <Chip className="text-sm bg-text text-background py-1 px-3">
                   <FormattedDate date={currentDate} />
                 </Chip>
-                <Chip size='sm' className="text-right bg-white text-sm mt-2">{1000 - charCount} Remaining</Chip>
+                <Chip size='sm' className="text-right bg-background text-sm mt-2">{1000 - charCount} Remaining</Chip>
               </div>
             </ModalBody>
             <ModalFooter className="flex justify-between">

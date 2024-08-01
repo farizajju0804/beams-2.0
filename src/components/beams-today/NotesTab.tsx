@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardBody, CardFooter, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { Trash } from 'iconsax-react';
-import { toast,Toaster } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import { removeNote } from '@/actions/beams-today/removeNote';
 
 interface NotesTabProps {
@@ -19,7 +19,6 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
       await removeNote(noteId);
       toast.success('Note deleted successfully');
       setSelectedNote(null);
-      // Optionally, refresh the page or remove the note from the state
       router.refresh();
     } catch (error) {
       toast.error('Failed to delete note');
@@ -41,46 +40,48 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
     <>
       <Toaster position="top-center" />
 
-    <div className="mt-4">
-      {notes.length === 0 ? (
-        <p>No notes found.</p>
-      ) : (
-        notes.map((note) => (
-          <Card key={note.id} className="mb-4 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
-            <CardHeader>
-              <p className="text-lg font-bold">{note.beamsToday.title}</p>
-            </CardHeader>
-            <CardBody>
-              <p>{note.note}</p>
-            </CardBody>
-            <CardFooter>
-              <Button
-                color="danger"
-                startContent={<Trash size="20" />}
-                onClick={(e) => handleButtonClick(e, note.id)}
-              >
+      <div className="mt-4">
+        {notes.length === 0 ? (
+          <p>No notes found.</p>
+        ) : (
+          notes.map((note) => (
+            <div key={note.id} className="mb-4 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
+              <Card>
+                <CardHeader>
+                  <p className="text-lg font-bold">{note.beamsToday.title}</p>
+                </CardHeader>
+                <CardBody>
+                  <p>{note.note}</p>
+                </CardBody>
+                <CardFooter>
+                  <Button
+                    color="danger"
+                    startContent={<Trash size="20" />}
+                    onClick={(e) => handleButtonClick(e, note.id)}
+                  >
+                    Delete
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          ))
+        )}
+
+        <Modal placement='center' isOpen={selectedNote !== null} onClose={() => setSelectedNote(null)}>
+          <ModalContent>
+            <ModalHeader>Delete Note</ModalHeader>
+            <ModalBody>
+              <p>Are you sure you want to delete this note?</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button onPress={() => setSelectedNote(null)}>Cancel</Button>
+              <Button color="danger" onPress={() => handleDelete(selectedNote!)}>
                 Delete
               </Button>
-            </CardFooter>
-          </Card>
-        ))
-      )}
-
-      <Modal placement='center' isOpen={selectedNote !== null} onClose={() => setSelectedNote(null)}>
-        <ModalContent>
-          <ModalHeader>Delete Note</ModalHeader>
-          <ModalBody>
-            <p>Are you sure you want to delete this note?</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button onPress={() => setSelectedNote(null)}>Cancel</Button>
-            <Button color="danger" onPress={() => handleDelete(selectedNote!)}>
-              Delete
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </div>
     </>
   );
 };

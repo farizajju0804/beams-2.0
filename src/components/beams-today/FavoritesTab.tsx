@@ -39,23 +39,25 @@ const FavoritesTab: React.FC<FavoritesTabProps> = ({ favorites }) => {
           <p className="col-span-full">No favorites found.</p>
         ) : (
           favorites.map((favorite) => (
-            <Card key={favorite.id} className="cursor-pointer" onClick={(e) => handleCardClick(e, favorite.beamsTodayId)}>
-              <CardHeader>
-                <p className="text-lg font-bold">{favorite.beamsToday.title}</p>
-              </CardHeader>
-              <CardBody>
-                <Image width={200} height={150} src={favorite.beamsToday.thumbnailUrl} alt={favorite.beamsToday.title} className="w-full object-cover aspect-video rounded-md" />
-              </CardBody>
-              <CardFooter>
-                <Button
-                  color="danger"
-                  startContent={<Trash size="20" />}
-                  onClick={(e) => handleRemove(e, favorite.id)}
-                >
-                  Remove from Favorites
-                </Button>
-              </CardFooter>
-            </Card>
+            <div key={favorite.id} className="cursor-pointer" onClick={(e) => handleCardClick(e, favorite.beamsTodayId)}>
+              <Card>
+                <CardHeader>
+                  <p className="text-lg font-bold">{favorite.beamsToday.title}</p>
+                </CardHeader>
+                <CardBody>
+                  <Image width={200} height={150} src={favorite.beamsToday.thumbnailUrl} alt={favorite.beamsToday.title} className="w-full object-cover aspect-video rounded-md" />
+                </CardBody>
+                <CardFooter>
+                  <Button
+                    color="danger"
+                    startContent={<Trash size="20" />}
+                    onClick={(e) => handleRemove(e, favorite.id)}
+                  >
+                    Remove from Favorites
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           ))
         )}
       </div>

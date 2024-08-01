@@ -2,7 +2,7 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { LoginSchema } from "@/schema";
-import { signIn } from "@/auth";
+import { auth, signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
@@ -105,11 +105,18 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirect: false, // Do not redirect immediately
     });
-   
 
-    return { error: undefined, success: "Login successful!" };
+    const session = await auth(); 
+    if (session) {
+      // Perform the redirect after ensuring the session is set
+      revalidatePath(DEFAULT_LOGIN_REDIRECT); // Revalidate the redirect path if needed
+      return { error: undefined, success: "Login successful!", redirectTo: DEFAULT_LOGIN_REDIRECT };
+    } else {
+      return { error: "Failed to fetch session after login", success: undefined };
+    }
+
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

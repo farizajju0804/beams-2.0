@@ -64,6 +64,7 @@
     "react-spinners": "^0.14.1",
     "sib-api-v3-sdk": "^8.5.0",
     "swiper": "^11.1.4",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0",
