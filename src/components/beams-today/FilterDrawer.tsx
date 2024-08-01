@@ -42,7 +42,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           {categories.map((category: any) => (
             <Chip
               key={category.id}
-              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
+              className={`cursor-pointer ${selectedCategories.includes(category.id) ? 'bg-secondary-1 text-black' : 'bg-grey-1 text-grey-2'}`}
               onClick={() => handleCategoryClick(category.id)}
             >
               {category.name}
@@ -54,19 +54,19 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
       return (
         <div className="flex flex-col gap-2">
           <Chip
-            className={`cursor-pointer ${beamedStatus === "all" ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
+            className={`cursor-pointer ${beamedStatus === "all" ? 'bg-secondary-1 text-black' : 'bg-grey-1 text-grey-2'}`}
             onClick={() => setBeamedStatus("all")}
           >
             All
           </Chip>
           <Chip
-            className={`cursor-pointer ${beamedStatus === "beamed" ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
+            className={`cursor-pointer ${beamedStatus === "beamed" ? 'bg-secondary-1 text-black' : 'bg-grey-1 text-grey-2'}`}
             onClick={() => setBeamedStatus("beamed")}
           >
             Beamed
           </Chip>
           <Chip
-            className={`cursor-pointer ${beamedStatus === "unbeamed" ? 'bg-yellow-900 text-black' : 'bg-gray-200 text-black'}`}
+            className={`cursor-pointer ${beamedStatus === "unbeamed" ? 'bg-secondary-1 text-black' : 'bg-grey-1 text-grey-2'}`}
             onClick={() => setBeamedStatus("unbeamed")}
           >
             Unbeamed
@@ -95,14 +95,14 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
             <div className="flex flex-col gap-4">
               <Button
                 size="sm"
-                className={` ${activeFilter === "beamedStatus" ? 'bg-yellow-900' : 'bg-transparent'}`}
+                className={` ${activeFilter === "beamedStatus" ? 'bg-secondary-1 text-black' : 'bg-transparent'}`}
                 onPress={() => setActiveFilter("beamedStatus")}
               >
                 Beamed Status
               </Button>
               <Button
                 size="sm"
-                className={` ${activeFilter === "category" ? ' bg-yellow-900' : 'bg-transparent'}`}
+                className={` ${activeFilter === "category" ? ' bg-secondary-1 text-black' : 'bg-transparent'}`}
                 onPress={() => setActiveFilter("category")}
               >
                 Category
@@ -114,7 +114,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           </div>
         </ModalBody>
         <ModalFooter className="flex items-center justify-between">
-          <Button className="bg-transparent text-gray-500" onPress={handleReset}>Clear All</Button>
+          <Button className="bg-transparent text-grey-2" onPress={handleReset}>Clear All</Button>
           <Button  className="text-white bg-black" onPress={applyFilters}>
             Show Items
           </Button>
