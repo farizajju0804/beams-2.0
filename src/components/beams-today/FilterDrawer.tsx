@@ -91,7 +91,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <span>Filter</span>
         </ModalHeader>
         <ModalBody className="flex flex-row">
-          <div className="w-1/3 pr-2 border-r">
+          <div className="w-1/3 pr-2 border-r border-grey-1">
             <div className="flex flex-col gap-4">
               <Button
                 size="sm"

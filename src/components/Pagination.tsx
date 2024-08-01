@@ -19,10 +19,10 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalP
         onChange={(page) => onPageChange(page)}
         classNames={{
           wrapper: "gap-4 mx-4",
-          prev: "bg-gray-100",
-          next: "bg-gray-100",
+          prev: "bg-gray-1",
+          next: "bg-gray-1",
           item: "text-sm bg-transparent",
-          cursor: "bg-black text-white",
+          cursor: "bg-text text-background",
           base: "lg:w-full lg:mx-auto lg:flex items-center justify-center",
         }}
         className=""

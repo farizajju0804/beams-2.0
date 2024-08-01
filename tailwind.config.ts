@@ -25,6 +25,7 @@ const config = {
           2 : "rgba(var(--color-secondary-2))",
           3 : "rgba(var(--color-secondary-3))"
         },
+        accent : "rgba(var(--color-accent))",
         // brand: {
         //   950: '#f96f2e',
         //   100: '#FFF5ED'
