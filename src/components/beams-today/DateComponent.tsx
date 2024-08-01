@@ -15,12 +15,12 @@ const DateComponent: React.FC<DateComponentProps> = ({ date }) => {
   const dayNumber = parseInt(day);
 
   return (
-    <div className='font-display flex items-center text-gray-200'>
+    <div className='font-display flex items-center text-grey-1'>
       <div className='text-sm md:text-xl'>{monthName}</div>
       <div className='relative flex items-center mx-2 md:mx-3'>
-        <div className='w-[2px] h-6 bg-gray-200'></div>
+        <div className='w-[2px] h-6 bg-grey-1'></div>
         <span className='text-xl md:text-2xl font-extrabold p-1 md:p-2'>{dayNumber}</span>
-        <div className='w-[2px] h-6 bg-gray-200'></div>
+        <div className='w-[2px] h-6 bg-grey-1'></div>
       </div>
       <div className='text-sm md:text-xl'>{year}</div>
     </div>

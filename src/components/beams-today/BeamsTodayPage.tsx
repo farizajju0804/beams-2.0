@@ -23,8 +23,9 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
     : topics;
 
   return (
-    <div className="flex flex-col items-center w-full bg-background gap-6">
+    <div className="flex flex-col items-center w-full bg-background gap-4">
       <Header />
+      <TopicOfTheDayContainer user={user} />
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
       {searchQuery ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -34,7 +35,6 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
         </div>
       ) : (
         <>
-          <TopicOfTheDayContainer user={user} />
           <BeamsTodayListContainer categories={categories} completedTopics={completedTopics} user={user} />
         </>
       )}

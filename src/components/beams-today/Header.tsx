@@ -5,8 +5,9 @@ import Breadcrumbs from "../Breadcrumbs";
 const Header = () => {
   return (
     <div className="w-full">
-      <div className="pl-6 md:pl-12 mt-2">
+      <div className="pl-6 md:pl-12">
       <Breadcrumbs
+      
         items={[
           { href: "/", name:"Home" },
           { name: "Beams Today" },
@@ -14,13 +15,13 @@ const Header = () => {
       />
       </div>
    
-    <div className="flex gap-2 flex-col justify-center items-center py-4 bg-[#F9D42E] w-full ">
-      <p className="text-black font-medium text-xs md:text-base">Welcome To</p>
-      <div className="rounded-full font-display font-bold text-lg md:text-2xl  p-2 px-4 flex bg-[#370075] text-[#F9D42E] items-center justify-center"><h1>Beams Today</h1></div>
-      <p className="text-black font-medium text-sm md:text-base">Your Daily Dose of Innovation</p>
+    <div className="flex gap-1 flex-col justify-center items-center py-2 bg-secondary-1 w-full ">
+      <p className="text-black font-medium text-xs md:text-sm">Welcome To</p>
+      <div className="rounded-full font-display font-bold text-lg md:text-2xl flex text-secondary-2 items-center justify-center">Beams Today</div>
+      <p className="text-black font-medium text-xs md:text-sm ">Your Daily Dose of Innovation</p>
     </div>
     </div>
-  );
+  );  
 };
 
 export default Header;

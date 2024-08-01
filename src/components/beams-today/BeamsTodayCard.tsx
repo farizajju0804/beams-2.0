@@ -22,7 +22,7 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
 
   return (
     <div
-      className={`cursor-pointer relative h-[250px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
+      className={`cursor-pointer relative h-[280px] md:h-[320px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
       style={{ 
         backgroundImage: `url(${topic?.thumbnailUrl})`, 
         backgroundSize: 'cover', 
@@ -32,21 +32,21 @@ const BeamsTodayCard: React.FC<BeamsTodayCardProps> = ({ topic, className = '' }
       onClick={handleCardClick} // Navigate to the topic page
     >
       <div className="flex flex-row items-center justify-between py-0 px-1">
-        {topic.category && (
-          <Chip size='sm' className="mb-2 bg-grey-1 text-grey-2">
-            {topic.category.name}
+        {topic?.category && (
+          <Chip size='sm' className="mb-2 bg-white text-black">
+            {topic?.category.name}
           </Chip>
         )}
-        <div className="[backdrop-filter:blur(15px)] rounded-2xl bg-white flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
-          <FavoriteButton beamsTodayId={topic.id} />
+        <div className="[backdrop-filter:blur(5px)] rounded-2xl bg-text flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
+          <FavoriteButton beamsTodayId={topic?.id} />
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 self-stretch mt-auto [backdrop-filter:blur(20px)] rounded-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-xl text-black">
+      <div className="absolute bottom-0 left-0 right-0 self-stretch mt-auto [backdrop-filter:blur(5px)] rounded-b-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-xl text-black">
         <h3 className="m-0 relative text-inherit font-semibold font-inherit">
-          {topic.title}
+          {topic?.title}
         </h3>
         <div className="relative text-xs md:text-sm inline-block">
-          <FormattedDate date={topic.date.toISOString().split('T')[0]} />
+          <FormattedDate date={topic?.date.toISOString().split('T')[0]} />
         </div>
       </div>
     </div>

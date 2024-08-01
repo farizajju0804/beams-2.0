@@ -110,7 +110,7 @@ export const updateWatchTime = async (beamsTodayId: string, watchTime: number, f
         individualWatchTimesText: format === 'text' ? individualWatchTimesText : {},
       },
     });
-
+    console.log("Watch time updated")
     return "Watch time updated";
   } catch (error) {
     console.error(`Error updating watch time: ${(error as Error).message}`);

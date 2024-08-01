@@ -110,7 +110,6 @@
   
   .audio-player-card {
     max-width: 900px;
-    background: #fff;
     border-radius: 24px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   
@@ -126,6 +125,7 @@
   .rhap_container {
     border: none !important;
     box-shadow: none !important;
+    background-color: var(--color-grey-1) !important;
   }
   
  

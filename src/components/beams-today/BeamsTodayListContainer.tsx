@@ -84,17 +84,17 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
       </div>
       
       <div className="relative mt-2 flex justify-center items-center">
-        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-grey-1 z-20 rounded-full p-2 mr-6 md:mr-8">
+        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-transparent z-20 rounded-full p-2 mr-6 md:mr-8">
           <ArrowLeft2 className="text-grey-2" size={16} />
         </Button>
         
-        <div className="w-48 md:w-64 flex justify-center items-center mx-4">
+        <div className="w-52 md:w-64 flex justify-center items-center mx-4">
           {allUploads?.length > 0 && (
             <BeamsTodayCard key={allUploads[currentIndex]?.id} topic={allUploads[currentIndex]} />
           )}
         </div>
         
-        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-grey-1 z-20 rounded-full p-2 ml-6 md:ml-8">
+        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-transparent z-20 rounded-full p-2 ml-6 md:ml-8">
           <ArrowRight2 className="text-grey-2" size={16} />
         </Button>
       </div>

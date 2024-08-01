@@ -21,7 +21,7 @@ type BreadcrumbsProps = {
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
   return (
-    <Breadcrumb className="mb-4">
+    <Breadcrumb className="mb-2">
       <BreadcrumbList>
         {items.map((item, index) => {
           const isLastItem = index === items.length - 1;

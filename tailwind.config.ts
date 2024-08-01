@@ -21,9 +21,9 @@ const config = {
           2 :  "rgba(var(--color-grey-2))"
         },
         secondary : {
-          1 : "rgba(var(--color-secondary-1)",
-          2 : "rgba(var(--color-secondary-2)",
-          3 : "rgba(var(--color-secondary-3)"
+          1 : "rgba(var(--color-secondary-1))",
+          2 : "rgba(var(--color-secondary-2))",
+          3 : "rgba(var(--color-secondary-3))"
         },
         // brand: {
         //   950: '#f96f2e',
