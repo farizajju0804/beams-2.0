@@ -32,7 +32,7 @@ export function ThemeSwitcher() {
   }, [resolvedTheme]);
 
   if (!mounted) return null;
-   console.log(isDarkMode)
+  
   return (
     <div className="flex items-center space-x-4">
       <Switch

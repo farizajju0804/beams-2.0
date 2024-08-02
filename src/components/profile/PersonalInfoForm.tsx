@@ -11,6 +11,7 @@ import { Button, Input, Card, CardHeader, CardBody, Avatar, Spinner } from "@nex
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
+import Image from "next/image";
 
 interface PersonalInfoFormProps {
   user: {
@@ -115,27 +116,29 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
         <p className="text-2xl font-semibold text-center">Edit Profile</p>
       </CardHeader>
       <CardBody>
-        <div className="flex items-center justify-center mb-4 relative">
-          {isUploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-full">
-              <Spinner size="lg" color="primary" />
-            </div>
-          )}
-          <Avatar
-            src={profileImage}
-            alt="Profile Picture"
-            size="lg"
-            color="primary"
-            className={`cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
-            onClick={handleFileInputClick}
-          />
-          <Input
-            ref={fileInputRef}
-            type="file"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </div>
+      <div className="flex items-center justify-center mb-4 relative">
+  {isUploading && (
+    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-full">
+      <Spinner size="lg" color="primary" />
+    </div>
+  )}
+  <div
+    className={`w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
+    onClick={() => fileInputRef.current?.click()}
+  >
+    {profileImage ? (
+      <Image src={profileImage} alt="Profile" width={200} height={200} className="w-full h-full rounced-full object-cover" />
+    ) : (
+      <span className="text-gray-400">Click to upload</span>
+    )}
+  </div>
+  <input
+    ref={fileInputRef}
+    type="file"
+    className="hidden"
+    onChange={handleFileChange}
+  />
+</div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">

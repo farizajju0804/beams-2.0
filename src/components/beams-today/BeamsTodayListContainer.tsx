@@ -75,27 +75,27 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   }
 
   return (
-    <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-12">
+    <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-0">
       <div className="flex justify-between items-center">
-        <div className="w-full">
-          <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Trending Topics</h1>
+        <div className="w-full flex flex-col items-start lg:items-center">
+          <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Now Trending</h1>
           <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '13%' }}></div>
         </div>
       </div>
       
       <div className="relative mt-2 flex justify-center items-center">
-        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-transparent z-20 rounded-full p-2 mr-6 md:mr-8">
-          <ArrowLeft2 className="text-grey-2" size={16} />
+        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-brand/10 z-20 rounded-full p-2 mr-6 md:mr-8">
+          <ArrowLeft2 className="text-brand" size={16} />
         </Button>
         
-        <div className="w-52 md:w-64 flex justify-center items-center mx-4">
+        <div className="w-48 md:w-64 flex justify-center items-center mx-4">
           {allUploads?.length > 0 && (
             <BeamsTodayCard key={allUploads[currentIndex]?.id} topic={allUploads[currentIndex]} />
           )}
         </div>
         
-        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-transparent z-20 rounded-full p-2 ml-6 md:ml-8">
-          <ArrowRight2 className="text-grey-2" size={16} />
+        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-brand/10 z-20 rounded-full p-2 ml-6 md:ml-8">
+          <ArrowRight2 className="text-brand" size={16} />
         </Button>
       </div>
       

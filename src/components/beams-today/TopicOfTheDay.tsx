@@ -19,7 +19,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
   return (
     <div className="w-full py-1 text-left relative max-w-6xl mx-auto">
       
-      <div className="pl-6 md:pl-12">
+      <div className="pl-6 md:pl-0 flex flex-col items-start lg:items-center">
     
         <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Topic of the Day</h1>
         <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>

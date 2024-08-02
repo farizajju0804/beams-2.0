@@ -61,6 +61,10 @@
   --color-accent : 255, 255, 255;
 }
 
+
+.stroke-text{
+  -webkit-text-stroke: 0.5px rgba(var(--color-secondary-2));
+}
   .door {
     transform-origin: left;
     transition: transform 0.5s ease-in-out;
@@ -127,7 +131,7 @@
   .rhap_container {
     border: none !important;
     box-shadow: none !important;
-    background-color: var(--color-grey-1) !important;
+    background-color: rgba(var(--color-grey-1)) !important;
   }
   
  

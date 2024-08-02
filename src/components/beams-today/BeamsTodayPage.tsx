@@ -23,7 +23,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
     : topics;
 
   return (
-    <div className="flex flex-col items-center w-full bg-background gap-4">
+    <div className="flex flex-col items-center w-full bg-background gap-6">
       <Header />
       <TopicOfTheDayContainer user={user} />
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />

@@ -17,8 +17,8 @@ const Header = () => {
    
     <div className="flex gap-1 flex-col justify-center items-center py-2 bg-secondary-1 w-full ">
       <p className="text-black font-medium text-xs md:text-sm">Welcome To</p>
-      <div className="rounded-full font-display font-bold text-lg md:text-2xl flex text-secondary-2 items-center justify-center">Beams Today</div>
-      <p className="text-black font-medium text-xs md:text-sm ">Your Daily Dose of Innovation</p>
+      <div className="rounded-full font-display font-bold text-lg md:text-2xl flex text-secondary-2 items-center justify-center"><h1 className="text-inherit tracking-wider stroke-text">Beams Today</h1></div>
+      <p className="text-black font-medium text-xs md:text-base ">Your Daily Dose of Innovation</p>
     </div>
     </div>
   );  
