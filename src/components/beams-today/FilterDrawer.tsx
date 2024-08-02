@@ -80,7 +80,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
   return (
     <Modal
      backdrop="blur"
-     size="full"
+     size="lg"
       isOpen={isOpen}
       onClose={onClose}
       placement="auto"

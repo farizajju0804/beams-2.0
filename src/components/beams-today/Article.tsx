@@ -3,6 +3,7 @@ import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { useTheme } from "next-themes";
 
 interface ArticleProps {
   articleUrl: string | undefined;
@@ -12,7 +13,8 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   const startTimeRef = useRef<number | null>(null);
   const elapsedTimeRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
+  const { theme } = useTheme();
+  
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => {
       if (startTimeRef.current) {
@@ -53,7 +55,7 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
 
   if (!articleUrl) {
     return (
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+      <div className="mt-4 p-4 bg-grey-1 rounded-lg">
         <h2 className="text-2xl font-bold my-2">Article</h2>
         <p className="text-lg text-gray-800">No article available</p>
       </div>
@@ -65,6 +67,7 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
       <div style={{ height: '750px' }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer
+            theme={theme}
             fileUrl={articleUrl}
             defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1.0}
           />

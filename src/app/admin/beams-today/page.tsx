@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useEffect, useState } from "react";
 import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries } from "@/actions/beams-today/admin/beamsTodayActions";
 import { getCategories, createCategory } from "@/actions/beams-today/admin/beamsTodayCategoryActions";
@@ -25,7 +25,7 @@ const AdminBeamsToday: React.FC = () => {
       title: "",
       description: "",
       question: "",
-      options: [""],
+      options: [{ optionText: "" }],
     },
   });
 
@@ -51,21 +51,26 @@ const AdminBeamsToday: React.FC = () => {
     index?: number
   ) => {
     const { name, value } = e.target;
-    if (name.startsWith("poll")) {
-      setForm((prevForm) => {
-        const updatedPoll: any = { ...prevForm.poll };
-        if (name === "pollOption" && index !== undefined) {
-          updatedPoll.options[index] = value;
-        } else {
-          updatedPoll[name.replace("poll", "").toLowerCase()] = value;
-        }
+    if (name.startsWith("pollOption") && index !== undefined) {
+      setForm((prevForm: any) => {
+        const updatedPoll = { ...prevForm.poll };
+        updatedPoll.options[index].optionText = value;
         return {
           ...prevForm,
           poll: updatedPoll,
-        }
-    });      
+        };
+      });
+    } else if (name.startsWith("poll")) {
+      setForm((prevForm: any) => {
+        const updatedPoll = { ...prevForm.poll } as any;
+        updatedPoll[name.replace("poll", "").toLowerCase()] = value;
+        return {
+          ...prevForm,
+          poll: updatedPoll,
+        };
+      });
     } else {
-      setForm((prevForm) => ({
+      setForm((prevForm: any) => ({
         ...prevForm,
         [name]: value,
       }));
@@ -77,7 +82,7 @@ const AdminBeamsToday: React.FC = () => {
     if (value === "add") {
       setIsCategoryModalOpen(true);
     } else {
-      setForm((prevForm) => ({
+      setForm((prevForm: any) => ({
         ...prevForm,
         categoryId: value,
       }));
@@ -90,7 +95,7 @@ const AdminBeamsToday: React.FC = () => {
       setCategories((prevCategories) => [...prevCategories, newCategory]);
       setNewCategoryName("");
       setIsCategoryModalOpen(false);
-      setForm((prevForm) => ({
+      setForm((prevForm: any) => ({
         ...prevForm,
         categoryId: newCategory.id,
       }));
@@ -130,7 +135,7 @@ const AdminBeamsToday: React.FC = () => {
           title: "",
           description: "",
           question: "",
-          options: [""],
+          options: [{ optionText: "" }],
         },
       });
       setIsEditing(false);
@@ -156,11 +161,22 @@ const AdminBeamsToday: React.FC = () => {
         title: entry.poll?.title || "",
         description: entry.poll?.description || "",
         question: entry.poll?.question || "",
-        options: entry.poll?.options.map(option => option.optionText) || [""],
+        options: entry.poll?.options.map(option => ({ optionText: option.optionText })) || [{ optionText: "" }],
       },
       categoryId: entry.category.id, // Set the category ID from the entry's category
     });
     setIsEditing(true);
+  };
+
+  const handleDeletePollOption = (index: number) => {
+    setForm((prevForm: any) => {
+      const updatedPoll = { ...prevForm.poll };
+      updatedPoll.options = updatedPoll.options.filter((_ : any, idx:any) => idx !== index);
+      return {
+        ...prevForm,
+        poll: updatedPoll,
+      };
+    });
   };
 
   return (
@@ -268,14 +284,22 @@ const AdminBeamsToday: React.FC = () => {
               />
               {/* Poll Options */}
               {form.poll.options.map((option, index) => (
-                <Input
-                  key={index}
-                  name={`pollOption${index}`}
-                  value={option}
-                  onChange={(e) => handleChange(e, index)}
-                  placeholder={`Option ${index + 1}`}
-                  fullWidth
-                />
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    name={`pollOption${index}`}
+                    value={option.optionText}
+                    onChange={(e) => handleChange(e, index)}
+                    placeholder={`Option ${index + 1}`}
+                    fullWidth
+                  />
+                  <Button
+                    size="sm"
+                    color="danger"
+                    onClick={() => handleDeletePollOption(index)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               ))}
               <Button
                 onClick={() =>
@@ -283,7 +307,7 @@ const AdminBeamsToday: React.FC = () => {
                     ...prevForm,
                     poll: {
                       ...prevForm.poll,
-                      options: [...prevForm.poll.options, ""],
+                      options: [...prevForm.poll.options, { optionText: "" }],
                     },
                   }))
                 }
@@ -318,30 +342,28 @@ const AdminBeamsToday: React.FC = () => {
       )}
       {/* Modal to add new category */}
       <Modal isOpen={isCategoryModalOpen} size="3xl" onClose={() => setIsCategoryModalOpen(false)}>
-      
         <ModalContent>
-        <ModalHeader>
-          <h2>Add New Category</h2>
-        </ModalHeader>
-        <ModalBody>
-          <Input
-            name="newCategoryName"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder="Category Name"
-            fullWidth
-          />
-        </ModalBody>
-            <ModalFooter>
-          <Button onClick={() => setIsCategoryModalOpen(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleAddCategory}>
-            Add
-          </Button>
-        </ModalFooter>
+          <ModalHeader>
+            <h2>Add New Category</h2>
+          </ModalHeader>
+          <ModalBody>
+            <Input
+              name="newCategoryName"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder="Category Name"
+              fullWidth
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setIsCategoryModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddCategory}>
+              Add
+            </Button>
+          </ModalFooter>
         </ModalContent>
-      
       </Modal>
     </div>
   );

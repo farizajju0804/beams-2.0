@@ -58,42 +58,32 @@ export interface BeamsToday {
 }
 
 
+export interface BeamsTodayPollOptionInput {
+  id?: string; // Include id for existing options
+  optionText: string;
+}
+
+export interface BeamsTodayPollInput {
+  title: string;
+  description: string;
+  question: string;
+  options: BeamsTodayPollOptionInput[];
+}
+
 export interface BeamsTodayCreateInput {
   date: string;
   title: string;
   shortDesc: string;
   videoUrl?: string;
-  thumbnailUrl: string;
-  articleUrl?: string;
-  audioUrl?: string;
-  categoryId: string;
-  poll: {
-    title: string;
-    description: string;
-    question: string;
-    options: string[];
-  };
-}
-
-export interface BeamsTodayUpdateInput {
-  id: string;
-  date?: string;
-  title?: string;
-  shortDesc?: string;
-  videoUrl?: string;
   thumbnailUrl?: string;
   articleUrl?: string;
   audioUrl?: string;
-  categoryId?: string;
-  poll: {
-    title: string;
-    description: string;
-    question: string;
-    options: string[];
-  };
+  categoryId: string;
+  poll: BeamsTodayPollInput;
 }
 
-    
+
+
 
 
 // Interface for BeamsTodayWatchedContent
@@ -198,4 +188,26 @@ export interface BeamsTodayUserAnalytics {
   individualWatchTimesAudio?: Record<string, any>; // New field, use appropriate type if known
   individualWatchTimesText?: Record<string, any>; // New field, use appropriate type if known
   user: User;
+}
+
+// Correcting BeamsTodayPollOptionInput interface
+export interface BeamsTodayPollOptionInput {
+  id?: string; // Include id for existing options
+  optionText: string;
+}
+
+
+
+
+export interface BeamsTodayUpdateInput {
+  id: string;
+  date?: string;
+  title?: string;
+  shortDesc?: string;
+  videoUrl?: string;
+  thumbnailUrl?: string;
+  articleUrl?: string;
+  audioUrl?: string;
+  categoryId?: string;
+  poll: BeamsTodayPollInput;
 }

@@ -168,6 +168,10 @@
     margin-bottom: 15px !important; /* Adjust this value to add more space between slider and controls */
   }
   
+.rhap_time{
+   color : rgba(var(--color-grey-1)) !important;
+}
+
   .rhap_controls {
     margin-bottom: 0px !important; /* Adjust this value to reduce the space below the controls */
   }

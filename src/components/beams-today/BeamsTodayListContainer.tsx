@@ -26,7 +26,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     const fetchRecentUploads = async () => {
       const clientDate = new Date().toLocaleDateString("en-CA");
       const uploads: any = await getRecentUploads(clientDate);
-      setAllUploads(uploads);
+      setAllUploads(uploads.slice(0, 5)); // Limit to 5 items
       setIsLoading(false);
     };
     fetchRecentUploads();

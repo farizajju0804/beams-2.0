@@ -17,7 +17,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
     
-      <body className={`bg-color-background ${quicksand.className}`}>
+      <body className={`max-w-[100vw] w-full overflow-x-hidden bg-color-background ${quicksand.className}`}>
       <Nav />
     
         {children}
