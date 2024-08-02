@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import Breadcrumbs from "../Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const Header = () => {
   return (

@@ -1,7 +1,16 @@
 'use client'
 import React, { useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip } from "@nextui-org/react";
+interface FilterOption {
+  id: string;
+  label: string;
+}
 
+interface FilterType {
+  type: string;
+  label: string;
+  options: FilterOption[];
+}
 interface FilterDrawerProps {
   isOpen: boolean;
   onClose: () => void;

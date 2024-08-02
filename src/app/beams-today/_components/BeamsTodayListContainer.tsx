@@ -1,7 +1,7 @@
 'use client'
 import React, { useRef, useState, useEffect } from "react";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
-import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
+import BeamsTodayCard from "./BeamsTodayCard";
 import { BeamsToday } from "@/types/beamsToday";
 import { Spinner, Button } from "@nextui-org/react";
 import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';

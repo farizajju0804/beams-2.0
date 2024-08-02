@@ -1,15 +1,14 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Button } from '@nextui-org/react';
-import CalendarComponent from '@/components/beams-today/CalendarComponent';
+import CalendarComponent from '@/app/beams-today/_components/CalendarComponent';
 import { DateValue, parseDate } from '@internationalized/date';
-import BeamsTodayCard from '@/components/beams-today/BeamsTodayCard';
-import SortByFilter from '@/components/beams-today/SortByFilter';
-import FilterDrawer from '@/components/beams-today/FilterDrawer';
+import SortByFilter from '@/app/beams-today/_components/SortByFilter';
+import FilterDrawer from '@/app/beams-today/_components/FilterDrawer';
 import { format } from 'date-fns';
 import { Filter, SearchNormal1 } from 'iconsax-react';
-import BeamsTodaySearchCard from './beams-today/BeamsTodaySearchCard';
-import FilterChips from '@/components/FilterChips';
+import BeamsTodaySearchCard from './BeamsTodaySearchCard';
+import FilterChips from '@/app/beams-today/_components/FilterChips';
 import CustomPagination from '@/components/Pagination';
 import Fuse from 'fuse.js';
 
@@ -31,6 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
   const calendarRef = useRef<any>(null);
+  
   const fuse = new Fuse(topics, {
     keys: ['title', 'shortDesc'],
     threshold: 0.5, // Adjust the threshold for fuzzy search sensitivity
@@ -159,7 +159,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   };
 
   return (
-    <div className="w-full max-w-6xl mt-2 flex flex-col items-center gap-4 overflow-x-hidden">
+    <div className="w-full lg:max-w-6xl max-w-[100vw] mt-2 flex flex-col items-center gap-4 overflow-x-hidden">
       <div className="flex w-full lg:w-3/6 px-4 items-center gap-4">
         <Input
           classNames={{

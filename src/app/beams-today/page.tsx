@@ -1,6 +1,6 @@
 import { getcompletedBeamsToday } from "@/actions/beams-today/completedActions";
 import { currentUser } from "@/libs/auth";
-import BeamsTodayPage from "@/components/beams-today/BeamsTodayPage";
+import BeamsTodayPage from "./_components/BeamsTodayPage";
 import { CustomGreeting } from "@/components/beams-today/CustomGreeting";
 import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { getAllCategories } from "@/actions/beams-today/categoryActions";

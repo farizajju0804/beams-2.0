@@ -1,7 +1,7 @@
 import React from 'react';
 import { getUserNotes } from '@/actions/beams-today/getUserNotes';
 import { getUserFavorites } from '@/actions/beams-today/getUserFavorites';
-import LibraryTabs from '@/components/beams-today/libraryTabs';
+import LibraryTabs from '@/app/beams-today/_components/libraryTabs';
 
 const MyLibraryPage = async () => {
   const notes = await getUserNotes();

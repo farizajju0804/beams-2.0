@@ -5,7 +5,7 @@ import { Edit2, Note } from 'iconsax-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { getNote, saveNote } from '@/actions/beams-theatre/saveBeamsTheatreNote';
 import { toast, Toaster } from 'react-hot-toast';
-import FormattedDate from '@/components/beams-today/FormattedDate';
+import FormattedDate from '@/app/beams-today/_components/FormattedDate';
 
 interface NoteModalProps {
   id: string;

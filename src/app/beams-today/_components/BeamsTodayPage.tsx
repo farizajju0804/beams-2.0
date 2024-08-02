@@ -1,9 +1,9 @@
 import React from "react";
-import Header from "@/components/beams-today/Header";
-import TopicOfTheDayContainer from "@/components/beams-today/TopicsOfThedayContainer";
-import BeamsTodayListContainer from "@/components/beams-today/BeamsTodayListContainer";
-import SearchBar from "@/components/SearchBar";
-import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
+import Header from "./Header";
+import TopicOfTheDayContainer from "./TopicsOfThedayContainer";
+import BeamsTodayListContainer from "./BeamsTodayListContainer";
+import SearchBar from "./SearchBar";
+import BeamsTodayCard from "./BeamsTodayCard";
 
 interface BeamsTodayPageProps {
   completedTopics: string[];

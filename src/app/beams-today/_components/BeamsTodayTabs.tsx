@@ -1,11 +1,11 @@
 'use client';
 import React, { useRef, useEffect } from "react";
 import TabsComponent from "@/components/TabsComponent";
-import VideoPlayer from "@/components/beams-today/VideoPlayer";
-import ArticleComponent from "@/components/beams-today/Article";
+import VideoPlayer from "./VideoPlayer";
+import ArticleComponent from "@/app/beams-today/_components/Article";
 import { Book1, VideoPlay, Headphone } from 'iconsax-react';
 import { markTopicAsCompleted } from "@/actions/beams-today/completedActions";
-import AudioPlayer from "@/components/beams-today/AudioPlayer";
+import AudioPlayer from "@/app/beams-today/_components/AudioPlayer";
 import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime';
 
 interface BeamsTodayTabsProps {

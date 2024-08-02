@@ -1,8 +1,8 @@
 import React from 'react';
-import ShareButton from '@/components/beams-today/ShareButton';
-import FormattedDate from '@/components/beams-today/FormattedDate';
-import NoteModal from '@/components/beams-today/NoteModal';
-import FavoriteButton from '@/components/beams-today/FavoriteButton'; // Import the new component
+import ShareButton from '@/app/beams-today/_components/ShareButton';
+import FormattedDate from '@/app/beams-today/_components/FormattedDate';
+import NoteModal from './NoteModal';
+import FavoriteButton from '@/app/beams-today/_components/FavoriteButton'; // Import the new component
 import { BeamsToday } from '@/types/beamsToday';
 
 interface BeamsTodayDetailsProps {

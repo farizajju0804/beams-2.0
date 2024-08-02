@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
-import TopicOfTheDay from "@/components/beams-today/TopicOfTheDay";
+import TopicOfTheDay from "./TopicOfTheDay";
 import { BeamsToday } from "@/types/beamsToday";
 import { Spinner } from "@nextui-org/react";
 

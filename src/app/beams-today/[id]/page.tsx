@@ -2,15 +2,15 @@
 import React from "react";
 import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
 import { getPoll } from "@/actions/beams-today/pollActions";
-import BeamsTodayTabs from "@/components/beams-today/BeamsTodayTabs";
-import BeamsTodayDetails from "@/components/beams-today/BeamsTodayDetails";
-import RelatedSection from "@/components/beams-today/RelatedSection";
+import BeamsTodayTabs from "../_components/BeamsTodayTabs";
+import BeamsTodayDetails from "@/app/beams-today/_components/BeamsTodayDetails";
+import RelatedSection from "../_components/RelatedSection";
 import { fetchCategoryRelatedTopics } from '@/actions/beams-today/categoryActions';
 import { BeamsToday } from '@/types/beamsToday';
-import BarPoll from "@/components/beams-today/BarPoll";
+import BarPoll from "@/app/beams-today/_components/BarPoll";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Home } from "iconsax-react";
-import BottomNavigation from "@/components/beams-today/BottomNavigation"; // Ensure correct import
+import BottomNavigation from "../_components/BottomNavigation"; // Ensure correct import
 import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 
 interface BeamsTodayPlayerPageProps {

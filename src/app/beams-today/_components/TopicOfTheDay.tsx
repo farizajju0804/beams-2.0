@@ -5,7 +5,7 @@ import { BeamsToday } from "@/types/beamsToday";
 import DateComponent from "./DateComponent";
 import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
-import Breadcrumbs from "../Breadcrumbs";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { MonitorMobbile } from "iconsax-react";
 
 interface TopicOfTheDayProps {

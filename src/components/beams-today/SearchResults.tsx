@@ -1,12 +1,12 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import BeamsTodayCard from "@/components/beams-today/BeamsTodayCard";
-import SortByFilter from "@/components/beams-today/SortByFilter";
+import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import CustomPagination from "@/components/Pagination";
 import { BeamsToday } from "@/types/beamsToday";
 import { Spinner, Button, Chip } from "@nextui-org/react";
 import { Filter } from 'iconsax-react';
-import FilterDrawer from "@/components/beams-today/FilterDrawer";
+import FilterDrawer from "@/app/beams-today/_components/FilterDrawer";
 import { DateValue } from "@internationalized/date";
 
 interface SearchResultsProps {
