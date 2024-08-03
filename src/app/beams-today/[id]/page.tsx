@@ -33,6 +33,8 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
     <div className="container flex w-full flex-col mx-auto px-4 mt-4 mb-8 overflow-x-hidden">
       <div className="px-4">
       <Breadcrumbs
+        pageClassName="text-text"
+        linkClassName="text-grey-2"
         items={[
           { href: "/", name: "Home" },
           { name: "Beams Today", href: "/beams-today" },

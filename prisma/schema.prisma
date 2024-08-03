@@ -119,6 +119,7 @@ model BeamsToday {
   totalAudioListenTime  Int                        @default(0)  
   totalTextSpentTime    Int                        @default(0)  
   videoUrl              String?
+  script                String?
   thumbnailUrl          String?
   articleUrl            String?
   audioUrl              String?

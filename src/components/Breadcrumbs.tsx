@@ -17,9 +17,11 @@ type BreadcrumbItemProps = {
 
 type BreadcrumbsProps = {
   items: BreadcrumbItemProps[];
+  linkClassName?: string;
+  pageClassName?: string;
 };
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
+const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, linkClassName, pageClassName }) => {
   return (
     <Breadcrumb className="mb-2">
       <BreadcrumbList>
@@ -31,13 +33,13 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                 {item.href ? (
                   <BreadcrumbLink
                     href={item.href}
-                    className={`text-xs text-grey-2 lg:text-sm  hover:text-text`}
+                    className={`text-xs lg:text-sm ${linkClassName} hover:text-text`}
                   >
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.name}
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage className="text-text font-semibold text-xs lg:text-sm">
+                  <BreadcrumbPage className={`text-xs lg:text-sm font-semibold ${pageClassName}`}>
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.name}
                   </BreadcrumbPage>

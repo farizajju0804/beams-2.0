@@ -10,9 +10,9 @@ const NowShowingCard = ({ data }: { data: BeamsTheatre }) => {
   const { id, title, description, posterUrl, genre, episodes } = data;
 
   return (
-    <div className="w-full lg:w-4/6 mb-24 lg:mb-32 flex flex-col items-center justify-center gap-4 max-w-5xl">
+    <div className="w-full mb-24 lg:mb-32 flex flex-col items-center justify-center gap-4 max-w-5xl">
       <div className="w-full rounded-3xl flex items-center justify-center bg-center">
-        <Image  as={NextImage} src={posterUrl} alt={title} width={0} height={0} sizes='100vw' className="w-full md:w-[70%] z-[2] mx-auto h-auto object-cover"/>
+        <Image  as={NextImage} src={posterUrl} alt={title} width={0} height={0} sizes='100vw' className="w-full z-[2] mx-auto aspect-video object-cover"/>
       </div>
       <div className="w-full flex items-start justify-center px-6">
         <Link href={`/beams-theatre/${id}`} passHref>

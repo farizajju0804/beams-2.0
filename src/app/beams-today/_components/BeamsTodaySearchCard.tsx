@@ -41,7 +41,7 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
           <FavoriteButton beamsTodayId={topic.id} />
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 self-stretch mt-auto [backdrop-filter:blur(20px)] rounded-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-xl text-black">
+      <div className="absolute bottom-0 left-0 right-0 self-stretch mt-auto [backdrop-filter:blur(20px)] rounded-b-3xl [background:linear-gradient(92.11deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_99.93%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-xl text-black">
         <h3 className="m-0 relative text-inherit font-semibold font-inherit">
           {topic.title}
         </h3>

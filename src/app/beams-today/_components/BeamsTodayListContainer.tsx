@@ -20,6 +20,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   const [allUploads, setAllUploads] = useState<BeamsToday[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [clickedArrow, setClickedArrow] = useState<string | null>(null); // Track the last clicked arrow
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -53,11 +54,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
 
   const scrollLeft = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + allUploads.length) % allUploads.length);
+    setClickedArrow('left');
     startTimer();
   };
 
   const scrollRight = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allUploads.length);
+    setClickedArrow('right');
     startTimer();
   };
 
@@ -84,8 +87,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
       </div>
       
       <div className="relative mt-2 flex justify-center items-center">
-        <Button size="sm" isIconOnly onClick={scrollLeft} className="bg-brand/10 z-20 rounded-full p-2 mr-6 md:mr-8">
-          <ArrowLeft2 className="text-brand" size={16} />
+        <Button
+          size="sm"
+          isIconOnly
+          onClick={scrollLeft}
+          className={`z-20 rounded-full p-2 mr-6 md:mr-8 ${clickedArrow === 'left' ? 'bg-brand text-white' : 'bg-grey text-grey-2'}`}
+        >
+          <ArrowLeft2 className="w-full h-full" />
         </Button>
         
         <div className="w-48 md:w-64 flex justify-center items-center mx-4">
@@ -94,8 +102,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           )}
         </div>
         
-        <Button size="sm" isIconOnly onClick={scrollRight} className="bg-brand/10 z-20 rounded-full p-2 ml-6 md:ml-8">
-          <ArrowRight2 className="text-brand" size={16} />
+        <Button
+          size="sm"
+          isIconOnly
+          onClick={scrollRight}
+          className={`z-20 rounded-full p-2 ml-6 md:ml-8 ${clickedArrow === 'right' ? 'bg-brand text-white' : 'bg-grey text-grey-2'}`}
+        >
+          <ArrowRight2 className="w-full h-full" />
         </Button>
       </div>
       

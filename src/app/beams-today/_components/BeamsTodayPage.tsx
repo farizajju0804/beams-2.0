@@ -8,13 +8,12 @@ import BeamsTodayCard from "./BeamsTodayCard";
 interface BeamsTodayPageProps {
   completedTopics: string[];
   user: any;
-  greeting: string;
   topics: any;
   searchQuery: string;
   categories: any;
 }
 
-const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, greeting, topics, searchQuery, categories }) => {
+const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user,  topics, searchQuery, categories }) => {
   const filteredTopics = searchQuery
     ? topics.filter((topic:any) =>
         topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

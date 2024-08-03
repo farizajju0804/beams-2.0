@@ -45,6 +45,7 @@ export interface BeamsToday {
   totalTextSpentTime: number;
   transcript?: Record<string, any>; // Use appropriate type if you know the structure
   videoUrl?: string;
+  script?: string;
   thumbnailUrl?: string;
   articleUrl?: string;
   audioUrl?: string;
@@ -76,6 +77,7 @@ export interface BeamsTodayCreateInput {
   shortDesc: string;
   videoUrl?: string;
   thumbnailUrl?: string;
+  script?: string;
   articleUrl?: string;
   audioUrl?: string;
   categoryId: string;
@@ -205,6 +207,7 @@ export interface BeamsTodayUpdateInput {
   title?: string;
   shortDesc?: string;
   videoUrl?: string;
+  script?: string;
   thumbnailUrl?: string;
   articleUrl?: string;
   audioUrl?: string;

@@ -16,13 +16,13 @@ const DateComponent: React.FC<DateComponentProps> = ({ date }) => {
 
   return (
     <div className='font-display flex items-center text-grey-1'>
-      <div className='text-sm md:text-xl'>{monthName}</div>
-      <div className='relative flex items-center mx-2 md:mx-3'>
+      <div className='text-sm md:text-lg'>{monthName}</div>
+      <div className='relative flex items-center mx-2 '>
         <div className='w-[2px] h-6 bg-grey-1'></div>
-        <span className='text-xl md:text-2xl font-extrabold p-1 md:p-2'>{dayNumber}</span>
+        <span className='text-xl md:text-xl font-extrabold p-1'>{dayNumber}</span>
         <div className='w-[2px] h-6 bg-grey-1'></div>
       </div>
-      <div className='text-sm md:text-xl'>{year}</div>
+      <div className='text-sm md:text-lg'>{year}</div>
     </div>
   );
 };

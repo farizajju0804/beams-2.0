@@ -17,10 +17,11 @@ const AdminBeamsToday: React.FC = () => {
     title: "",
     shortDesc: "",
     videoUrl: "",
+    script: "", // Initialize script field
     thumbnailUrl: "",
     articleUrl: "",
     audioUrl: "",
-    categoryId: "",  // Initialize with an empty string
+    categoryId: "",
     poll: {
       title: "",
       description: "",
@@ -33,8 +34,8 @@ const AdminBeamsToday: React.FC = () => {
     const fetchData = async () => {
       try {
         const [entriesData, categoriesData] = await Promise.all([getBeamsTodayEntries(), getCategories()]);
-        console.log('Fetched entries:', entriesData); // Add log
-        console.log('Fetched categories:', categoriesData); // Add log
+        console.log('Fetched entries:', entriesData);
+        console.log('Fetched categories:', categoriesData);
         setEntries(entriesData);
         setCategories(categoriesData);
       } catch (error) {
@@ -127,10 +128,11 @@ const AdminBeamsToday: React.FC = () => {
         title: "",
         shortDesc: "",
         videoUrl: "",
+        script: "", // Reset script field
         thumbnailUrl: "",
         articleUrl: "",
         audioUrl: "",
-        categoryId: "",  // Initialize with an empty string
+        categoryId: "",
         poll: {
           title: "",
           description: "",
@@ -156,14 +158,14 @@ const AdminBeamsToday: React.FC = () => {
   const handleEdit = (entry: BeamsToday) => {
     setForm({
       ...entry,
-      date: new Date(entry.date).toISOString(), // Convert date to ISO-8601 string
+      date: new Date(entry.date).toISOString(),
       poll: {
         title: entry.poll?.title || "",
         description: entry.poll?.description || "",
         question: entry.poll?.question || "",
         options: entry.poll?.options.map(option => ({ optionText: option.optionText })) || [{ optionText: "" }],
       },
-      categoryId: entry.category.id, // Set the category ID from the entry's category
+      categoryId: entry.category.id,
     });
     setIsEditing(true);
   };
@@ -171,7 +173,7 @@ const AdminBeamsToday: React.FC = () => {
   const handleDeletePollOption = (index: number) => {
     setForm((prevForm: any) => {
       const updatedPoll = { ...prevForm.poll };
-      updatedPoll.options = updatedPoll.options.filter((_ : any, idx:any) => idx !== index);
+      updatedPoll.options = updatedPoll.options.filter((_:any, idx:any) => idx !== index);
       return {
         ...prevForm,
         poll: updatedPoll,
@@ -206,7 +208,7 @@ const AdminBeamsToday: React.FC = () => {
               />
               <Input 
                 name="date"
-                value={form.date} // Format date for input
+                value={form.date}
                 onChange={handleChange}
                 placeholder="Date"
                 fullWidth
@@ -237,6 +239,13 @@ const AdminBeamsToday: React.FC = () => {
                 value={form.audioUrl || ""}
                 onChange={handleChange}
                 placeholder="Audio URL"
+                fullWidth
+              />
+              <Textarea 
+                name="script"
+                value={form.script || ""}
+                onChange={handleChange}
+                placeholder="Script"
                 fullWidth
               />
               {/* Category Dropdown */}
@@ -326,7 +335,7 @@ const AdminBeamsToday: React.FC = () => {
                     <h3 className="text-lg font-bold">{entry.title}</h3>
                     <p className="text-sm">{entry.shortDesc}</p>
                     <p className="text-xs">Date: {new Date(entry.date).toLocaleString()}</p>
-                    <p className="text-xs">Category: {entry.category.name}</p> {/* Display category name */}
+                    <p className="text-xs">Category: {entry.category.name}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" color="warning" onClick={() => handleEdit(entry)}>Edit</Button>
@@ -340,7 +349,6 @@ const AdminBeamsToday: React.FC = () => {
           </div>
         </>
       )}
-      {/* Modal to add new category */}
       <Modal isOpen={isCategoryModalOpen} size="3xl" onClose={() => setIsCategoryModalOpen(false)}>
         <ModalContent>
           <ModalHeader>

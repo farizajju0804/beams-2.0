@@ -6,11 +6,30 @@ import { DateValue, parseDate } from '@internationalized/date';
 import SortByFilter from '@/app/beams-today/_components/SortByFilter';
 import FilterDrawer from '@/app/beams-today/_components/FilterDrawer';
 import { format } from 'date-fns';
-import { Filter, SearchNormal1 } from 'iconsax-react';
+import { Filter, SearchNormal1, CloseCircle } from 'iconsax-react';
 import BeamsTodaySearchCard from './BeamsTodaySearchCard';
 import FilterChips from '@/app/beams-today/_components/FilterChips';
 import CustomPagination from '@/components/Pagination';
+// import FormattedDate from '@/components/FormattedDate';
 import Fuse from 'fuse.js';
+
+const commonTerms = ["the", "is", "in", "a", "an", "of", "and", "to", "it", "that", "on", "for", "with", "as", "this", "by", "from", "or", "at", "be", "are"];
+
+const preprocessScript = (script:string) => {
+  if (!script) return [];
+  return script
+    .split(',') // Split by commas
+    .map((phrase:string) => phrase.trim()) // Trim whitespace
+    .filter((phrase:string) => !commonTerms.includes(phrase.toLowerCase()) && phrase.length > 0); 
+};
+
+// Preprocess topics to split script into words
+const preprocessTopics = (topics:any) => {
+  return topics.map((topic:any) => ({
+    ...topic,
+    scriptWords: preprocessScript(topic.script)
+  }));
+};
 
 interface SearchBarProps {
   topics: any;
@@ -30,12 +49,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
   const calendarRef = useRef<any>(null);
-  
-  const fuse = new Fuse(topics, {
-    keys: ['title', 'shortDesc'],
-    threshold: 0.5, // Adjust the threshold for fuzzy search sensitivity
+  const processedTopics = preprocessTopics(topics);
+  console.log(processedTopics)
+  const fuse = new Fuse(processedTopics, {
+    includeScore: true,
+    keys: ['title', 'shortDesc', 'scriptWords'],
+    threshold: 0.3, 
   });
-
   const highlightDates1 = topics.map((topic: any) =>
     new Date(topic.date).toISOString().split("T")[0]
   );
@@ -126,7 +146,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const handleDateChange = (date: DateValue | null) => {
     setSelectedDate(date);
     if (date) {
-      setFilters([...filters, { id: 'date', label: `${date.year}-${date.month}-${date.day}`, type: 'date' }]);
+      setFilters([...filters, { id: 'date', label: `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`, type: 'date' }]);
     } else {
       setFilters(filters.filter(filter => filter.type !== 'date'));
     }
@@ -158,13 +178,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     return `Showing ${start}-${end} of ${filteredTopics.length} results for`;
   };
 
+  const handleClearInput = () => {
+    setQuery('');
+    setShowResults(false);
+    setFilteredTopics(topics.slice(0, itemsPerPage)); // Reset to show all topics if no query
+  };
+
   return (
     <div className="w-full lg:max-w-6xl max-w-[100vw] mt-2 flex flex-col items-center gap-4 overflow-x-hidden">
       <div className="flex w-full lg:w-3/6 px-4 items-center gap-4">
         <Input
           classNames={{
             input: [
-              "placeholder:text-grey-2",
+              "placeholder:text-grey-2 md:text-lg",
             ]
           }}
           radius='full'
@@ -172,7 +198,21 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           isDisabled={!!selectedDate}
-          endContent={<SearchNormal1 size='16' className='text-grey-2' />}
+          endContent={
+            query ? (
+              <CloseCircle
+                size='16'
+                className='text-grey-2 cursor-pointer'
+                onClick={handleClearInput}
+                variant="Bold"
+              />
+            ) : (
+              <SearchNormal1
+                size='16'
+                className='text-grey-2'
+              />
+            )
+          }
         />
         {!query && minDate && maxDate && (
           <CalendarComponent
@@ -183,7 +223,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             maxValue={maxDate}
           />
         )}
-        {/* {selectedDate && <Button className='' onPress={handleReset}>Reset</Button>} */}
       </div>
       {showResults && (
         <>
@@ -195,7 +234,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             </div>
             {(!selectedDate && query) && (
               <div className="flex flex-wrap gap-4 items-center justify-between w-full mb-2 mt-4">
-                <div className="flex w-full items-center justify-between flex-row gap-4">
+                <div className="flex w-full items-center justify-between lg:justify-start flex-row gap-4">
                   <Button className='bg-grey-1'
                     startContent={<Filter className="text-grey-2 w-full" size={24} />}
                     onPress={() => setIsFilterModalOpen(true)}

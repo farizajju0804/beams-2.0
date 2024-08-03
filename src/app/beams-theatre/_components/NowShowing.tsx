@@ -8,11 +8,11 @@ const NowShowing: React.FC = async () => {
   const nowShowing: BeamsTheatre = await getNowShowingBeamsTheatre();
 
   return (
-    <div className="mt-4 mb-8 flex items-center flex-col justify-start w-full gap-12 relative bg-black">
-      <div className="mt-10 px-4 flex flex-col items-center">
-        <div className="-mb-6 z-[4]  bg-white font-display text-black p-2 rounded-2xl text-base lg:text-xl">
+    <div className="mt-2 mb-8 flex items-center flex-col justify-start w-full gap-12 relative bg-black">
+      <div className="mt-2 px-4 flex flex-col items-center">
+        {/* <div className="-mb-6 z-[4]  bg-white font-display text-black p-2 rounded-2xl text-base lg:text-xl">
           Now Showing
-        </div>
+        </div> */}
         <NowShowingCard data={nowShowing} />
       </div>
       <Image
