@@ -7,11 +7,12 @@ const ProductCard = ({ item }:any) => {
     <Card shadow="sm" isPressable >
       <CardBody className="overflow-visible p-0">
         <Image
+        
           shadow="sm"
           radius="lg"
           width="100%"
           alt={item.title}
-          className="w-full object-cover h-[140px]"
+          className="w-full object-cover h-[200px]"
           src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1721207429/Beams%20Theatre/Magical%20materials/poster_materials_qezdno.png"
         />
       </CardBody>
@@ -32,7 +33,7 @@ const ProductCard = ({ item }:any) => {
             <span className="text-xl font-bold">${item.discountPrice}</span>
             <span className="text-xs text-default-500 line-through ml-2">${item.originalPrice}</span>
           </div>
-          <Button color="warning" startContent={<ShoppingCart size="16" />} onPress={() => console.log("Add to cart")}>
+          <Button className="font-bold" color="warning" startContent={<ShoppingCart size="16" variant='Bold' />} onPress={() => console.log("Add to cart")}>
             Add to cart
           </Button>
         </div>
