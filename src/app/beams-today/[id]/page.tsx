@@ -30,7 +30,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   const nextUrl = currentIndex < allBeamsToday.length - 1 ? `/beams-today/${allBeamsToday[currentIndex + 1].id}` : null;
 
   return (
-    <div className="container flex w-full flex-col mx-auto px-4 mt-4 mb-8 overflow-x-hidden">
+    <div className="max-w-5xl flex w-full flex-col mx-auto px-4 mt-4 mb-8 overflow-x-hidden">
       <div className="px-4">
       <Breadcrumbs
         pageClassName="text-text"

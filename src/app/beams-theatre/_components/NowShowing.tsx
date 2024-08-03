@@ -3,17 +3,20 @@ import { getNowShowingBeamsTheatre } from "@/actions/beams-theatre/getNowShowing
 import { BeamsTheatre } from '@/types/beamsTheatre';
 import NowShowingCard from './NowShowingCard';
 import Image from "next/image";
+import TicketTitle from "./TicketTitle";
 
 const NowShowing: React.FC = async () => {
   const nowShowing: BeamsTheatre = await getNowShowingBeamsTheatre();
 
   return (
-    <div className="mt-2 mb-8 flex items-center flex-col justify-start w-full gap-12 relative bg-black">
+    <div className="mt-2 mb-8 flex items-center flex-col justify-start w-full gap-12 relative ">
       <div className="mt-2 px-4 flex flex-col items-center">
-        {/* <div className="-mb-6 z-[4]  bg-white font-display text-black p-2 rounded-2xl text-base lg:text-xl">
-          Now Showing
-        </div> */}
-        <NowShowingCard data={nowShowing} />
+       
+       <div className="mb-4">
+      <TicketTitle  title="Now Showing"/>
+      </div>
+          
+      <NowShowingCard data={nowShowing} />
       </div>
       <Image
         src={'/images/beams-theatre/theatre-seat.png'}

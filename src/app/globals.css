@@ -70,7 +70,13 @@
   --color-accent : 255, 255, 255;
 }
 
+.rotate-x-180{
+  transform: rotateX(180deg);
+}
 
+.clip{
+  clip-path: circle(50% at 0 0);
+}
 
 .stroke-text{
   -webkit-text-stroke: 0.5px rgba(var(--color-secondary-2));

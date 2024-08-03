@@ -12,7 +12,7 @@ const NowShowingCard = ({ data }: { data: BeamsTheatre }) => {
   return (
     <div className="w-full mb-24 lg:mb-32 flex flex-col items-center justify-center gap-4 max-w-5xl">
       <div className="w-full rounded-3xl flex items-center justify-center bg-center">
-        <Image  as={NextImage} src={posterUrl} alt={title} width={0} height={0} sizes='100vw' className="w-full z-[2] mx-auto aspect-video object-cover"/>
+        <Image  as={NextImage} src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1722598238/Beams%20today/AI%20Headphones/Ai_headphones_Thumbnail_v7zzwd.png" alt={title} width={0} height={0} sizes='100vw' className="w-full z-[2] mx-auto aspect-video object-cover"/>
       </div>
       <div className="w-full flex items-start justify-center px-6">
         <Link href={`/beams-theatre/${id}`} passHref>

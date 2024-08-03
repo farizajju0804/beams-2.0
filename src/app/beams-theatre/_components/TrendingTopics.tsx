@@ -3,6 +3,8 @@ import { getTrendingBeamsTheatre } from "@/actions/beams-theatre/getTrendingBeam
 import { BeamsTheatre } from '@/types/beamsTheatre';
 import { CardStack } from "./CardStack";
 import { SectionTitle } from "./SectionTitle";
+import TicketTitle from './TicketTitle';
+import Divider from './Divider';
 
 const TrendingCardStack: React.FC = async () => {
   const trending: BeamsTheatre[] = await getTrendingBeamsTheatre();
@@ -15,11 +17,12 @@ const TrendingCardStack: React.FC = async () => {
   }));
 
   return (
-    <div className="my-8 flex items-center flex-col justify-center max-w-5xl w-[90%] gap-12 relative mx-2 lg:mx-4 bg-brand-100 px-6 py-4 pb-8 rounded-3xl">
-      <div className="flex items-center justify-between w-full ">
-        <SectionTitle text="Trending Shows" />
+    <div className="my-2 flex items-center flex-col justify-center max-w-5xl w-[90%] gap-12 relative mx-2 lg:mx-4 bg-brand-100 px-6 py-4 pb-8 rounded-3xl">
+      <div className="flex items-center justify-center w-full ">
+        <TicketTitle title="Trending" />
       </div>
       <CardStack items={CARDS} />
+      <Divider/>
     </div>
   );
 };

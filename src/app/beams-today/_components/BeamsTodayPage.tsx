@@ -4,6 +4,7 @@ import TopicOfTheDayContainer from "./TopicsOfThedayContainer";
 import BeamsTodayListContainer from "./BeamsTodayListContainer";
 import SearchBar from "./SearchBar";
 import BeamsTodayCard from "./BeamsTodayCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface BeamsTodayPageProps {
   completedTopics: string[];
@@ -22,7 +23,8 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
     : topics;
 
   return (
-    <div className="flex flex-col items-center w-full bg-background gap-6">
+    <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col items-center justify-center w-full bg-background gap-6">
+      
       <Header />
       <TopicOfTheDayContainer user={user} />
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
