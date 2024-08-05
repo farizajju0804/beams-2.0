@@ -9,7 +9,7 @@ interface RecommendedSectionProps {
 }
 
 const RecommendedSection: React.FC<RecommendedSectionProps> = ({ relatedBeamsTheatre}) => {
-
+``
   const filteredData = relatedBeamsTheatre;
 
   return (

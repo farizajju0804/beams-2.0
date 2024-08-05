@@ -161,7 +161,7 @@ const SideBar: React.FC = () => {
                         {renderSubIcon(subitem.completed)}
                         <h1 className='font-normal w-[90%] text-sm'>{subitem.title}</h1>
                       </div>
-                      <p className='text-grey-2 font-normal'>{subitem.duration}</p>
+                      <p className='text-grey-2 font-normal text-sm'>{subitem.duration}</p>
                     </div>
                   ))}
                 </AccordionItem>

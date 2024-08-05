@@ -44,7 +44,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
       aria-label="Options"
       radius="full"
       color="warning"
-      className="mx-auto mb-4 text-grey-2"
+      className="mb-4 text-grey-2"
       classNames={{
         tabContent: 'group-data-[selected=true]:text-black',
       }}
