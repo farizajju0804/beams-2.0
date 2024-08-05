@@ -21,15 +21,15 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
       
       <div className="pl-6 md:pl-0 flex flex-col items-start lg:items-center">
     
-        <h1 className="text-lg md:text-3xl text-text font-display font-bold mb-[1px]">Topic of the Day</h1>
+        <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Topic of the Day</h1>
         <div className="border-b-2 border-brand mb-4 md:mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
       {topic ? (
         <div className="relative w-full lg:w-4/6 mx-auto h-96 md:h-[360px] rounded-lg">
-            <div className="absolute top-6 right-6 z-[3]">
+            <div className="absolute top-4 right-4 z-[3]">
       <FavoriteButton  beamsTodayId={topic.id} />
       </div>
-      <Chip size="sm" className="mb-2 absolute top-6 left-6 z-[3] bg-white text-black">{topic.category.name}</Chip>
+      <Chip size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">{topic.category.name}</Chip>
           <Image
             src={topic.thumbnailUrl as string}
             alt={topic.title}
@@ -39,12 +39,12 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
             className="z-2 aspect-auto md:aspect-video lg:rounded-lg"
           />
           <div className="absolute inset-0 lg:rounded-lg"></div>
-          <div className="absolute lg:rounded-lg bottom-0 w-full p-4 px-6 bg-gradient-to-t from-text to-text/30 text-background">
+          <div className="absolute lg:rounded-lg bottom-0 w-full p-2 px-6 bg-gradient-to-t from-text to-text/30 text-background">
             <h2 className="text-2xl md:text-3xl mb-2 font-semibold">{topic.title}</h2>
             <div className="flex justify-between items-center">
               <div className="flex items-center my-2 justify-between w-full">
                 <div className="flex w-full items-center justify-start lg:justify-center flex-1">
-                <Button endContent={<Microscope className="text-white" />} className="font-semibold text-white text-lg p-4 py-6" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
+                <Button endContent={<Microscope className="text-white" />} className="font-semibold text-white text-lg p-4 lg:px-8 py-6" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>
                 </div>

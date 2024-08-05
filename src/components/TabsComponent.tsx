@@ -5,7 +5,7 @@ import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
 interface TabConfig {
   key: string;
   title: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   content: ReactNode;
 }
 

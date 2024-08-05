@@ -74,7 +74,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       key: 'video',
       title: 'Video',
       icon: <VideoPlay size="24"  />,
-      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} videoId={beamsToday?.videoUrl} />,
+      content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} videoId={beamsToday?.videoUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
       key: 'audio',

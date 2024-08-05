@@ -113,10 +113,12 @@
 
 .video-js.vjs-ended .vjs-poster {
   display: block;
-  width: 140% !important;
-  height:140% !important;
 }
 
+.no-rotate {
+  transform: none !important;
+  transition: none !important;
+}
 
   .doorOpen {
     transform: perspective(1200px) rotateY(-105deg);

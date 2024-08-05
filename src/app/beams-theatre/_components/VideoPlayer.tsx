@@ -1,27 +1,92 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { CldVideoPlayer } from 'next-cloudinary';
+import 'next-cloudinary/dist/cld-video-player.css';
 
 interface VideoPlayerProps {
-  url: string;
+  id: string;
+  videoId: string;
+  thumbnailUrl : string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailUrl }) => {
+  const playerRef = useRef<any>(null);
+  const videoRef = useRef<any>(null);
+  const lastTimeRef = useRef(0);
+  const playTimeRef = useRef(0);
+
+  
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
+    const videoElement = videoRef.current;
+
+    const handleTimeUpdate = () => {
+      if (videoElement && !videoElement.paused && !videoElement.seeking) {
+        const currentTime = videoElement.currentTime;
+        const elapsedTime = currentTime - lastTimeRef.current;
+        playTimeRef.current += elapsedTime;
+        lastTimeRef.current = currentTime;
+      }
+    };
+
+    const handlePlay = () => {
+      if (videoElement) {
+        lastTimeRef.current = videoElement.currentTime;
+      }
+    };
+
+    const handlePause = () => {
+      handleTimeUpdate();
+    };
+
+    const handleSeeked = () => {
+      if (videoElement) {
+        lastTimeRef.current = videoElement.currentTime;
+      }
+    };
+
+    if (videoElement) {
+      videoElement.addEventListener('timeupdate', handleTimeUpdate);
+      videoElement.addEventListener('play', handlePlay);
+      videoElement.addEventListener('pause', handlePause);
+      videoElement.addEventListener('seeked', handleSeeked);
+
+      return () => {
+        videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+        videoElement.removeEventListener('play', handlePlay);
+        videoElement.removeEventListener('pause', handlePause);
+        videoElement.removeEventListener('seeked', handleSeeked);
+      };
     }
-  }, [url]);
+  }, []);
 
   return (
-    <div className="video-player w-full">
-      <video controls className="w-full" ref={videoRef}>
-        <source src={url} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <div className='w-full mx-auto'>
+      <CldVideoPlayer
+        id="my-video"
+        width="1920"
+        height="1080"
+        poster={thumbnailUrl}
+        fluid={true}
+        className='cld-fluid'
+        src={videoId}
+        colors={{
+          accent: '#F9D42E',
+          base: '#370075',
+          text: '#fffff'
+        }}
+        playbackRates={[0.5, 1, 1.5, 2]}
+        pictureInPictureToggle={true}
+        logo={{
+          imageUrl: 'https://example.com/logo.png',
+          onClickUrl: 'https://example.com',
+        }}
+        playerRef={playerRef}
+        videoRef={videoRef}
+      />
     </div>
   );
-};
+});
 
+VideoPlayer.displayName = 'VideoPlayer';
 export default VideoPlayer;

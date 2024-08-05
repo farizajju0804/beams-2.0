@@ -5,6 +5,7 @@ import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/p
 import { Chip } from "@nextui-org/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { TickCircle } from 'iconsax-react';
+import { useTheme } from "next-themes";
 
 type VoteType = {
   id: string;
@@ -36,9 +37,9 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
 
   const colors = [
     "bg-[#F9D42E]",
-    "bg-[#370075]",
-    "bg-[#f96f2e]",
     "bg-[#620097]",
+    "bg-[#f96f2e]",
+    "bg-[#370075]",
   ];
   const textcolors = [
     "text-black",
@@ -59,7 +60,9 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [userResponse, setUserResponse] = useState<string | null>(null);
-
+  const { theme }:any = useTheme();
+  const lightBg = '/images/beams-today/poll-bg.png';
+  const darkBg = '/images/beams-today/poll-bg-dark.png';
   useEffect(() => {
     const checkUserResponse = async () => {
       try {
@@ -90,10 +93,17 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
     }
   };
 
-  const optionLabels = ["1", "2", "3", "4"];
+  const optionLabels = ["A", "B", "C", "D"];
   const user:any = useCurrentUser();
   return (
-    <section className="bg-brand-100 p-6 mb-10 lg:mb-12 rounded-3xl">
+    <section className="bg-brand/10 p-6 mb-10 lg:mb-12 rounded-3xl" 
+    style={{
+      transformOrigin: "top center",
+      backgroundImage: `url(${theme === "dark" ? darkBg : lightBg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+    >
       {showResults ? (
         <Results votes={votes} poll={poll} optionLabels={optionLabels} userResponse={userResponse} />
       ) : (
@@ -129,12 +139,13 @@ const Question = ({
 
   return (
     <>
+     <h1 className="text-lg md:text-xl font-poppins font-bold mb-2">Poll</h1>
      <h1 className="text-lg md:text-xl font-display font-bold italic mb-1">Your Opinion Matters, {name}</h1>
      <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 mt-2 w-full flex-col-reverse justify-between flex md:flex-row items-start md:items-center gap-4">
      
         <div>
-          <h3 className="text-xl md:text-3xl text-left font-medium text-text w-full ">
+          <h3 className="text-xl md:text-2xl text-left font-medium text-text w-full ">
             {poll.question}
           </h3>
         </div>
@@ -163,6 +174,7 @@ const Results = ({ votes, poll, optionLabels, userResponse }: { votes: VoteType[
 
   return (
     <>
+     <h1 className="text-lg md:text-xl font-poppins font-bold mb-2">Poll</h1>
       <h1 className="text-xl md:text-xl italic font-display font-bold mb-1">Thanks For Your Response</h1>
       <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 w-full flex flex-col-reverse md:flex-row items-start md:items-center gap-4">

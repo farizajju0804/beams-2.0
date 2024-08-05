@@ -6,9 +6,10 @@ import 'next-cloudinary/dist/cld-video-player.css';
 interface VideoPlayerProps {
   id: string;
   videoId: string;
+  thumbnailUrl : string;
 }
 
-const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId }, ref) => {
+const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailUrl }, ref) => {
   const playerRef = useRef<any>(null);
   const videoRef = useRef<any>(null);
   const lastTimeRef = useRef(0);
@@ -62,11 +63,12 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId }, ref) => 
   }, []);
 
   return (
-    <div className='lg:min-w-[767px] min-w-[85vw] w-full mx-auto'>
+    <div className='lg:min-w-5xl lg:px-8 min-w-[85vw] w-full mx-auto'>
       <CldVideoPlayer
         id="my-video"
         width="1920"
         height="1080"
+        poster={thumbnailUrl}
         fluid={true}
         className='cld-fluid'
         src={videoId}
