@@ -11,6 +11,10 @@ const LearnPointsCard = () => {
               <Verify variant='Bold' className='text-text' />
               <p className='text-grey-2 text-sm lg:text-base'>Lorem ipsum dolor sit amet consectetur. Enim blandit.</p> 
               </div>
+              <div  className='flex gap-4 items-center mb-4'>
+              <Verify variant='Bold' className='text-text' />
+              <p className='text-grey-2 text-sm lg:text-base'>Lorem ipsum dolor sit amet consectetur. Enim blandit.</p> 
+              </div>
     </CardBody>
   </Card>
   )

@@ -2,14 +2,15 @@ import React from 'react'
 import VideoPlayer from './VideoPlayer'
 import { Button } from '@nextui-org/react'
 import { Heart, Profile2User, Share, Star, VideoPlay } from 'iconsax-react'
+import PreviewPlayer from './PreviewPlayer'
 
 const PreviewPlayerCard = () => {
   return (
     <div className='w-full flex flex-col gap-4 lg:w-4/6'>
-     <VideoPlayer  id={'1234'} videoId="https://res.cloudinary.com/drlyyxqh9/video/upload/v1722598269/Beams%20today/Medical%20Miracle/medical-miracle-video_lyqh23.mp4" thumbnailUrl="https://res.cloudinary.com/drlyyxqh9/image/upload/v1722598239/Beams%20today/Medical%20Miracle/Medical_Miracle_Thumbnail_iky88e.png" />
+     <PreviewPlayer id={'1234'} videoId="https://res.cloudinary.com/drlyyxqh9/video/upload/v1722598269/Beams%20today/Medical%20Miracle/medical-miracle-video_lyqh23.mp4" thumbnailUrl="https://res.cloudinary.com/drlyyxqh9/image/upload/v1722598239/Beams%20today/Medical%20Miracle/Medical_Miracle_Thumbnail_iky88e.png" />
      <div className='w-full flex justify-between'>
       <div className='font-display w-4/6 text-xl lg:text-3xl font-bold'>Magical Materials</div>
-      <div className='flex gap-4 w-2/6 items-center'>
+      <div className='flex gap-4 w-2/6 items-center justify-end'>
       <Button size='sm' className='bg-grey-3' isIconOnly startContent={<Heart variant='Bold' size={20} className='text-text'/>}>
       </Button>
       <Button size='sm' className='bg-grey-3' isIconOnly startContent={<Share variant='Bold' size={20} className='text-text'/>}>
