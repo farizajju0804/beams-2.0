@@ -19,6 +19,8 @@ const config = {
         grey: {
           1: "rgba(var(--color-grey))",
           2: "rgba(var(--color-grey-2))",
+          3: "rgba(var(--color-grey-3))",
+          4: "rgba(var(--color-grey-4))"
         },
         secondary: {
           1: "rgba(var(--color-secondary-1))",
