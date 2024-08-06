@@ -1,7 +1,7 @@
 import React from 'react'
 import VideoPlayer from './VideoPlayer'
 import { Button } from '@nextui-org/react'
-import { Heart, Profile2User, Share, Star, VideoPlay } from 'iconsax-react'
+import { Heart, Profile2User, Share, Star, Star1, VideoPlay } from 'iconsax-react'
 import PreviewPlayer from './PreviewPlayer'
 
 const PreviewPlayerCard = () => {
@@ -24,7 +24,7 @@ const PreviewPlayerCard = () => {
        <span className='text-grey-2 text-sm lg:text-base'>12 Beamers</span>
       </div>
       <div className='flex gap-2 items-center'>
-      <Star variant='Bold' className='text-secondary-1'/>
+      <Star1 variant='Bold' className='text-secondary-1'/>
        <span className='text-grey-2 text-sm lg:text-base'>4.3</span>
       </div>
       </div>

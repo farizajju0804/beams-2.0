@@ -1,7 +1,7 @@
 'use client'
 
 import { Accordion, AccordionItem } from '@nextui-org/react'
-import { AddCircle, TickCircle, MinusCirlce, PlayCircle, Play } from 'iconsax-react'
+import { AddCircle, TickCircle, MinusCirlce, PlayCircle } from 'iconsax-react'
 import React, { useState } from 'react'
 
 interface SubItem {
@@ -20,7 +20,7 @@ interface Item {
 
 interface Section {
   level: string;
-  color: string;
+  boxes: number; // Number of boxes to display
   items: Item[];
 }
 
@@ -30,7 +30,7 @@ const SideBar: React.FC = () => {
   const sections: Section[] = [
     {
       level: "Beginner",
-      color: "bg-green-500",
+      boxes: 1,
       items: [
         {
           title: "Introduction",
@@ -39,14 +39,13 @@ const SideBar: React.FC = () => {
             { title: "Intro to materials", duration: "04:45", completed: true },
             { title: "Intro to materials", duration: "04:45", completed: true },
             { title: "Intro to materials", duration: "04:45", completed: true }
-
           ]
         }
       ],
     },
     {
       level: "Intermediate",
-      color: "bg-purple-500",
+      boxes: 2,
       items: [
         {
           title: "Properties",
@@ -61,7 +60,7 @@ const SideBar: React.FC = () => {
     },
     {
       level: "Advanced",
-      color: "bg-blue-500",
+      boxes: 3,
       items: [
         {
           title: "Applications Of Magical Materials",
@@ -70,32 +69,29 @@ const SideBar: React.FC = () => {
             { title: "Aerogel Applications", duration: "04:45", completed: true },
             { title: "Quantum Dots Applications", duration: "04:45", completed: false },
             { title: "Graphene Applications", duration: "04:45", completed: false },
-            { title: "PiezoElectric Applications", duration: "04:45", completed: false },
+            { title: "PiezoElectric Applications", duration: "04:45", completed: false }
           ],
         },
       ],
     },
     {
       level: "Proficient",
-      color: "bg-yellow-500",
+      boxes: 4,
       items: [
         {
           title: "Real Life Techniques",
           completed: false,
           subitems: [
+            { title: "Techniques in practice", duration: "04:45", completed: false },
+            { title: "Techniques in practice", duration: "04:45", completed: false },
             { title: "Techniques in practice", duration: "04:45", completed: false }
-            ,
-            { title: "Techniques in practice", duration: "04:45", completed: false }
-,
-{ title: "Techniques in practice", duration: "04:45", completed: false }
-
           ]
         }
       ],
     },
     {
       level: "Expert",
-      color: "bg-red-500",
+      boxes: 5,
       items: [
         {
           title: "Future Research",
@@ -129,6 +125,19 @@ const SideBar: React.FC = () => {
     }
   };
 
+  const renderBoxes = (count: number) => {
+    const boxes = [];
+    for (let i = 0; i < 5; i++) {
+      boxes.push(
+        <div
+          key={i}
+          className={`w-2 h-2 mx-0.5 rounded-full ${i < count ? 'bg-secondary-1' : 'bg-grey-2'}`}
+        ></div>
+      );
+    }
+    return <div className='flex'>{boxes}</div>;
+  };
+
   return (
     <div className={`hidden lg:block transition-width duration-300 ${isOpen ? 'w-full lg:w-[30%]' : 'w-fit'}`}>
       <div className={`flex mb-4 justify-between items-center ${isOpen ? 'w-auto' : 'w-fit'} transition-width duration-300 `}>
@@ -139,9 +148,14 @@ const SideBar: React.FC = () => {
       </div>
       <div className={`mt-2 ${isOpen ? 'block' : 'hidden'}`}>
         {sections.map((section, idx) => (
-          <div key={idx} className='mb-4'>
-            <div className='text-text flex gap-1 justify-center items-center w-fit mb-2'><div className={`w-2 h-2 rounded-full ${section.color}`}></div><div className='text-text text-sm'>{section.level}</div></div>
-            <Accordion className='gap-4 px-0' showDivider>
+          <div key={idx} className='my-8'>
+            <div className='flex justify-between items-center mb-2'>
+              <div className='text-text flex gap-1 items-center'>
+                <div className='text-text text-sm'>{section.level}</div>
+              </div>
+              {renderBoxes(section.boxes)}
+            </div>
+            <Accordion variant='shadow' className='gap-4 px-0 shadow-none border-none outline-none rounded-3xl' >
               {section.items.map((item, index) => (
                 <AccordionItem
                   disableIndicatorAnimation
@@ -153,7 +167,7 @@ const SideBar: React.FC = () => {
                   }
                   title={item.title}
                   classNames={{heading: 'p-0',title : "font-poppins text-base font-medium", indicator : "transform-none"}}
-                  className='border-b-1 p-0'
+                  className='px-4 bg-grey-3 rounded-3xl'
                 >
                   {item.subitems && item.subitems.map((subitem, subindex) => (
                     <div key={subindex} className='flex items-center justify-between mb-4'>
