@@ -1,153 +1,150 @@
 'use client';
-
-import { Accordion, AccordionItem } from '@nextui-org/react';
-import { AddCircle, TickCircle, MinusCirlce, PlayCircle, Play } from 'iconsax-react';
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowDown2, TickCircle } from 'iconsax-react';
 
-interface SubItem {
-  title: string;
-  duration: string;
-  completed: boolean;
-}
+// Sample course content data for "Magical Materials"
+const sections = [
+  {
+    title: 'Introduction to Magical Materials',
+    lectures: '3 lectures • 15min',
+    subitems: [
+      { title: 'Intro to materials', duration: '05:00', completed: true },
+      { title: 'History of materials', duration: '05:00', completed: true },
+      { title: 'Overview of magical properties', duration: '05:00', completed: true }
+    ],
+  },
+  {
+    title: 'Properties of Magical Materials',
+    lectures: '4 lectures • 20min',
+    subitems: [
+      { title: 'Material properties overview', duration: '05:00', completed: true },
+      { title: 'Physical properties', duration: '05:00', completed: true },
+      { title: 'Chemical properties', duration: '05:00', completed: true },
+      { title: 'Mechanical properties', duration: '05:00', completed: true }
+    ],
+  },
+  {
+    title: 'Applications of Aerogels',
+    lectures: '2 lectures • 10min',
+    subitems: [
+      { title: 'Aerogel in construction', duration: '05:00', completed: true },
+      { title: 'Aerogel in technology', duration: '05:00', completed: true }
+    ],
+  },
+  {
+    title: 'Graphene and its Uses',
+    lectures: '2 lectures • 10min',
+    subitems: [
+      { title: 'Graphene in electronics', duration: '05:00', completed: true },
+      { title: 'Graphene in medicine', duration: '05:00', completed: true }
+    ],
+  },
+  {
+    title: 'Quantum Dots Applications',
+    lectures: '3 lectures • 15min',
+    subitems: [
+      { title: 'Quantum dots in displays', duration: '05:00', completed: true },
+      { title: 'Quantum dots in medical imaging', duration: '05:00', completed: false },
+      { title: 'Future prospects of quantum dots', duration: '05:00', completed: false }
+    ],
+  },
+  {
+    title: 'Future of Material Science',
+    lectures: '3 lectures • 15min',
+    subitems: [
+      { title: 'Self-healing materials', duration: '05:00', completed: false },
+      { title: 'Metamaterials', duration: '05:00', completed: false },
+      { title: 'Piezoelectric materials', duration: '05:00', completed: false }
+    ],
+  },
+];
 
-interface Item {
-  title: string;
-  duration?: string;
-  completed?: boolean;
-  progress?: number;
-  subitems?: SubItem[];
-}
+const ProgressTab = () => {
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
-interface Section {
-  level: string;
-  color: string;
-  items: Item[];
-}
-
-const ProgressTab: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
-
-  const sections: Section[] = [
-    {
-      level: 'Beginner',
-      color: 'bg-green-500',
-      items: [
-        {
-          title: 'Introduction',
-          completed: true,
-          subitems: [{ title: 'Intro to materials', duration: '04:45', completed: true }],
-        },
-      ],
-    },
-    {
-      level: 'Intermediate',
-      color: 'bg-purple-500',
-      items: [
-        {
-          title: 'Properties',
-          completed: true,
-          subitems: [{ title: 'Material properties overview', duration: '04:45', completed: true }],
-        },
-      ],
-    },
-    {
-      level: 'Advanced',
-      color: 'bg-blue-500',
-      items: [
-        {
-          title: 'Applications Of Magical Materials',
-          progress: 20,
-          subitems: [
-            { title: 'Aerogel Applications', duration: '04:45', completed: true },
-            { title: 'Quantum Dots Applications', duration: '04:45', completed: false },
-            { title: 'Graphene Applications', duration: '04:45', completed: false },
-            { title: 'PiezoElectric Applications', duration: '04:45', completed: false },
-          ],
-        },
-      ],
-    },
-    {
-      level: 'Proficient',
-      color: 'bg-yellow-500',
-      items: [
-        {
-          title: 'Real Life Techniques',
-          completed: false,
-          subitems: [{ title: 'Techniques in practice', duration: '04:45', completed: false }],
-        },
-      ],
-    },
-    {
-      level: 'Expert',
-      color: 'bg-red-500',
-      items: [
-        {
-          title: 'Future Research',
-          completed: false,
-          subitems: [{ title: 'Upcoming research topics', duration: '04:45', completed: false }],
-        },
-      ],
-    },
-  ];
-
-  const renderIcon = (completed: boolean, progress?: number) => {
-    if (completed) {
-      return <TickCircle variant='Bold' size={20} className='text-brand' />;
-    } else if (progress) {
-      return <PlayCircle size={20} className='text-brand' />;
-    } else {
-      return <PlayCircle size={20} variant='Outline' className='text-text/30' />;
-    }
+  const toggleSection = (index: string) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
-  const renderSubIcon = (completed: boolean, progress?: number) => {
-    if (completed) {
-      return <TickCircle variant='Bold' size={12} className='text-text' />;
-    } else if (progress) {
-      return <PlayCircle size={12} className='text-text' />;
+
+  const toggleAllSections = () => {
+    if (expandedSections.size === sections.length) {
+      setExpandedSections(new Set());
     } else {
-      return <PlayCircle size={12} variant='Outline' className='text-text/30' />;
+      setExpandedSections(new Set(sections.map((_, index) => index.toString())));
     }
   };
 
   return (
-    <div className='w-full'>
-      <div className={`${isOpen ? 'block' : 'hidden'}`}>
-        {sections.map((section, idx) => (
-          <div key={idx} className='mb-4'>
-            <div className='text-text flex gap-1 justify-center items-center w-fit mb-2'>
-              <div className={`w-2 h-2 rounded-full ${section.color}`}></div>
-              <div className='text-text  text-xs'>{section.level}</div>
-            </div>
-            <Accordion className='gap-4' showDivider>
-              {section.items.map((item, index) => (
-                <AccordionItem
-                  disableIndicatorAnimation
-                  key={index}
-                  aria-label={`Accordion ${index}`}
-                  startContent={renderIcon(item.completed || false, item.progress)}
-                  indicator={({ isOpen }) =>
-                    isOpen ? <MinusCirlce size={24} className='text-text' /> : <AddCircle size={24} className='text-text' />
-                  }
-                  title={item.title}
-                  classNames={{ content : 'py-0',title: 'font-poppins text-sm font-medium', indicator: 'transform-none' }}
-                  className='border-b-1'
-                >
-                  {item.subitems &&
-                    item.subitems.map((subitem, subindex) => (
-                      <div key={subindex} className='flex items-center justify-between mb-4'>
-                        <div className='flex items-center gap-2'>
-                          {renderSubIcon(subitem.completed)}
-                          <h1 className='font-normal text-xs'>{subitem.title}</h1>
-                        </div>
-                        <p className='text-grey-2 text-xs font-normal'>{subitem.duration}</p>
-                      </div>
-                    ))}
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        ))}
+    <div className="bg-grey-3 shadow-none rounded-3xl p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="font-poppins text-xl md:text-2xl font-semibold text-text">Progress</h1>
+        <button className="text-primary text-sm" onClick={toggleAllSections}>
+          {expandedSections.size === sections.length ? 'Collapse all' : 'Expand all'}
+        </button>
       </div>
+      {sections.map((section, index) => (
+        <div key={index.toString()} className="border-t border-grey-200">
+          <div
+            onClick={() => toggleSection(index.toString())}
+            className="flex justify-between items-center py-4 cursor-pointer"
+          >
+            <div className="flex items-center">
+              <motion.div
+                initial={false}
+                animate={{ rotate: expandedSections.has(index.toString()) ? 180 : 0 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="mr-2"
+              >
+                <ArrowDown2 size={16} className="text-text" />
+              </motion.div>
+              <h2 className="font-poppins text-base lg:text-lg font-medium text-text">
+                {section.title}
+              </h2>
+            </div>
+            <p className="hidden lg:block lg:text-base font-normal text-grey-2">{section.lectures}</p>
+          </div>
+          <AnimatePresence initial={false}>
+            {expandedSections.has(index.toString()) && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  height: { duration: 0.5, ease: 'easeInOut' },
+                  opacity: { duration: 0.5, ease: 'easeInOut' },
+                  type: 'spring'
+                }}
+                className=""
+              >
+                {section.subitems.map((subitem, subindex) => (
+                  <div key={subindex} className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 flex items-center justify-center rounded-full text-text border-1 border-text/40 text-sm">
+                        {subindex + 1}
+                      </div>
+                      <p className="text-sm lg:text-base font-normal text-grey-2">{subitem.title}</p>
+                    </div>
+                    {subitem.completed ? (
+                      <TickCircle size={20} variant='Bold' className="text-brand" />
+                    ) : (
+                      <div className="hidden lg:block lg:text-base font-normal text-grey-2">{subitem.duration}</div>
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      ))}
     </div>
   );
 };

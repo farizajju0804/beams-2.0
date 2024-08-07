@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@nextui-org/react';
 import { Heart, Profile2User, Share, Star1, VideoPlay } from 'iconsax-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import PreviewPlayer from './PreviewPlayer';
+import { FaStar } from "react-icons/fa";
 import CourseThumbnail from './CourseThumbnail';
 import { IoShareSocial } from "react-icons/io5";
 const DetailsCard = () => {
@@ -23,7 +23,7 @@ const DetailsCard = () => {
           <div className='text-sm lg:text-lg text-grey-2'>Master the Wonders of Magical Materials: Transform Your Knowledge of Aerogels, Graphene, and Quantum Dots!</div>
           <div className='w-full flex gap-4 my-4 items-center'>
           <div className='flex gap-1 items-center'>
-            <Star1 variant='Linear' className='text-yellow-500'/>
+            <FaStar className='text-yellow-500'/>
             <span className='text-grey-2 text-sm'>4.7</span>
           </div>
           <div className='flex gap-1 items-center'>

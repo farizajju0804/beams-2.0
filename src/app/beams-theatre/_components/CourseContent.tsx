@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown2, Play, PlayCircle } from 'iconsax-react';
+import { ArrowDown2 } from 'iconsax-react';
 
 // Sample course content data for "Magical Materials"
 const sections = [
@@ -129,7 +129,9 @@ const CourseContent = () => {
                 {section.subitems.map((subitem, subindex) => (
                   <div key={subindex} className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2">
-                      <Play size={16} className="text-text" />
+                      <div className="w-6 h-6 flex items-center justify-center rounded-full text-text border-1 border-text/40 text-sm">
+                        {subindex + 1}
+                      </div>
                       <p className="text-sm lg:text-base font-normal text-grey-2">{subitem.title}</p>
                     </div>
                     <p className="hidden lg:block lg:text-base font-normal text-grey-2">{subitem.duration}</p>

@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Play } from 'iconsax-react';
+
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import PreviewPlayer from './PreviewPlayer';
-
+import { FaPlay } from "react-icons/fa6";
 interface ThumbnailProps {
   thumbnailUrl: string;
   videoId: string;
@@ -22,7 +22,7 @@ const CourseThumbnail: React.FC<ThumbnailProps> = ({ thumbnailUrl, videoId }) =>
         />
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
           <div className='bg-background bg-opacity-50 rounded-full p-3 flex items-center justify-center shadow-lg'>
-            <Play size={32} className='text-primary' />
+            <FaPlay size={20} className='text-primary' />
           </div>
         </div>
         <div className='absolute bottom-0 left-0 w-full h-full flex items-end'>
