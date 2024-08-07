@@ -20,7 +20,7 @@ const DetailsCard = () => {
       <div className='flex flex-col-reverse  lg:flex-row justify-between items-center'>
         <div className='w-full flex  flex-col  mt-4 lg:mt-0 lg:w-4/6'>
           <div className='font-poppins text-2xl my-2 lg:text-4xl font-bold text-text'>Magical Materials</div>
-          <div className='text-sm lg:text-lg text-grey-2'>Master the Wonders of Magical Materials: Transform Your Knowledge of Aerogels, Graphene, and Quantum Dots!"</div>
+          <div className='text-sm lg:text-lg text-grey-2'>Master the Wonders of Magical Materials: Transform Your Knowledge of Aerogels, Graphene, and Quantum Dots!</div>
           <div className='w-full flex gap-4 my-4 items-center'>
           <div className='flex gap-1 items-center'>
             <Star1 variant='Linear' className='text-yellow-500'/>
