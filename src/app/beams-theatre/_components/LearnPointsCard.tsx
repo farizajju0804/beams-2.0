@@ -1,23 +1,36 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react'
-import { Verify } from 'iconsax-react'
-import React from 'react'
+'use client';
+import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { Verify } from 'iconsax-react';
+import React from 'react';
+
+// Array of learning points for the course on "Magical Materials"
+const learnPoints = [
+  "Understand the properties of magical materials.",
+  "Explore the applications of aerogels.",
+  "Learn about the use of graphene in technology.",
+  "Discover the potential of quantum dots.",
+  "Study self-healing materials and their uses.",
+  "Investigate metamaterials and their unique properties.",
+  "Analyze piezoelectric materials and their applications.",
+  "Gain insights into the future of material science."
+];
 
 const LearnPointsCard = () => {
   return (
-    <Card className='bg-grey-3 shadow-none border-none'>
-    <CardBody className='p-4'>
-    <h1 className='font-display text-lg lg:text-2xl font-bold text-text mb-4'>What You’ll Learn</h1>
-    <div  className='flex gap-4 items-center mb-4'>
-              <Verify variant='Bold' className='text-text' />
-              <p className='text-grey-2 text-sm lg:text-base'>Lorem ipsum dolor sit amet consectetur. Enim blandit.</p> 
-              </div>
-              <div  className='flex gap-4 items-center mb-4'>
-              <Verify variant='Bold' className='text-text' />
-              <p className='text-grey-2 text-sm lg:text-base'>Lorem ipsum dolor sit amet consectetur. Enim blandit.</p> 
-              </div>
-    </CardBody>
-  </Card>
+    <Card className='shadow-none border-1 border-text/20'>
+      <CardBody className='p-4'>
+        <h1 className='font-poppins text-xl md:text-2xl font-semibold text-text mb-4'>What You’ll Learn</h1>
+        <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 md:gap-y-6  items-start justify-start'>
+          {learnPoints.map((point, index) => (
+            <div key={index} className='w-full flex items-start'>
+              <Verify size={20} variant='Bold' className='text-green-500 mr-3 w-fit' />
+              <p className='text-grey-2 text-sm lg:text-base w-full'>{point}</p>
+            </div>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
   )
 }
 
-export default LearnPointsCard
+export default LearnPointsCard;
