@@ -26,6 +26,7 @@ const PreviewPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnai
         const player = cloudinary.videoPlayer(videoElementId, {
           cloud_name: 'drlyyxqh9', 
           floatingWhenNotVisible: 'right',
+          showLogo : false,
           controls: true,
           colors: {
             base: '#181818',

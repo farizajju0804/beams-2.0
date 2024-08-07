@@ -28,13 +28,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
           seekThumbnails: true,
           floatingWhenNotVisible: 'right',
           controls: true,
+          showLogo : false,
           colors: {
             base: '#181818',
             accent: '#F96F2E',
             text: '#ffffff'
           },
           fontFace: 'Quicksand',
-          chaptersButton: true
+          chaptersButton: true,
+          
         });
 
         playerRef.current = player;
@@ -114,7 +116,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
       <video
         id={videoElementId}
         controls
-        className="cld-video-player cld-fluid"
+        className="cld-video-playe cld-video-player-skin-light cld-fluid"
       >
       </video>
     </div>
