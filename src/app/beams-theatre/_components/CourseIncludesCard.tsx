@@ -14,13 +14,12 @@ const outcomes = [
 
 const CourseIncludesCard = () => {
   return (
-    <div className='w-full'>
-      <Card className='w-full border-none outline-none shadow-none'>
-        <CardHeader className='flex py-4 items-center'>
+    <div className='w-full p-4'>
+      <Card className='w-full p-0  border-none outline-none shadow-none'>
+        <CardHeader className='flex p-0 mb-4 items-center'>
           <h2 className='text-xl md:text-2xl font-semibold font-poppins text-text'>This course includes:</h2>
         </CardHeader>
-        <Divider />
-        <CardBody>
+        <CardBody className='p-0'>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
             {outcomes.map((outcome, id) => (
               <div key={id} className='flex gap-2 my-2 items-center'>

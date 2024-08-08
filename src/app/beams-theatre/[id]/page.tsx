@@ -12,6 +12,8 @@ import CourseIncludesCard from '../_components/CourseIncludesCard';
 import BottomCta from '../_components/BottomCta';
 import CourseContent from '../_components/CourseContent';
 import HeaderSection from '../_components/HeaderSection';
+import Goal from '../_components/Goal';
+import TestimonialSection from '../_components/TestimonialSection';
 
 
 interface BeamsTheatrePageProps {
@@ -24,7 +26,7 @@ const PreviewPage: React.FC<BeamsTheatrePageProps> = async ({ params }) => {
   const filteredRelatedContent = relatedBeamsTheatre.filter(item => item.id !== beamsTheatre.id);
 
   return (
-    <div className='w-full bg-background max-w-5xl flex flex-col px-6 pt-4 pb-8 mb-14 md:mb-4 mx-auto'>
+    <div className='w-full bg-background max-w-5xl flex flex-col px-6 pt-2  pb-8 mb-14 mx-auto'>
       
       <div className='flex flex-col lg:gap-12 gap-8'>
       <HeaderSection/>
@@ -32,7 +34,9 @@ const PreviewPage: React.FC<BeamsTheatrePageProps> = async ({ params }) => {
       <LearnPointsCard/>
       <CourseIncludesCard/>
       <CourseContent/>
-      <BottomCta  />
+      <Goal/>
+      <BottomCta />
+      <TestimonialSection/>
     
       </div>
   

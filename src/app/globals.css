@@ -31,6 +31,8 @@
   --color-grey-3: 244, 247, 249;
   --color-grey-4: 16, 16, 16;
   --color-accent : 249, 212, 46;
+  --color-yellow : 249, 212, 46;
+  --color-purple :  55, 0, 117;
  
 }
 
@@ -40,14 +42,16 @@
   --color-brand : 249,111,46;
   --color-background : 24, 24, 24;
   --color-text :  255, 255, 255;
-  --color-secondary-1 : 249, 212, 46;
-  --color-secondary-2 : 55, 0, 117;
+  --color-secondary-1 : 55, 0, 117;
+  --color-secondary-2 : 249, 212, 46;
   --color-secondary-3 : 98, 0, 151;
   --color-grey-2: 244, 244, 245;
   --color-grey: 63, 63, 70;
   --color-grey-4: 244, 247, 249;
   --color-grey-3: 16, 16, 16;
   --color-accent : 255, 255, 255;
+  --color-yellow : 249, 212, 46;
+  --color-purple :  55, 0, 117;
 }
 
 .rotate-x-180{

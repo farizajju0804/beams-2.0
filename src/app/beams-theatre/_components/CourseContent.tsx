@@ -129,7 +129,7 @@ const CourseContent = () => {
                 {section.subitems.map((subitem, subindex) => (
                   <div key={subindex} className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 flex items-center justify-center rounded-full text-text border-1 border-text/40 text-sm">
+                      <div className="w-4 h-4 flex items-center justify-center rounded-full text-text border-1 border-text/80 text-xs">
                         {subindex + 1}
                       </div>
                       <p className="text-sm lg:text-base font-normal text-grey-2">{subitem.title}</p>

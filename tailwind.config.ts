@@ -16,6 +16,8 @@ const config = {
         background: "rgba(var(--color-background))",
         text: "rgba(var(--color-text))",
         brand: "rgba(var(--color-brand))",
+        yellow : "rgba(var(--color-yellow))",
+        purple : "rgba(var(--color-purple))",
         grey: {
           1: "rgba(var(--color-grey))",
           2: "rgba(var(--color-grey-2))",
@@ -28,9 +30,6 @@ const config = {
           3: "rgba(var(--color-secondary-3))",
         },
         accent: "rgba(var(--color-accent))",
-        yellow: {
-          900: '#ffd25d',
-        },
         black: '#181818',
       },
       fontFamily: {

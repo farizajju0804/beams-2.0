@@ -11,8 +11,8 @@ const BottomCta: React.FC = () => {
 
 
   return (
-    <div className="fixed lg:hidden w-full bg-background bottom-0 right-0 border-t border-grey-1 flex justify-center items-center z-[400] p-4 ">
-      <Button  color="primary" className="text-white w-full font-semibold text-lg " startContent={<VideoPlay variant='Bold' className="text-white" size="20" /> } >
+    <div className="fixed w-full bg-background bottom-0 right-0 border-t border-grey-1 flex justify-center items-center z-[400] p-4 ">
+      <Button  color="primary" className="text-white lg:w-fit lg:px-8 w-full font-semibold text-lg " startContent={<VideoPlay variant='Bold' className="text-white" size="20" /> } >
        Start Course
       </Button>
     </div>

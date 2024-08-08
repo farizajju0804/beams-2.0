@@ -25,8 +25,9 @@ const PreviewPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnai
       if (videoElement && videoElement.tagName === 'VIDEO') {
         const player = cloudinary.videoPlayer(videoElementId, {
           cloud_name: 'drlyyxqh9', 
-          floatingWhenNotVisible: 'right',
           showLogo : false,
+          autoplay : true,
+          bigPlayButton : false,
           controls: true,
           colors: {
             base: '#181818',
