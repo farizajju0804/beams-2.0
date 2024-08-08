@@ -14,7 +14,7 @@ const BeamsTheatrePage: React.FC<BeamsTheatrePageProps> = async ({ params }) => 
   const filteredRelatedContent = relatedBeamsTheatre.filter(item => item.id !== beamsTheatre.id);
 
   return (
-    <div className='w-full max-w-5xl flex px-2 mx-auto'>
+    <div className='w-full max-w-5xl flex mx-auto'>
       <SideBar/>
       <PlayerComponent/>
  

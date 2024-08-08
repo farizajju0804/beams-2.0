@@ -32,24 +32,10 @@ const testimonials = [
 ];
 
 const TestimonialSection: React.FC = () => {
-  const [duration, setDuration] = useState(30);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setDuration(15); // faster on mobile
-      } else {
-        setDuration(30); // slower on desktop
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // initial check
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+//   const [duration, setDuration] = useState(30);
+  
+  const isMobile = window.innerWidth <  767;
+  const duration = isMobile ? 30 : 20
 
   return (
     <div className="bg-secondary-1 text-text rounded-3xl py-8 px-6 relative overflow-hidden">
@@ -58,9 +44,9 @@ const TestimonialSection: React.FC = () => {
       <div className="relative flex overflow-hidden">
         <motion.div
           className="flex space-x-6"
-          initial={{ x: '30%' }}
+          initial={{ x: isMobile ? '0%' : '30%' }}
           animate={{ x: '-100%' }}
-          transition={{ repeat: Infinity, duration, ease: 'linear' }}
+          transition={{ repeat: Infinity,duration , ease: 'linear' }}
         >
           {testimonials.concat(testimonials).map((testimonial, index) => (
             <div

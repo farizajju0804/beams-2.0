@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AddCircle, TickCircle, MinusCirlce } from 'iconsax-react';
+import { AddCircle, MinusCirlce } from 'iconsax-react';
 import { FaPlay } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri';
 import { FaCircleCheck } from "react-icons/fa6";
+import { useSidebarStore } from '@/store/sidebarStore';
+
 interface SubItem {
   title: string;
   duration: string;
@@ -25,7 +27,7 @@ interface Section {
 }
 
 const SideBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const { isOpen, toggleSidebar } = useSidebarStore();
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
 
   const sections: Section[] = [
@@ -110,21 +112,18 @@ const SideBar: React.FC = () => {
   };
 
   return (
-    <div
-    
-      className={`hidden lg:block transition-width duration-300`}
-    >
+    <div className={`hidden lg:block transition-width duration-300`}>
       <div className={`flex mb-4 justify-between items-center ${isOpen ? 'w-auto' : 'w-fit'} transition-width duration-300`}>
         {isOpen && <h2 className='text-xl font-semibold'>Progress</h2>}
-        <button className='p-2 rounded-full bg-grey-1' onClick={() => setIsOpen(!isOpen)}>
+        <button className='p-2 rounded-full bg-grey-1' onClick={toggleSidebar}>
           {isOpen ? <RiMenuFoldLine size={24} /> : <RiMenuUnfoldLine size={24} />}
         </button>
       </div>
       <div className={`mt-2 ${isOpen ? 'block' : 'hidden'}`}>
         {sections.map((section, idx) => (
-          <div key={idx} className='my-8'>
+          <div key={idx} className='my-4'>
             {section.items.map((item, index) => (
-              <div key={index} className='bg-grey-1 p-4 my-8 rounded-3xl'>
+              <div key={index} className='bg-grey-1 p-2 my-2 rounded-lg border'>
                 <div className='flex justify-between items-center cursor-pointer' onClick={() => toggleItem(index)}>
                   <div className='flex items-center gap-2'>
                     <div className='flex items-center justify-center rounded-full p-2'>
@@ -132,7 +131,7 @@ const SideBar: React.FC = () => {
                     </div>
                     <h1 className='font-poppins text-base font-medium'>{item.title}</h1>
                   </div>
-                  <div className='flex items-center justify-center rounded-full  p-2'>
+                  <div className='flex items-center justify-center rounded-full p-2'>
                     {expandedItems.has(index) ? <MinusCirlce size={24} /> : <AddCircle size={24} />}
                   </div>
                 </div>
@@ -146,12 +145,12 @@ const SideBar: React.FC = () => {
                         height: { duration: 0.5, ease: 'easeInOut' },
                         opacity: { duration: 0.5, ease: 'easeInOut' },
                       }}
-                      className='mt-4'
+                      className='mt-2'
                     >
                       {item.subitems.map((subitem, subindex) => (
-                        <div key={subindex} className='flex items-center justify-between my-2'>
+                        <div key={subindex} className='flex items-center justify-between my-1'>
                           <div className='flex items-center gap-2'>
-                            <div className='flex items-center justify-center rounded-full  p-2'>
+                            <div className='flex items-center justify-center rounded-full p-2'>
                               {renderSubIcon(subitem.completed)}
                             </div>
                             <h1 className='font-normal w-[90%] text-sm'>{subitem.title}</h1>

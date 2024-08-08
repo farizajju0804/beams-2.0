@@ -25,8 +25,8 @@ const tabs = [
   ];
 const EpisodeDetails = () => {
   return (
-    <div className='w-full flex flex-col'>
-        <div className="lg:px-4 lg:mt-2 rounded-3xl">
+    <div className='w-full lg:px-0 px-6 flex flex-col'>
+        <div className="rounded-3xl">
       <h1 className="text-2xl md:text-3xl font-bold font-poppins my-2">Quantum Dots</h1>
       <div className="flex justify-between gap-4 items-center w-full mt-2">
         <p className="text-grey-2 text-xs lg:text-base">

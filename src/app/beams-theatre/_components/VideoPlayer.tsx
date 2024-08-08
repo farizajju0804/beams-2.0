@@ -16,7 +16,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
   const playerRef = useRef<any>(null);
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
-
+  const isMobile =  window.innerWidth <  767;
   useEffect(() => {
     const initializePlayer = () => {
       const videoElement = document.getElementById(videoElementId) as HTMLVideoElement;
@@ -26,7 +26,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
           pictureInPictureToggle: true,
           playbackRates: [0.5, 1, 1.5, 2],
           seekThumbnails: true,
-          floatingWhenNotVisible: 'right',
+          floatingWhenNotVisible: isMobile ? false : 'right',
           controls: true,
           showLogo : false,
           colors: {
