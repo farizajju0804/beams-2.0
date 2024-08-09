@@ -8,14 +8,17 @@ import { motion } from 'framer-motion';
 const UserProfile = ({ user }: { user: any }) => {
   const [selectedTab, setSelectedTab] = useState("Personal Info");
 
+  
   const tabs = [
     { name: "Personal Info", component: <PersonalInfoForm user={user} url={user.image} /> },
-    { name: "Security", component: !user.isOAuth && (
-      <div className="w-full flex items-center gap-8 justify-center flex-col">
-        <ChangeEmailForm user={user} />
-        <ChangePasswordForm />
-      </div>
-    )},
+    ...(!user.isOAuth ? [
+      { name: "Security", component: (
+        <div className="w-full flex items-center gap-8 justify-center flex-col">
+          <ChangeEmailForm user={user} />
+          <ChangePasswordForm />
+        </div>
+      ) },
+    ] : []),
   ];
 
   return (

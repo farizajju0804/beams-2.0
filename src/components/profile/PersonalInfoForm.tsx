@@ -12,7 +12,6 @@ import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
-import { FaEdit } from 'react-icons/fa';
 import { Gallery } from "iconsax-react";
 
 interface PersonalInfoFormProps {
@@ -20,6 +19,7 @@ interface PersonalInfoFormProps {
     name: string | null | undefined;
     email: string;
     image: string;
+    isOAuth: boolean;
   };
   url: string;
 }
@@ -62,6 +62,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
           const res = await fetch(url, {
             method: "POST",
             body: formData,
+            mode: "no-cors"
           });
 
           const data = await res.json();
@@ -162,6 +163,23 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
                   </FormItem>
                 )}
               />
+              {user.isOAuth && (
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={() => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          label="Email"
+                          value={user.email}
+                          disabled
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />

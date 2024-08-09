@@ -8,6 +8,7 @@ import { Form, FormField, FormControl, FormItem, FormMessage } from '@/component
 import { Input, Button, Modal, ModalFooter, ModalBody, ModalHeader, ModalContent } from "@nextui-org/react";
 import { FiEdit } from 'react-icons/fi';
 import { settings } from "@/actions/auth/settings";
+import { Edit } from "iconsax-react";
 
 const ChangeEmailForm = ({ user }: { user: any }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -87,7 +88,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
                 onClick={handleEditClick}
                 className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
               >
-                <FiEdit size={20} />
+                <Edit size={20} />
               </button>
             )}
           </div>
