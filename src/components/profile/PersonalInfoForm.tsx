@@ -7,11 +7,13 @@ import { SettingsSchema } from "@/schema";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Avatar, Spinner } from "@nextui-org/react";
+import { Button, Input, Card, CardHeader, CardBody, Spinner } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
+import { FaEdit } from 'react-icons/fa';
+import { Gallery } from "iconsax-react";
 
 interface PersonalInfoFormProps {
   user: {
@@ -26,7 +28,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [isChangingImage, startChangingImage] = useTransition();
   const [profileImage, setProfileImage] = useState<string>(user.image || "");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -111,34 +112,37 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg mb-6">
-      <CardHeader className="bg-primary-500 text-white">
-        <p className="text-2xl font-semibold text-center">Edit Profile</p>
+    <Card className="w-full max-w-md p-4 border-0 rounded-3xl shadow-lg mb-6">
+      <CardHeader className="text-text">
+        <p className="text-base lg:text-xl font-semibold text-center">Edit Profile</p>
       </CardHeader>
-      <CardBody>
-      <div className="flex items-center justify-center mb-4 relative">
-  {isUploading && (
-    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-full">
-      <Spinner size="lg" color="primary" />
-    </div>
-  )}
-  <div
-    className={`w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
-    onClick={() => fileInputRef.current?.click()}
-  >
-    {profileImage ? (
-      <Image src={profileImage} alt="Profile" width={200} height={200} className="w-full h-full rounced-full object-cover" />
-    ) : (
-      <span className="text-gray-400">Click to upload</span>
-    )}
-  </div>
-  <input
-    ref={fileInputRef}
-    type="file"
-    className="hidden"
-    onChange={handleFileChange}
-  />
-</div>
+      <CardBody className="border-0 shadow-none">
+        <div className="flex items-center justify-center mb-4 relative">
+          {isUploading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-75 rounded-full">
+              <Spinner size="lg" color="primary" />
+            </div>
+          )}
+          <div className="relative">
+          <div
+            className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer  ${isUploading ? 'opacity-50' : ''}`}
+            onClick={handleFileInputClick}
+          >
+           
+              <Image src={profileImage ? profileImage : 'https://placehold.co/200'} alt="Profile" width={200} height={200} className="w-full h-full rounded-full border-1 border-brand object-cover" />
+             
+            <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
+              <Gallery size={16} className="text-white" />
+            </div>
+          </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
@@ -152,7 +156,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
                         label="Name"
                         {...field}
                         disabled={isPending}
-                        className="bg-gray-100"
                       />
                     </FormControl>
                     <FormMessage />
@@ -162,7 +165,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" color="primary" className="w-full text-white" isLoading={isPending}>
+            <Button type="submit" color="primary" className="w-full font-medium text-white" isLoading={isPending}>
               Save
             </Button>
           </form>
