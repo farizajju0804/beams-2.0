@@ -40,7 +40,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
         });
 
         playerRef.current = player;
-
+        // player.BigPlay
         const playlistSources = [
           { publicId: 'https://res.cloudinary.com/drlyyxqh9/video/upload/v1716889874/Beams%20today%20-%20videos/wireless_charging_1_ka8cwp.mp4', info: { title: 'Wireless charging' },   poster: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1722598241/Beams%20today/Wireless%20Charging/Charging_the_future_thumbnail_wzwmzc.png'
           },

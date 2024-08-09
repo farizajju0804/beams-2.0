@@ -99,6 +99,15 @@
   display: block;
 }
 
+.video-js .vjs-big-play-button {
+  background-color: rgba(var(--color-background)) !important;
+  color: rgba(var(--color-brand))!important;
+}
+.video-js .vjs-big-play-button:hover{
+  color: rgba(var(--color-brand))!important;
+  background-color: rgba(var(--color-background)) !important;
+
+} 
 
 
 .no-rotate {

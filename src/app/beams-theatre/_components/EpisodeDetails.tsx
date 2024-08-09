@@ -4,6 +4,9 @@ import React from 'react'
 import NoteModal from './NoteModal';
 import ShareButton from '@/app/beams-today/_components/ShareButton';
 import TabsComponent from './TabsComponent';
+import { Button } from '@nextui-org/react';
+import { Heart, Note } from 'iconsax-react';
+import { IoShareSocial } from 'react-icons/io5';
 
 const tabs = [
     {
@@ -33,12 +36,15 @@ const EpisodeDetails = () => {
           Beams
         </p>
         <div className="flex items-center gap-4">
-          <NoteModal id={""} title={""} />
+          {/* <NoteModal id={""} title={""} /> */}
+          <Button size='sm' className='bg-transparent' isIconOnly startContent={<Heart variant='Bold' size={20} className='text-[#888888]'/>}></Button>
+          <Button size='sm' className='bg-transparent' isIconOnly  startContent={<Note size={20} className='text-[#888888]'/>}></Button>
+          <Button size='sm' className='bg-transparent' isIconOnly  startContent={<IoShareSocial size={20} className='text-[#888888]'/>}></Button>
           {/* <ShareButton data={} /> */}
         </div>
       </div>
     </div>
-       <div className="flex w-full items-start justify-start flex-col mt-4 ">
+       <div className="flex w-full items-center lg:items-start justify-start flex-col mt-6 ">
       <TabsComponent tabs={tabs} onTabChange={()=>{}} />
     </div>
     </div>

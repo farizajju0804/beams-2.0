@@ -140,11 +140,9 @@ const SideBar: React.FC = () => {
                         transition={{ duration: 0.5, ease: 'easeInOut' }}
                         className="mr-2"
                       >
-                        {allSubitemsCompleted ? (
-                          <FaCircleCheck size={20} className="text-brand" />
-                        ) : (
+                       {
                           expandedItems.has(index) ? <MinusCirlce size={24} /> : <AddCircle size={24} />
-                        )}
+                        }
                       </motion.div>
                     </div>
                   </div>
