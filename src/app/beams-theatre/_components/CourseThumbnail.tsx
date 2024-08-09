@@ -23,7 +23,7 @@ const CourseThumbnail: React.FC<ThumbnailProps> = ({ thumbnailUrl, videoId }) =>
             className='absolute top-0 left-0 w-full h-full object-cover'
           />
           <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
-            <div className='bg-background/40 rounded-full p-3 flex items-center justify-center shadow-lg'>
+            <div className='bg-background rounded-full p-3 flex items-center justify-center shadow-lg'>
               <FaPlay size={20} className='text-primary' />
             </div>
           </div>

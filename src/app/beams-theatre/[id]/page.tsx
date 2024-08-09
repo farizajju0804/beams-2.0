@@ -28,15 +28,16 @@ const PreviewPage: React.FC<BeamsTheatrePageProps> = async ({ params }) => {
   return (
     <div className='w-full bg-background max-w-5xl flex flex-col px-6 pt-2  pb-8 mb-14 mx-auto'>
       
-      <div className='flex flex-col lg:gap-12 gap-8'>
+      <div className='flex flex-col lg:gap-12 gap-10'>
       <HeaderSection/>
       <OverviewCard/>
       <LearnPointsCard/>
       <CourseIncludesCard/>
       <CourseContent/>
       <Goal/>
-      <BottomCta />
       <TestimonialSection/>
+      <BottomCta />
+
     
       </div>
   

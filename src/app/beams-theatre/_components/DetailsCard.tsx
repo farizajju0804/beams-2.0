@@ -25,8 +25,8 @@ const DetailsCard = () => {
           <div className='font-poppins w-full text-2xl text-left lg:text-center mt-4 my-2 lg:text-4xl font-bold text-text'>Magical Materials</div>
           <div className='w-full lg:w-[60%] text-left lg:text-center text-sm lg:text-lg text-grey-2'>Master the Wonders of Magical Materials: Transform Your Knowledge of Aerogels, Graphene, and Quantum Dots!</div>
           <div className='w-full flex gap-2 mt-4 justify-start lg:justify-center items-center'>
-          <div className='flex gap-1 items-center'>
-            <Profile2User variant='Bold' className='text-[#888888]'/>
+          <div className='flex gap-1 mr-4 items-center'>
+            <Profile2User variant="TwoTone" className='text-black'/>
             <span className='text-grey-2 text-sm '>12 Beamers</span>
           </div>
           <Button size='sm' className='bg-transparent' isIconOnly startContent={<Heart variant='Bold' size={20} className='text-[#888888]'/>}></Button>

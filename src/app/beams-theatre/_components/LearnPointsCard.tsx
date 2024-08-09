@@ -19,7 +19,7 @@ const LearnPointsCard = () => {
   return (
     <Card className='shadow-none border-1 border-text/20'>
       <CardBody className='p-4'>
-        <h1 className='font-poppins text-xl md:text-2xl font-semibold text-text mb-4'>What You’ll Learn</h1>
+        <h1 className='font-poppins text-xl md:text-2xl font-semibold text-text mb-2 lg:mb-4'>What You’ll Learn</h1>
         <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 md:gap-y-6  items-start justify-start'>
           {learnPoints.map((point, index) => (
             <div key={index} className='w-full flex items-start'>

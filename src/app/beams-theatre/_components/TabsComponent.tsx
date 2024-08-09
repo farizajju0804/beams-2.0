@@ -16,6 +16,7 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<string>('progress');
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,8 +31,15 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMobile) {
+      setSelectedTab('progress');
+    }
+  }, [isMobile]);
+
   const handleTabChange = (key: React.Key) => {
     if (typeof key === 'string') {
+      setSelectedTab(key);
       onTabChange(key);
     } else {
       console.error('Unexpected key type:', key);
@@ -48,9 +56,10 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
       classNames={{
         tabContent: 'group-data-[selected=true]:text-black',
       }}
+      selectedKey={selectedTab}
       onSelectionChange={handleTabChange}
     >
-       {isMobile && (
+      {isMobile && (
         <Tab
           key="progress"
           title={
@@ -78,7 +87,6 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
           </div>
         </Tab>
       ))}
-     
     </Tabs>
   );
 };

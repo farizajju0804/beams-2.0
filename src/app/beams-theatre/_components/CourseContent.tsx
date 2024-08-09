@@ -85,7 +85,7 @@ const CourseContent = () => {
 
   return (
     <div className="bg-grey-3 shadow-none rounded-3xl p-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2 lg:mb-4">
         <h1 className="font-poppins text-xl md:text-2xl font-semibold text-text">Course Content</h1>
         <button className="text-primary text-sm" onClick={toggleAllSections}>
           {expandedSections.size === sections.length ? 'Collapse all' : 'Expand all'}
@@ -129,9 +129,9 @@ const CourseContent = () => {
                 {section.subitems.map((subitem, subindex) => (
                   <div key={subindex} className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 flex items-center justify-center rounded-full text-text border-1 border-text/80 text-xs">
-                        {subindex + 1}
-                      </div>
+                      
+                        {subindex + 1}.
+                      
                       <p className="text-sm lg:text-base font-normal text-grey-2">{subitem.title}</p>
                     </div>
                     <p className="hidden lg:block lg:text-base font-normal text-grey-2">{subitem.duration}</p>
