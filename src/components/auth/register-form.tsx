@@ -99,7 +99,7 @@ export const RegisterForm = () => {
       {!showSecurityQuestions ? (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -261,6 +261,7 @@ export const RegisterForm = () => {
             </div>
             {error && (<FormError message={error} />)}
             {success && (<FormSuccess message={success} />)}
+          
             <Button disabled={isPending} color="primary" type="submit" className="w-full text-white font-medium">
               Submit Answers
             </Button>

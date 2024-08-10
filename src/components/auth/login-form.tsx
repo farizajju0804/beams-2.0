@@ -72,7 +72,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
     >
       <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="email"
@@ -159,16 +159,17 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
                 </FormItem>
               )}
             />
-            <div className="w-full flex justify-between lg:px-0">
+            <div className="w-full flex justify-between lg:px-0 mb-8">
               <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
               <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>
             {error && (<FormError message={error} />)}
             {success && (<FormSuccess message={success} />)}
-            <Button type="submit" color="primary" className="w-full text-white font-medium">
+           
+          </div>
+          <Button type="submit" color="primary" className="w-full text-white font-medium">
               Login
             </Button>
-          </div>
         </form>
       </Form>
     </CardWrapper>

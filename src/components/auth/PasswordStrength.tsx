@@ -6,7 +6,7 @@ interface PasswordStrengthProps {
   onClose: () => void;
 }
 
-const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose }) => {
+const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose }) => {
   const rules = [
     {
       label: '8+ chars',
@@ -37,13 +37,17 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose })
       onClose();
     }
   }, [allValid, onClose]);
+
   return (
     <div className="w-full mt-2 bg-background shadow-lg rounded-lg p-4 z-10">
       <div className="grid grid-cols-2 gap-4">
-      {rules.map((rule, index) => {
+        {rules.map((rule, index) => {
           const isValid = rule.regex.test(password);
           return (
-            <div key={index} className="flex items-center">
+            <div
+              key={index}
+              className={`flex items-center ${index === rules.length - 1 ? 'col-span-2' : ''}`}
+            >
               {isValid ? (
                 <FaCheckCircle className="text-green-500 mr-2" />
               ) : (
@@ -59,5 +63,3 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose })
 };
 
 export default PasswordStrength;
-
-
