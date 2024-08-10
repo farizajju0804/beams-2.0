@@ -39,8 +39,8 @@ const NewVerification = () => {
     <Suspense>
     <CardWrapper
     headerLabel="Confirming Your Verification"
-    backButtonHref="/settings"
-    backButtonLabel="Back to settings"
+    backButtonHref="/my-profile"
+    backButtonLabel="Back to Profile"
     >
     <div className="flex items-center justify-center w-full">
       {!success && !error && (

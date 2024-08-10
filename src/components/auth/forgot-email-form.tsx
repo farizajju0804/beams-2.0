@@ -58,7 +58,7 @@ const ForgotEmailForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="space-y-4">
             <div>
-              <FormLabel>What was your first pet&apos;s name?</FormLabel>
+              <FormLabel className="mb-4">What was your first pet&apos;s name?</FormLabel>
               <FormField
                 control={form.control}
                 name="securityAnswer1"
@@ -79,7 +79,7 @@ const ForgotEmailForm = () => {
               />
             </div>
             <div>
-              <FormLabel>What is your mother&apos;s maiden name?</FormLabel>
+              <FormLabel className="mb-2">What is your mother&apos;s maiden name?</FormLabel>
               <FormField
                 control={form.control}
                 name="securityAnswer2"
@@ -107,7 +107,7 @@ const ForgotEmailForm = () => {
           )}
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button type="submit" color="secondary" className="w-full">
+          <Button type="submit" color="primary" className="w-full font-medium text-white">
             Submit
           </Button>
         </form>

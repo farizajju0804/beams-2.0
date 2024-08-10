@@ -19,9 +19,11 @@ import { Input } from "@nextui-org/react";
 import { newPassword } from "@/actions/auth/new-password";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
+import { Eye, EyeSlash, Key } from "iconsax-react";
 const NewPasswordForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token")
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -32,6 +34,7 @@ const NewPasswordForm = () => {
       password: ""
     },
   });
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
@@ -48,7 +51,7 @@ const NewPasswordForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Enter a new password"
+      headerLabel="Reset Password"
       backButtonLabel="Back to login"
       backButtonHref="/auth/login"
     >
@@ -61,12 +64,35 @@ const NewPasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      isRequired
-                      label="Password"
-                      {...field}
-                      type="password"
-                      disabled={isPending}
+                  <Input
+                        isRequired
+                        classNames={{
+                          label: 'w-20',
+                          // innerWrapper: "w-[4/6]",
+                          mainWrapper: "w-full flex-1",
+                          input: [
+                            "placeholder:text-grey-2 text-xs",
+                            'w-full flex-1'
+                          ]
+                        }}
+                        label="Password"
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        disabled={isPending}
+                        labelPlacement="outside-left"
+                        placeholder="Enter a new password"
+                        startContent={
+                          <Key variant="Bold" className="text-secondary-2" size={20} />
+                        }
+                      
+                      endContent={
+                        <span
+                          className="cursor-pointer text-[#888888]"
+                          onClick={togglePasswordVisibility}
+                        >
+                          {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
+                        </span>
+                      }
                     ></Input>
                   </FormControl>
                   <FormMessage />
@@ -76,7 +102,7 @@ const NewPasswordForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button type="submit" color="secondary" className="w-full">
+          <Button type="submit" color="primary" className="w-full text-white font-medium">
             Reset Password
           </Button>
         </form>

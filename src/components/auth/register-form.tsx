@@ -1,10 +1,9 @@
-"use client";
+'use client';
 
-import * as z from "zod";
-import { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { RegisterSchema, SecuritySchema } from "@/schema";
 import { Input } from "@nextui-org/react";
 import {
@@ -18,7 +17,9 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { Button } from "@nextui-org/react";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { register,submitSecurityAnswers } from "@/actions/auth/register";
+import { register, submitSecurityAnswers } from "@/actions/auth/register";
+import PasswordStrength from "./PasswordStrength2";
+import { Eye, EyeSlash, Key, Sms, User } from "iconsax-react";
 
 const securityQuestions = [
   'What was your first pet\'s name?',
@@ -31,11 +32,13 @@ export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const [showSecurityQuestions, setShowSecurityQuestions] = useState(false);
   const [email, setEmail] = useState<string | undefined>("");
+  const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: "onSubmit", // Validation messages appear only on form submission
+    reValidateMode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",
@@ -45,8 +48,8 @@ export const RegisterForm = () => {
 
   const securityForm = useForm<z.infer<typeof SecuritySchema>>({
     resolver: zodResolver(SecuritySchema),
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     defaultValues: {
       securityAnswer1: "",
       securityAnswer2: "",
@@ -84,14 +87,7 @@ export const RegisterForm = () => {
     });
   };
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === "password") {
-        // Password validation logic can be added here
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch]);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   return (
     <CardWrapper
@@ -110,7 +106,25 @@ export const RegisterForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input {...field} disabled={isPending} label="Name" />
+                      <Input
+                        isRequired
+                        labelPlacement="outside-left"
+                        classNames={{
+                          label: 'w-20',
+                          mainWrapper: "w-full flex-1",
+                          input: [
+                            "placeholder:text-grey-2 text-xs",
+                            'w-full flex-1'
+                          ]
+                        }}
+                        {...field}
+                        disabled={isPending}
+                        label="Name"
+                        placeholder="Enter your name"
+                        startContent={
+                          <User variant="Bold" className="text-secondary-2" size={20} />
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,7 +136,26 @@ export const RegisterForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input {...field} disabled={isPending} type="email" label="Email" />
+                      <Input
+                        isRequired
+                        labelPlacement="outside-left"
+                        classNames={{
+                          label: 'w-20',
+                          mainWrapper: "w-full flex-1",
+                          input: [
+                            "placeholder:text-grey-2 text-xs",
+                            'w-full flex-1'
+                          ]
+                        }}
+                        {...field}
+                        type="email"
+                        disabled={isPending}
+                        label="Email"
+                        placeholder="Enter your email"
+                        startContent={
+                          <Sms variant="Bold" className="text-secondary-2" size={20} />
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,16 +167,58 @@ export const RegisterForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input {...field} disabled={isPending} label="Password" type="password" />
+                      <div className="relative w-full no-scrollbar">
+                        <Input
+                          isRequired
+                          labelPlacement="outside-left"
+                          classNames={{
+                            label: 'w-20',
+                            mainWrapper: "w-full flex-1",
+                            input: [
+                              "placeholder:text-grey-2 text-xs",
+                              'w-full flex-1'
+                            ]
+                          }}
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          disabled={isPending}
+                          label="Password"
+                          placeholder="Enter a password"
+                          startContent={
+                            <Key variant="Bold" className="text-secondary-2" size={20} />
+                          }
+                          endContent={
+                            <span
+                              className="cursor-pointer text-[#888888]"
+                              onClick={togglePasswordVisibility}
+                            >
+                              {showPassword ? (
+                                <EyeSlash variant="Bold" size={20} />
+                              ) : (
+                                <Eye variant="Bold" size={20} />
+                              )}
+                            </span>
+                          }
+                          onFocus={() => setPasswordFocused(true)}
+                          onBlur={() => setPasswordFocused(false)}
+                        />
+                      </div>
                     </FormControl>
+                    {passwordFocused && (
+                      <PasswordStrength
+                        password={form.watch('password')}
+                        onClose={() => setPasswordFocused(false)}
+                        showCrackTime={true} // Pass true if you want to show cracking time
+                      />
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <FormError message={error} />
-            <FormSuccess message={success} />
-            <Button disabled={isPending} color="primary" type="submit" className="w-full">
+            {error && (<FormError message={error} />)}
+            {success && (<FormSuccess message={success} />)}
+            <Button disabled={isPending} color="primary" type="submit" className="w-full text-white font-medium" >
               Create an account
             </Button>
           </form>
@@ -158,9 +233,25 @@ export const RegisterForm = () => {
                   control={securityForm.control}
                   name={`securityAnswer${index + 1}` as "securityAnswer1" | "securityAnswer2"}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="">
                       <FormControl>
-                        <Input {...field} disabled={isPending} label={question} />
+                        <Input
+                          isRequired
+                          labelPlacement="outside"
+                          classNames={{
+                            // label: 'w-20',
+                            mainWrapper: "w-full my-3",
+                            input: [
+                              "placeholder:text-grey-2 text-xs",
+                              'w-full flex-1'
+                            ]
+                          }}
+                          {...field}
+                          disabled={isPending}
+                          label={question}
+                          placeholder={`Answer ${index + 1}`}
+                        
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -168,9 +259,9 @@ export const RegisterForm = () => {
                 />
               ))}
             </div>
-            <FormError message={error} />
-            <FormSuccess message={success} />
-            <Button disabled={isPending} color="primary" type="submit" className="w-full">
+            {error && (<FormError message={error} />)}
+            {success && (<FormSuccess message={success} />)}
+            <Button disabled={isPending} color="primary" type="submit" className="w-full text-white font-medium">
               Submit Answers
             </Button>
           </form>

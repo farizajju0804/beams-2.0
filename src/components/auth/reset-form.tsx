@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@nextui-org/react";
 import { reset } from "@/actions/auth/reset";
 import { useState, useTransition } from "react";
+import { Sms } from "iconsax-react";
 
 const ResetForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -61,10 +62,24 @@ const ResetForm = () => {
                   <FormControl>
                     <Input
                       isRequired
+                      classNames={{
+                        label: 'w-20',
+                        // innerWrapper: "w-[4/6]",
+                        mainWrapper: "w-full flex-1",
+                        input: [
+                          "placeholder:text-grey-2 text-xs",
+                          'w-full flex-1'
+                        ]
+                      }}
                       label="Email"
+                      labelPlacement="outside-left"
+                      placeholder="Enter your email"
                       {...field}
                       type="email"
                       disabled={isPending}
+                      startContent={
+                        <Sms variant="Bold" className="text-secondary-2" size={20} />
+                      }
                     ></Input>
                   </FormControl>
                   <FormMessage />
@@ -74,7 +89,7 @@ const ResetForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button type="submit" color="secondary" className="w-full">
+          <Button type="submit" color="primary" className="w-full text-white font-medium">
             Send Reset Email
           </Button>
         </form>

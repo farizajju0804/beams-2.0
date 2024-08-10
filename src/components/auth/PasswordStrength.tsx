@@ -25,7 +25,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose })
       regex: /\d/,
     },
     {
-      label: 'Special char',
+      label: 'Special Character',
       regex: /[^a-zA-Z0-9]/,
     },
   ];
@@ -39,7 +39,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose })
   }, [allValid, onClose]);
   return (
     <div className="w-full mt-2 bg-background shadow-lg rounded-lg p-4 z-10">
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-4">
       {rules.map((rule, index) => {
           const isValid = rule.regex.test(password);
           return (
@@ -59,3 +59,5 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password,onClose })
 };
 
 export default PasswordStrength;
+
+
