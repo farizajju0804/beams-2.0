@@ -6,7 +6,6 @@ import * as z from 'zod';
 import { ChangeEmailSchema } from "@/schema";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { Input, Button, Modal, ModalFooter, ModalBody, ModalHeader, ModalContent } from "@nextui-org/react";
-import { FiEdit } from 'react-icons/fi';
 import { settings } from "@/actions/auth/settings";
 import { Edit } from "iconsax-react";
 
@@ -73,8 +72,10 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      className="w-full"
                       label={isEditing ? "Enter New Email" : "Your Email"}
                       {...field}
+                  
                       disabled={!isEditing || isPending}
                     />
                   </FormControl>
@@ -86,7 +87,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
               <button
                 type="button"
                 onClick={handleEditClick}
-                className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-4 text-gray-500 hover:text-gray-700"
               >
                 <Edit size={20} />
               </button>
@@ -114,7 +115,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
           </ModalHeader>
           <ModalBody>
             <p id="modal-description">
-              You are about to change your email to <strong>{form.getValues('newEmail')}</strong>. 
+              You are about to change your email from <strong>{user.email}</strong> to <strong>{form.getValues('newEmail')}</strong>.
               This action is significant and will update your login credentials.
               Are you sure you want to proceed?
             </p>

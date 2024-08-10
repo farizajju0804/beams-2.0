@@ -51,32 +51,29 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
     const input = event.target;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      if (file && url) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
 
-        setIsUploading(true);
+      // Create formData and append file and necessary Cloudinary parameters
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
 
-        try {
-          const res = await fetch(url, {
-            method: "POST",
-            body: formData,
-            mode: "no-cors"
-          });
+      setIsUploading(true);
 
-          const data = await res.json();
+      try {
+        const uploadResult = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData,
+        }).then(res => res.json());
 
-          if (data.secure_url) {
-            await changeProfileImageHandler(data.secure_url);
-          } else {
-            setError("Cloudinary upload failed");
-            setIsUploading(false);
-          }
-        } catch (error) {
-          setError("Error uploading image");
-          setIsUploading(false);
+        if (uploadResult.secure_url) {
+          await changeProfileImageHandler(uploadResult.secure_url);
+        } else {
+          setError("Cloudinary upload failed");
         }
+      } catch (error) {
+        setError("Error uploading image");
+      } finally {
+        setIsUploading(false);
       }
     } else {
       console.error("No files selected.");
@@ -125,17 +122,15 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
             </div>
           )}
           <div className="relative">
-          <div
-            className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer  ${isUploading ? 'opacity-50' : ''}`}
-            onClick={handleFileInputClick}
-          >
-           
+            <div
+              className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer  ${isUploading ? 'opacity-50' : ''}`}
+              onClick={handleFileInputClick}
+            >
               <Image src={profileImage ? profileImage : 'https://placehold.co/200'} alt="Profile" width={200} height={200} className="w-full h-full rounded-full border-1 border-brand object-cover" />
-             
-            <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
-              <Gallery size={16} className="text-white" />
+              <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
+                <Gallery size={16} className="text-white" />
+              </div>
             </div>
-          </div>
           </div>
           <input
             ref={fileInputRef}
@@ -151,10 +146,12 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex items-center justify-center space-x-4">
+                    <div className="w-10 flex items-center justify-center">
+                      <label className="text-sm text-text">Name:</label>
+                    </div>
                     <FormControl>
                       <Input
-                        label="Name"
                         {...field}
                         disabled={isPending}
                       />
@@ -168,10 +165,12 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
                   control={form.control}
                   name="email"
                   render={() => (
-                    <FormItem>
+                    <FormItem className="flex items-center justify-center space-x-4">
+                      <div className="w-10 flex items-center justify-center">
+                        <label className="text-sm text-text">Email:</label>
+                      </div>
                       <FormControl>
                         <Input
-                          label="Email"
                           value={user.email}
                           disabled
                         />

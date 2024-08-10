@@ -11,7 +11,7 @@ interface BackButtonProps {
 
 const BackButton: FC<Readonly<BackButtonProps>> = ({ href, label }) => {
   return (
-    <Button size="sm" className="bg-white font-normal w-full" >
+    <Button size="sm" className="font-normal bg-transparent w-full" >
       <Link href={href}>{label}</Link>
     </Button>
   );

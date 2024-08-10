@@ -37,7 +37,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema> | z.infer<
     const passwordsMatch = await bcrypt.compare(values.password, dbUser.password);
 
     if (!passwordsMatch) {
-      return { error: "Incorrect password!" };
+      return { error: "Incorrect password! Please enter your correct current password" };
     }
 
     const hashedPassword = await bcrypt.hash(values.newPassword, 10);
@@ -50,7 +50,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema> | z.infer<
       },
     });
 
-    return { success: "Password updated!" };
+    return { success: "Password updated Successfully!" };
   }
 
   await db.user.update({
@@ -62,5 +62,5 @@ export const settings = async (values: z.infer<typeof SettingsSchema> | z.infer<
     },
   });
 
-  return { success: "Settings updated!" };
+  return { success: "User Profile updated!" };
 };
