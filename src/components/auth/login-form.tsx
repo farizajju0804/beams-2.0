@@ -65,7 +65,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
+      headerLabel="Login"
       backButtonLabel="Don't have an account?"
       backButtonHref="/auth/register"
       showSocial
@@ -79,15 +79,17 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
+                  <div className="relative w-full no-scrollbar">
                     <Input
                       isRequired
                       label="Email"
                       classNames={{
-                        label: 'w-18',
-                        innerWrapper: "w-56",
-                        base: "flex items-center justify-between",
+                        label: 'w-20',
+                        // innerWrapper: "w-[4/6]",
+                        mainWrapper: "w-full flex-1",
                         input: [
                           "placeholder:text-grey-2 text-xs",
+                          'w-full flex-1'
                         ]
                       }}
                       {...field}
@@ -99,6 +101,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
                         <Sms variant="Bold" className="text-secondary-2" size={20} />
                       }
                     />
+                    </div>
                   </FormControl>
                   <FormMessage /> {/* Validation message will appear here after form submission */}
                 </FormItem>
@@ -110,15 +113,16 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="relative no-scrollbar">
+                    <div className="relative w-full no-scrollbar">
                       <Input
                         isRequired
                         classNames={{
-                          label: 'w-18',
-                          innerWrapper: "w-56",
-                          base: "flex items-center justify-between",
+                          label: 'w-20',
+                          // innerWrapper: "w-[4/6]",
+                          mainWrapper: "w-full flex-1",
                           input: [
                             "placeholder:text-grey-2 text-xs",
+                            'w-full flex-1'
                           ]
                         }}
                         label="Password"
@@ -126,7 +130,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
                         type={showPassword ? "text" : "password"}
                         disabled={isPending}
                         labelPlacement="outside-left"
-                        placeholder="Enter a strong password"
+                        placeholder="Enter a password"
                         startContent={
                           <Key variant="Bold" className="text-secondary-2" size={20} />
                         }
