@@ -11,7 +11,7 @@ const PlayerComponent: React.FC = () => {
   const { isOpen } = useSidebarStore();
 
   return (
-    <div className='w-full flex flex-col gap-4 lg:px-[40px]'>
+    <div className='w-full flex flex-col gap-2 lg:px-[40px]'>
       <div className='px-6 lg:px-0'>
         <Breadcrumbs
           pageClassName="text-text"

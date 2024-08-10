@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { FaQuoteRight, FaTimes, FaPause, FaPlay } from 'react-icons/fa';
+import { CloseCircle } from 'iconsax-react';
 
 type Testimonial = {
   name: string;
@@ -103,7 +104,7 @@ const TestimonialSection: React.FC = () => {
 
       {selectedTestimonial && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-[500]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
@@ -113,7 +114,7 @@ const TestimonialSection: React.FC = () => {
               className="absolute top-2 right-2 text-2xl text-grey-2"
               onClick={closePopup}
             >
-              <FaTimes />
+              <CloseCircle />
             </button>
             <h3 className="text-xl font-semibold mb-2">{selectedTestimonial.name}</h3>
             <h4 className="text-sm text-text mb-4">{selectedTestimonial.title}</h4>

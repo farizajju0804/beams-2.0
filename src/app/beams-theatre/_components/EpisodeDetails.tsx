@@ -5,7 +5,7 @@ import NoteModal from './NoteModal';
 import ShareButton from '@/app/beams-today/_components/ShareButton';
 import TabsComponent from './TabsComponent';
 import { Button } from '@nextui-org/react';
-import { Heart, Note } from 'iconsax-react';
+import { Heart, Note, Eye } from 'iconsax-react';
 import { IoShareSocial } from 'react-icons/io5';
 
 const tabs = [
@@ -30,17 +30,20 @@ const EpisodeDetails = () => {
   return (
     <div className='w-full lg:px-0 px-6 flex flex-col'>
         <div className="rounded-3xl">
-      <h1 className="text-2xl md:text-3xl font-bold font-poppins my-2">Quantum Dots</h1>
+      <h1 className="text-2xl md:text-3xl font-bold font-poppins mb-2">Quantum Dots</h1>
       <div className="flex justify-between gap-4 items-center w-full mt-2">
-        <p className="text-grey-2 text-xs lg:text-base">
-          Beams
-        </p>
-        <div className="flex items-center gap-4">
+        
+        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-center gap-1 text-[#888888] text-xs lg:text-sm">
+          <span><Eye className='text-[#888888]' size={20} variant='Bold' /> </span> 12 Views
+        </div>
           {/* <NoteModal id={""} title={""} /> */}
+          <div className='flex items-center gap-1'>
           <Button size='sm' className='bg-transparent' isIconOnly startContent={<Heart variant='Bold' size={20} className='text-[#888888]'/>}></Button>
           <Button size='sm' className='bg-transparent' isIconOnly  startContent={<Note size={20} className='text-[#888888]'/>}></Button>
           <Button size='sm' className='bg-transparent' isIconOnly  startContent={<IoShareSocial size={20} className='text-[#888888]'/>}></Button>
           {/* <ShareButton data={} /> */}
+          </div>
         </div>
       </div>
     </div>

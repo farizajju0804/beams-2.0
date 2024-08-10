@@ -95,7 +95,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         },
       });
     } else {
-      const twoFactorToken = await getTwoFactorToken(existingUser.email);
+      const twoFactorToken:any = await getTwoFactorToken(existingUser.email);
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
       return { twoFactor: true };
