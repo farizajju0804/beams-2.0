@@ -92,7 +92,7 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
             {resendMessage ? (
               <span dangerouslySetInnerHTML={{ __html: resendMessage }} />
             ) : (
-              <>We've sent a 6-digit verification code to your email: <strong className="text-secondary-2">{email}</strong>. Please enter it below.</>
+              <>We have sent a 6-digit verification code to your email: <strong className="text-secondary-2">{email}</strong>. Please enter it below.</>
             )}
           </p>
           <div className="flex justify-center">
@@ -123,7 +123,7 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
-          Didn't receive the code? <br />Check your spam folder or{" "}
+          Did not receive the code? <br />Check your spam folder or{" "}
           <button
             type="button"
             className="text-primary hover:underline focus:outline-none"
