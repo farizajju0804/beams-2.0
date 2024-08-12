@@ -167,7 +167,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
             {success && (<FormSuccess message={success} />)}
            
           </div>
-          <Button type="submit" color="primary" className="w-full text-white font-medium">
+           <Button type="submit" color="primary" className="w-full text-white font-medium">
               Login
             </Button>
         </form>

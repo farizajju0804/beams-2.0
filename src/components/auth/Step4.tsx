@@ -63,8 +63,10 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
     <CardWrapper headerLabel="Security Questions">
       <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+       
           {securityQuestions.map((question, index) => (
+          <div className="space-y-8">
             <FormField
               key={index}
               control={form.control}
@@ -75,14 +77,28 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
                     <Input
                       {...field}
                       isRequired
-                      label={`Security Question ${index + 1}`}
-                      placeholder={question}
+                      label={question}
+                      placeholder={`Security Question ${index + 1}`}
+                      labelPlacement="outside"
+                   
+                      classNames={{
+                        label: 'font-medium',
+                        // inputWrapper: "w-full flex-1",
+                        // base :"mb-4",
+                        input: [
+                          "placeholder:text-grey-2 text-xs",
+                          'w-full  font-medium'
+                        ]
+                      }}
+                   
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
+               
               )}
             />
+            </div>
           ))}
           <Button
             type="submit"
@@ -92,6 +108,7 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
           >
             {isPending ? "Submitting..." : "Submit"}
           </Button>
+         
         </form>
       </Form>
     </CardWrapper>
