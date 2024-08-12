@@ -7,40 +7,58 @@ import { db } from "@/libs/db";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail } from "@/libs/mail";
+import { signIn } from "@/auth";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid Fields!" };
   }
 
-  const { name, email, password } = validatedFields.data;
+  const { email, password } = validatedFields.data;
 
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
-    const linkedAccount = await db.account.findFirst({
-      where: {
-        userId: existingUser.id,
-      },
-    });
-
-    if (linkedAccount) {
-      return { error: `Your account is linked with ${linkedAccount.provider}. Try logging in with that.` };
-    }
-
     return { error: "Account already exists. Try using a different email." };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  await db.user.create({
+  const newUser = await db.user.create({
     data: {
       email,
       password: hashedPassword,
-      name,
     },
   });
 
-  return { success: "Please answer the security questions!" };
+  const verificationToken = await getVerificationToken(email);
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  console.log("Verification email sent. Please check your inbox.");
+
+  return { success: "Verification email sent. Please check your inbox." };
+};
+
+export const resendVerificationCode = async (email:string) => {
+  const verificationToken = await getVerificationToken(email);
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  console.log("Verification email sent. Please check your inbox.");
+
+  return { success: "Verification email sent. Please check your inbox." };
+}
+
+
+
+export const updateUserMetadata = async (email: string, values: { 
+  firstName?: string, 
+  lastName?: string, 
+  dob?: Date, 
+  grade?: string, 
+  userType?: "STUDENT" | "NON_STUDENT" 
+}) => {
+  return await db.user.update({
+    where: { email },
+    data: values,
+  });
 };
 
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
@@ -61,8 +79,31 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
     },
   });
 
-  const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  // Attempt to log in the user after updating security answers
+  try {
+    const existingUser = await getUserByEmail(email);
 
-  return { success: "Account Created, Confirmation email sent!" };
+    if (!existingUser) {
+      return { error: "User not found." };
+    }
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: existingUser.email,
+      password: existingUser.password,
+      isAutoLogin: true, 
+    }) as { error?: string; status?: number; ok?: boolean };
+
+    if (result?.error) {
+      console.error("Sign-in error:", result.error);
+      return { error: "Sign-in failed." };
+    }
+
+    console.log("Login successful!");
+    return { success: "Login successful!" };
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+    return { error: "An unexpected error occurred during sign-in." };
+  }
 };
+

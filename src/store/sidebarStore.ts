@@ -1,5 +1,5 @@
 // sidebarStore.ts
-import create from 'zustand';
+import {create} from 'zustand';
 
 interface SidebarState {
   isOpen: boolean;

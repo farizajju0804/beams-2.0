@@ -4,7 +4,6 @@ import { sendEmailBrevo } from '@/libs/brewoEmail';
 
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${process.env.URL}/auth/new-verification?token=${token}`;
 
   const payload = {
     sender: {
@@ -16,10 +15,10 @@ export const sendVerificationEmail = async (email: string, token: string) => {
         email: email,
       },
     ],
-    subject: "Sign up Confirm",
-    templateId: 8,
+    subject: "Confirmation Code",
+    templateId: 11,
     params: {
-      link: confirmLink,
+      token: token,
     },
   };
   return sendEmailBrevo(payload);

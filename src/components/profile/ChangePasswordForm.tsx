@@ -128,7 +128,7 @@ const ChangePasswordForm = () => {
         placement="center"
       >
         <ModalContent>
-          <ModalHeader className="font-semibold text-2xl">
+          <ModalHeader className="font-semibold text-xl lg:text-2xl">
             Confirm Password Change
           </ModalHeader>
           <ModalBody>
@@ -137,10 +137,10 @@ const ChangePasswordForm = () => {
             </p>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" onClick={() => setIsModalOpen(false)}>
+            <Button  onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleConfirmChange}>
+            <Button color="danger" onClick={handleConfirmChange}>
               Confirm
             </Button>
           </ModalFooter>

@@ -110,7 +110,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
         placement="center"
       >
         <ModalContent>
-          <ModalHeader className="font-semibold text-2xl">
+          <ModalHeader className="font-semibold text-xl lg:text-2xl">
             Confirm Email Change
           </ModalHeader>
           <ModalBody>

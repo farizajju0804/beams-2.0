@@ -36,19 +36,20 @@ export const LoginSchema = z.object({
 });
 
 export const RegisterSchema = z.object({
-	name: z.string().min(1, {
-	  message: "Name is required",
-	}),
 	email: z.string().email({
 	  message: "Email is required",
 	}),
-	password: z.string().min(8, {
-	  message: "Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!",
-	}).regex(/[A-Z]/, { message: "Must include an uppercase letter" })
-	.regex(/[a-z]/, { message: "Must include a lowercase letter" })
-	.regex(/[0-9]/, { message: "Must include a number" })
-	.regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" }),
-});
+	password: z
+	  .string()
+	  .min(8, {
+		message:
+		  "Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!",
+	  })
+	  .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
+	  .regex(/[a-z]/, { message: "Must include a lowercase letter" })
+	  .regex(/[0-9]/, { message: "Must include a number" })
+	  .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" })
+  });
 
 export const SecuritySchema = z.object({
 	securityAnswer1: z.string().max(20, { message: "Security answer must be at most 20 characters" }),
@@ -86,3 +87,27 @@ export const ChangePasswordSchema = z.object({
     .regex(/[0-9]/, { message: "Must include a number" })
     .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" }),
 });
+
+
+const baseSchema = z.object({
+	userType: z.enum(["STUDENT", "NON_STUDENT"]),
+	firstName: z.string().min(1, "First name is required"),
+	lastName: z.string().min(1, "Last name is required"),
+  });
+  
+  const studentSchema = baseSchema.extend({
+	userType: z.literal("STUDENT"),
+	grade: z.string().min(1, "Grade is required"),
+	dob: z.date().optional(),
+  });
+  
+  const nonStudentSchema = baseSchema.extend({
+	userType: z.literal("NON_STUDENT"),
+  });
+  
+  export const userSchema = z.discriminatedUnion("userType", [
+	studentSchema,
+	nonStudentSchema,
+  ]);
+  
+  export type UserFormData = z.infer<typeof userSchema>;

@@ -31,7 +31,8 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose, 
     },
   ];
 
-  const allValid = rules.every(rule => rule.regex.test(password));
+  // Only run validation if password is not empty
+  const allValid = password && rules.every(rule => rule.regex.test(password));
 
   const crackTimeMessage = "It would take a hacker 3 million years to crack your password!";
 
@@ -43,14 +44,14 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose, 
 
   return (
     <div className="w-full mt-2 bg-background shadow-lg rounded-lg p-4 z-10">
-      {allValid && showCrackTime ? (
+      {password && allValid && showCrackTime ? (
         <div className="text-sm text-grey-2">
           {crackTimeMessage}
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {rules.map((rule, index) => {
-            const isValid = rule.regex.test(password);
+            const isValid = password && rule.regex.test(password);
             return (
               <div key={index} className="flex items-center">
                 {isValid ? (

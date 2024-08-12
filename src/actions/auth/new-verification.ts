@@ -54,8 +54,8 @@ export const newVerification = async (token: string) => {
     const result = await signIn("credentials", {
       redirect: false,
       email: existingUser.email,
-      password: existingUser.password, // Ensure this is handled correctly
-      isAutoLogin: true, // Add this flag to skip password check
+      password: existingUser.password, 
+      isAutoLogin: true, 
     });
 
     if (result?.error) {
