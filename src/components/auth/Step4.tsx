@@ -66,7 +66,7 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
        
           {securityQuestions.map((question, index) => (
-          <div className="space-y-8">
+          // <div className="space-y-8">
             <FormField
               key={index}
               control={form.control}
@@ -98,7 +98,7 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
                
               )}
             />
-            </div>
+            // </div>
           ))}
           <Button
             type="submit"
