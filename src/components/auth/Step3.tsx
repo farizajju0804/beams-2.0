@@ -51,6 +51,7 @@ const Step3Form: React.FC<Step3Props> = ({ onNext }) => {
         onNext(); 
         const result = await submitSecurityAnswers(values, email);
         if (result) {
+          router.push('/user-info')
           onNext(); 
         
         }
