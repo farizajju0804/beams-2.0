@@ -80,7 +80,7 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
 
   return (
     <CardWrapper headerLabel="Verify Your Email">
-      <Stepper currentStep={2} totalSteps={4} stepLabels={["Account Info", "Email Verification", "User Info", "Security Questions"]} />
+      {/* <Stepper currentStep={2} totalSteps={4} stepLabels={["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
 
       <div className="flex justify-center mb-4">
         <Image src="/images/email.png" alt="Verification Illustration" width={250} height={200} />

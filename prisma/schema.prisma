@@ -45,6 +45,8 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
+  userFormCompleted    Boolean               @default(false)
+  onBoardingCompleted  Boolean               @default(false)
   notes                BeamsTodayUserNote[]
   theatreNotes         BeamsTheatreUserNote[]
   beamsTodayFavorites  BeamsTodayFavorite[]

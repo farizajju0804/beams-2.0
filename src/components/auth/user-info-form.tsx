@@ -1,6 +1,7 @@
 "use client";
 import * as z from "zod";
 import React, { useState, useTransition } from "react";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Radio, RadioGroup, Button, DatePicker } from "@nextui-org/react";
@@ -12,12 +13,14 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import { User } from "iconsax-react";
 import { userSchema, UserFormData } from "@/schema"; 
 import { parseDate, CalendarDate } from "@internationalized/date";
-const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useRouter } from "next/navigation";
+const UserInfoForm: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">("STUDENT");
-  const emailFromStore = useEmailStore((state: any) => state.email);
-  const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "");
-
+  const user = useCurrentUser();
+ const email = user?.email
+ const router = useRouter();
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: "onSubmit",
@@ -35,7 +38,7 @@ const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
     startTransition(async () => {
       try {
         if (!email) {
-          throw new Error("Email not found. Please go back and enter your email.");
+          throw new Error("Email not found.");
         }
   
         const values = {
@@ -51,7 +54,7 @@ const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
         const response = await updateUserMetadata(email, values);
   
         if (response) {
-          onNext();
+          router.push('/beams-today')
         } else {
           console.error("Failed to update user metadata.");
         }
@@ -231,4 +234,4 @@ const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
   );
 };
 
-export default Step3Form;
+export default UserInfoForm;

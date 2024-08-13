@@ -68,7 +68,7 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
       backButtonHref="/auth/login"
       showSocial
     >
-      <Stepper currentStep={1} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]}/>
+      {/* <Stepper currentStep={1} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]}/> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-6">

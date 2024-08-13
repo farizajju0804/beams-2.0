@@ -7,6 +7,8 @@ interface User {
   id: string;
   role: "ADMIN" | "USER";
   isTwoFactorEnabled: boolean;
+  userFormCompleted : boolean;
+  onBoardingCompleted : boolean;
   isOAuth: boolean;
 }
 

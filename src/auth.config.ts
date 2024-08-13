@@ -17,6 +17,15 @@ export default {
           response_type: "code",
         },
       },
+      profile: (_profile) => {
+        return {
+          id: _profile.sub,
+          firstName: _profile.given_name,
+          lastName: _profile.family_name,
+          email: _profile.email,
+          image: _profile.picture
+        };
+        }
     }),
     Credentials({
       async authorize(credentials) {

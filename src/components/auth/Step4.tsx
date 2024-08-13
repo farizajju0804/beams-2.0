@@ -61,7 +61,7 @@ const Step4Form: React.FC<Step4Props> = ({ onNext }) => {
 
   return (
     <CardWrapper headerLabel="Security Questions">
-      <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} />
+      {/* <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
        

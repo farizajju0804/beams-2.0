@@ -103,10 +103,17 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   try {
+    let redirectTo = DEFAULT_LOGIN_REDIRECT;   
+    if (!existingUser.userFormCompleted) {
+      redirectTo = "/user-info";
+    } else if (!existingUser.onBoardingCompleted) {
+      redirectTo = "/onboarding";
+    }
+
     await signIn("credentials", {
       email,
       password,
-      redirectTo: (DEFAULT_LOGIN_REDIRECT), 
+      redirectTo, 
     });
 
 
