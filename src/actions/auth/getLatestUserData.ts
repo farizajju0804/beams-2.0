@@ -15,6 +15,7 @@ export async function getLatestUserData() {
       firstName: true,
       lastName: true,
       userType: true,
+      image:true,
       grade: true,
       dob: true,
       userFormCompleted: true,

@@ -1,29 +1,38 @@
 'use client'
+
 import React from 'react'
 import { updateOnboardingStatus } from '@/actions/auth/onboarding'
-import { useRouter } from 'next/navigation'
 import { Button } from '@nextui-org/react'
-import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import { useTransition } from 'react'
 
 const OnboardingPage = () => {
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
-  const handleLaunch = async () => {
-    await updateOnboardingStatus(true)
-    router.push(DEFAULT_LOGIN_REDIRECT)
-  }
-
-  const handleSkip = async() => {
-    await updateOnboardingStatus(true)
-    router.push(DEFAULT_LOGIN_REDIRECT)
+  const handleAction = (skip: boolean) => {
+    startTransition(() => {
+      updateOnboardingStatus(true)
+        .catch((error) => {
+          console.error("Error updating onboarding status:", error)
+          // Handle error (e.g., show an error message to the user)
+        })
+    })
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
-      <Button onClick={handleLaunch} className="w-48">
+      <Button 
+        onClick={() => handleAction(false)} 
+        className="w-48"
+        isLoading={isPending}
+      >
         Launch Beam Today
       </Button>
-      <Button onClick={handleSkip} variant="bordered" className="w-48">
+      <Button 
+        onClick={() => handleAction(true)} 
+        variant="bordered" 
+        className="w-48"
+        isLoading={isPending}
+      >
         Skip
       </Button>
     </div>

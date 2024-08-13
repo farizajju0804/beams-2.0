@@ -65,10 +65,16 @@ export const ForgotEmailSchema = z.object({
 
 
 export const SettingsSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-});
-
+	firstName: z.string().min(2, "First name must be at least 2 characters long"),
+	lastName: z.string().min(2, "Last name must be at least 2 characters long"),
+	dob: z.date().optional(),
+	grade: z.string().optional(),
+	userType: z.enum(["STUDENT", "NON_STUDENT"]),
+	email: z.string().email().optional(),
+  });
+  
+export type SettingsFormData = z.infer<typeof SettingsSchema>;
+  
 export const ChangeEmailSchema = z.object({
   newEmail: z.string().email(),
 });

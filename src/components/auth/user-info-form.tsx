@@ -1,93 +1,88 @@
-"use client";
-import React, { useState, useTransition, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Radio, RadioGroup, Button, DatePicker, DateInput } from "@nextui-org/react";
-import { updateUserMetadata } from "@/actions/auth/register";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import CardWrapper from "@/components/auth/card-wrapper";
-import { Calendar, User } from "iconsax-react";
-import { userSchema, UserFormData } from "@/schema";
-import { parseDate, CalendarDate } from "@internationalized/date";
-import { getLatestUserData } from "@/actions/auth/getLatestUserData";
-import { useRouter } from "next/navigation";
+'use client'
+
+import React, { useState, useTransition, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Input, Radio, RadioGroup, Button, DateInput } from '@nextui-org/react'
+import { updateUserMetadata } from '@/actions/auth/register'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
+import CardWrapper from '@/components/auth/card-wrapper'
+import { Calendar, User } from 'iconsax-react'
+import { userSchema, UserFormData } from '@/schema'
+import { parseDate, CalendarDate } from '@internationalized/date'
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { useRouter } from 'next/navigation'
+import { getLatestUserData } from '@/actions/auth/getLatestUserData'
 
 const UserInfoForm: React.FC = () => {
-  const [isPending, startTransition] = useTransition();
-  const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">("STUDENT");
- const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [userType, setUserType] = useState<'STUDENT' | 'NON_STUDENT'>('STUDENT')
+  const user = useCurrentUser()
+  const router = useRouter()
+
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
-    mode: "onSubmit",
+    mode: 'onSubmit',
     defaultValues: {
-      userType: "STUDENT", // Default to "STUDENT"
-      firstName: "",
-      lastName: "",
-      grade: "",
+      userType: 'STUDENT',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      grade: '',
       dob: undefined,
     },
-  });
+  })
 
   useEffect(() => {
     const fetchLatestUserData = async () => {
       try {
-        const latestUserData = await getLatestUserData();
-        console.log(latestUserData)
+        const latestUserData = await getLatestUserData()
         if (latestUserData) {
           form.reset({
-            userType: "STUDENT", // Always default to STUDENT
-            firstName: latestUserData.firstName || "",
-            lastName: latestUserData.lastName || "",
-            grade: latestUserData.grade || "",
+            userType: 'STUDENT',
+            firstName: latestUserData.firstName || '',
+            lastName: latestUserData.lastName || '',
+            grade: latestUserData.grade || '',
             dob: latestUserData.dob ? new Date(latestUserData.dob) : undefined,
-          });
-          setUserType("STUDENT"); // Force to "STUDENT"
+          })
+          setUserType(latestUserData.userType || 'STUDENT')
         }
       } catch (error) {
-        console.error("Error fetching latest user data:", error);
+        console.error('Error fetching latest user data:', error)
       }
-    };
+    }
 
-    fetchLatestUserData();
-  }, [form]);
+    fetchLatestUserData()
+  }, [form])
 
-  const onSubmit = async (data: UserFormData) => {
+  const onSubmit = (data: UserFormData) => {
     startTransition(async () => {
       try {
-        const latestUserData = await getLatestUserData();
-      
-        const email = latestUserData?.email;
-        
-        if (!email) {
-          throw new Error("Email not found.");
+        if (!user?.email) {
+          throw new Error('Email not found.')
         }
 
         const values = {
           firstName: data.firstName,
           lastName: data.lastName,
-          ...(data.userType === "STUDENT" && {
+          ...(data.userType === 'STUDENT' && {
             dob: data.dob ? data.dob : undefined,
             grade: data.grade,
           }),
           userType: data.userType,
-        };
-
-        const response = await updateUserMetadata(email, values);
-        if (response.success) {
-          
-          console.log('start routing')
-
-          router.push('/onboarding');
-          console.log('finished routing')
-        } else {
-          console.error("Failed to update user metadata:", response.error);
         }
-        router.push('/onboarding');
+
+        const response = await updateUserMetadata(user.email, values)
+
+        if (response.success) {
+          router.push('/onboarding')
+        } else {
+          console.error('Failed to update user metadata:', response.error)
+        }
       } catch (error) {
-        console.error("Error updating user metadata:", error);
+        console.error('Error updating user metadata:', error)
       }
-    });
-  };
+    })
+  }
 
   return (
     <CardWrapper headerLabel="User Information">
@@ -104,8 +99,8 @@ const UserInfoForm: React.FC = () => {
                     label="I am a"
                     orientation="horizontal"
                     onValueChange={(value: string) => {
-                      field.onChange(value as "STUDENT" | "NON_STUDENT");
-                      setUserType(value as "STUDENT" | "NON_STUDENT");
+                      field.onChange(value as 'STUDENT' | 'NON_STUDENT')
+                      setUserType(value as 'STUDENT' | 'NON_STUDENT')
                     }}
                     value={field.value}
                   >
@@ -130,11 +125,11 @@ const UserInfoForm: React.FC = () => {
                       labelPlacement="outside-left"
                       classNames={{
                         label: 'w-24 font-medium',
-                        mainWrapper: "w-full flex-1",
+                        mainWrapper: 'w-full flex-1',
                         input: [
-                          "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1 font-medium'
-                        ]
+                          'placeholder:text-grey-2 text-xs',
+                          'w-full flex-1 font-medium',
+                        ],
                       }}
                       isRequired
                       label="First Name"
@@ -158,11 +153,11 @@ const UserInfoForm: React.FC = () => {
                       labelPlacement="outside-left"
                       classNames={{
                         label: 'w-24 font-medium',
-                        mainWrapper: "w-full flex-1",
+                        mainWrapper: 'w-full flex-1',
                         input: [
-                          "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1 font-medium'
-                        ]
+                          'placeholder:text-grey-2 text-xs',
+                          'w-full flex-1 font-medium',
+                        ],
                       }}
                       label="Last Name"
                       placeholder="Enter your last name"
@@ -174,7 +169,7 @@ const UserInfoForm: React.FC = () => {
               )}
             />
 
-            {userType === "STUDENT" && (
+            {userType === 'STUDENT' && (
               <>
                 <FormField
                   control={form.control}
@@ -189,11 +184,11 @@ const UserInfoForm: React.FC = () => {
                           labelPlacement="outside-left"
                           classNames={{
                             label: 'w-24 font-medium',
-                            mainWrapper: "w-full flex-1",
+                            mainWrapper: 'w-full flex-1',
                             input: [
-                              "placeholder:text-grey-2 text-xs",
-                              'w-full flex-1 font-medium'
-                            ]
+                              'placeholder:text-grey-2 text-xs',
+                              'w-full flex-1 font-medium',
+                            ],
                           }}
                           placeholder="Enter your grade"
                           startContent={<User className="text-default-400" size={16} />}
@@ -214,20 +209,20 @@ const UserInfoForm: React.FC = () => {
                           labelPlacement="outside-left"
                           classNames={{
                             label: 'w-24 font-medium',
-                            inputWrapper: "w-full flex-1",
+                            inputWrapper: 'w-full flex-1',
                             input: [
-                              "placeholder:text-grey-2 text-xs",
-                              'w-full flex-1 font-medium'
-                            ]
+                              'placeholder:text-grey-2 text-xs',
+                              'w-full flex-1 font-medium',
+                            ],
                           }}
                           label="Date of Birth"
                           value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
                           onChange={(date: CalendarDate) => {
                             if (date) {
-                              const jsDate = new Date(date.year, date.month - 1, date.day);
-                              field.onChange(jsDate);
+                              const jsDate = new Date(date.year, date.month - 1, date.day)
+                              field.onChange(jsDate)
                             } else {
-                              field.onChange(undefined);
+                              field.onChange(undefined)
                             }
                           }}
                           className="max-w-full w-full"
@@ -249,12 +244,12 @@ const UserInfoForm: React.FC = () => {
             className="w-full font-semibold"
             isLoading={isPending}
           >
-            {isPending ? "Saving..." : "Next"}
+            {isPending ? 'Saving...' : 'Next'}
           </Button>
         </form>
       </Form>
     </CardWrapper>
-  );
-};
+  )
+}
 
-export default UserInfoForm;
+export default UserInfoForm

@@ -4,10 +4,11 @@ import { currentUser} from "@/libs/auth";
 import { settings } from "@/actions/auth/settings";
 import UserProfile from "@/components/profile/UserProfile";
 import Nav from "@/components/Navbar";
+import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 
 export default async function UserProfilePage() {
-  const user = await currentUser();
-
+  const user = await getLatestUserData();
+  const user2 = await currentUser();
   if (!user) {
     return <div>Please log in to view settings.</div>;
   }
@@ -15,6 +16,6 @@ export default async function UserProfilePage() {
   return (
   
   <>
-  <UserProfile user={user} />
+  <UserProfile user={user}  isOAuth={user2?.isOAuth}/>
   </>);
 }

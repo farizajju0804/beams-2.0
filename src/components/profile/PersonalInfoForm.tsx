@@ -2,41 +2,50 @@
 import React, { useRef, useState, useTransition } from "react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from 'zod';
-import { SettingsSchema } from "@/schema";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Spinner } from "@nextui-org/react";
+import { Button, Input, Card, CardHeader, CardBody, Spinner, DateInput } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
-import { Gallery } from "iconsax-react";
+import { Calendar, Gallery } from "iconsax-react";
+import { SettingsSchema, SettingsFormData } from "@/schema";
+import { parseDate, CalendarDate } from '@internationalized/date'
 
 interface PersonalInfoFormProps {
   user: {
-    name: string | null | undefined;
+    firstName: string | undefined;
+    lastName: string | undefined;
     email: string;
     image: string;
-    isOAuth: boolean;
+    userType: "STUDENT" | "NON_STUDENT";
+    dob?: Date;
+    grade?: string;
   };
-  url: string;
+  isOAuth : boolean
 }
 
-const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
+const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [profileImage, setProfileImage] = useState<string>(user.image || "");
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">(user.userType);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const updateUserImage = useUserStore((state) => state.updateUserImage);
 
-  const form = useForm<z.infer<typeof SettingsSchema>>({
+  const form = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: user?.name || '',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userType: user.userType,
+      grade: user.grade || '',
+      dob: user.dob ? new Date(user.dob) : undefined,
+      email: user.email,
     },
   });
 
@@ -51,8 +60,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
     const input = event.target;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-
-      // Create formData and append file and necessary Cloudinary parameters
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
@@ -94,7 +101,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
     }
   };
 
-  const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+  const onSubmit = (values: SettingsFormData) => {
     startTransition(() => {
       settings(values)
         .then((data) => {
@@ -144,36 +151,102 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, url }) => {
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-center space-x-4">
-                    <div className="w-10 flex items-center justify-center">
-                      <label className="text-sm text-text">Name:</label>
+                    <div className="w-24 flex items-center justify-center">
+                      <label className="text-sm text-text">First Name:</label>
                     </div>
                     <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                      />
+                      <Input {...field} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {user.isOAuth && (
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-center space-x-4">
+                    <div className="w-24 flex items-center justify-center">
+                      <label className="text-sm text-text">Last Name:</label>
+                    </div>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {userType === "STUDENT" && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="grade"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center justify-center space-x-4">
+                        <div className="w-24 flex items-center justify-center">
+                          <label className="text-sm text-text">Grade:</label>
+                        </div>
+                        <FormControl>
+                          <Input {...field} disabled={isPending} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center justify-center space-x-4">
+                        <div className="w-24 flex items-center justify-center">
+                          <label className="text-sm text-text">DOB:</label>
+                        </div>
+                        <FormControl>
+                        <DateInput
+                          isRequired
+                          labelPlacement="outside-left"
+                          classNames={{
+                            // label: 'w-24 font-medium',
+                            inputWrapper: 'w-full flex-1',
+                            input: [
+                              'placeholder:text-grey-2 text-xs',
+                              'w-full flex-1 font-medium',
+                            ],
+                          }}
+                          
+                          value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
+                          onChange={(date: CalendarDate) => {
+                            if (date) {
+                              const jsDate = new Date(date.year, date.month - 1, date.day)
+                              field.onChange(jsDate)
+                            } else {
+                              field.onChange(undefined)
+                            }
+                          }}
+                          className="max-w-full w-full"
+                          startContent={<Calendar />}
+                        />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+              {isOAuth && (
                 <FormField
                   control={form.control}
                   name="email"
                   render={() => (
                     <FormItem className="flex items-center justify-center space-x-4">
-                      <div className="w-10 flex items-center justify-center">
+                      <div className="w-24 flex items-center justify-center">
                         <label className="text-sm text-text">Email:</label>
                       </div>
                       <FormControl>
-                        <Input
-                          value={user.email}
-                          disabled
-                        />
+                        <Input value={user.email} disabled />
                       </FormControl>
                     </FormItem>
                   )}

@@ -4,14 +4,15 @@ import PersonalInfoForm from "@/components/profile/PersonalInfoForm";
 import ChangeEmailForm from "@/components/profile/ChangeEmailForm";
 import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
 import { motion } from 'framer-motion';
+import { currentUser } from "@/libs/auth";
 
-const UserProfile = ({ user }: { user: any }) => {
+const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
   const [selectedTab, setSelectedTab] = useState("Personal Info");
-
+  
   
   const tabs = [
-    { name: "Personal Info", component: <PersonalInfoForm user={user} url={user.image} /> },
-    ...(!user.isOAuth ? [
+    { name: "Personal Info", component: <PersonalInfoForm user={user} isOAuth={isOAuth} /> },
+    ...(!isOAuth ? [
       { name: "Security", component: (
         <div className="w-full flex items-center gap-8 justify-center flex-col">
           <ChangeEmailForm user={user} />
