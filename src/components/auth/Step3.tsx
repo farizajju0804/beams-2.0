@@ -50,7 +50,7 @@ const Step3Form: React.FC<Step3Props> = ({ onNext }) => {
       try {
         onNext(); 
         const result = await submitSecurityAnswers(values, email);
-        if (result.success) {
+        if (result) {
           onNext(); 
         
         }
