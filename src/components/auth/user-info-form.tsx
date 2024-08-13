@@ -53,10 +53,11 @@ const UserInfoForm: React.FC = () => {
           ...values,
         });
 
-        if (response) {
+        if (response.success) {
           router.push('/onboarding');
         } else {
-          console.error("Failed to update user metadata.");
+          console.error("Failed to update user metadata:", response.error);
+      
         }
       } catch (error) {
         console.error("Error updating user metadata:", error);

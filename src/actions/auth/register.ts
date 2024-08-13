@@ -48,23 +48,27 @@ export const resendVerificationCode = async (email:string) => {
 
 
 
-export const updateUserMetadata = async (email: string, values: { 
-  firstName?: string, 
-  lastName?: string, 
-  dob?: Date, 
-  grade?: string, 
-  userType?: "STUDENT" | "NON_STUDENT" 
+export const updateUserMetadata = async (email: string, values: {
+  firstName?: string,
+  lastName?: string,
+  dob?: Date,
+  grade?: string,
+  userType?: "STUDENT" | "NON_STUDENT"
 }) => {
-  const response = await db.user.update({
-    where: { email },
-    data: {
-      ...values,
-      userFormCompleted : true
-    }
-  });
-  redirect('/onboarding')
+  try {
+    const response = await db.user.update({
+      where: { email },
+      data: {
+        ...values,
+        userFormCompleted: true
+      }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user metadata:", error);
+    return { success: false, error: "Failed to update user metadata" };
+  }
 };
-
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
   const validatedFields = SecuritySchema.safeParse(values);
   if (!validatedFields.success) {
