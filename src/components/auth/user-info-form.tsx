@@ -1,40 +1,63 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Radio, RadioGroup, Button, DatePicker } from "@nextui-org/react";
+import { Input, Radio, RadioGroup, Button, DatePicker, DateInput } from "@nextui-org/react";
 import { updateUserMetadata } from "@/actions/auth/register";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import CardWrapper from "@/components/auth/card-wrapper";
-import { User } from "iconsax-react";
+import { Calendar, User } from "iconsax-react";
 import { userSchema, UserFormData } from "@/schema";
 import { parseDate, CalendarDate } from "@internationalized/date";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 import { useRouter } from "next/navigation";
 
 const UserInfoForm: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">("STUDENT");
-  const user = useCurrentUser();
-  const email = user?.email;
-  const router = useRouter();
-
-  // Initialize the form with default values based on the user object
+ const router = useRouter()
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: "onSubmit",
     defaultValues: {
-      userType: "STUDENT",
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
+      userType: "STUDENT", // Default to "STUDENT"
+      firstName: "",
+      lastName: "",
       grade: "",
-      dob:  undefined,
+      dob: undefined,
     },
   });
+
+  useEffect(() => {
+    const fetchLatestUserData = async () => {
+      try {
+        const latestUserData = await getLatestUserData();
+        console.log(latestUserData)
+        if (latestUserData) {
+          form.reset({
+            userType: "STUDENT", // Always default to STUDENT
+            firstName: latestUserData.firstName || "",
+            lastName: latestUserData.lastName || "",
+            grade: latestUserData.grade || "",
+            dob: latestUserData.dob ? new Date(latestUserData.dob) : undefined,
+          });
+          setUserType("STUDENT"); // Force to "STUDENT"
+        }
+      } catch (error) {
+        console.error("Error fetching latest user data:", error);
+      }
+    };
+
+    fetchLatestUserData();
+  }, [form]);
 
   const onSubmit = async (data: UserFormData) => {
     startTransition(async () => {
       try {
+        const latestUserData = await getLatestUserData();
+      
+        const email = latestUserData?.email;
+        
         if (!email) {
           throw new Error("Email not found.");
         }
@@ -49,16 +72,17 @@ const UserInfoForm: React.FC = () => {
           userType: data.userType,
         };
 
-        const response = await updateUserMetadata(email, {
-          ...values,
-        });
-
+        const response = await updateUserMetadata(email, values);
         if (response.success) {
+          
+          console.log('start routing')
+
           router.push('/onboarding');
+          console.log('finished routing')
         } else {
           console.error("Failed to update user metadata:", response.error);
-      
         }
+        router.push('/onboarding');
       } catch (error) {
         console.error("Error updating user metadata:", error);
       }
@@ -185,7 +209,7 @@ const UserInfoForm: React.FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <DatePicker
+                        <DateInput
                           isRequired
                           labelPlacement="outside-left"
                           classNames={{
@@ -207,7 +231,7 @@ const UserInfoForm: React.FC = () => {
                             }
                           }}
                           className="max-w-full w-full"
-                          showMonthAndYearPickers
+                          startContent={<Calendar />}
                         />
                       </FormControl>
                       <FormMessage />

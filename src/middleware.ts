@@ -38,6 +38,9 @@ export default auth(async (req) => {
         return Response.redirect(new URL('/auth/login', nextUrl));
       }
 
+      if (nextUrl.pathname === '/user-info' && user.userFormCompleted) {
+        return Response.redirect(new URL('/onboarding', nextUrl));
+      }
       if (!user.userFormCompleted && nextUrl.pathname !== '/user-info') {
         return Response.redirect(new URL('/user-info', nextUrl));
       }
