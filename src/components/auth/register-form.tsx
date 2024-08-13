@@ -4,9 +4,8 @@ import React, { useState, useEffect } from "react";
 import Step1Form from "./Step1";
 import Step2Form from "./Step2";
 import Step3Form from "./Step3";
-import Step4Form from "./Step4";
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3;
 
 const RegisterPage: React.FC = () => {
   // Retrieve the current step from local storage or default to step 1
@@ -36,7 +35,6 @@ const RegisterPage: React.FC = () => {
       {currentStep === 1 && <Step1Form onNext={handleNext} />}
       {currentStep === 2 && <Step2Form onNext={handleNext} />}
       {currentStep === 3 && <Step3Form onNext={handleNext} />}
-      {currentStep === 4 && <Step4Form onNext={handleNext} />}
     </div>
   );
 };

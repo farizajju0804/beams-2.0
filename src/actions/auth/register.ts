@@ -1,5 +1,5 @@
 "use server";
-
+import { redirect } from 'next/navigation'
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { RegisterSchema, SecuritySchema } from "@/schema";
@@ -55,10 +55,14 @@ export const updateUserMetadata = async (email: string, values: {
   grade?: string, 
   userType?: "STUDENT" | "NON_STUDENT" 
 }) => {
-  return await db.user.update({
+  const response = await db.user.update({
     where: { email },
-    data: values,
+    data: {
+      ...values,
+      userFormCompleted : true
+    }
   });
+  redirect('/onboarding')
 };
 
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
@@ -88,9 +92,9 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
     }
 
     const result = await signIn("credentials", {
-      redirect: false,
       email: existingUser.email,
       password: existingUser.password,
+      redirect: false,
       isAutoLogin: true, 
     }) as { error?: string; status?: number; ok?: boolean };
 
@@ -100,10 +104,11 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
     }
 
     console.log("Login successful!");
-    return { success: "Login successful!" };
+   
   } catch (error) {
     console.error("Error during sign-in:", error);
     return { error: "An unexpected error occurred during sign-in." };
   }
+  redirect('/user-info')
 };
 

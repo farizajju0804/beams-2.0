@@ -1,230 +1,115 @@
 "use client";
-import * as z from "zod";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Radio, RadioGroup, Button, DatePicker } from "@nextui-org/react";
-import { updateUserMetadata } from "@/actions/auth/register";
-import { useEmailStore } from "@/store/email"; 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import { SecuritySchema } from "@/schema";
+import { Input } from "@nextui-org/react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@nextui-org/react";
+import { submitSecurityAnswers } from "@/actions/auth/register";
+import { useEmailStore } from "@/store/email";
+import { useRouter } from "next/navigation"; // Import Next.js router
+import CardWrapper from "./card-wrapper";
 import Stepper from "./Stepper";
-import CardWrapper from "@/components/auth/card-wrapper";
-import { User } from "iconsax-react";
-import { userSchema, UserFormData } from "@/schema"; 
-import { parseDate, CalendarDate } from "@internationalized/date";
-const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
+
+interface Step3Props {
+  onNext: () => void;
+}
+
+const securityQuestions = [
+  "What was your first pet's name?",
+  "What is your mother's maiden name?",
+];
+
+const Step3Form: React.FC<Step3Props> = ({ onNext }) => {
   const [isPending, startTransition] = useTransition();
-  const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">("STUDENT");
   const emailFromStore = useEmailStore((state: any) => state.email);
   const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "");
+  const router = useRouter();
 
-  const form = useForm<UserFormData>({
-    resolver: zodResolver(userSchema),
+  const form = useForm<z.infer<typeof SecuritySchema>>({
+    resolver: zodResolver(SecuritySchema),
     mode: "onSubmit",
-    defaultValues: {
-      userType: "STUDENT",
-      firstName: "",
-      lastName: "",
-      grade: "",
-      dob: undefined,
-    },
+    reValidateMode: "onSubmit",
   });
 
-  const onSubmit = async (data: UserFormData) => {
-   
+  const onSubmit = async (values: z.infer<typeof SecuritySchema>) => {
+    if (!email) {
+      console.error("Email not found. Please go back and enter your email.");
+      return;
+    }
+
     startTransition(async () => {
       try {
-        if (!email) {
-          throw new Error("Email not found. Please go back and enter your email.");
+        onNext(); 
+        const result = await submitSecurityAnswers(values, email);
+        if (result.success) {
+          onNext(); 
+        
         }
-  
-        const values = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          ...(data.userType === "STUDENT" && {
-            dob: data.dob ? data.dob : undefined,
-            grade: data.grade,
-          }),
-          userType: data.userType,
-        };
-  
-        const response = await updateUserMetadata(email, values);
-  
-        if (response) {
-          onNext();
-        } else {
-          console.error("Failed to update user metadata.");
-        }
-      } catch (error) {
-        console.error("Error updating user metadata:", error);
+      } catch (err) {
+        console.error("Error submitting security answers:", err);
       }
     });
   };
 
   return (
-    <CardWrapper headerLabel="User Information">
-      {/* <Stepper currentStep={3} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
+    <CardWrapper headerLabel="Security Questions">
+      {/* <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="userType"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                <RadioGroup
-                size="sm"
-                    label="I am a"
-                    orientation="horizontal"
-                    onValueChange={(value: string) => {
-                        field.onChange(value as "STUDENT" | "NON_STUDENT");
-                        setUserType(value as "STUDENT" | "NON_STUDENT");
-                    }}
-                    value={field.value}
-                    >
-                    <Radio value="STUDENT">Student</Radio>
-                    <Radio value="NON_STUDENT">Non-Student</Radio>
-                    </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+       
+          {securityQuestions.map((question, index) => (
+          // <div className="space-y-8">
             <FormField
+              key={index}
               control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      labelPlacement="outside-left"
-                      classNames={{
-                        label: 'w-24 font-medium',
-                        mainWrapper: "w-full flex-1",
-                        input: [
-                          "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1 font-medium'
-                        ]
-                      }}
-                      isRequired
-                      label="First Name"
-                      placeholder="Enter your first name"
-                      startContent={<User className="text-default-400" size={16} />}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
+              name={`securityAnswer${index + 1}` as "securityAnswer1" | "securityAnswer2"}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       isRequired
-                      labelPlacement="outside-left"
+                      label={question}
+                      placeholder={`Security Question ${index + 1}`}
+                      labelPlacement="outside"
+                   
                       classNames={{
-                        label: 'w-24 font-medium',
-                        mainWrapper: "w-full flex-1",
+                        label: 'font-medium',
+                        // inputWrapper: "w-full flex-1",
+                        // base :"mb-4",
                         input: [
                           "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1 font-medium'
+                          'w-full  font-medium'
                         ]
                       }}
-                      label="Last Name"
-                      placeholder="Enter your last name"
-                      startContent={<User className="text-default-400" size={16} />}
+                   
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
+               
               )}
             />
-
-            {userType === "STUDENT" && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="grade"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          isRequired
-                          label="Grade"
-                          labelPlacement="outside-left"
-                          classNames={{
-                            label: 'w-24 font-medium',
-                            mainWrapper: "w-full flex-1",
-                            input: [
-                              "placeholder:text-grey-2 text-xs",
-                              'w-full flex-1 font-medium'
-                            ]
-                          }}
-                          placeholder="Enter your grade"
-                          startContent={<User className="text-default-400" size={16} />}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                    control={form.control}
-                    name="dob"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormControl>
-                            <DatePicker
-                            isRequired
-                             labelPlacement="outside-left"
-                             classNames={{
-                               label: 'w-24 font-medium',
-                               inputWrapper: "w-full flex-1",
-                               input: [
-                                 "placeholder:text-grey-2 text-xs",
-                                 'w-full flex-1 font-medium'
-                               ]
-                             }}
-                          
-                            label="Date of Birth"
-                            value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
-                            onChange={(date: CalendarDate) => {
-                                if (date) {
-                                const jsDate = new Date(date.year, date.month - 1, date.day);
-                                field.onChange(jsDate);
-                                } else {
-                                field.onChange(undefined);
-                                }
-                            }}
-                            className="max-w-full w-full"
-                            showMonthAndYearPickers
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-              </>
-            )}
-          </div>
-
+            // </div>
+          ))}
           <Button
             type="submit"
             color="primary"
-            size="lg"
-            className="w-full font-semibold"
+            className="w-full text-white font-medium"
             isLoading={isPending}
           >
-            {isPending ? "Saving..." : "Next"}
+            {isPending ? "Submitting..." : "Submit"}
           </Button>
+         
         </form>
       </Form>
     </CardWrapper>

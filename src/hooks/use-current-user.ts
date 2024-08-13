@@ -9,7 +9,7 @@ export const useCurrentUser = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
-      setUser({ ...session.user, email: session.user.email ?? '', name: session.user.name ?? '' });
+      setUser({ ...session.user, email: session.user.email ?? '', firstName: session.user.firstName ?? '' });
     }
   }, [session, status, setUser]);
 

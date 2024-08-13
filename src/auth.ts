@@ -5,6 +5,7 @@ import { db } from "@/libs/db";
 import { getUserById } from "./actions/auth/getUserById";
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
+import { authRoutes, publicRoutes } from "./routes";
 
 export const {
   handlers: { GET, POST },
@@ -58,7 +59,8 @@ export const {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
       }
       if (session.user) {
-        session.user.name = token.name;
+        session.user.firstName = token.firstName as string;
+        session.user.lastName = token.lastName as string;
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
@@ -75,31 +77,21 @@ export const {
 
       const existingAccount = await getAccountByUserId(existingUser.id);
       token.isOAuth = !!existingAccount;
-      token.name = existingUser.firstName;
+      token.firstName = existingUser.firstName;
+      token.lastName = existingUser.lastName;
       token.email = existingUser.email;
       token.role = existingUser.role;
       token.image = existingUser.image;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-      token.hasUserInfo = !!(existingUser.firstName && existingUser.lastName); // Store user info completion status
-      token.onboardingCompleted = existingUser.onBoardingCompleted; // Store onboarding status
+      token.userFormCompleted =  existingUser.userFormCompleted;; // Store user info completion status
+      token.onBoardingCompleted = existingUser.onBoardingCompleted; // Store onboarding status
       return token;
     },
     async redirect({ url, baseUrl }) {
-      const session = await auth();
-      if (session?.user) {
-        const { userFormCompleted , onBoardingCompleted } = session.user;
-
-        if (!userFormCompleted) {
-          return `${baseUrl}/user-info`;
-        }
-
-        if (!onBoardingCompleted) {
-          return `${baseUrl}/onboarding`;
-        }
-      }
-
-      return `${baseUrl}/beams-today`; 
-    },
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return `${baseUrl}/beams-today`;
+    }
   },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },

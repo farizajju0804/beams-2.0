@@ -1,7 +1,8 @@
 import {create} from 'zustand';
 
 interface User {
-  name: string | null | undefined;
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
   email: string;
   image: string;
   id: string;

@@ -2,22 +2,15 @@ import { Button } from "@nextui-org/react";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 const Social = () => {
   const user = useCurrentUser();
 
   const handleSocialSignIn = () => {
-    let redirectTo = "/beams-today"; // Default redirect
+  
 
-    if (user) {
-      if (!user.userFormCompleted) {
-        redirectTo = "/user-info";
-      } else if (!user.onBoardingCompleted) {
-        redirectTo = "/onboarding";
-      }
-    }
-
-    signIn("google", { callbackUrl: redirectTo });
+    signIn("google", { redirectTo : DEFAULT_LOGIN_REDIRECT });
   };
 
   return (

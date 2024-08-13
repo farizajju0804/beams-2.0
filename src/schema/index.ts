@@ -89,25 +89,33 @@ export const ChangePasswordSchema = z.object({
 });
 
 
+
+
 const baseSchema = z.object({
-	userType: z.enum(["STUDENT", "NON_STUDENT"]),
-	firstName: z.string().min(1, "First name is required"),
-	lastName: z.string().min(1, "Last name is required"),
-  });
-  
-  const studentSchema = baseSchema.extend({
-	userType: z.literal("STUDENT"),
-	grade: z.string().min(1, "Grade is required"),
-	dob: z.date().optional(),
-  });
-  
-  const nonStudentSchema = baseSchema.extend({
-	userType: z.literal("NON_STUDENT"),
-  });
-  
-  export const userSchema = z.discriminatedUnion("userType", [
-	studentSchema,
-	nonStudentSchema,
-  ]);
-  
-  export type UserFormData = z.infer<typeof userSchema>;
+  userType: z.enum(["STUDENT", "NON_STUDENT"]),
+  firstName: z
+    .string()
+    .min(1, "First name is required")
+    .min(2, "First name must be at least 2 characters"),
+  lastName: z
+    .string()
+    .min(1, "Last name is required")
+    .min(2, "Last name must be at least 2 characters"),
+});
+
+const studentSchema = baseSchema.extend({
+  userType: z.literal("STUDENT"),
+  grade: z.string().min(1, "Grade is required"),
+  dob: z.date().optional(),
+});
+
+const nonStudentSchema = baseSchema.extend({
+  userType: z.literal("NON_STUDENT"),
+});
+
+export const userSchema = z.discriminatedUnion("userType", [
+  studentSchema,
+  nonStudentSchema,
+]);
+
+export type UserFormData = z.infer<typeof userSchema>;

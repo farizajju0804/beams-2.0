@@ -1,44 +1,43 @@
 "use client";
+import * as z from "zod";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Radio, RadioGroup, Button, DatePicker } from "@nextui-org/react";
 import { updateUserMetadata } from "@/actions/auth/register";
+import { useEmailStore } from "@/store/email"; 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import Stepper from "./Stepper";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { User } from "iconsax-react";
-import { userSchema, UserFormData } from "@/schema";
+import { userSchema, UserFormData } from "@/schema"; 
 import { parseDate, CalendarDate } from "@internationalized/date";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { useRouter } from "next/navigation";
-
-const UserInfoForm: React.FC = () => {
+const Step3Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
   const [isPending, startTransition] = useTransition();
   const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">("STUDENT");
-  const user = useCurrentUser();
-  const email = user?.email;
-  const router = useRouter();
+  const emailFromStore = useEmailStore((state: any) => state.email);
+  const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "");
 
-  // Initialize the form with default values based on the user object
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: "onSubmit",
     defaultValues: {
       userType: "STUDENT",
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
+      firstName: "",
+      lastName: "",
       grade: "",
-      dob:  undefined,
+      dob: undefined,
     },
   });
 
   const onSubmit = async (data: UserFormData) => {
+   
     startTransition(async () => {
       try {
         if (!email) {
-          throw new Error("Email not found.");
+          throw new Error("Email not found. Please go back and enter your email.");
         }
-
+  
         const values = {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -48,13 +47,11 @@ const UserInfoForm: React.FC = () => {
           }),
           userType: data.userType,
         };
-
-        const response = await updateUserMetadata(email, {
-          ...values,
-        });
-
+  
+        const response = await updateUserMetadata(email, values);
+  
         if (response) {
-          router.push('/onboarding');
+          onNext();
         } else {
           console.error("Failed to update user metadata.");
         }
@@ -66,6 +63,7 @@ const UserInfoForm: React.FC = () => {
 
   return (
     <CardWrapper headerLabel="User Information">
+      {/* <Stepper currentStep={3} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -74,19 +72,19 @@ const UserInfoForm: React.FC = () => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <RadioGroup
-                    size="sm"
+                <RadioGroup
+                size="sm"
                     label="I am a"
                     orientation="horizontal"
                     onValueChange={(value: string) => {
-                      field.onChange(value as "STUDENT" | "NON_STUDENT");
-                      setUserType(value as "STUDENT" | "NON_STUDENT");
+                        field.onChange(value as "STUDENT" | "NON_STUDENT");
+                        setUserType(value as "STUDENT" | "NON_STUDENT");
                     }}
                     value={field.value}
-                  >
+                    >
                     <Radio value="STUDENT">Student</Radio>
                     <Radio value="NON_STUDENT">Non-Student</Radio>
-                  </RadioGroup>
+                    </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,40 +177,41 @@ const UserInfoForm: React.FC = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
-                  name="dob"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <DatePicker
-                          isRequired
-                          labelPlacement="outside-left"
-                          classNames={{
-                            label: 'w-24 font-medium',
-                            inputWrapper: "w-full flex-1",
-                            input: [
-                              "placeholder:text-grey-2 text-xs",
-                              'w-full flex-1 font-medium'
-                            ]
-                          }}
-                          label="Date of Birth"
-                          value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
-                          onChange={(date: CalendarDate) => {
-                            if (date) {
-                              const jsDate = new Date(date.year, date.month - 1, date.day);
-                              field.onChange(jsDate);
-                            } else {
-                              field.onChange(undefined);
-                            }
-                          }}
-                          className="max-w-full w-full"
-                          showMonthAndYearPickers
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormControl>
+                            <DatePicker
+                            isRequired
+                             labelPlacement="outside-left"
+                             classNames={{
+                               label: 'w-24 font-medium',
+                               inputWrapper: "w-full flex-1",
+                               input: [
+                                 "placeholder:text-grey-2 text-xs",
+                                 'w-full flex-1 font-medium'
+                               ]
+                             }}
+                          
+                            label="Date of Birth"
+                            value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
+                            onChange={(date: CalendarDate) => {
+                                if (date) {
+                                const jsDate = new Date(date.year, date.month - 1, date.day);
+                                field.onChange(jsDate);
+                                } else {
+                                field.onChange(undefined);
+                                }
+                            }}
+                            className="max-w-full w-full"
+                            showMonthAndYearPickers
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
               </>
             )}
           </div>
@@ -232,4 +231,4 @@ const UserInfoForm: React.FC = () => {
   );
 };
 
-export default UserInfoForm;
+export default Step3Form;
