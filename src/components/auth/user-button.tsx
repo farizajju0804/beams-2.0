@@ -1,16 +1,27 @@
-import React from "react";
+'use client';
+
+import React, { useEffect, useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from "@nextui-org/react";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { getLatestUserData } from "@/actions/auth/getLatestUserData"; // Ensure this is correctly imported
 
 export default function UserButton() {
-  const user = useCurrentUser();
+  const [user, setUser] = useState<any>(null); // State to hold user data
   const router = useRouter();
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/auth/login" });
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getLatestUserData();
+        setUser(userData); // Set the fetched user data to the state
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -33,7 +44,7 @@ export default function UserButton() {
           <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
-          <DropdownItem onClick={handleSignOut} key="logout" color="danger">
+          <DropdownItem onClick={() => signOut()} key="logout" color="danger">
             Log Out
           </DropdownItem>
         </DropdownMenu>
