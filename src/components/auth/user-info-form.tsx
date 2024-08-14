@@ -84,9 +84,9 @@ const UserInfoForm: React.FC = () => {
          
           console.log('User metadata updated successfully');
           console.log('Current pathname:', window.location.pathname);
-          await update();
+          // await update();
           router.refresh();
-          router.push('/onboarding');
+          // router.push('/onboarding');
         } else {
           console.error('Failed to update user metadata:', response.error);
         }
@@ -257,7 +257,7 @@ const UserInfoForm: React.FC = () => {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full font-semibold"
+            className="w-full font-semibold text-white"
             isLoading={isPending}
           >
             {isPending ? 'Saving...' : 'Next'}

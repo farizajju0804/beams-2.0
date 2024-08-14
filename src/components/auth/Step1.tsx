@@ -10,7 +10,6 @@ import { registerAndSendVerification } from "@/actions/auth/register";
 import { Eye, EyeSlash, Key, Sms } from "iconsax-react";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import Stepper from "./Stepper";
 import CardWrapper from "@/components/auth/card-wrapper";
 import PasswordStrength from "./PasswordStrength2";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
@@ -22,9 +21,11 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
+  const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false);
+  const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
+
   const setEmailStore = useEmailStore((state: any) => state.setEmail);
 
-  // Initialize form with email from localStorage if it exists
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
@@ -36,7 +37,7 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setEmailStore(values.email);
-    localStorage.setItem("email", values.email); // Store the email in local storage
+    localStorage.setItem("email", values.email);
 
     setError("");
     setSuccess("");
@@ -58,9 +59,6 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-  const email = form.watch("email");
-  const password = form.watch("password");
-
   return (
     <CardWrapper
       headerLabel="Join Beams"
@@ -68,7 +66,6 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
       backButtonHref="/auth/login"
       showSocial
     >
-      {/* <Stepper currentStep={1} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]}/> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-6">
@@ -94,8 +91,14 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
                       type="email"
                       placeholder="Enter your email"
                       startContent={
-                        !email && <Sms variant="Bold" className="text-secondary-2" size={20} />
+                        !isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={20} />
                       }
+                      onFocus={() => setIsTypingEmail(true)}
+                      onBlur={() => setIsTypingEmail(false)}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (e.target.value.length === 0) setIsTypingEmail(false);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -125,26 +128,34 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter a password"
                         startContent={
-                          !password && <Key variant="Bold" className="text-secondary-2" size={20} />
+                          !isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={20} />
                         }
                         endContent={
                           <span
-                            className="cursor-pointer text-secondary-2"
+                            className="cursor-pointer text-[#888888]"
                             onClick={togglePasswordVisibility}
                           >
                             {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
                           </span>
                         }
-                        onFocus={() => setPasswordFocused(true)}
+                        onFocus={() => {
+                          setIsTypingPassword(true);
+                          setPasswordFocused(true);
+                        }}
                         onBlur={() => {
+                          setIsTypingPassword(false);
                           if (!field.value) setPasswordFocused(false);
+                        }}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          if (e.target.value.length === 0) setIsTypingPassword(false);
                         }}
                       />
                     </div>
                   </FormControl>
                   {passwordFocused && (
                     <PasswordStrength
-                      password={password}
+                      password={form.watch('password')}
                       onClose={() => setPasswordFocused(false)}
                       showCrackTime={true}
                     />
