@@ -4,7 +4,6 @@ import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 
 const Social = () => {
 
