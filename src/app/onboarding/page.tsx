@@ -4,17 +4,25 @@ import React from 'react'
 import { updateOnboardingStatus } from '@/actions/auth/onboarding'
 import { Button } from '@nextui-org/react'
 import { useTransition } from 'react'
-
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import { redirect, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
-
+  const { data: session, update } = useSession();
+  const router = useRouter();
   const handleAction = (skip: boolean) => {
-    startTransition(() => {
-      updateOnboardingStatus(true)
-        .catch((error) => {
-          console.error("Error updating onboarding status:", error)
-          // Handle error (e.g., show an error message to the user)
-        })
+    startTransition(async () => {
+      const response  = await updateOnboardingStatus(true)
+      if (response.success) {
+        await update();
+        router.refresh();
+        router.push('/beams-today')
+       
+      } else {
+        console.error('Failed to update user metadata:', response.error)
+      }
+        
     })
   }
 

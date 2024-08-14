@@ -1,88 +1,100 @@
 'use client'
-
-import React, { useState, useTransition, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Input, Radio, RadioGroup, Button, DateInput } from '@nextui-org/react'
-import { updateUserMetadata } from '@/actions/auth/register'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
-import CardWrapper from '@/components/auth/card-wrapper'
-import { Calendar, User } from 'iconsax-react'
-import { userSchema, UserFormData } from '@/schema'
+import React, { useState, useTransition, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input, Radio, RadioGroup, Button, DateInput } from '@nextui-org/react';
+import { updateUserMetadata } from '@/actions/auth/register';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import CardWrapper from '@/components/auth/card-wrapper';
+import { Calendar, User } from 'iconsax-react';
+import { userSchema, UserFormData } from '@/schema';
+import { useRouter } from 'next/navigation';
+import { getLatestUserData } from '@/actions/auth/getLatestUserData';
+import { useSession } from 'next-auth/react';
 import { parseDate, CalendarDate } from '@internationalized/date'
-import { useCurrentUser } from '@/hooks/use-current-user'
-import { useRouter } from 'next/navigation'
-import { getLatestUserData } from '@/actions/auth/getLatestUserData'
-
 const UserInfoForm: React.FC = () => {
-  const [isPending, startTransition] = useTransition()
-  const [userType, setUserType] = useState<'STUDENT' | 'NON_STUDENT'>('STUDENT')
-  const user = useCurrentUser()
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition();
+  const [userType, setUserType] = useState<'STUDENT' | 'NON_STUDENT'>('STUDENT');
+  const [latestUserData, setLatestUserData] = useState<any>(null); // State to store latest user data
+  const router = useRouter();
+  const { update } = useSession();
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: 'onSubmit',
     defaultValues: {
       userType: 'STUDENT',
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
+      firstName: '',
+      lastName: '',
       grade: '',
       dob: undefined,
     },
-  })
+  });
 
   useEffect(() => {
     const fetchLatestUserData = async () => {
       try {
-        const latestUserData = await getLatestUserData()
-        if (latestUserData) {
+        const data = await getLatestUserData();
+        console.log('Fetched user data:', data);
+        if (data) {
           form.reset({
-            userType: 'STUDENT',
-            firstName: latestUserData.firstName || '',
-            lastName: latestUserData.lastName || '',
-            grade: latestUserData.grade || '',
-            dob: latestUserData.dob ? new Date(latestUserData.dob) : undefined,
-          })
-          setUserType(latestUserData.userType || 'STUDENT')
+            userType: data.userType || 'STUDENT',
+            firstName: data.firstName || '',
+            lastName: data.lastName || '',
+            grade: data.grade || '',
+            dob: data.dob ? new Date(data.dob) : undefined,
+          });
+          setUserType(data.userType || 'STUDENT');
+          setLatestUserData(data); // Store the latest user data in state
         }
       } catch (error) {
-        console.error('Error fetching latest user data:', error)
+        console.error('Error fetching latest user data:', error);
       }
-    }
+    };
 
-    fetchLatestUserData()
-  }, [form])
+    fetchLatestUserData();
+  }, [form]);
 
   const onSubmit = (data: UserFormData) => {
+    console.log('Submit function called with data:', data);
+
     startTransition(async () => {
       try {
-        if (!user?.email) {
-          throw new Error('Email not found.')
+        if (!latestUserData?.email) {
+          throw new Error('Email not found.');
         }
 
         const values = {
           firstName: data.firstName,
           lastName: data.lastName,
           ...(data.userType === 'STUDENT' && {
-            dob: data.dob ? data.dob : undefined,
+            dob: data.dob || undefined,
             grade: data.grade,
           }),
           userType: data.userType,
-        }
+          userFormCompleted: true,
+        };
 
-        const response = await updateUserMetadata(user.email, values)
+        console.log('Updating user metadata with values:', values);
+
+        const response = await updateUserMetadata(latestUserData.email, values);
+        console.log('Update response:', response);
 
         if (response.success) {
-          router.push('/onboarding')
+          await update();
+          router.refresh();
+          router.push('/onboarding');
+
+          console.log('User metadata updated successfully');
+          console.log('Current pathname:', window.location.pathname);
         } else {
-          console.error('Failed to update user metadata:', response.error)
+          console.error('Failed to update user metadata:', response.error);
         }
       } catch (error) {
-        console.error('Error updating user metadata:', error)
+        console.error('Error updating user metadata:', error);
       }
-    })
-  }
+    });
+  };
 
   return (
     <CardWrapper headerLabel="User Information">
@@ -99,8 +111,8 @@ const UserInfoForm: React.FC = () => {
                     label="I am a"
                     orientation="horizontal"
                     onValueChange={(value: string) => {
-                      field.onChange(value as 'STUDENT' | 'NON_STUDENT')
-                      setUserType(value as 'STUDENT' | 'NON_STUDENT')
+                      field.onChange(value as 'STUDENT' | 'NON_STUDENT');
+                      setUserType(value as 'STUDENT' | 'NON_STUDENT');
                     }}
                     value={field.value}
                   >
@@ -219,10 +231,10 @@ const UserInfoForm: React.FC = () => {
                           value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
                           onChange={(date: CalendarDate) => {
                             if (date) {
-                              const jsDate = new Date(date.year, date.month - 1, date.day)
-                              field.onChange(jsDate)
+                              const jsDate = new Date(date.year, date.month - 1, date.day);
+                              field.onChange(jsDate);
                             } else {
-                              field.onChange(undefined)
+                              field.onChange(undefined);
                             }
                           }}
                           className="max-w-full w-full"
@@ -249,7 +261,7 @@ const UserInfoForm: React.FC = () => {
         </form>
       </Form>
     </CardWrapper>
-  )
-}
+  );
+};
 
-export default UserInfoForm
+export default UserInfoForm;

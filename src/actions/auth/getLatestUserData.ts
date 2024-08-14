@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 
 export async function getLatestUserData() {
   const session = await auth();
+ 
   if (!session || !session.user?.email) {
     return null;
   }
@@ -22,6 +23,6 @@ export async function getLatestUserData() {
       onBoardingCompleted: true
     },
   });
-
+  
   return user;
 }

@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+ 
 }
 
 datasource db {
@@ -33,7 +34,7 @@ model User {
   image                String?
   password             String?
   dob                  DateTime?            
-  userType             UserType              @default(NON_STUDENT) 
+  userType             UserType              @default(STUDENT) 
   grade                String?               
   securityQuestion1    String?
   securityAnswer1      String?

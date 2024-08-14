@@ -4,13 +4,7 @@ import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoginSchema } from "@/schema/index";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Button, Input } from "@nextui-org/react";
 import { Eye, EyeSlash, Key, Sms } from "iconsax-react";
 import { login } from "@/actions/auth/login";
@@ -20,44 +14,54 @@ import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
 
-const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }) => {
+const LoginForm = ( ) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
   const router = useRouter();
+  const { update } = useSession();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
-    mode: "onSubmit", // This ensures validation messages appear only on form submission
-    reValidateMode: "onSubmit", // Prevents validation on re-validate until form is resubmitted
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
-    startTransition(() => {
-      login(values).then((data) => {
+    
+    startTransition(async () => {
+      try {
+        const data = await login(values);
         if (data?.error) {
           setError(data.error);
-          onError(data.error);
+         
         } else if (data?.success) {
           setError("");
           setSuccess("Login successful!");
-          document.querySelector(".door")?.classList.add("doorOpen");
-          setTimeout(() => {
-            router.push("/beams-today");
-          }, 2000); // Redirect after the success message is shown
+
+         
+          await update();
+          
+          // Refresh the router to re-fetch any required data
+          router.refresh();
+
+          // Redirect to the /beams-today page
+          router.push("/beams-today");
         }
-      })
-      .catch(() => setError("Something went wrong!"));
+      } catch (error) {
+        setError("Something went wrong!");
+      }
     });
   };
 
@@ -70,7 +74,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
       backButtonHref="/auth/register"
       showSocial
     >
-      <Form {...form} >
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="space-y-6">
             <FormField
@@ -79,31 +83,23 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                  <div className="relative w-full no-scrollbar">
                     <Input
                       isRequired
                       label="Email"
                       classNames={{
                         label: 'w-20',
-                        // innerWrapper: "w-[4/6]",
                         mainWrapper: "w-full flex-1",
-                        input: [
-                          "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1'
-                        ]
+                        input: ["placeholder:text-grey-2 text-xs", 'w-full flex-1']
                       }}
                       {...field}
                       type="email"
                       labelPlacement="outside-left"
                       placeholder="Enter your email"
                       disabled={isPending}
-                      startContent={
-                        <Sms variant="Bold" className="text-secondary-2" size={20} />
-                      }
+                      startContent={<Sms variant="Bold" className="text-secondary-2" size={20} />}
                     />
-                    </div>
                   </FormControl>
-                  <FormMessage /> {/* Validation message will appear here after form submission */}
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -113,41 +109,33 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="relative w-full no-scrollbar">
-                      <Input
-                        isRequired
-                        classNames={{
-                          label: 'w-20',
-                          // innerWrapper: "w-[4/6]",
-                          mainWrapper: "w-full flex-1",
-                          input: [
-                            "placeholder:text-grey-2 text-xs",
-                            'w-full flex-1'
-                          ]
-                        }}
-                        label="Password"
-                        {...field}
-                        type={showPassword ? "text" : "password"}
-                        disabled={isPending}
-                        labelPlacement="outside-left"
-                        placeholder="Enter a password"
-                        startContent={
-                          <Key variant="Bold" className="text-secondary-2" size={20} />
-                        }
-                        endContent={
-                          <span
-                            className="cursor-pointer text-[#888888]"
-                            onClick={togglePasswordVisibility}
-                          >
-                            {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
-                          </span>
-                        }
-                        onFocus={() => setPasswordFocused(true)}
-                        onBlur={() => {
-                          if (!field.value) setPasswordFocused(false);
-                        }}
-                      />
-                    </div>
+                    <Input
+                      isRequired
+                      classNames={{
+                        label: 'w-20',
+                        mainWrapper: "w-full flex-1",
+                        input: ["placeholder:text-grey-2 text-xs", 'w-full flex-1']
+                      }}
+                      label="Password"
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      disabled={isPending}
+                      labelPlacement="outside-left"
+                      placeholder="Enter your password"
+                      startContent={<Key variant="Bold" className="text-secondary-2" size={20} />}
+                      endContent={
+                        <span
+                          className="cursor-pointer text-[#888888]"
+                          onClick={togglePasswordVisibility}
+                        >
+                          {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
+                        </span>
+                      }
+                      onFocus={() => setPasswordFocused(true)}
+                      onBlur={() => {
+                        if (!field.value) setPasswordFocused(false);
+                      }}
+                    />
                   </FormControl>
                   {passwordFocused && (
                     <PasswordStrength
@@ -155,7 +143,7 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
                       onClose={() => setPasswordFocused(false)}
                     />
                   )}
-                  <FormMessage /> {/* Validation message will appear here after form submission */}
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -165,11 +153,10 @@ const LoginForm = ({ onError }: { onError: (error: string | undefined) => void }
             </div>
             {error && (<FormError message={error} />)}
             {success && (<FormSuccess message={success} />)}
-           
           </div>
-           <Button type="submit" color="primary" className="w-full text-white font-medium">
-              Login
-            </Button>
+          <Button type="submit" color="primary" className="w-full text-white font-medium" isLoading={isPending}>
+            Login
+          </Button>
         </form>
       </Form>
     </CardWrapper>

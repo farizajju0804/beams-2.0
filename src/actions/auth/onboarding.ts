@@ -13,10 +13,16 @@ export async function updateOnboardingStatus(status: boolean) {
     throw new Error("Not authenticated")
   }
 
-  await db.user.update({
-    where: { id: session.user.id },
-    data: { onBoardingCompleted: status },
-  })
+ 
 
-  redirect(DEFAULT_LOGIN_REDIRECT)
-}
+  try {
+    const response = await db.user.update({
+      where: { id: session.user.id },
+      data: { onBoardingCompleted: status },
+    })
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating onboarding status:", error);
+    return { success: false, error: "Failed to onboarding status" };
+  }
+};

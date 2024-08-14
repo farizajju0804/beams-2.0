@@ -63,7 +63,8 @@ export const updateUserMetadata = async (email: string, values: {
         userFormCompleted: true
       }
     });
-    return { success: true };
+    console.log('updateUserMetadata: Updated user:', response);
+    return { success: true, redirect: '/onboarding'};
   } catch (error) {
     console.error("Error updating user metadata:", error);
     return { success: false, error: "Failed to update user metadata" };

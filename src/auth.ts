@@ -69,28 +69,34 @@ export const {
       }
       return session;
     },
-    async jwt({ token }) {
-      if (!token.sub) return token;
-
-      const existingUser = await getUserById(token.sub);
-      if (!existingUser) return token;
-
-      const existingAccount = await getAccountByUserId(existingUser.id);
-      token.isOAuth = !!existingAccount;
-      token.firstName = existingUser.firstName;
-      token.lastName = existingUser.lastName;
-      token.email = existingUser.email;
-      token.role = existingUser.role;
-      token.image = existingUser.image;
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-      token.userFormCompleted =  existingUser.userFormCompleted;; // Store user info completion status
-      token.onBoardingCompleted = existingUser.onBoardingCompleted; // Store onboarding status
+    async jwt({ token, trigger }) {
+      console.log("JWT callback triggered:", trigger);
+      
+      if (token.sub) {
+        const existingUser = await getUserById(token.sub);
+        if (existingUser) {
+          const existingAccount = await getAccountByUserId(existingUser.id);
+          
+          // Update token with latest user data
+          token.isOAuth = !!existingAccount;
+          token.firstName = existingUser.firstName;
+          token.lastName = existingUser.lastName;
+          token.email = existingUser.email;
+          token.role = existingUser.role;
+          token.image = existingUser.image;
+          token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+          token.userFormCompleted = existingUser.userFormCompleted;
+          token.onBoardingCompleted = existingUser.onBoardingCompleted;
+        }
+      }
+      
+      console.log("Updated JWT token:", token);
       return token;
     },
     async redirect({ url, baseUrl }) {
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       else if (new URL(url).origin === baseUrl) return url;
-      return `${baseUrl}/beams-today`;
+      return `${baseUrl}`;
     }
   },
   adapter: PrismaAdapter(db),
