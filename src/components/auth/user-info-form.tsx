@@ -84,15 +84,16 @@ const UserInfoForm: React.FC = () => {
          
           console.log('User metadata updated successfully');
           console.log('Current pathname:', window.location.pathname);
+          await update();
+          router.refresh();
+          router.push('/onboarding');
         } else {
           console.error('Failed to update user metadata:', response.error);
         }
       } catch (error) {
         console.error('Error updating user metadata:', error);
       }
-      await update();
-      router.refresh();
-      router.push('/onboarding');
+      
     });
   };
 
