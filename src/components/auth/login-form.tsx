@@ -50,18 +50,15 @@ const LoginForm = ( ) => {
           setError("");
           setSuccess("Login successful!");
 
-         
-          await update();
-          
-          // Refresh the router to re-fetch any required data
-          router.refresh();
 
-          // Redirect to the /beams-today page
-          router.push("/beams-today");
         }
       } catch (error) {
         setError("Something went wrong!");
       }
+               
+      await update();
+      router.refresh();
+      router.push("/beams-today");
     });
   };
 

@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@nextui-org/react";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
@@ -6,7 +7,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 
 const Social = () => {
-  const user = getLatestUserData();
+
  
   const handleSocialSignIn = () => {
   

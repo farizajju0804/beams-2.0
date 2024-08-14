@@ -70,7 +70,7 @@ export const {
       return session;
     },
     async jwt({ token, trigger }) {
-      console.log("JWT callback triggered:", trigger);
+     
       
       if (token.sub) {
         const existingUser = await getUserById(token.sub);
@@ -89,8 +89,7 @@ export const {
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
         }
       }
-      
-      console.log("Updated JWT token:", token);
+
       return token;
     },
     async redirect({ url, baseUrl }) {

@@ -7,9 +7,9 @@ const { auth } = NextAuth(authConfig);
 
 export default auth(async (req) => {
   const { nextUrl } = req;
-  console.log('Middleware: Handling request for path:', nextUrl.pathname);
+
   const isLoggedIn = !!req.auth;
-  console.log('Middleware: User logged in:', isLoggedIn);
+
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -33,14 +33,13 @@ export default auth(async (req) => {
     
     try {
       const user = await currentUser();
-      console.log('Middleware: Current user:', user);
+
 
       if (!user) {
         console.error("User not found");
         return Response.redirect(new URL('/auth/login', nextUrl));
       }
-      console.log('Middleware: User form completed:', user.userFormCompleted);
-      console.log('Middleware: User onboarding completed:', user.onBoardingCompleted);
+
       // // If user is on /user-info, has completed user info, but not onboarding
       // if (nextUrl.pathname === '/user-info' && user.userFormCompleted && !user.onBoardingCompleted) {
       //   return Response.redirect(new URL('/onboarding', nextUrl));
@@ -89,7 +88,7 @@ export default auth(async (req) => {
       return Response.redirect(new URL('/auth/login', nextUrl));
     }
   }
-  console.log('Middleware: Allowing request to proceed');
+
   return;
 });
 
