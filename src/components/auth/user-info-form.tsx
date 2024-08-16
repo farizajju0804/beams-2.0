@@ -93,8 +93,9 @@ const UserInfoForm: React.FC = () => {
       } catch (error) {
         console.error('Error updating user metadata:', error);
       }
-      await update();
+      
       router.refresh();
+      await update();
       router.push('/onboarding');
       
     });
