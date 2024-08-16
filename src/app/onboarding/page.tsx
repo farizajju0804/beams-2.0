@@ -24,11 +24,11 @@ const OnboardingPage = () => {
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792299/onboarding/formats_ialiwf.png',
-      title: 'Learn Your Way in 3 Formats',
-      content: 'Watch, listen, or read—experience innovation in <b class="text-purple">video, audio,</b> and <b>text</b> formats, all designed to fit your style.',
+      title: 'Learn Your Way',
+      content: 'Watch, listen, or read—experience innovation in <b class="text-purple">video, audio,</b> and <b class="text-purple" >text</b> formats, all designed to fit your style.',
     },
     {
-      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723799606/onboarding/discover_jm9ybc.png',
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723820625/onboarding/discover_p39zka.png',
       title: 'Discover the latest breakthroughs ',
       content: 'Explore cutting-edge innovations across various categories like Technology, Medicine, etc.',
     },  
@@ -95,10 +95,10 @@ const OnboardingPage = () => {
 
   return (
     <div 
-      className="flex flex-col items-center justify-between h-screen bg-cover object-cover bg-right-bottom lg:bg-bottom"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-top lg:bg-bottom transition-all duration-500 ease-in-out pt-6 pb-4"
+      style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
-      <div className="w-full flex justify-between items-center px-6 py-8 lg:py-4">
+      <div className="w-full flex justify-between items-center px-6 lg:py-4">
       <ProgressDots
           totalDots={totalSlides}
           activeDot={currentSlide}
@@ -115,22 +115,24 @@ const OnboardingPage = () => {
           Skip
         </Button>
       </div>
-      <div className="mb-8 lg:mb-8 h-72 w-72  relative">
-          <Image
-            src={slides[currentSlide].mainImage}
-            alt="Onboarding illustration"
-            layout="fill"
-            objectFit="contain"
-          />
-        </div>
+      <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 lg:w-80 relative animate-float">
+      <Image
+        src={slides[currentSlide].mainImage}
+        alt="Onboarding illustration"
+        layout="fill"
+        objectFit="contain"
+        className="transition-opacity duration-500 ease-in-out"
+        style={{ opacity: isPending ? 0 : 1 }}
+      />
+    </div>
        
-       <div className='flex flex-col items-center justify-center'>
-      <div className="flex-grow flex flex-col items-center justify-start">
+       <div className='flex flex-col items-center justify-center min-h-44 md:min-h-72'>
+      <div className="flex flex-col items-center justify-start">
         
 
-        <div className="text-center max-w-xl">
-          <h2 className="text-2xl text-purple px-6 lg:text-3xl font-bold font-poppins mb-2">{slides[currentSlide].title}</h2>
-          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-6 lg:mb-8 px-6" />
+        <div className="px-6 mt-4 text-center max-w-xl">
+          <h2 className="text-3xl text-purple lg:text-3xl font-bold font-poppins mb-4">{slides[currentSlide].title}</h2>
+          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-sm lg:text-base" />
         </div>
       </div>
 

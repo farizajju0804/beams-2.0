@@ -214,7 +214,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             )
           }
         />
-        {!query && minDate && maxDate && (
+        {!query && minDate && maxDate && !selectedDate && (
           <CalendarComponent
             ref={calendarRef}
             selectedDate={selectedDate}

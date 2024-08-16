@@ -1,23 +1,28 @@
 'use client'
-import React, { useState, useTransition, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input, Radio, RadioGroup, Button, DateInput } from '@nextui-org/react';
+import { Input, Radio, RadioGroup, Button } from '@nextui-org/react';
 import { updateUserMetadata } from '@/actions/auth/register';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import CardWrapper from '@/components/auth/card-wrapper';
-import { Calendar, User } from 'iconsax-react';
+import { User } from 'iconsax-react';
 import { userSchema, UserFormData } from '@/schema';
 import { useRouter } from 'next/navigation';
 import { getLatestUserData } from '@/actions/auth/getLatestUserData';
 import { useSession } from 'next-auth/react';
-import { parseDate, CalendarDate } from '@internationalized/date'
+import CustomDateInput from './CustomDateInput';
+
 const UserInfoForm: React.FC = () => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const [userType, setUserType] = useState<'STUDENT' | 'NON_STUDENT'>('STUDENT');
-  const [latestUserData, setLatestUserData] = useState<any>(null); // State to store latest user data
+  const [latestUserData, setLatestUserData] = useState<any>(null);
   const router = useRouter();
   const { update } = useSession();
+
+  const [day, setDay] = useState<string>('');
+  const [month, setMonth] = useState<string>('');
+  const [year, setYear] = useState<string>('');
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
@@ -35,7 +40,6 @@ const UserInfoForm: React.FC = () => {
     const fetchLatestUserData = async () => {
       try {
         const data = await getLatestUserData();
-        console.log('Fetched user data:', data);
         if (data) {
           form.reset({
             userType: data.userType || 'STUDENT',
@@ -45,7 +49,14 @@ const UserInfoForm: React.FC = () => {
             dob: data.dob ? new Date(data.dob) : undefined,
           });
           setUserType(data.userType || 'STUDENT');
-          setLatestUserData(data); // Store the latest user data in state
+          setLatestUserData(data);
+
+          if (data.dob) {
+            const date = new Date(data.dob);
+            setDay(date.getDate().toString().padStart(2, '0'));
+            setMonth((date.getMonth() + 1).toString().padStart(2, '0'));
+            setYear(date.getFullYear().toString());
+          }
         }
       } catch (error) {
         console.error('Error fetching latest user data:', error);
@@ -55,50 +66,42 @@ const UserInfoForm: React.FC = () => {
     fetchLatestUserData();
   }, [form]);
 
-  const onSubmit = (data: UserFormData) => {
-    console.log('Submit function called with data:', data);
-
-    startTransition(async () => {
-      try {
-        if (!latestUserData?.email) {
-          throw new Error('Email not found.');
-        }
-
-        const values = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          ...(data.userType === 'STUDENT' && {
-            dob: data.dob || undefined,
-            grade: data.grade,
-          }),
-          userType: data.userType,
-          userFormCompleted: true,
-        };
-
-        console.log('Updating user metadata with values:', values);
-
-        const response = await updateUserMetadata(latestUserData.email, values);
-        console.log('Update response:', response);
-
-        if (response.success) {
-         
-          console.log('User metadata updated successfully');
-          console.log('Current pathname:', window.location.pathname);
-          // await update();
-          router.refresh();
-          // router.push('/onboarding');
-        } else {
-          console.error('Failed to update user metadata:', response.error);
-        }
-      } catch (error) {
-        console.error('Error updating user metadata:', error);
+  const onSubmit = async (data: UserFormData) => {
+    setIsPending(true);
+    try {
+      if (!latestUserData?.email) {
+        throw new Error('Email not found.');
       }
+
+      const dob = year && month && day ? new Date(`${year}-${month}-${day}`) : undefined;
+
+      const values = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        ...(data.userType === 'STUDENT' && {
+          dob,
+          grade: data.grade,
+        }),
+        userType: data.userType,
+        userFormCompleted: true,
+      };
+
+      const response = await updateUserMetadata(latestUserData.email, values);
+      router.refresh();
       
+      if (response.success) {
+        
+      } else {
+        console.error('Failed to update user metadata:', response.error);
+      }
+    } catch (error) {
+      console.error('Error updating user metadata:', error);
+    } finally {
+      setIsPending(false);
       router.refresh();
       await update();
-      router.push('/onboarding');
-      
-    });
+      router.push('/beams-today')
+    }
   };
 
   return (
@@ -215,40 +218,13 @@ const UserInfoForm: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="dob"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <DateInput
-                          isRequired
-                          labelPlacement="outside-left"
-                          classNames={{
-                            label: 'w-24 font-medium',
-                            inputWrapper: 'w-full flex-1',
-                            input: [
-                              'placeholder:text-grey-2 text-xs',
-                              'w-full flex-1 font-medium',
-                            ],
-                          }}
-                          label="Date of Birth"
-                          value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
-                          onChange={(date: CalendarDate) => {
-                            if (date) {
-                              const jsDate = new Date(date.year, date.month - 1, date.day);
-                              field.onChange(jsDate);
-                            } else {
-                              field.onChange(undefined);
-                            }
-                          }}
-                          className="max-w-full w-full"
-                          startContent={<Calendar />}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <CustomDateInput
+                  day={day}
+                  month={month}
+                  year={year}
+                  onDayChange={setDay}
+                  onMonthChange={setMonth}
+                  onYearChange={setYear}
                 />
               </>
             )}

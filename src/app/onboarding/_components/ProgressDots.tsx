@@ -16,13 +16,13 @@ const ProgressDots: React.FC<ProgressDotsProps> = ({
   onDotClick,
 }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 lg:space-x-2">
       {[...Array(totalDots)].map((_, index) => (
         <button
           key={index}
           onClick={() => onDotClick(index)}
-          className={`w-2 rounded-full transition-all duration-300 ${
-            index === activeDot ? 'h-8' : 'h-2'
+          className={`w-1 lg:w-2 rounded-full transition-all duration-300 ${
+            index === activeDot ? 'h-4 lg:h-8' : 'h-1 lg:h-2'
           } cursor-pointer focus:outline-none`}
           style={{
             backgroundColor: index === activeDot ? activeColor : inactiveColor,
