@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
+import { useEmailStore } from "@/store/email";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -49,7 +50,14 @@ const LoginForm = () => {
     
     try {
       const data = await login(values);
-      if (data?.error) {
+      if (data?.error === "VERIFY_EMAIL") {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("email", values.email);
+        }
+        useEmailStore.getState().setEmail(values.email);
+        router.push("/auth/verify-email");
+      }
+      else if (data?.error) {
         setError(data.error);
         setIsLoading(false);
       } else if (data?.success) {

@@ -126,7 +126,7 @@ const OnboardingPage = () => {
         layout="fill"
         objectFit="contain"
         className="transition-opacity duration-500 ease-in-out"
-        style={{ opacity: isPending ? 0 : 1 }}
+        
       />
     </div>
        
