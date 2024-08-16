@@ -17,7 +17,7 @@ interface VerifyEmailFormData {
   code: string;
 }
 
-const VerifyEmail: React.FC<{ onNext: () => void }> = ({ onNext }) => {
+const VerifyEmail: React.FC<{ }> = ({  }) => {
   const { register, handleSubmit, watch, setValue } = useForm<VerifyEmailFormData>({
     defaultValues: { code: "" },
   });
