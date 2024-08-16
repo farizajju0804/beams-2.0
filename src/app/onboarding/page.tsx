@@ -54,10 +54,14 @@ const OnboardingPage = () => {
   
   const activeColor = isEvenSlide ? '#370075' : '#F9D42E'; // Example: orange for even, purple for odd
   const inactiveColor = isEvenSlide ? '#fefefe' : '#ffffff'; // Example: white for even, light gray for odd
-
+  const isMobile  = window.innerWidth < 767
   const backgroundImage = isEvenSlide 
-    ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png'
-    : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png';
+    ? isMobile 
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723821681/onboarding/yellow-bg-mobile_jqxlz0.png' // Mobile image for even slides
+        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png' // Desktop image for even slides
+    : isMobile 
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723821681/onboarding/purple-bg-mobile_ylqogb.png' // Mobile image for odd slides
+        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png'; // Desktop image for odd slides
 
   const handleDotClick = (index: number) => {
     setCurrentSlide(index);
@@ -95,7 +99,7 @@ const OnboardingPage = () => {
 
   return (
     <div 
-      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-top lg:bg-bottom transition-all duration-500 ease-in-out pt-6 pb-4"
+      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-6 "
       style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
       <div className="w-full flex justify-between items-center px-6 lg:py-4">
