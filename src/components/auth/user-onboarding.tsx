@@ -105,6 +105,7 @@ const UserOnboarding: React.FC = () => {
             ...values,
             userFormCompleted: true,
           });
+        await new Promise(resolve => setTimeout(resolve, 1000));
         router.push('/onboarding');
       } else {
         console.error('Failed to update user metadata:', response.error);

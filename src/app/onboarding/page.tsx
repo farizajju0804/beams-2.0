@@ -85,6 +85,7 @@ const OnboardingPage = () => {
        await update({
         onBoardingCompleted: true,
           });
+        await new Promise(resolve => setTimeout(resolve, 1000));
         router.push('/onboarding');
        
       } else {
