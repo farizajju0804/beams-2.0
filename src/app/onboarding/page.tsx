@@ -82,18 +82,16 @@ const OnboardingPage = () => {
     startTransition(async () => {
       const response  = await updateOnboardingStatus(true)
       if (response.success) {
-        // await update();
-        router.refresh();
-        // router.push('/beams-today')
+       await update({
+        onBoardingCompleted: true,
+          });
+        router.push('/onboarding');
        
       } else {
         console.error('Failed to update user metadata:', response.error)
       }
       
-      router.refresh();
-      await update();
-      router.push('/beams-today')
-        
+    
     })
   }
 

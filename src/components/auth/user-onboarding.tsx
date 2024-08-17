@@ -100,7 +100,10 @@ const UserOnboarding: React.FC = () => {
       const response = await updateUserMetadata(latestUserData.email, values);
       if (response?.success) {
         console.log('User metadata updated successfully');
-        await update();
+        await update({
+            ...values,
+            userFormCompleted: true,
+          });
         router.push('/onboarding');
       } else {
         console.error('Failed to update user metadata:', response.error);
