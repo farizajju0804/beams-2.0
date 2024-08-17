@@ -7,7 +7,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken, getTwoFactorToken } from "@/libs/tokens";
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/libs/mail";
+import { sendVerificationEmail, sendTwoFactorTokenEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { getTwoFactorTokenByEmail } from "./two-factor-token";
 import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
@@ -52,9 +52,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
-    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    await sendVerificationEmail3(verificationToken.email, verificationToken.token);
     return { error: "VERIFY_EMAIL", success: undefined };
-    // return { success: "You haven't verified your email. Confirmation email sent!", error: undefined };
+  
     
   }
 

@@ -72,9 +72,9 @@ const UserInfoForm: React.FC = () => {
       if (!latestUserData?.email) {
         throw new Error('Email not found.');
       }
-
+  
       const dob = year && month && day ? new Date(`${year}-${month}-${day}`) : undefined;
-
+  
       const values = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -85,11 +85,12 @@ const UserInfoForm: React.FC = () => {
         userType: data.userType,
         userFormCompleted: true,
       };
-
+  
       const response = await updateUserMetadata(latestUserData.email, values);
-      router.refresh();
-      
-      if (response.success) {
+      console.log('updateUserMetadata response:', response);
+      if (response?.success) {
+        console.log('User metadata updated successfully');
+        router.refresh()
         
       } else {
         console.error('Failed to update user metadata:', response.error);
@@ -100,10 +101,10 @@ const UserInfoForm: React.FC = () => {
       setIsPending(false);
       router.refresh();
       await update();
-      router.push('/beams-today')
+      router.push('/onboarding')
+  
     }
   };
-
   return (
     <CardWrapper headerLabel="User Information">
       <Form {...form}>

@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Step1Form from "./Step1";
-import Step2Form from "./Step2";
-import Step3Form from "./Step3";
 
 const TOTAL_STEPS = 3;
 
@@ -32,9 +30,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="w-full flex items-center justify-center">
-      {currentStep === 1 && <Step1Form onNext={handleNext} />}
-      {currentStep === 2 && <Step2Form onNext={handleNext} />}
-      {currentStep === 3 && <Step3Form onNext={handleNext} />}
+       <Step1Form  />
     </div>
   );
 };

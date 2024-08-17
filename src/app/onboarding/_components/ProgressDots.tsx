@@ -21,11 +21,11 @@ const ProgressDots: React.FC<ProgressDotsProps> = ({
         <button
           key={index}
           onClick={() => onDotClick(index)}
-          className={`w-1 lg:w-2 rounded-full transition-all duration-300 ${
-            index === activeDot ? 'h-4 lg:h-8' : 'h-1 lg:h-2'
+          className={` rounded-full transition-all duration-300 ${
+            index <= activeDot ? 'h-2 lg:h-3 w-2 lg:w-3' : 'h-1 lg:h-2 w-1 lg:w-2'
           } cursor-pointer focus:outline-none`}
           style={{
-            backgroundColor: index === activeDot ? activeColor : inactiveColor,
+            backgroundColor: index <= activeDot ? activeColor : inactiveColor,
           }}
           aria-label={`Go to slide ${index + 1}`}
         />

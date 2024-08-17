@@ -1,9 +1,11 @@
 import { sendEmailBrevo } from '@/libs/brewoEmail';
+import { link } from 'fs';
 
 
 
 
 export const sendVerificationEmail = async (email: string, token: string) => {
+  const link = `${process.env.URL}/auth/new-verify-email?email=${email}`;
 
   const payload = {
     sender: {
@@ -16,9 +18,32 @@ export const sendVerificationEmail = async (email: string, token: string) => {
       },
     ],
     subject: "Confirmation Code",
-    templateId: 11,
+    templateId: 13,
     params: {
       token: token,
+      link : link
+    },
+  };
+  return sendEmailBrevo(payload);
+};
+export const sendVerificationEmail3 = async (email: string, token: string) => {
+  const link = `${process.env.URL}/auth/verify-email?email=${email}`;
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Confirmation Code",
+    templateId: 13,
+    params: {
+      token: token,
+      link : link
     },
   };
   return sendEmailBrevo(payload);

@@ -57,10 +57,10 @@ const OnboardingPage = () => {
   const isMobile  = window.innerWidth < 767
   const backgroundImage = isEvenSlide 
     ? isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723821681/onboarding/yellow-bg-mobile_jqxlz0.png' // Mobile image for even slides
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png' // Mobile image for even slides
         : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png' // Desktop image for even slides
     : isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723821681/onboarding/purple-bg-mobile_ylqogb.png' // Mobile image for odd slides
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/purple-bg-mobile_oarvy7.png' // Mobile image for odd slides
         : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png'; // Desktop image for odd slides
 
   const handleDotClick = (index: number) => {
@@ -99,10 +99,10 @@ const OnboardingPage = () => {
 
   return (
     <div 
-      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-6 "
+      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
       style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
-      <div className="w-full flex justify-between items-center px-6 lg:py-4">
+      <div className="w-full flex justify-between items-center px-6 lg:py-2">
       <ProgressDots
           totalDots={totalSlides}
           activeDot={currentSlide}
@@ -119,7 +119,7 @@ const OnboardingPage = () => {
           Skip
         </Button>
       </div>
-      <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 lg:w-80 relative animate-float">
+      <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative animate-float">
       <Image
         src={slides[currentSlide].mainImage}
         alt="Onboarding illustration"
@@ -130,13 +130,13 @@ const OnboardingPage = () => {
       />
     </div>
        
-       <div className='flex flex-col items-center justify-center min-h-44 md:min-h-72'>
+       <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
       <div className="flex flex-col items-center justify-start">
         
 
-        <div className="px-6 mt-4 text-center max-w-xl">
-          <h2 className="text-3xl text-purple lg:text-3xl font-bold font-poppins mb-4">{slides[currentSlide].title}</h2>
-          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-sm lg:text-base" />
+        <div className="px-6 mt-4 text-center max-w-3xl">
+          <h2 className="text-3xl text-purple lg:text-4xl font-bold font-poppins mb-4">{slides[currentSlide].title}</h2>
+          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-sm md:text-base lg:text-lg" />
         </div>
       </div>
 

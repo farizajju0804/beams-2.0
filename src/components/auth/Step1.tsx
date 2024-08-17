@@ -14,8 +14,9 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import PasswordStrength from "./PasswordStrength2";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { useEmailStore } from "@/store/email";
+import { useRouter } from "next/navigation";
 
-const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
+const Step1Form: React.FC = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -25,7 +26,7 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
 
   const setEmailStore = useEmailStore((state: any) => state.setEmail);
-
+   const router = useRouter()
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
@@ -43,12 +44,12 @@ const Step1Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
     setSuccess("");
     startTransition(async () => {
       try {
-        const result = await registerAndSendVerification(values);
+        const result:any = await registerAndSendVerification(values);
         if (result?.error) {
           setError(result.error);
         } else if (result?.success) {
           setSuccess(result.success);
-          setTimeout(onNext, 2000);
+          router.push('/auth/new-verify-email')
         }
       } catch (err) {
         console.error("Error:", err);

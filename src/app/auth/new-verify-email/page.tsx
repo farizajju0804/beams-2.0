@@ -55,10 +55,10 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const result = await verifyCode2(code);
+      const result = await verifyCode(code);
       if (result?.success) {
         console.log("Email verified successfully!");
-        router.push("/user-info");
+        router.push("/auth/security-questions");
       } else {
         setError(result?.error || "Verification failed.");
       }

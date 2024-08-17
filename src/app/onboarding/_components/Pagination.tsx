@@ -30,11 +30,11 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={onPrev}
         disabled={isFirstSlide}
         className={`w-fit rounded-full transition-all duration-300 ${
-          isFirstSlide ? 'bg-grey-1' : 'bg-black hover:bg-purple-700'
+          isFirstSlide ? 'bg-grey-1' : 'bg-[#d2d2d2]'
         }`}
         // aria-label="Previous slide"
       >
-        <ArrowLeft2 size="16" color={isFirstSlide ? '#9CA3AF' : '#FFFFFF'} />
+        <ArrowLeft2 size="16" color={isFirstSlide ? '#9CA3AF' : '#181818'} />
       </Button>
       
       {isLastSlide ? (
@@ -50,10 +50,10 @@ const Pagination: React.FC<PaginationProps> = ({
         isIconOnly
         size='sm'
           onClick={onNext}
-          className="w-fit rounded-full bg-black"
+          className="w-fit rounded-full bg-[#d2d2d2]"
           aria-label="Next slide"
         >
-          <ArrowRight2 size="16" color="#FFFFFF" />
+          <ArrowRight2 size="16" color="#181818" />
         </Button>
       )}
     </div>
