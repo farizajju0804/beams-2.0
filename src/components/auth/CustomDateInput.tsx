@@ -8,6 +8,7 @@ interface CustomDateInputProps {
   onDayChange: (day: string) => void;
   onMonthChange: (month: string) => void;
   onYearChange: (year: string) => void;
+  labelPlacement?: 'left' | 'top';
 }
 
 const CustomDateInput: React.FC<CustomDateInputProps> = ({
@@ -17,21 +18,23 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
   onDayChange,
   onMonthChange,
   onYearChange,
+  labelPlacement = 'left',
 }) => {
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const years = Array.from({ length: 65 }, (_, i) => (1950 + i).toString());
 
   return (
-    <div className="flex w-full items-center gap-2">
-      <p className="w-fit text-sm font-medium">Date Of Birth</p>
-      <div className="flex flex-1 gap-2 w-full">
-      
+    <div className={`flex ${labelPlacement === 'left' ? 'items-center' : 'flex-col'} w-full`}>
+      <label className={`text-sm font-medium ${labelPlacement === 'left' ? 'mr-4' : 'mb-2'}`}>
+        Date of Birth
+      </label>
+      <div className={`flex w-full justify-between ${labelPlacement === 'top' ? 'flex-wrap' : 'flex-1'}`}>
         <Select
           selectedKeys={month ? [month] : []}
           onSelectionChange={(keys) => onMonthChange(Array.from(keys)[0] as string)}
           placeholder="Month"
-          className="w-[35%]"
+          className="w-[30%]"
           size="sm"
         >
           {months.map((m) => (
@@ -46,7 +49,6 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
           placeholder="Day"
           className="w-[30%]"
           size="sm"
-          
         >
           {days.map((d) => (
             <SelectItem key={d} value={d}>
@@ -58,11 +60,8 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
           selectedKeys={year ? [year] : []}
           onSelectionChange={(keys) => onYearChange(Array.from(keys)[0] as string)}
           placeholder="Year"
-          className="w-[35%] p-0"
+          className="w-[30%]"
           size="sm"
-          classNames={{
-            value : "w-fit text-xs"
-          }}
         >
           {years.map((y) => (
             <SelectItem key={y} value={y}>

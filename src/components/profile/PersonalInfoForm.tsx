@@ -1,18 +1,29 @@
 'use client';
-import React, { useRef, useState, useTransition } from "react";
+import React, { useRef, useState, useTransition, useEffect } from "react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Spinner, DateInput } from "@nextui-org/react";
+import { Button, Input, Card, CardHeader, CardBody, Spinner, Select, SelectItem } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
-import { Calendar, Gallery } from "iconsax-react";
-import { SettingsSchema, SettingsFormData } from "@/schema";
-import { parseDate, CalendarDate } from '@internationalized/date'
+import { Gallery } from "iconsax-react";
+import { z } from "zod";
+import CustomDateInput from "../auth/CustomDateInput";
+
+export const SettingsSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters long"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters long"),
+  dob: z.date().optional(),
+  grade: z.string().optional(),
+  userType: z.enum(["STUDENT", "NON_STUDENT"]),
+  email: z.string().email().optional(),
+});
+
+export type SettingsFormData = z.infer<typeof SettingsSchema>;
 
 interface PersonalInfoFormProps {
   user: {
@@ -24,34 +35,65 @@ interface PersonalInfoFormProps {
     dob?: Date;
     grade?: string;
   };
-  isOAuth : boolean
+  isOAuth: boolean;
 }
 
-const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => {
+const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+
+const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [profileImage, setProfileImage] = useState<string>(user.image || "");
+  const [profileImage, setProfileImage] = useState<string>(getAvatarSrc(user));
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">(user.userType);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const updateUserImage = useUserStore((state) => state.updateUserImage);
+  const setUser = useUserStore((state) => state.setUser);
+
+  const [day, setDay] = useState<string>('');
+  const [month, setMonth] = useState<string>('');
+  const [year, setYear] = useState<string>('');
 
   const form = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
       userType: user.userType,
       grade: user.grade || '',
-      dob: user.dob ? new Date(user.dob) : undefined,
       email: user.email,
+      dob: user.dob,
     },
   });
 
+  useEffect(() => {
+    if (user.dob) {
+      const date = new Date(user.dob);
+      setDay(date.getDate().toString().padStart(2, '0'));
+      setMonth((date.getMonth() + 1).toString().padStart(2, '0'));
+      setYear(date.getFullYear().toString());
+    }
+  }, [user.dob]);
+
+  const handleDateChange = () => {
+    if (day && month && year) {
+      const newDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      if (!isNaN(newDate.getTime())) {
+        form.setValue('dob', newDate); // Set the dob in form state
+      } else {
+        form.setValue('dob', undefined); // Reset if the date is invalid
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleDateChange();
+  }, [day, month, year]);
+
   const handleFileInputClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset file input value to ensure onChange is triggered
+      fileInputRef.current.value = '';
       fileInputRef.current.click();
     }
   };
@@ -91,7 +133,8 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => 
     try {
       await changeProfileImage(url);
       setProfileImage(url);
-      updateUserImage(url); // Update the image in the Zustand store
+      updateUserImage(url);
+      setUser({ ...useUserStore.getState().user, image: url });
       setSuccess("Profile image updated successfully");
       setError("");
     } catch (err) {
@@ -103,13 +146,21 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => 
 
   const onSubmit = (values: SettingsFormData) => {
     startTransition(() => {
-      settings(values)
+      const dob = day && month && year ? new Date(`${year}-${month}-${day}`) : undefined;
+
+      const updatedValues = {
+        ...values,
+        dob,
+      };
+
+      settings(updatedValues)
         .then((data) => {
           if (data.error) {
             setError(data.error);
           } else if (data.success) {
             setSuccess(data.success);
             setError("");
+            setUser(updatedValues);
           }
         })
         .catch(() => { setError("Something went wrong") });
@@ -133,7 +184,13 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => 
               className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer  ${isUploading ? 'opacity-50' : ''}`}
               onClick={handleFileInputClick}
             >
-              <Image src={profileImage ? profileImage : 'https://placehold.co/200'} alt="Profile" width={200} height={200} className="w-full h-full rounded-full border-1 border-brand object-cover" />
+              <Image 
+                src={profileImage}
+                alt="Profile" 
+                width={200} 
+                height={200} 
+                className="w-full h-full rounded-full border-1 border-brand object-cover" 
+              />
               <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
                 <Gallery size={16} className="text-white" />
               </div>
@@ -190,7 +247,28 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => 
                           <label className="text-sm text-text">Grade:</label>
                         </div>
                         <FormControl>
-                          <Input {...field} disabled={isPending} />
+                          <Select
+                            {...field}
+                            placeholder="Select your grade"
+                            disabled={isPending}
+                            defaultSelectedKeys={user.grade ? [user.grade] : undefined}
+                          >
+                            <SelectItem key="5" value="5">
+                              Grade 5
+                            </SelectItem>
+                            <SelectItem key="6" value="6">
+                              Grade 6
+                            </SelectItem>
+                            <SelectItem key="7" value="7">
+                              Grade 7
+                            </SelectItem>
+                            <SelectItem key="8" value="8">
+                              Grade 8
+                            </SelectItem>
+                            <SelectItem key="9" value="9">
+                              Grade 9
+                            </SelectItem>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -201,34 +279,15 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user },isOAuth) => 
                     name="dob"
                     render={({ field }) => (
                       <FormItem className="flex items-center justify-center space-x-4">
-                        <div className="w-24 flex items-center justify-center">
-                          <label className="text-sm text-text">DOB:</label>
-                        </div>
                         <FormControl>
-                        <DateInput
-                          isRequired
-                          labelPlacement="outside-left"
-                          classNames={{
-                            // label: 'w-24 font-medium',
-                            inputWrapper: 'w-full flex-1',
-                            input: [
-                              'placeholder:text-grey-2 text-xs',
-                              'w-full flex-1 font-medium',
-                            ],
-                          }}
-                          
-                          value={field.value ? parseDate(field.value.toISOString().split('T')[0]) : undefined}
-                          onChange={(date: CalendarDate) => {
-                            if (date) {
-                              const jsDate = new Date(date.year, date.month - 1, date.day)
-                              field.onChange(jsDate)
-                            } else {
-                              field.onChange(undefined)
-                            }
-                          }}
-                          className="max-w-full w-full"
-                          startContent={<Calendar />}
-                        />
+                          <CustomDateInput
+                            day={day}
+                            month={month}
+                            year={year}
+                            onDayChange={setDay}
+                            onMonthChange={setMonth}
+                            onYearChange={setYear}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

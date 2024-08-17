@@ -121,14 +121,14 @@ const UserOnboarding: React.FC = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-2xl p-8"
+        className="w-full max-w-3xl p-4"
       >
         <div className="mb-8">
           <motion.h2
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="text-4xl font-bold text-gray-800 font-poppins mb-6"
+            className="text-3xl lg:text-4xl font-bold text-gray-800 font-poppins mb-6"
           >
             Welcome to Beams
           </motion.h2>
@@ -140,8 +140,8 @@ const UserOnboarding: React.FC = () => {
           >
             <p className="text-lg text-gray-600">Step {step} of 2</p>
             <div className="flex">
-              <div className={`h-2 w-12 rounded-full ${step === 1 ? 'bg-blue-500' : 'bg-gray-300'} mr-2 transition-colors`}></div>
-              <div className={`h-2 w-12 rounded-full ${step === 2 ? 'bg-blue-500' : 'bg-gray-300'} transition-colors`}></div>
+              <div className={`h-2 w-12 rounded-full ${step === 1 ? 'bg-brand' : 'bg-gray-300'} mr-2 transition-colors`}></div>
+              <div className={`h-2 w-12 rounded-full ${step === 2 ? 'bg-brand' : 'bg-gray-300'} transition-colors`}></div>
             </div>
           </motion.div>
         </div>
@@ -168,7 +168,7 @@ const UserOnboarding: React.FC = () => {
             <Button
               color="primary"
               size="lg"
-              className="w-full"
+              className="w-full font-medium text-lg text-white"
               onClick={handleNextStep}
               disabled={!userType}
             >
@@ -177,65 +177,77 @@ const UserOnboarding: React.FC = () => {
           </motion.div>
         ) : (
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <Input
-                {...form.register('firstName')}
-                label="First Name"
-                placeholder="Enter your first name"
-                isRequired
-                className="w-full"
-              />
-              <Input
-                {...form.register('lastName')}
-                label="Last Name"
-                placeholder="Enter your last name"
-                isRequired
-                className="w-full"
-              />
-              {userType === 'STUDENT' && (
-                <>
-                  <Input
-                    {...form.register('grade')}
-                    label="Grade"
-                    placeholder="Enter your grade"
-                    isRequired
-                    className="w-full"
-                  />
-                  <CustomDateInput
-                    day={day}
-                    month={month}
-                    year={year}
-                    onDayChange={setDay}
-                    onMonthChange={setMonth}
-                    onYearChange={setYear}
-                  />
-                </>
-              )}
-              <div className="flex justify-between mt-6">
-                <Button
-                  color="secondary"
-                  size="lg"
-                  className="w-1/3"
-                  onClick={handleBackStep}
-                >
-                  Back
-                </Button>
-                <Button
-                  type="submit"
-                  color="primary"
-                  size="lg"
-                  className="w-2/3"
-                  isLoading={isPending}
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </motion.div>
+  initial={{ opacity: 0, x: 50 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.5, ease: 'easeOut' }}
+>
+  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <div className="mb-6">
+      <Input
+        {...form.register('firstName')}
+        label="First Name"
+   
+        placeholder="Enter your first name"
+        isRequired
+        className="w-full p-0"
+      />
+    </div>
+    <div className="mb-6">
+      <Input
+        {...form.register('lastName')}
+        label="Last Name"
+ 
+        placeholder="Enter your last name"
+        isRequired
+        className="w-full p-0"
+      />
+    </div>
+    {userType === 'STUDENT' && (
+      <>
+        <div className="mb-6">
+          <Input
+            {...form.register('grade')}
+            label="Grade"
+       
+            placeholder="Enter your grade"
+            isRequired
+            className="w-full p-0"
+          />
+        </div>
+        <div className="mb-6">
+          <CustomDateInput
+            day={day}
+            month={month}
+            year={year}
+            onDayChange={setDay}
+            onMonthChange={setMonth}
+            onYearChange={setYear}
+            labelPlacement="top"
+          />
+        </div>
+      </>
+    )}
+    <div className="flex justify-between mt-8">
+      <Button
+        color="secondary"
+        size="lg"
+        className="w-1/3"
+        onClick={handleBackStep}
+      >
+        Back
+      </Button>
+      <Button
+        type="submit"
+        color="primary"
+        size="lg"
+        className="w-2/3 font-medium text-lg text-white"
+        isLoading={isPending}
+      >
+        Submit
+      </Button>
+    </div>
+  </form>
+</motion.div>
         )}
       </motion.div>
     </div>

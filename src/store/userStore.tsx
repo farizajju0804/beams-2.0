@@ -3,8 +3,8 @@ import {create} from 'zustand';
 interface User {
   firstName?: string | null | undefined;
   lastName?: string | null | undefined;
-  email: string;
-  image: string;
+  email?: string | null | undefined;
+  image:  string | null | undefined;
   id: string;
   role: "ADMIN" | "USER";
   isTwoFactorEnabled: boolean;
