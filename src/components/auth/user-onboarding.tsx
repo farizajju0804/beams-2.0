@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Radio, RadioGroup, Input } from '@nextui-org/react';
+import { Button, Radio, RadioGroup, Input, Select, SelectItem } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userSchema, UserFormData } from '@/schema';
@@ -10,6 +10,7 @@ import { updateUserMetadata } from '@/actions/auth/register';
 import { getLatestUserData } from '@/actions/auth/getLatestUserData';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 
 const UserOnboarding: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -146,109 +147,170 @@ const UserOnboarding: React.FC = () => {
           </motion.div>
         </div>
 
-        {step === 1 ? (
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            <h3 className="text-2xl font-semibold mb-6">Are you a student or a professional?</h3>
-            <RadioGroup
-              orientation="vertical"
-              value={userType}
-              onValueChange={(value) => handleUserTypeSelection(value as 'STUDENT' | 'NON_STUDENT')}
-              className="mb-6"
+        <Form {...form}>
+          {step === 1 ? (
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-              <Radio value="STUDENT">Student</Radio>
-              <Radio value="NON_STUDENT">Professional</Radio>
-            </RadioGroup>
-            <p className="text-sm text-gray-500 mb-6">
-              Note: This choice cannot be changed later.
-            </p>
-            <Button
-              color="primary"
-              size="lg"
-              className="w-full font-medium text-lg text-white"
-              onClick={handleNextStep}
-              disabled={!userType}
+              <FormField
+                control={form.control}
+                name="userType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <RadioGroup
+                        orientation="vertical"
+                        value={userType}
+                        onValueChange={(value) => handleUserTypeSelection(value as 'STUDENT' | 'NON_STUDENT')}
+                        className="mb-6"
+                      >
+                        <Radio value="STUDENT">Student</Radio>
+                        <Radio value="NON_STUDENT">Professional</Radio>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                color="primary"
+                size="lg"
+                className="w-full font-medium text-lg text-white"
+                onClick={handleNextStep}
+                disabled={!userType}
+              >
+                Next
+              </Button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-              Next
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div
-  initial={{ opacity: 0, x: 50 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 0.5, ease: 'easeOut' }}
->
-  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-    <div className="mb-6">
-      <Input
-        {...form.register('firstName')}
-        label="First Name"
-   
-        placeholder="Enter your first name"
-        isRequired
-        className="w-full p-0"
-      />
-    </div>
-    <div className="mb-6">
-      <Input
-        {...form.register('lastName')}
-        label="Last Name"
- 
-        placeholder="Enter your last name"
-        isRequired
-        className="w-full p-0"
-      />
-    </div>
-    {userType === 'STUDENT' && (
-      <>
-        <div className="mb-6">
-          <Input
-            {...form.register('grade')}
-            label="Grade"
-       
-            placeholder="Enter your grade"
-            isRequired
-            className="w-full p-0"
-          />
-        </div>
-        <div className="mb-6">
-          <CustomDateInput
-            day={day}
-            month={month}
-            year={year}
-            onDayChange={setDay}
-            onMonthChange={setMonth}
-            onYearChange={setYear}
-            labelPlacement="top"
-          />
-        </div>
-      </>
-    )}
-    <div className="flex justify-between mt-8">
-      <Button
-        color="secondary"
-        size="lg"
-        className="w-1/3"
-        onClick={handleBackStep}
-      >
-        Back
-      </Button>
-      <Button
-        type="submit"
-        color="primary"
-        size="lg"
-        className="w-2/3 font-medium text-lg text-white"
-        isLoading={isPending}
-      >
-        Submit
-      </Button>
-    </div>
-  </form>
-</motion.div>
-        )}
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          label="First Name"
+                          placeholder="Enter your first name"
+                          isRequired
+                          className="w-full p-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          label="Last Name"
+                          placeholder="Enter your last name"
+                          isRequired
+                          className="w-full p-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {userType === 'STUDENT' && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="grade"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Select
+                              label="Grade"
+                              placeholder="Select your grade"
+                              defaultSelectedKeys={form.getValues('grade') ? [form.getValues('grade')] : []}
+                              className="w-full"
+                              {...field}
+                            >
+                              <SelectItem key="4" value="4">
+                                Grade 4
+                              </SelectItem>
+                              <SelectItem key="5" value="5">
+                                Grade 5
+                              </SelectItem>
+                              <SelectItem key="6" value="6">
+                                Grade 6
+                              </SelectItem>
+                              <SelectItem key="7" value="7">
+                                Grade 7
+                              </SelectItem>
+                              <SelectItem key="8" value="8">
+                                Grade 8
+                              </SelectItem>
+                              <SelectItem key="9" value="9">
+                                Grade 9
+                              </SelectItem>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="dob"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CustomDateInput
+                              day={day}
+                              month={month}
+                              year={year}
+                              onDayChange={setDay}
+                              onMonthChange={setMonth}
+                              onYearChange={setYear}
+                              labelPlacement="top"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                <div className="flex justify-between mt-8">
+                  <Button
+                    color="secondary"
+                    size="lg"
+                    className="w-1/3"
+                    onClick={handleBackStep}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    size="lg"
+                    className="w-2/3 font-medium text-lg text-white"
+                    isLoading={isPending}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </Form>
       </motion.div>
     </div>
   );
