@@ -101,11 +101,12 @@ const UserOnboarding: React.FC = () => {
       const response = await updateUserMetadata(latestUserData.email, values);
       if (response?.success) {
         console.log('User metadata updated successfully');
-        await update({
+        const updated = await update({
             ...values,
             userFormCompleted: true,
           });
         await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log("updated data",updated)
         router.push('/onboarding');
       } else {
         console.error('Failed to update user metadata:', response.error);
@@ -175,6 +176,9 @@ const UserOnboarding: React.FC = () => {
                   </FormItem>
                 )}
               />
+               <p className="text-sm text-gray-500 mb-6">
+              Note: This choice cannot be changed later.
+            </p>
               <Button
                 color="primary"
                 size="lg"

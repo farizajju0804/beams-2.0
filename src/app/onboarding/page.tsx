@@ -82,10 +82,11 @@ const OnboardingPage = () => {
     startTransition(async () => {
       const response  = await updateOnboardingStatus(true)
       if (response.success) {
-       await update({
+       const updated  = await update({
         onBoardingCompleted: true,
           });
         await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log("updated data", updated)
         router.push('/onboarding');
        
       } else {
