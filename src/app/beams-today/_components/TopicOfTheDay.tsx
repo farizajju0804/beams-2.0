@@ -54,7 +54,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           </div>
         </div>
       ) : (
-        <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-12">
+        <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-0">
           No topic available for today
         </p>
       )}

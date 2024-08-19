@@ -43,13 +43,13 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
         const data = await getLatestUserData();
         if (data) {
           form.reset({
-            userType: data.userType || 'STUDENT',
+            userType: data.userType || 'NON_STUDENT',
             firstName: data.firstName || '',
             lastName: data.lastName || '',
             grade: data.grade || '',
             dob: data.dob ? new Date(data.dob) : undefined,
           });
-          setUserType(data.userType || 'STUDENT');
+          setUserType(data.userType || 'NON_STUDENT');
           setLatestUserData(data);
 
           if (data.dob) {
@@ -80,7 +80,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
     setStep(1);
   };
 
-  const onSubmit = async (data: UserFormData) => {
+  const onSubmit:any = async (data: UserFormData) => {
     setIsPending(true);
     try {
       if (!latestUserData?.email) {
