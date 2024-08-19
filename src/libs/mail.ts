@@ -26,7 +26,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   };
   return sendEmailBrevo(payload);
 };
-export const sendVerificationEmail3 = async (email: string, token: string) => {
+export const sendVerificationEmail3:any = async (email: string, token: string) => {
   const link = `${process.env.URL}/auth/verify-email?email=${email}`;
 
   const payload = {
@@ -84,7 +84,7 @@ export const sendChangeEmail = async (email: string, token: string) => {
       },
     ],
     subject: "Change Email",
-    templateId: 8,
+    templateId: 14,
     params: {
       link: confirmLink,
     },

@@ -57,11 +57,11 @@ const ForgotEmailForm = () => {
     >
       {success ? (
         <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700">
-            Your email has been successfully recovered: <strong className="text-green-500">{maskedEmail}</strong>.
+          <p className="text-lg text-gray-700 mb-6">
+            Your email has been successfully recovered: <strong className="text-purple">{maskedEmail}</strong>.
           </p>
           <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold text-white text-lg">
+            <Button color="primary" className="w-full font-semibold text-white text-lg mb-4">
               Go to Login
             </Button>
           </Link>

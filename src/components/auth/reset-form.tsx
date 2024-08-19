@@ -49,20 +49,20 @@ const ResetForm = () => {
   return (
     <CardWrapper headerLabel={success ? "Email Sent" : "Forgot Password"}>
       {success ? (
-        <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700">
+        <div className="text-center">
+          <p className="text-lg text-gray-700 mb-6">
             Password reset instructions have been sent to your email:{" "}
             <strong className="font-bold text-purple-600">{form.getValues("email")}</strong>.
           </p>
           <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold text-white text-lg">
+            <Button color="primary" className="w-full font-semibold text-white text-lg mb-4">
               Go to Login
             </Button>
           </Link>
         </div>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-4">
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -100,7 +100,7 @@ const ResetForm = () => {
             <Button
               type="submit"
               color="primary"
-              className="w-full text-white font-medium"
+              className="w-full text-white text-lg font-medium"
               isLoading={isPending}
             >
               Send Reset Email

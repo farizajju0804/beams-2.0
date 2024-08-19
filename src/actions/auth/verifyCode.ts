@@ -101,19 +101,22 @@ export const verifyCodeAndChangeEmail = async (code: string, oldEmail:string) =>
 
 
 
+  try {
     const newUser = await db.user.update({
-    where: { id: user.id },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email
-    }
-  });
-
-
-  await db.verificationToken.delete({ where: { id: existingToken.id } });
-
-  return { success: "" };
+      where: { id: user.id },
+      data: {
+        emailVerified: new Date(),
+        email: existingToken.email
+      }
+    });
   
+    await db.verificationToken.delete({ where: { id: existingToken.id } });
+  
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user or deleting token:", error);
+    return { error: "Failed to update email. Please try again." };
+  }
 
   
 };

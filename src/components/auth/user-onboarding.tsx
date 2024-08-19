@@ -145,7 +145,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
             className="flex justify-between items-center"
           >
-            <p className="text-lg text-gray-600">Step {step} of 2</p>
+            <p className="text-sm text-gray-600">Step {step} of 2</p>
             <div className="flex">
               <div className={`h-2 w-12 rounded-full ${step === 1 ? 'bg-brand' : 'bg-gray-300'} mr-2 transition-colors`}></div>
               <div className={`h-2 w-12 rounded-full ${step === 2 ? 'bg-brand' : 'bg-gray-300'} transition-colors`}></div>
@@ -186,7 +186,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
               <Button
                 color="primary"
                 size="lg"
-                className="w-full font-medium text-lg text-white"
+                className="w-full font-medium text-lg text-white mt-4"
                 onClick={handleNextStep}
                 disabled={!userType}
               >
@@ -199,7 +199,8 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <div className='space-y-6'>
                 <FormField
                   control={form.control}
                   name="firstName"
@@ -297,6 +298,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                     />
                   </>
                 )}
+                </div>
                 <div className="flex justify-between mt-8">
                   <Button
                     color="secondary"

@@ -19,13 +19,14 @@ const emailSchema = z.object({
 
 const ChangeEmail = () => {
   const [error, setError] = useState<string | undefined>()
-  const [success, setSuccess] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState(true)
   const [isTokenValid, setIsTokenValid] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
-  const router  = useRouter()
+  const router = useRouter()
+
   const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
   })
@@ -63,16 +64,18 @@ const ChangeEmail = () => {
       return
     }
 
+    setIsSubmitting(true)
     try {
-      const result:any = await newEmail(token, data.email)
+      const result: any = await newEmail(token, data.email)
       if (result.error) {
         setError(result.error)
       } else {
-        setSuccess(result.success)
-        router.push(`/auth/change-email-verify?email=${encodeURIComponent(data.email)}&oldEmail=${encodeURIComponent(result.oldEmail)}`);
+        router.push(`/auth/change-email-verify?email=${encodeURIComponent(data.email)}&oldEmail=${encodeURIComponent(result.oldEmail)}`)
       }
     } catch {
       setError("Something went wrong!")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -88,19 +91,22 @@ const ChangeEmail = () => {
 
   return (
     <CardWrapper headerLabel={isTokenValid ? "Enter New Email" : "Identity Verification Failed"}>
-      
-      {isTokenValid && !success && (
+      {isTokenValid && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-4">
           <Input
             {...register("email")}
             type="email"
             label="New Email"
             placeholder="Enter your new email"
+            disabled={isSubmitting}
           />
           {error && <FormError message={error} />}
-          {success && <FormSuccess message={success} />}
-          <Button type="submit" className="w-full text-white bg-primary font-medium text-lg ">
-            Change Email
+          <Button 
+            type="submit" 
+            className="w-full text-white bg-primary font-medium text-lg"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Changing Email..." : "Change Email"}
           </Button>
         </form>
       )}

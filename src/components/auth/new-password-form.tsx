@@ -55,18 +55,18 @@ const NewPasswordForm = () => {
     <CardWrapper headerLabel={success ? "Password Reset Successfully" : "Reset Password"}>
       {success ? (
         <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700">
-            Your password has been successfully reset. You can now use your new password to log in.
+          <p className="text-lg text-gray-700 mb-6">
+            Your password has been successfully reset. You can now use your new password to login.
           </p>
           <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold text-white text-lg">
+            <Button color="primary" className="w-full font-semibold mb-4 text-white text-lg">
               Go to Login
             </Button>
           </Link>
         </div>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-4">
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -113,10 +113,10 @@ const NewPasswordForm = () => {
             <Button
               type="submit"
               color="primary"
-              className="w-full text-white font-medium"
+              className="w-full text-white text-lg font-medium"
               isLoading={isPending}
             >
-              Reset Password
+              Reset
             </Button>
           </form>
         </Form>

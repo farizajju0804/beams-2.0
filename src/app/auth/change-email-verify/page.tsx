@@ -54,7 +54,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     try {
       const result = await verifyCodeAndChangeEmail(code, oldEmail);
       if (result?.success) {
-        setSuccess(true); // Set success state to true
+        setSuccess(true); 
       } else {
         setError(result?.error || "Verification failed.");
       }
@@ -92,7 +92,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
-              <p className="text-center text-sm text-gray-600">
+              <p className="text-center text-sm text-gray-600 ">
                 {resendMessage ? (
                   <span dangerouslySetInnerHTML={{ __html: resendMessage }} />
                 ) : (
@@ -139,11 +139,11 @@ const VerifyEmail: React.FC<{}> = ({}) => {
         </>
       ) : (
         <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700">
-            Your email has been successfully changed from <strong className="font-bold text-purple-600">{oldEmail}</strong> to <strong className="font-bold text-purple-600">{email}</strong>.
+          <p className="text-lg text-gray-700 mb-6">
+            Your email has been successfully changed from <strong className="font-bold text-purple">{oldEmail}</strong> to <strong className="font-bold text-purple">{email}</strong>.
           </p>
           <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold text-white text-lg">
+            <Button color="primary" className="w-full font-semibold text-white text-lg mb-4">
               Go to Login
             </Button>
           </Link>

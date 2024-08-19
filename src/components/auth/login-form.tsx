@@ -211,7 +211,7 @@ const LoginForm = () => {
             {error && (<FormError message={error} />)}
             {success && (<FormSuccess message={success} />)}
           </div>
-          <Button type="submit" color="primary" className="w-full text-white font-medium" isLoading={isLoading}>
+          <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isLoading}>
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
