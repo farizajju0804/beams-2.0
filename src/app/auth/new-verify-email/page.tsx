@@ -25,8 +25,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
-  
-  const emailFromStore = useEmailStore((state: any) => state.email);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -52,7 +51,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       const result = await verifyCode(code);
       if (result?.success) {
         console.log("Email verified successfully!");
-        router.push("/auth/security-questions");
+        router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`);
       } else {
         setError(result?.error || "Verification failed.");
       }
@@ -92,7 +91,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
             {resendMessage ? (
               <span dangerouslySetInnerHTML={{ __html: resendMessage }} />
             ) : (
-              <>It seems like you have not verified your email. So, we have sent a 6-digit verification code to your email: <strong className="text-secondary-2">{email}</strong>. Please enter it below.</>
+              <>We have sent a 6-digit verification code to your email: <strong className="text-secondary-2">{email}</strong>. Please enter it below.</>
             )}
           </p>
           <div className="flex justify-center">

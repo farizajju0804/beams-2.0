@@ -15,7 +15,7 @@ import {
 import { Button } from "@nextui-org/react";
 import { submitSecurityAnswers } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";
-import { useRouter } from "next/navigation"; 
+import { useRouter, useSearchParams } from "next/navigation"; 
 import CardWrapper from "@/components/auth/card-wrapper";
 
 
@@ -27,8 +27,9 @@ const securityQuestions = [
 
 const Step3Form: React.FC = ({ }) => {
   const [isPending, startTransition] = useTransition();
-  const emailFromStore = useEmailStore((state: any) => state.email);
-  const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "");
+  const searchParams = useSearchParams();
+  const emailFromUrl = searchParams.get("email");
+  const email:any = emailFromUrl;
   const router = useRouter();
 
   const form = useForm<z.infer<typeof SecuritySchema>>({

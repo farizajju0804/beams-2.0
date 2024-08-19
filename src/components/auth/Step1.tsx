@@ -26,7 +26,7 @@ const Step1Form: React.FC = () => {
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
 
   const setEmailStore = useEmailStore((state: any) => state.setEmail);
-   const router = useRouter()
+  const router = useRouter();
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
@@ -41,12 +41,12 @@ const Step1Form: React.FC = () => {
     setSuccess("");
     startTransition(async () => {
       try {
-        const result:any = await registerAndSendVerification(values);
+        const result: any = await registerAndSendVerification(values);
         if (result?.error) {
           setError(result.error);
         } else if (result?.success) {
           setSuccess(result.success);
-          router.push('/auth/new-verify-email')
+          router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
         }
       } catch (err) {
         console.error("Error:", err);
