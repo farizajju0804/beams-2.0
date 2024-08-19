@@ -70,7 +70,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setResendMessage("");
     setError("");
     try {
-      const resend = await resendVerificationCode3(email);
+      const resend = await resendVerificationCode3(email,oldEmail);
       if (resend?.success) {
         setResendMessage(`A new 6-digit verification code has been sent to <strong class="text-secondary-2">${email}</strong>. Please check your inbox, including your spam folder.`);
       } else {

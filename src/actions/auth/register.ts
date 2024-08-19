@@ -54,9 +54,9 @@ export const resendVerificationCode2 = async (email:string) => {
   return { success: "Verification email sent. Please check your inbox." };
 }
 
-export const resendVerificationCode3 = async (email:string) => {
+export const resendVerificationCode3 = async (email:string,oldEmail:string) => {
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail2(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail2(verificationToken.email,oldEmail, verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };
