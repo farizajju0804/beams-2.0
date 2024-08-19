@@ -10,15 +10,17 @@ export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isDarkMode, setIsDarkMode] = useState(false);
-
+  
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setTheme(savedTheme);
       setIsDarkMode(savedTheme === "dark");
+      console.log("switcher",theme)
     } else {
       setTheme("light");
       setIsDarkMode(false);
+      console.log("switcher",theme)
     }
     setMounted(true);
     

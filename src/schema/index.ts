@@ -76,7 +76,7 @@ export const SettingsSchema = z.object({
 export type SettingsFormData = z.infer<typeof SettingsSchema>;
   
 export const ChangeEmailSchema = z.object({
-  newEmail: z.string().email(),
+  changeEmail: z.boolean(),
 });
 
 export const ChangePasswordSchema = z.object({

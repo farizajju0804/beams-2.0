@@ -168,7 +168,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   };
 
   return (
-    <Card className="w-full max-w-md p-4 border-0 rounded-3xl shadow-lg mb-6">
+    <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
       <CardHeader className="text-text">
         <p className="text-base lg:text-xl font-semibold text-center">Edit Profile</p>
       </CardHeader>
@@ -211,11 +211,9 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-center space-x-4">
-                    <div className="w-24 flex items-center justify-center">
-                      <label className="text-sm text-text">First Name:</label>
-                    </div>
+                    
                     <FormControl>
-                      <Input {...field} disabled={isPending} />
+                      <Input {...field} label="First Name" disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -226,11 +224,9 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-center space-x-4">
-                    <div className="w-24 flex items-center justify-center">
-                      <label className="text-sm text-text">Last Name:</label>
-                    </div>
+                    
                     <FormControl>
-                      <Input {...field} disabled={isPending} />
+                      <Input {...field} label="Last Name" disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -243,12 +239,11 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                     name="grade"
                     render={({ field }) => (
                       <FormItem className="flex items-center justify-center space-x-4">
-                        <div className="w-24 flex items-center justify-center">
-                          <label className="text-sm text-text">Grade:</label>
-                        </div>
+                        
                         <FormControl>
                           <Select
                             {...field}
+                            label="Grade"
                             placeholder="Select your grade"
                             disabled={isPending}
                             defaultSelectedKeys={user.grade ? [user.grade] : undefined}
@@ -287,6 +282,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                             onDayChange={setDay}
                             onMonthChange={setMonth}
                             onYearChange={setYear}
+                            labelPlacement="top"
                           />
                         </FormControl>
                         <FormMessage />

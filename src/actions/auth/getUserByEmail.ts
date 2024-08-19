@@ -18,8 +18,25 @@ catch {
 }
 } 
 
+export const getUserById2 = async(id: string) =>{
+  try{
+    const user = await db.user.findUnique(
+       {
+           where : {
+               id
+           }
+       
+       }
+     
+   )
+   console.log("got by id",user)
+   return user;
+}
+catch {
+   return null;
+}
+} 
 
-  
 
 export const getUserBySecurityAnswers = async (securityAnswer1: string, securityAnswer2: string) => {
   return await db.user.findFirst({

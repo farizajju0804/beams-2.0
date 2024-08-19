@@ -34,7 +34,6 @@ export default auth(async (req) => {
   if (isLoggedIn) {
     try {
       const user = await currentUser();
-      
       if (!user) {
         console.error("User not found");
         return Response.redirect(new URL('/auth/login', nextUrl));

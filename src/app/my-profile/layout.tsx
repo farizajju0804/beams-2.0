@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 const quicksand = Quicksand({ subsets: ["latin"] });
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;
@@ -18,9 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en" >
     
-      <body className={quicksand.className}>
+      <body className={` ${quicksand.className}`}>
+        
       <Nav/>
-    
+     
         {children}
       </body>
    

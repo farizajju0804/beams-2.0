@@ -4,6 +4,7 @@ import { Tabs, Tab } from '@nextui-org/tabs';
 import { Book, Star1 } from 'iconsax-react';
 import NotesTab from '@/app/beams-today/_components/NotesTab';
 import FavoritesTab from '@/app/beams-today/_components/FavoritesTab';
+import { useTheme } from 'next-themes';
 
 interface LibraryTabsProps {
   notes: any[];
@@ -11,6 +12,7 @@ interface LibraryTabsProps {
 }
 
 const LibraryTabs: React.FC<LibraryTabsProps> = ({ notes, favorites }) => {
+
   const tabs = [
     {
       key: 'notes',

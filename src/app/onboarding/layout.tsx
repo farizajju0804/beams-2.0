@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
 };
 import { GoogleAnalytics } from '@next/third-parties/google'
+import ThemeWatcher from "./ThemeWatcher";
 export default function RootLayout({
   children,
 }: {
@@ -24,6 +25,7 @@ export default function RootLayout({
       <GoogleAnalytics gaId="G-W7VPHJY727" />
       {/* <Navbar/> */}
       <Providers>
+      <ThemeWatcher />
         {children}
         </Providers>
       </body>

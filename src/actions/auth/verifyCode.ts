@@ -80,3 +80,40 @@ export const verifyCode2 = async (code: string) => {
 
   
 };
+
+
+export const verifyCodeAndChangeEmail = async (code: string, oldEmail:string) => {
+  const existingToken = await getVerificationTokenByToken(code);
+
+  if (!existingToken) {
+    return { error: "Invalid or expired code." };
+  }
+
+  const hasExpired = new Date(existingToken.expires) < new Date();
+  if (hasExpired) {
+    return { error: "Code has expired." };
+  }
+
+  const user = await getUserByEmail(oldEmail);
+  if (!user) {
+    return { error: "User not found." };
+  }
+
+
+
+    const newUser = await db.user.update({
+    where: { id: user.id },
+    data: {
+      emailVerified: new Date(),
+      email: existingToken.email
+    }
+  });
+
+
+  await db.verificationToken.delete({ where: { id: existingToken.id } });
+
+  return { success: "" };
+  
+
+  
+};

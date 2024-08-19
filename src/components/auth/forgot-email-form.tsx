@@ -11,17 +11,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@nextui-org/react";
-import FormError from "@/components/form-error";
-import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { Input } from "@nextui-org/react";
 import { forgotEmail } from "@/actions/auth/forgotEmail";
+import Link from "next/link";
+import FormError from "../form-error";
 
 const ForgotEmailForm = () => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<boolean>(false);
   const [maskedEmail, setMaskedEmail] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
@@ -35,14 +35,15 @@ const ForgotEmailForm = () => {
 
   const onSubmit = (values: z.infer<typeof ForgotEmailSchema>) => {
     setError("");
-    setSuccess("");
+    setSuccess(false);
     setMaskedEmail("");
     startTransition(() => {
       forgotEmail(values).then((data) => {
-        if (data) {
-          setError(data.error);
-          setSuccess(data.success);
+        if (data && data.success) {
+          setSuccess(true);
           setMaskedEmail(data.maskedEmail);
+        } else {
+          setError(data?.error || "Failed to recover email.");
         }
       });
     });
@@ -50,68 +51,80 @@ const ForgotEmailForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Recover your account"
-      backButtonLabel="Back to login"
-      backButtonHref="/auth/login"
+      headerLabel={success ? "Email Recovered Successfully" : "Recover your account"}
+      backButtonLabel={success ? "" : "Back to login"}
+      backButtonHref={success ? "" : "/auth/login"}
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="space-y-4">
-            <div>
-              <FormLabel className="mb-4">What was your first pet&apos;s name?</FormLabel>
-              <FormField
-                control={form.control}
-                name="securityAnswer1"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        isRequired
-                        label="Answer"
-                        {...field}
-                        type="text"
-                        disabled={isPending}
-                      ></Input>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      {success ? (
+        <div className="text-center space-y-6">
+          <p className="text-lg text-gray-700">
+            Your email has been successfully recovered: <strong className="text-green-500">{maskedEmail}</strong>.
+          </p>
+          <Link href="/auth/login" passHref>
+            <Button color="primary" className="w-full font-semibold text-white text-lg">
+              Go to Login
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="space-y-4">
+              <div>
+                <FormLabel className="mb-4">What was your first pet&apos;s name?</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="securityAnswer1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          label="Answer"
+                          {...field}
+                          type="text"
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div>
+                <FormLabel className="mb-2">What is your mother&apos;s maiden name?</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="securityAnswer2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          label="Answer"
+                          {...field}
+                          type="text"
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <div>
-              <FormLabel className="mb-2">What is your mother&apos;s maiden name?</FormLabel>
-              <FormField
-                control={form.control}
-                name="securityAnswer2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        isRequired
-                        label="Answer"
-                        {...field}
-                        type="text"
-                        disabled={isPending}
-                      ></Input>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-          {maskedEmail && (
-            <div className="text-center text-green-500">
-              Your Email: {maskedEmail}
-            </div>
-          )}
-          <FormError message={error} />
-          <FormSuccess message={success} />
-          <Button type="submit" color="primary" className="w-full font-medium text-white">
-            Submit
-          </Button>
-        </form>
-      </Form>
+            {error && <FormError message={error} />}
+            <Button
+              type="submit"
+              color="primary"
+              className="w-full font-medium text-white"
+              isLoading={isPending}
+            >
+              Submit
+            </Button>
+          </form>
+        </Form>
+      )}
     </CardWrapper>
   );
 };

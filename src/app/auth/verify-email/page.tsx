@@ -8,7 +8,7 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { useSearchParams } from "next/navigation";
-import { resendVerificationCode } from "@/actions/auth/register";
+import { resendVerificationCode, resendVerificationCode2 } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -74,7 +74,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setResendMessage("");
     setError("");
     try {
-      const result = await resendVerificationCode(email);
+      const result = await resendVerificationCode2(email);
       if (result?.success) {
         setResendMessage(`A new 6-digit verification code has been sent to <strong class="text-secondary-2">${email}</strong>. Please check your inbox, including your spam folder.`);
       } else {

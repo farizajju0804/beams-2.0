@@ -2,10 +2,11 @@ import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/libs/db";
-import { getUserById } from "./actions/auth/getUserById";
+// import { getUserById } from "./actions/auth/getUserByEmail";
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
 import { authRoutes, publicRoutes } from "./routes";
+import { getUserByEmail, getUserById2 } from "./actions/auth/getUserByEmail";
 
 export const {
   handlers: { GET, POST },
@@ -28,7 +29,7 @@ export const {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
-      const existingUser = await getUserById(user.id as string);
+      const existingUser = await getUserById2(user.id as string);
       if (!existingUser?.emailVerified) {
         return false;
       }
@@ -75,7 +76,8 @@ export const {
       };
       
       if (token.sub) {
-        const existingUser = await getUserById(token.sub);
+        const existingUser = await getUserByEmail(token.email as string);
+        token.sub = existingUser?.id
         if (existingUser) {
           const existingAccount = await getAccountByUserId(existingUser.id);
           
@@ -91,7 +93,6 @@ export const {
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
         }
       }
-   
       return token;
     },
     async redirect({ url, baseUrl }) {

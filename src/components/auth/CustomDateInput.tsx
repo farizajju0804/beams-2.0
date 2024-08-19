@@ -26,7 +26,7 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
 
   return (
     <div className={`flex ${labelPlacement === 'left' ? 'items-center' : 'flex-col'} w-full`}>
-      <label className={`text-sm font-medium ${labelPlacement === 'left' ? 'mr-4' : 'mb-2'}`}>
+      <label className={`text-xs text-grey-2 ${labelPlacement === 'left' ? 'mr-4' : 'mb-2'}`}>
         Date of Birth
       </label>
       <div className={`flex w-full justify-between ${labelPlacement === 'top' ? 'flex-wrap' : 'flex-1'}`}>
@@ -34,7 +34,7 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
           selectedKeys={month ? [month] : []}
           onSelectionChange={(keys) => onMonthChange(Array.from(keys)[0] as string)}
           placeholder="Month"
-          className="w-[30%]"
+          className="w-[25%]"
           size="sm"
         >
           {months.map((m) => (
@@ -47,7 +47,7 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
           selectedKeys={day ? [day] : []}
           onSelectionChange={(keys) => onDayChange(Array.from(keys)[0] as string)}
           placeholder="Day"
-          className="w-[30%]"
+          className="w-[25%]"
           size="sm"
         >
           {days.map((d) => (
@@ -60,7 +60,7 @@ const CustomDateInput: React.FC<CustomDateInputProps> = ({
           selectedKeys={year ? [year] : []}
           onSelectionChange={(keys) => onYearChange(Array.from(keys)[0] as string)}
           placeholder="Year"
-          className="w-[30%]"
+          className="w-[40%]"
           size="sm"
         >
           {years.map((y) => (

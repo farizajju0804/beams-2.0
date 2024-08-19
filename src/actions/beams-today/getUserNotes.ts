@@ -4,7 +4,6 @@ import { currentUser } from "@/libs/auth";
 
 export const getUserNotes = async () => {
   const user = await currentUser();
-
   if (!user || !user.id) {
     throw new Error("User not authenticated or missing user ID");
   }

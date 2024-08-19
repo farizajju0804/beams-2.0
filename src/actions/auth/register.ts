@@ -6,7 +6,7 @@ import { RegisterSchema, SecuritySchema } from "@/schema";
 import { db } from "@/libs/db";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken } from "@/libs/tokens";
-import { sendVerificationEmail } from "@/libs/mail";
+import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
@@ -46,6 +46,21 @@ export const resendVerificationCode = async (email:string) => {
   return { success: "Verification email sent. Please check your inbox." };
 }
 
+export const resendVerificationCode2 = async (email:string) => {
+  const verificationToken = await getVerificationToken(email);
+  await sendVerificationEmail3(verificationToken.email, verificationToken.token);
+  console.log("Verification email sent. Please check your inbox.");
+
+  return { success: "Verification email sent. Please check your inbox." };
+}
+
+export const resendVerificationCode3 = async (email:string) => {
+  const verificationToken = await getVerificationToken(email);
+  await sendVerificationEmail2(verificationToken.email, verificationToken.token);
+  console.log("Verification email sent. Please check your inbox.");
+
+  return { success: "Verification email sent. Please check your inbox." };
+}
 
 
 export const updateUserMetadata = async (email: string, values: {

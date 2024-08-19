@@ -54,7 +54,7 @@ const ChangePasswordForm = () => {
   const toggleNewPasswordVisibility = () => setShowNewPassword((prev) => !prev);
 
   return (
-    <div className="w-full max-w-md p-4 bg-background rounded-3xl shadow-lg">
+    <div className="w-full max-w-lg p-4 bg-background rounded-3xl shadow-lg">
       <h2 className="text-base lg:text-2xl font-semibold mb-4 text-left">Change Password</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
