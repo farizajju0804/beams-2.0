@@ -21,7 +21,7 @@ import { useEffect } from "react";
 import { useUserStore } from "@/store/userStore";
 
 export const useCurrentUser = () => {
-  const { data: session, status, update } = useSession(); // Add update method from useSession
+  const { data: session, status, update } = useSession(); 
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
 

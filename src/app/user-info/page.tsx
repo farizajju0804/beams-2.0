@@ -1,9 +1,14 @@
+import { auth } from "@/auth";
 import UserOnboarding from "@/components/auth/user-onboarding";
 
-const Page = () => {
+const Page = async() => {
+
+  const session = await auth()
+ 
+  
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
-      <UserOnboarding />
+      <UserOnboarding sessionData={session} />
     </div>
   );
 };

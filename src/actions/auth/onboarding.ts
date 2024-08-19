@@ -20,9 +20,10 @@ export async function updateOnboardingStatus(status: boolean) {
       where: { id: session.user.id },
       data: { onBoardingCompleted: status },
     })
-    return { success: true };
+    console.log(response)
+    return response
   } catch (error) {
     console.error("Error updating onboarding status:", error);
-    return { success: false, error: "Failed to onboarding status" };
+    return error
   }
 };

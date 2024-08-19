@@ -9,20 +9,22 @@ import CustomDateInput from './CustomDateInput';
 import { updateUserMetadata } from '@/actions/auth/register';
 import { getLatestUserData } from '@/actions/auth/getLatestUserData';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
-
-const UserOnboarding: React.FC = () => {
+interface UserOnboardingProps {
+  sessionData: any; 
+}
+const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
   const [step, setStep] = useState(1);
   const [userType, setUserType] = useState<'STUDENT' | 'NON_STUDENT'>('STUDENT');
   const [latestUserData, setLatestUserData] = useState<any>(null);
   const [day, setDay] = useState<string>('');
   const [month, setMonth] = useState<string>('');
   const [year, setYear] = useState<string>('');
-  const { update } = useSession();
-  const router = useRouter();
+  const { data: session, update } = useSession();
+  console.log(session)
+  const router =  useRouter()
   const [isPending, setIsPending] = useState(false);
-
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: 'onSubmit',
@@ -34,7 +36,7 @@ const UserOnboarding: React.FC = () => {
       dob: undefined,
     },
   });
-
+  
   useEffect(() => {
     const fetchLatestUserData = async () => {
       try {
@@ -64,7 +66,7 @@ const UserOnboarding: React.FC = () => {
 
     fetchLatestUserData();
   }, [form]);
-
+  
   const handleUserTypeSelection = (value: 'STUDENT' | 'NON_STUDENT') => {
     setUserType(value);
     form.setValue('userType', value);
@@ -98,19 +100,21 @@ const UserOnboarding: React.FC = () => {
         userFormCompleted: true,
       };
   
-      const response = await updateUserMetadata(latestUserData.email, values);
-      if (response?.success) {
-        console.log('User metadata updated successfully');
-        const updated = await update({
-            ...values,
-            userFormCompleted: true,
-          });
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log("updated data",updated)
-        router.push('/onboarding');
-      } else {
-        console.error('Failed to update user metadata:', response.error);
+     const updatedUser:any = await updateUserMetadata(latestUserData?.email, values);
+     if(updatedUser){
+      const updated = await update({
+        ...session,
+        user:{
+        ...session?.user,
+        userFormCompleted : true
+        }
       }
+      );
+      console.log("Updated session data:", updated);
+      router.push('/onboarding');
+
+     }
+     
     } catch (error) {
       console.error('Error updating user metadata:', error);
     } finally {
@@ -322,3 +326,4 @@ const UserOnboarding: React.FC = () => {
 };
 
 export default UserOnboarding;
+

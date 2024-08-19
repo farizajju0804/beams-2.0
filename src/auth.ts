@@ -69,8 +69,10 @@ export const {
       }
       return session;
     },
-    async jwt({ token, trigger }) {
-     
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return {...token, ...session.user};
+      };
       
       if (token.sub) {
         const existingUser = await getUserById(token.sub);
@@ -89,7 +91,7 @@ export const {
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
         }
       }
-
+   
       return token;
     },
     async redirect({ url, baseUrl }) {
