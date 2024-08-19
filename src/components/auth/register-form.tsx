@@ -6,7 +6,7 @@ import Step1Form from "./Step1";
 const TOTAL_STEPS = 3;
 
 const RegisterPage: React.FC = () => {
-  // Retrieve the current step from local storage or default to step 1
+
   const [currentStep, setCurrentStep] = useState(() => {
     if (typeof window !== "undefined") {
       return parseInt(localStorage.getItem("currentStep") || "1", 10);

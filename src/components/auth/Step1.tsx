@@ -31,15 +31,12 @@ const Step1Form: React.FC = () => {
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
     defaultValues: {
-      email: typeof window !== "undefined" ? localStorage.getItem("email") || "" : "",
+      email: "",
       password: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-    setEmailStore(values.email);
-    localStorage.setItem("email", values.email);
-
     setError("");
     setSuccess("");
     startTransition(async () => {

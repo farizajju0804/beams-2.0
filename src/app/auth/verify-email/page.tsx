@@ -31,15 +31,9 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const router = useRouter();
   
   const emailFromUrl = searchParams.get("email");
-  const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "") || emailFromUrl;
+  const email:any = emailFromUrl;
   
-  useEffect(() => {
-    if (!email) {
-      console.error("No email found. Please start from the first step.");
-    } else if (!emailFromStore && typeof window !== "undefined") {
-      localStorage.setItem("email", email);
-    }
-  }, [email, emailFromStore]);
+
 
   const code = watch("code");
   const inputRef = useRef<HTMLInputElement>(null);

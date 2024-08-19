@@ -29,15 +29,9 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const searchParams = useSearchParams();
   const oldEmail:any = searchParams.get("oldEmail");
   const emailFromUrl = searchParams.get("email");
-  const email = emailFromStore || (typeof window !== "undefined" ? localStorage.getItem("email") : "") || emailFromUrl;
+  const email:any = emailFromUrl;
 
-  useEffect(() => {
-    if (!email) {
-      console.error("Invalid Link");
-    } else if (!emailFromStore && typeof window !== "undefined") {
-      localStorage.setItem("email", email);
-    }
-  }, [email, emailFromStore]);
+
 
   const code = watch("code");
   const inputRef = useRef<HTMLInputElement>(null);

@@ -51,10 +51,6 @@ const LoginForm = () => {
     try {
       const data = await login(values);
       if (data?.error === "VERIFY_EMAIL") {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("email", values.email);
-        }
-        useEmailStore.getState().setEmail(values.email);
         router.push("/auth/verify-email");
       }
       else if (data?.error) {
