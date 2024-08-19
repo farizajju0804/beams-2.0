@@ -32,8 +32,8 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
       userType: 'NON_STUDENT',
       firstName: '',
       lastName: '',
-      grade: '',
-      dob: undefined,
+      // grade: undefined,
+      // dob: undefined,
     },
   });
   
