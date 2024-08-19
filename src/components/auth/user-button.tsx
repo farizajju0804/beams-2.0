@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
+import { signOut, useSession } from "next-auth/react";
 
 
 const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
@@ -12,7 +12,7 @@ export default function UserButton() {
   const { user: storeUser, setUser: setStoreUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -34,6 +34,21 @@ export default function UserButton() {
 
   const handleNavigation = (path: string) => {
     router.push(path);
+  };
+
+ 
+
+  const customSignOut = async () => {
+    await signOut({ redirect: false });
+
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    window.location.href = "/auth/login";
   };
 
   if (isLoading) {
@@ -72,7 +87,7 @@ export default function UserButton() {
           <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
-          <DropdownItem onClick={() => signOut()} key="logout" color="danger">
+          <DropdownItem onClick={customSignOut} key="logout" color="danger">
             Log Out
           </DropdownItem>
         </DropdownMenu>
