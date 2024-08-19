@@ -19,6 +19,7 @@ export default function UserButton() {
         setIsLoading(true);
         const userData = await getLatestUserData();
         if (userData) {
+          console.log(userData)
           setStoreUser(userData); 
         }
       } catch (error) {
@@ -36,7 +37,7 @@ export default function UserButton() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or a loading spinner
+    return <div>Loading...</div>; 
   }
 
   const user = storeUser;

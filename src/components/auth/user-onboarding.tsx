@@ -29,7 +29,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
     resolver: zodResolver(userSchema),
     mode: 'onSubmit',
     defaultValues: {
-      userType: 'STUDENT',
+      userType: 'NON_STUDENT',
       firstName: '',
       lastName: '',
       grade: '',
@@ -172,8 +172,8 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                         onValueChange={(value) => handleUserTypeSelection(value as 'STUDENT' | 'NON_STUDENT')}
                         className="mb-6"
                       >
-                        <Radio value="STUDENT">Student</Radio>
                         <Radio value="NON_STUDENT">Professional</Radio>
+                        <Radio value="STUDENT">Student</Radio>
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
