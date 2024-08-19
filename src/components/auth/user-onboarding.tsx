@@ -123,12 +123,12 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen w-[80%] md:w-auto flex items-center justify-center md:p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-3xl p-4"
+        className="w-full max-w-3xl md:p-4"
       >
         <div className="mb-8">
           <motion.h2

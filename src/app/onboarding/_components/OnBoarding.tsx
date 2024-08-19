@@ -35,7 +35,7 @@ const OnboardingPage = () => {
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/poll_gbkqsh.png',
       title: 'Voice Your Opinion',
-      content: 'Watch, listen, or read—experience innovation in video, audio, and text formats, all designed to fit your style.',
+      content: 'Participate in our daily polls and shape the future. Share your insights on how these technologies can make a difference.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798017/onboarding/features_qgakm7.png',
@@ -148,6 +148,7 @@ const OnboardingPage = () => {
         onNext={handleNext}
         onComplete={() => handleAction()}
         completeBtnText="Yes I'm Ready"
+        isPending={isPending}
       />
       </div>
     </div>
