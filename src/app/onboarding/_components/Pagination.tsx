@@ -58,7 +58,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <Button
           onClick={onComplete}
           className="px-6 py-2 bg-brand text-lg text-white font-medium"
-          isLoading={isPending} // Disable button while pending
+          isLoading={isPending} 
         >
           {completeBtnText}
         </Button>
