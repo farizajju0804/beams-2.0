@@ -26,8 +26,8 @@ const CardWrapper: FC<Readonly<CardWrapperProps>> = ({
   showSocial,
 }) => {
   return (
-    <Card className="w-full lg:w-[400px] px-2 bg-white rounded-2xl m-4 shadow-md">
-      <CardHeader>
+    <Card className="w-full max-w-md px-2 md:px-2 bg-background rounded-2xl m-4 shadow-md">
+      <CardHeader className="mt-2">
         <Header label={headerLabel} />
       </CardHeader>
       <CardBody>{children}</CardBody>

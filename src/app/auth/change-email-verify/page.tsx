@@ -119,7 +119,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
             </Button>
           </form>
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-grey-2">
               Did not receive the code? <br />Check your spam folder or{" "}
               <button
                 type="button"
@@ -133,7 +133,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
         </>
       ) : (
         <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700 mb-6">
+          <p className="text-lg text-grey-2 mb-6">
             Your email has been successfully changed from <strong className="font-bold text-purple">{oldEmail}</strong> to <strong className="font-bold text-purple">{email}</strong>.
           </p>
           <Link href="/auth/login" passHref>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +24,7 @@ const Step1Form: React.FC = () => {
   const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false);
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
-
+  const [isMobile, setIsMobile] = useState(false);
   const setEmailStore = useEmailStore((state: any) => state.setEmail);
   const router = useRouter();
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -35,6 +35,18 @@ const Step1Form: React.FC = () => {
       password: "",
     },
   });
+  
+    useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setError("");
@@ -65,8 +77,8 @@ const Step1Form: React.FC = () => {
       showSocial
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="flex flex-col gap-8">
             <FormField
               control={form.control}
               name="email"
@@ -77,7 +89,7 @@ const Step1Form: React.FC = () => {
                       {...field}
                       isRequired
                       label="Email"
-                      labelPlacement="outside-left"
+                      labelPlacement={isMobile ? "outside" :"outside-left"}
                       classNames={{
                         label: 'w-20 font-medium',
                         mainWrapper: "w-full flex-1",
@@ -113,7 +125,7 @@ const Step1Form: React.FC = () => {
                       <Input
                         {...field}
                         isRequired
-                        labelPlacement="outside-left"
+                        labelPlacement={isMobile ? "outside" :"outside-left"}
                         classNames={{
                           label: 'w-20 font-medium',
                           mainWrapper: "w-full flex-1",

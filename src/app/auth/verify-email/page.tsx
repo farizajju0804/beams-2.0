@@ -88,7 +88,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-grey-2">
             {resendMessage ? (
               <span dangerouslySetInnerHTML={{ __html: resendMessage }} />
             ) : (
@@ -121,7 +121,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
         </Button>
       </form>
       <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-grey-2">
           Did not receive the code? <br />Check your spam folder or{" "}
           <button
             type="button"

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoginSchema } from "@/schema/index";
@@ -29,9 +29,10 @@ const LoginForm = () => {
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false);
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
   const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const { update } = useSession();
-
+  const [showPasswordStrength, setShowPasswordStrength] = useState(false);
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     mode: "onSubmit",
@@ -42,6 +43,17 @@ const LoginForm = () => {
       code: "",  // For two-factor authentication
     },
   });
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");
@@ -82,7 +94,7 @@ const LoginForm = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             {showTwoFactor && (
               <FormField
                 control={form.control}
@@ -133,10 +145,10 @@ const LoginForm = () => {
                           }}
                           {...field}
                           type="email"
-                          labelPlacement="outside-left"
+                          labelPlacement={isMobile ? "outside" :"outside-left"}
                           placeholder="Enter your email"
                           disabled={isLoading}
-                          startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={20} />}
+                          startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
                           onFocus={() => setIsTypingEmail(true)}
                           onBlur={() => setIsTypingEmail(false)}
                           onChange={(e) => {
@@ -149,58 +161,69 @@ const LoginForm = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          isRequired
-                          classNames={{
-                            label: 'w-20 font-medium',
-                            mainWrapper: "w-full flex-1",
-                            input: [
-                              "placeholder:text-grey-2 text-xs",
-                              'w-full flex-1 font-medium'
-                            ]
-                          }}
-                          label="Password"
-                          {...field}
-                          type={showPassword ? "text" : "password"}
-                          disabled={isLoading}
-                          labelPlacement="outside-left"
-                          placeholder="Enter your password"
-                          startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={20} />}
-                          endContent={
-                            <span
-                              className="cursor-pointer text-[#888888]"
-                              onClick={togglePasswordVisibility}
-                            >
-                              {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
-                            </span>
+                  <div className="relative">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        isRequired
+                        classNames={{
+                          label: 'w-20 font-medium',
+                          mainWrapper: "w-full flex-1",
+                          input: [
+                            "placeholder:text-grey-2 text-xs",
+                            'w-full flex-1 font-medium'
+                          ]
+                        }}
+                        label="Password"
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        disabled={isLoading}
+                        labelPlacement={isMobile ? "outside" :"outside-left"}
+                        placeholder="Enter your password"
+                        startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
+                        endContent={
+                          <span
+                            className="cursor-pointer text-[#888888]"
+                            onClick={togglePasswordVisibility}
+                          >
+                            {showPassword ? <EyeSlash variant="Bold" size={16} /> : <Eye variant="Bold" size={16} />}
+                          </span>
+                        }
+                        onFocus={() => setShowPasswordStrength(true)}
+                        onBlur={() => {
+                          if (field.value.length === 0) {
+                            setIsTypingPassword(false);
+                            setShowPasswordStrength(false);
                           }
-                          onFocus={() => setIsTypingPassword(true)}
-                          onBlur={() => setIsTypingPassword(false)}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            if (e.target.value.length === 0) setIsTypingPassword(false);
-                          }}
-                        />
-                      </FormControl>
-                      {passwordFocused && (
-                        <PasswordStrength
-                          password={form.watch('password')}
-                          onClose={() => setPasswordFocused(false)}
-                        />
-                      )}
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                        }}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setIsTypingPassword(true);
+                          if (e.target.value.length === 0) {
+                            setIsTypingPassword(false);
+                            setShowPasswordStrength(false);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {showPasswordStrength && (
+                <PasswordStrength
+                  password={form.watch('password')}
+                  onClose={() => setShowPasswordStrength(false)}
                 />
+              )}
+            </div>
               </>
             )}
-            <div className="w-full flex justify-between lg:px-0 mb-8">
+            <div className="w-full flex justify-between lg:px-0">
               <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
               <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>

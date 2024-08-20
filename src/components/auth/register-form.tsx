@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
       const nextStep = prevStep + 1;
       if (nextStep > TOTAL_STEPS) {
         localStorage.removeItem("currentStep");
-        localStorage.removeItem("email");
+       
       } else {
         localStorage.setItem("currentStep", nextStep.toString());
       }
