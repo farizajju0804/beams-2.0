@@ -25,7 +25,6 @@ export default function RootLayout({
       <GoogleAnalytics gaId="G-W7VPHJY727" />
       {/* <Navbar/> */}
       <Providers>
-      <ThemeWatcher />
         {children}
         </Providers>
       </body>

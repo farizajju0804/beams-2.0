@@ -13,8 +13,6 @@ interface TopicOfTheDayProps {
   clientDate: string;
 }
 
-const isMobile = typeof window !== "undefined" ? window.innerWidth < 767 : false;
-
 const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
   return (
     <div className="w-full py-1 text-left relative max-w-6xl mx-auto">
@@ -44,7 +42,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
             <div className="flex justify-between items-center">
               <div className="flex items-center my-2 justify-between w-full">
                 <div className="flex w-full items-center justify-start lg:justify-center flex-1">
-                <Button endContent={<Microscope className="text-white" />} className="font-semibold text-white text-lg p-4 lg:px-8 py-6" size={isMobile ? 'sm' : 'lg'} as="a" href={`/beams-today/${topic.id}`} color="primary">
+                <Button endContent={<Microscope className="text-white" />} className="font-semibold text-white text-lg p-4 lg:px-8 py-6" size="md" as="a" href={`/beams-today/${topic.id}`} color="primary">
                   Beam Now
                 </Button>
                 </div>

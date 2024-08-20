@@ -22,19 +22,26 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   const [isExistingNote, setIsExistingNote] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchNote = async () => {
       if (user) {
         const existingNote = await getNote(id);
-        if (existingNote) {
+        if (isMounted && existingNote) {
           setNote(existingNote.note);
           setCharCount(existingNote.note.length);
           setIsExistingNote(true);
         }
       }
     };
+
     if (isOpen) {
       fetchNote();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, user, isOpen]);
 
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

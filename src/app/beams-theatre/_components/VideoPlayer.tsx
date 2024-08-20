@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import 'cloudinary-video-player/cld-video-player.min.css';
 import cloudinary from 'cloudinary-video-player';
 import 'cloudinary-video-player/playlist';
@@ -16,8 +16,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
   const playerRef = useRef<any>(null);
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
-  const isMobile =  window.innerWidth <  767;
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
     const initializePlayer = () => {
       const videoElement = document.getElementById(videoElementId) as HTMLVideoElement;
       if (videoElement && videoElement.tagName === 'VIDEO') {
@@ -109,7 +114,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, videoId, thumbnailUrl, vi
     };
 
     initializePlayer();
-  }, [videoElementId, videoId, videoTitle, thumbnailUrl]);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [videoElementId, videoId, videoTitle, thumbnailUrl,isMobile]);
 
   return (
     <div className='w-full mx-auto'>

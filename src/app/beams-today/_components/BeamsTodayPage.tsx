@@ -44,3 +44,5 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
 };
 
 export default BeamsTodayPage;
+
+

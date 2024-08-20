@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pagination, Button } from "@nextui-org/react";
 import { ArrowRight, ArrowLeft } from "iconsax-react"; // Ensure this path is correct
 
@@ -8,8 +8,21 @@ interface CustomPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const isMobile = window.innerWidth < 767
+
 const CustomPagination: React.FC<CustomPaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+  
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <div className="w-full mx-auto flex flex-col items-center">
       <Pagination

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useTransition } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { updateOnboardingStatus } from '@/actions/auth/onboarding'
 import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
@@ -51,10 +51,22 @@ const OnboardingPage = () => {
 
   const totalSlides = slides.length;
   const isEvenSlide = currentSlide % 2 === 0;
-  
+  const [isMobile, setIsMobile] = useState(false);
   const activeColor = isEvenSlide ? '#370075' : '#F9D42E'; // Example: orange for even, purple for odd
   const inactiveColor = isEvenSlide ? '#fefefe' : '#ffffff'; // Example: white for even, light gray for odd
-  const isMobile  = window.innerWidth < 767
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+  
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const backgroundImage = isEvenSlide 
     ? isMobile 
         ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png' // Mobile image for even slides

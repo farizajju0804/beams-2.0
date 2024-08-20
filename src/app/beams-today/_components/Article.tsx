@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -14,16 +14,17 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   const elapsedTimeRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { theme } = useTheme();
-  
+  const [isMobile, setIsMobile] = useState(false);
+
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => {
       if (startTimeRef.current) {
         const currentTime = Date.now();
         const elapsed = currentTime - startTimeRef.current;
         elapsedTimeRef.current += elapsed;
-        startTimeRef.current = currentTime; // reset start time for future calculations
+        startTimeRef.current = currentTime;
       }
-      return Math.round(elapsedTimeRef.current / 1000); // return time in seconds, rounded off
+      return Math.round(elapsedTimeRef.current / 1000);
     }
   }));
 
@@ -35,9 +36,19 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
         const currentTime = Date.now();
         const elapsed = currentTime - startTimeRef.current;
         elapsedTimeRef.current += elapsed;
-        startTimeRef.current = currentTime; // reset start time for future calculations
+        startTimeRef.current = currentTime;
       }
-    }, 1000); // Update every second
+    }, 1000);
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
 
     return () => {
       if (intervalRef.current) {
@@ -47,11 +58,11 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
         const elapsedTime = Date.now() - startTimeRef.current;
         elapsedTimeRef.current += elapsedTime;
       }
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  const isMobile = window.innerWidth < 767;
 
   if (!articleUrl) {
     return (

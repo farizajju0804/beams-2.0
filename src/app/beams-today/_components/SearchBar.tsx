@@ -50,7 +50,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const itemsPerPage = 9;
   const calendarRef = useRef<any>(null);
   const processedTopics = preprocessTopics(topics);
-  console.log(processedTopics)
   const fuse = new Fuse(processedTopics, {
     includeScore: true,
     keys: ['title', 'shortDesc', 'scriptWords'],

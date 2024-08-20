@@ -14,7 +14,7 @@ export const getBeamsTodayEntries = async (): Promise<BeamsToday[]> => {
         },
       },
     });
-    console.log('Fetched entries from DB:', entries);
+  
     return entries as any;
   } catch (error) {
     throw new Error(`Error fetching beamsToday entries: ${(error as Error).message}`);

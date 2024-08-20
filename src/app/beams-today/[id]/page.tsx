@@ -1,4 +1,4 @@
-// pages/BeamsTodayPlayerPage.tsx
+
 import React from "react";
 import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
 import { getPoll } from "@/actions/beams-today/pollActions";

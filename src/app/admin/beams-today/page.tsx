@@ -34,8 +34,6 @@ const AdminBeamsToday: React.FC = () => {
     const fetchData = async () => {
       try {
         const [entriesData, categoriesData] = await Promise.all([getBeamsTodayEntries(), getCategories()]);
-        console.log('Fetched entries:', entriesData);
-        console.log('Fetched categories:', categoriesData);
         setEntries(entriesData);
         setCategories(categoriesData);
       } catch (error) {

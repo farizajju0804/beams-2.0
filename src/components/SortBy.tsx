@@ -1,5 +1,5 @@
 "úse client"
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 
 interface Option {
@@ -19,8 +19,20 @@ const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) 
     setSortBy(event.target.value);
   };
 
-  const isMobile = window.innerWidth < 767;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
 
+  
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <Select
       color="primary"
