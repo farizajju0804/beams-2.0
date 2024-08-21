@@ -227,12 +227,13 @@ const LoginForm = () => {
               <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
               <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>
-            {error && (<FormError message={error} />)}
-            {success && (<FormSuccess message={success} />)}
+          
           </div>
           <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isLoading}>
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
+          {error && (<FormError message={error} />)}
+          {success && (<FormSuccess message={success} />)}
         </form>
       </Form>
     </CardWrapper>

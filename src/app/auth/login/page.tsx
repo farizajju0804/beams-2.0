@@ -15,7 +15,6 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
             <LoginForm  />
           </div>
         </div>
-       
       </div>
     </Suspense>
   );

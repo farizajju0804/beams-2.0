@@ -107,8 +107,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
           </div>
         </div>
 
-        {error && <FormError message={error} />}
-        {success && <FormSuccess message={success} />}
+       
         <Button
           type="submit"
           color="primary"
@@ -118,6 +117,8 @@ const VerifyEmail: React.FC<{}> = ({}) => {
         >
           {isLoading ? "Verifying..." : "Verify"}
         </Button>
+        {error && <FormError message={error} />}
+        {success && <FormSuccess message={success} />}
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-grey-2">

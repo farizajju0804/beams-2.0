@@ -6,12 +6,10 @@ import { useRouter } from "next/navigation";
 // import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
 
 interface LoginButtonProps {
-  mode?: "modal" | "redirect";
   asChild?: boolean;
 }
 
 export const LoginButton = ({
-  mode = "redirect",
   asChild,
 }: LoginButtonProps) => {
   const router = useRouter();
@@ -19,22 +17,15 @@ export const LoginButton = ({
   const onClick = () => {
     router.push("/auth/login");
   };
+  const onClickRegister = () => {
+    router.push("/auth/register");
+  };
 
-  if (mode === "modal") {
-    return (
-    //   <Dialog>
-    //     <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
-    //     <DialogContent className="p-0 w-auto bg-transparent border-none">
-    //       <LoginForm />
-    //     </DialogContent>
-    //   </Dialog>
-    <span className="">Todo model</span>
-    );
-  }
 
   return (
-    <span className="cursor-pointer">
-        <Button onClick={onClick}>Login</Button>
-    </span>
+    <div className="flex gap-4 flex-col md:flex-row items-center w-full justify-center px-10">
+        <Button variant="bordered" size="lg" color="primary" className="md:w-40 w-full text-primary text-lg font-medium" onClick={onClick}>Login</Button>
+        <Button color="primary" size="lg" className="md:w-40 w-full text-white text-lg  font-medium" onClick={onClickRegister}>Sign Up</Button>
+    </div>
   );
 };

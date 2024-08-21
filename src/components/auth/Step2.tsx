@@ -109,8 +109,7 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
           </div>
         </div>
 
-        {error && <FormError message={error} />}
-        {success && <FormSuccess message={success} />}
+       
         <Button
           type="submit"
           color="primary"
@@ -120,6 +119,8 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
         >
           {isLoading ? "Verifying..." : "Verify"}
         </Button>
+        {error && <FormError message={error} />}
+        {success && <FormSuccess message={success} />}
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">

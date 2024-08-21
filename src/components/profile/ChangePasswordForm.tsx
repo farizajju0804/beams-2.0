@@ -112,11 +112,12 @@ const ChangePasswordForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
+          
           <Button type="submit" className="w-full bg-brand font-medium text-white py-3">
             Change Password
           </Button>
+          <FormError message={error} />
+          <FormSuccess message={success} />
         </form>
       </Form>
 

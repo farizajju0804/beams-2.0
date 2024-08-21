@@ -145,6 +145,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   };
 
   const onSubmit = (values: SettingsFormData) => {
+    console.log('submiited')
     startTransition(() => {
       const dob = day && month && year ? new Date(`${year}-${month}-${day}`) : undefined;
 
@@ -308,11 +309,11 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 />
               )}
             </div>
-            <FormError message={error} />
-            <FormSuccess message={success} />
             <Button type="submit" color="primary" className="w-full font-medium text-white" isLoading={isPending}>
               Save
             </Button>
+            <FormError message={error} />
+            <FormSuccess message={success} />
           </form>
         </Form>
       </CardBody>

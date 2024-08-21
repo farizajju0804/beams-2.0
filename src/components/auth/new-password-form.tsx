@@ -109,7 +109,6 @@ const NewPasswordForm = () => {
                 )}
               />
             </div>
-            <FormError message={error} />
             <Button
               type="submit"
               color="primary"
@@ -118,6 +117,7 @@ const NewPasswordForm = () => {
             >
               Reset
             </Button>
+            <FormError message={error} />
           </form>
         </Form>
       )}

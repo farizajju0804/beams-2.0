@@ -175,8 +175,7 @@ const Step1Form: React.FC = () => {
               )}
             />
           </div>
-          {error && <FormError message={error} />}
-          {success && <FormSuccess message={success} />}
+         
           <Button
             type="submit"
             color="primary"
@@ -185,6 +184,8 @@ const Step1Form: React.FC = () => {
           >
             {isPending ? "Creating Account..." : "Create Account"}
           </Button>
+          {error && <FormError message={error} />}
+          {success && <FormSuccess message={success} />}
         </form>
       </Form>
     </CardWrapper>

@@ -96,7 +96,6 @@ const ResetForm = () => {
                 )}
               />
             </div>
-            {error && <FormError message={error} />}
             <Button
               type="submit"
               color="primary"
@@ -105,6 +104,7 @@ const ResetForm = () => {
             >
               Send Reset Email
             </Button>
+            {error && <FormError message={error} />}
           </form>
         </Form>
       )}

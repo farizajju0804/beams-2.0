@@ -113,7 +113,6 @@ const ForgotEmailForm = () => {
                 />
               </div>
             </div>
-            {error && <FormError message={error} />}
             <Button
               type="submit"
               color="primary"
@@ -122,6 +121,7 @@ const ForgotEmailForm = () => {
             >
               Submit
             </Button>
+            {error && <FormError message={error} />}
           </form>
         </Form>
       )}

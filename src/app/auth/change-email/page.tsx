@@ -100,7 +100,7 @@ const ChangeEmail = () => {
             placeholder="Enter your new email"
             disabled={isSubmitting}
           />
-          {error && <FormError message={error} />}
+          
           <Button 
             type="submit" 
             className="w-full text-white bg-primary font-medium text-lg"
@@ -108,6 +108,7 @@ const ChangeEmail = () => {
           >
             {isSubmitting ? "Changing Email..." : "Change Email"}
           </Button>
+          {error && <FormError message={error} />}
         </form>
       )}
     </CardWrapper>
