@@ -13,10 +13,13 @@ import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import PasswordStrength from "./PasswordStrength2";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { useEmailStore } from "@/store/email";
 import { useRouter } from "next/navigation";
 
-const Step1Form: React.FC = () => {
+interface RegisterFormProps {
+  ip: string;
+}
+
+const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -25,8 +28,9 @@ const Step1Form: React.FC = () => {
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false);
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
-  const setEmailStore = useEmailStore((state: any) => state.setEmail);
+  const [emailJustSet, setEmailJustSet] = useState(false); // New state to avoid immediate redirection
   const router = useRouter();
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
@@ -35,29 +39,49 @@ const Step1Form: React.FC = () => {
       password: "",
     },
   });
-  
-    useEffect(() => {
+
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 767);
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
 
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  useEffect(() => {
+    const pendingEmail = localStorage.getItem("pendingVerificationEmail");
+    const pendingIp = localStorage.getItem("pendingVerificationIp");
+    if (pendingEmail && pendingIp && !emailJustSet) {
+      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail)}`);
+    }
+  }, [router, emailJustSet]);
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
     startTransition(async () => {
       try {
-        const result: any = await registerAndSendVerification(values);
-        if (result?.error) {
+        const result: any = await registerAndSendVerification(values, ip);
+       
+          if (result?.error === "VERIFY_EMAIL") {
+            router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
+          }
+          else if (result?.error) {
           setError(result.error);
         } else if (result?.success) {
           setSuccess(result.success);
+
+          // Store the email and IP in localStorage
+          localStorage.setItem("pendingVerificationEmail", values.email);
+          localStorage.setItem("pendingVerificationIp", ip);
+
+          // Set flag to avoid immediate redirect in this session
+          setEmailJustSet(true);
+
+          // Redirect to the verification page
           router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
         }
       } catch (err) {
@@ -89,14 +113,11 @@ const Step1Form: React.FC = () => {
                       {...field}
                       isRequired
                       label="Email"
-                      labelPlacement={isMobile ? "outside" :"outside-left"}
+                      labelPlacement={isMobile ? "outside" : "outside-left"}
                       classNames={{
-                        label: 'w-20 font-medium',
+                        label: "w-20 font-medium",
                         mainWrapper: "w-full flex-1",
-                        input: [
-                          "placeholder:text-grey-2 text-xs",
-                          'w-full flex-1 font-medium'
-                        ]
+                        input: ["placeholder:text-grey-2 text-xs", "w-full flex-1 font-medium"],
                       }}
                       type="email"
                       placeholder="Enter your email"
@@ -125,14 +146,11 @@ const Step1Form: React.FC = () => {
                       <Input
                         {...field}
                         isRequired
-                        labelPlacement={isMobile ? "outside" :"outside-left"}
+                        labelPlacement={isMobile ? "outside" : "outside-left"}
                         classNames={{
-                          label: 'w-20 font-medium',
+                          label: "w-20 font-medium",
                           mainWrapper: "w-full flex-1",
-                          input: [
-                            "placeholder:text-grey-2 text-xs",
-                            'w-full flex-1 font-medium'
-                          ]
+                          input: ["placeholder:text-grey-2 text-xs", "w-full flex-1 font-medium"],
                         }}
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -141,10 +159,7 @@ const Step1Form: React.FC = () => {
                           !isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={20} />
                         }
                         endContent={
-                          <span
-                            className="cursor-pointer text-[#888888]"
-                            onClick={togglePasswordVisibility}
-                          >
+                          <span className="cursor-pointer text-[#888888]" onClick={togglePasswordVisibility}>
                             {showPassword ? <EyeSlash variant="Bold" size={20} /> : <Eye variant="Bold" size={20} />}
                           </span>
                         }
@@ -165,7 +180,7 @@ const Step1Form: React.FC = () => {
                   </FormControl>
                   {passwordFocused && (
                     <PasswordStrength
-                      password={form.watch('password')}
+                      password={form.watch("password")}
                       onClose={() => setPasswordFocused(false)}
                       showCrackTime={true}
                     />
@@ -175,7 +190,7 @@ const Step1Form: React.FC = () => {
               )}
             />
           </div>
-         
+
           <Button
             type="submit"
             color="primary"

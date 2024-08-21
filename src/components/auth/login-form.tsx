@@ -56,6 +56,15 @@ const LoginForm: FC<LoginFormProps>= ({ip}) => {
 
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  useEffect(() => {
+    const pendingEmail = localStorage.getItem("pendingVerificationEmail");
+    const pendingIp = localStorage.getItem("pendingVerificationIp");
+
+    if (pendingEmail && pendingIp) {
+      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail)}`);
+    }
+  }, [router]);
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");
@@ -65,7 +74,7 @@ const LoginForm: FC<LoginFormProps>= ({ip}) => {
     try {
       const data = await login(values,ip);
       if (data?.error === "VERIFY_EMAIL") {
-        router.push("/auth/verify-email");
+        router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
       }
       else if (data?.error) {
         setError(data.error);
@@ -76,7 +85,7 @@ const LoginForm: FC<LoginFormProps>= ({ip}) => {
         await update();
         router.push("/beams-today");
       } else if (data?.twoFactor) {
-        setShowTwoFactor(true);  // Show the two-factor input field
+        setShowTwoFactor(true);  
         setIsLoading(false);
       }
     } catch (error) {

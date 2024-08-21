@@ -51,6 +51,8 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       const result = await verifyCode(code);
       if (result?.success) {
         console.log("Email verified successfully!");
+        localStorage.removeItem("pendingVerificationEmail");
+        localStorage.removeItem("pendingVerificationIp");
         router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`);
       } else {
         setError(result?.error || "Verification failed.");

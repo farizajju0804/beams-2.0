@@ -1,4 +1,4 @@
-'use client'
+
 import { headers } from 'next/headers';
 
 export function  getClientIp() {

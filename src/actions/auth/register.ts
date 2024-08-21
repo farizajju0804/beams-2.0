@@ -10,7 +10,7 @@ import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 }
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
-export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>) => {
+export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>,ip:string) => {
   const validatedFields = RegisterSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid Fields!" };
@@ -18,8 +18,14 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
 
   const { email, password } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(email);
+  const existingUser:any = await getUserByEmail(email);
+  
   if (existingUser) {
+    if (!existingUser?.emailVerified) {
+      const verificationToken = await getVerificationToken(existingUser?.email);
+      await sendVerificationEmail(verificationToken.email, verificationToken.token);
+      return { error: "VERIFY_EMAIL", success: undefined };
+    }
     return { error: "Account already exists. Try using a different email." };
   }
 
@@ -28,6 +34,8 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
     data: {
       email,
       password: hashedPassword,
+      lastLoginIp : ip,
+      lastLoginAt: new Date(),
     },
   });
 
@@ -48,7 +56,7 @@ export const resendVerificationCode = async (email:string) => {
 
 export const resendVerificationCode2 = async (email:string) => {
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail3(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };

@@ -11,9 +11,6 @@ import { sendVerificationEmail, sendTwoFactorTokenEmail, sendVerificationEmail2,
 import { getTwoFactorTokenByEmail } from "./two-factor-token";
 import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { newDate } from "react-datepicker/dist/date_utils";
 
 export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -53,7 +50,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
 
   if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
-    await sendVerificationEmail3(verificationToken.email, verificationToken.token);
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
     return { error: "VERIFY_EMAIL", success: undefined };
   
     

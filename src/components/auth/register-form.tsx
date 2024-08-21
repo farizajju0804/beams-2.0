@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import Step1Form from "./Step1";
 
 const TOTAL_STEPS = 3;
-
-const RegisterPage: React.FC = () => {
+interface RegisterFormProps {
+  ip: string;
+}
+const RegisterPage: React.FC<RegisterFormProps> = ({ip}) => {
 
   const [currentStep, setCurrentStep] = useState(() => {
     if (typeof window !== "undefined") {
@@ -30,7 +32,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="w-full flex items-center justify-center">
-       <Step1Form  />
+       <Step1Form ip={ip}  />
     </div>
   );
 };
