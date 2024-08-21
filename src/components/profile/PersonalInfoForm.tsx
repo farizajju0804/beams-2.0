@@ -17,8 +17,8 @@ import CustomDateInput from "../auth/CustomDateInput";
 export const SettingsSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters long"),
   lastName: z.string().min(2, "Last name must be at least 2 characters long"),
-  dob: z.date().optional(),
-  grade: z.string().optional(),
+  dob: z.date().optional().nullable(),
+  grade: z.string().optional().nullable(),
   userType: z.enum(["STUDENT", "NON_STUDENT"]),
   email: z.string().email().optional(),
 });
@@ -56,12 +56,12 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   const [year, setYear] = useState<string>('');
 
   const form = useForm<SettingsFormData>({
-    resolver: zodResolver(SettingsSchema),
+    // resolver: zodResolver(SettingsSchema),
     defaultValues: {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       userType: user.userType,
-      grade: user.grade || '',
+      grade: user.grade || undefined,
       email: user.email,
       dob: user.dob,
     },
@@ -135,7 +135,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
       setProfileImage(url);
       updateUserImage(url);
       setUser({ ...useUserStore.getState().user, image: url });
-      setSuccess("Profile image updated successfully");
+      setSuccess("Profile image updated and saved successfully");
       setError("");
     } catch (err) {
       setError("Please try again");
@@ -145,29 +145,31 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   };
 
   const onSubmit = (values: SettingsFormData) => {
-    console.log('submiited')
+    setError(undefined);
+    setSuccess(undefined); 
     startTransition(() => {
-      const dob = day && month && year ? new Date(`${year}-${month}-${day}`) : undefined;
-
-      const updatedValues = {
-        ...values,
-        dob,
-      };
-
-      settings(updatedValues)
+      
+      settings(values)
         .then((data) => {
+          console.log("Settings Response:", data); // Add this line
           if (data.error) {
             setError(data.error);
+            setSuccess("");
           } else if (data.success) {
             setSuccess(data.success);
+          console.log("success:", success);
             setError("");
-            setUser(updatedValues);
+            setUser(values); 
           }
         })
-        .catch(() => { setError("Something went wrong") });
+        .catch((err) => {
+          console.error("Error submitting form:", err);
+          setError("Something went wrong");
+          setSuccess("");
+        });
     });
   };
-
+  
   return (
     <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
       <CardHeader className="text-text">
@@ -205,7 +207,12 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
           />
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={(e) => { 
+      console.log("Form is being submitted"); 
+      form.handleSubmit(onSubmit)(e);
+    }} 
+    className="space-y-6"
+  >
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -245,6 +252,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                           <Select
                             {...field}
                             label="Grade"
+                            value={field.value || undefined}
                             placeholder="Select your grade"
                             disabled={isPending}
                             defaultSelectedKeys={user.grade ? [user.grade] : undefined}

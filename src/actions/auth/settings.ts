@@ -47,7 +47,7 @@ export const settings = async (
     return { success: "Password updated Successfully!" };
   }
 
-  // For general profile updates (name, userType, etc.)
+ 
   await db.user.update({
     where: {
       id: user.id,
