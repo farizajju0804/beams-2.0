@@ -16,17 +16,14 @@ export default function Layout({
 }) {
 
   return (
-    <SessionProviders>
-    <html lang="en">
+  
     
-      <body className={`bg-white ${quicksand.className}`}>
+      <div className={`bg-background ${quicksand.className}`}>
      
         {children}
       
-      </body>
-      
-    </html>
-    </SessionProviders>
+      </div>
+
    
   );
 }

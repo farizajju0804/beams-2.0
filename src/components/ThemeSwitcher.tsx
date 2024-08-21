@@ -12,29 +12,38 @@ export function ThemeSwitcher() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   
   useEffect(() => {
+    console.log("useEffect [setTheme] triggered");
     const savedTheme = localStorage.getItem("theme");
+    console.log("Saved theme from localStorage:", savedTheme);
     if (savedTheme) {
       setTheme(savedTheme);
       setIsDarkMode(savedTheme === "dark");
-      console.log("switcher",theme)
+      console.log("Theme set to:", savedTheme);
+      console.log("Is dark mode:", savedTheme === "dark");
+    
     } else {
       setTheme("light");
       setIsDarkMode(false);
-      console.log("switcher",theme)
+      console.log("No saved theme found, setting to light mode");
     }
     setMounted(true);
-    
+    console.log("Component mounted");
   }, [setTheme]);
 
   useEffect(() => {
+    console.log("useEffect [resolvedTheme] triggered");
     if (resolvedTheme) {
       localStorage.setItem("theme", resolvedTheme);
       setIsDarkMode(resolvedTheme === "dark");
+      console.log("Updated localStorage and isDarkMode based on resolvedTheme");
     }
   }, [resolvedTheme]);
 
-  if (!mounted) return null;
-  
+  if (!mounted) {
+    console.log("Component not yet mounted, returning null");
+    return null;
+  }
+  console.log("Rendering ThemeSwitcher component, isDarkMode:", isDarkMode);
   return (
     <div className="flex items-center space-x-4">
       <Switch

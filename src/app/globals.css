@@ -70,6 +70,9 @@
   --color-purple :  55, 0, 117;
 }
 
+.black-text{
+  color : rgba(var(--color-text)) !important;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 

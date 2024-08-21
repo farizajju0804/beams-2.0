@@ -16,17 +16,14 @@ export default function Layout({
 }) {
 
   return (
-    <SessionProviders>
-    <html lang="en">
     
-      <body className={quicksand.className}>
+      <div className={quicksand.className}>
      
         {children}
       
-      </body>
+      </div>
       
-    </html>
-    </SessionProviders>
-   
+ 
+
   );
 }

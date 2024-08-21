@@ -84,7 +84,7 @@ export default function UserButton() {
           <DropdownItem key="library" onClick={() => handleNavigation("/beams-today/library")}>
             My Library
           </DropdownItem>
-          <DropdownItem key="profile" onClick={() => handleNavigation("/beams-today/my-profile")}>
+          <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
           <DropdownItem onClick={customSignOut} key="logout" color="danger">

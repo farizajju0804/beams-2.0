@@ -135,7 +135,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="text-3xl lg:text-4xl font-bold text-gray-800 font-poppins mb-6"
+            className="text-3xl lg:text-4xl font-bold text-text font-poppins mb-6"
           >
             Welcome to Beams
           </motion.h2>
@@ -145,7 +145,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
             className="flex justify-between items-center"
           >
-            <p className="text-sm text-gray-600">Step {step} of 2</p>
+            <p className="text-sm text-grey-2">Step {step} of 2</p>
             <div className="flex">
               <div className={`h-2 w-12 rounded-full ${step === 1 ? 'bg-brand' : 'bg-gray-300'} mr-2 transition-colors`}></div>
               <div className={`h-2 w-12 rounded-full ${step === 2 ? 'bg-brand' : 'bg-gray-300'} transition-colors`}></div>
@@ -172,15 +172,15 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                         onValueChange={(value) => handleUserTypeSelection(value as 'STUDENT' | 'NON_STUDENT')}
                         className="mb-6"
                       >
-                        <Radio value="NON_STUDENT">Professional</Radio>
-                        <Radio value="STUDENT">Student</Radio>
+                        <Radio classNames={{label : "black-text"}}  value="NON_STUDENT">Professional</Radio>
+                        <Radio classNames={{label : "black-text"}} value="STUDENT">Student</Radio>
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-               <p className="text-sm text-gray-500 mb-6">
+               <p className="text-sm text-grey-2 mb-6">
               Note: This choice cannot be changed later.
             </p>
               <Button
@@ -212,6 +212,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                           label="First Name"
                           placeholder="Enter your first name"
                           isRequired
+                          
                           className="w-full p-0"
                         />
                       </FormControl>
