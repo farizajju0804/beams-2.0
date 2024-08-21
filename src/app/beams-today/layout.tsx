@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import Nav from "@/components/Navbar";
+import { Providers } from "../providers";
 
 
 const quicksand = Quicksand({ subsets: ["latin"] });
@@ -16,6 +17,8 @@ export default function Layout({
 
   return (
     <html lang="en">
+      <Providers>
+      
     
       <body className={`overflow-x-hidden  ${quicksand.className}`}>
       
@@ -24,7 +27,7 @@ export default function Layout({
      
     
       </body>
-   
+      </Providers>
     </html>
   
   );

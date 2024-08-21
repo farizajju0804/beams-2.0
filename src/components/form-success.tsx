@@ -11,18 +11,18 @@ interface FormSuccessProps {
 const FormSuccess: FC<Readonly<FormSuccessProps>> = ({ message, onHide }) => {
   const controls = useAnimation();
 
-  // useEffect(() => {
-  //   if (message) {
-  //     // Start the fade-out after 2 seconds
-  //     const timeout = setTimeout(() => {
-  //       controls.start({ opacity: 0, transition: { duration: 0.5 } }).then(() => {
-  //         if (onHide) onHide(); // Optionally call the onHide callback after fade out
-  //       });
-  //     }, 2000);
+  useEffect(() => {
+    if (message) {
+      // Start the fade-out after 2 seconds
+      const timeout = setTimeout(() => {
+        controls.start({ opacity: 0, transition: { duration: 0.5 } }).then(() => {
+          if (onHide) onHide(); // Optionally call the onHide callback after fade out
+        });
+      }, 2000);
 
-  //     return () => clearTimeout(timeout); // Clear timeout if the component is unmounted
-  //   }
-  // }, [message, controls, onHide]);
+      return () => clearTimeout(timeout); // Clear timeout if the component is unmounted
+    }
+  }, [message, controls, onHide]);
 
   return (
     message && (

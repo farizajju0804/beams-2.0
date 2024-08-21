@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoginSchema } from "@/schema/index";
@@ -17,8 +17,10 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
 import { useEmailStore } from "@/store/email";
-
-const LoginForm = () => {
+interface LoginFormProps{
+  ip :string
+}
+const LoginForm: FC<LoginFormProps>= ({ip}) => {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : "";
   const [error, setError] = useState<string | undefined>(urlError);
@@ -61,7 +63,7 @@ const LoginForm = () => {
     setIsLoading(true);
     
     try {
-      const data = await login(values);
+      const data = await login(values,ip);
       if (data?.error === "VERIFY_EMAIL") {
         router.push("/auth/verify-email");
       }
@@ -232,8 +234,8 @@ const LoginForm = () => {
           <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isLoading}>
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
-          {error && (<FormError message={error} />)}
-          {success && (<FormSuccess message={success} />)}
+            {error && (<FormError message={error} />)}
+            {success && (<FormSuccess message={success} />)}
         </form>
       </Form>
     </CardWrapper>

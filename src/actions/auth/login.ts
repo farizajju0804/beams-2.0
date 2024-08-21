@@ -13,8 +13,9 @@ import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { newDate } from "react-datepicker/dist/date_utils";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid Fields!", success: undefined };
@@ -111,6 +112,14 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       email,
       password,
       redirect : false, 
+    });
+
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: {
+        lastLoginIp: ip,
+        lastLoginAt: new Date(),
+      },
     });
 
     return {  success: "Login success" };
