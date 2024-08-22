@@ -17,13 +17,12 @@ export default function Layout({
 
   return (
   
-    
+    <SessionProviders>
       <div className={`bg-background ${quicksand.className}`}>
      
         {children}
       
       </div>
-
-   
+      </SessionProviders>
   );
 }

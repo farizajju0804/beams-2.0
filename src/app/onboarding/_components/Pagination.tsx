@@ -44,7 +44,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onClick={handlePrevClick}
   disabled={isFirstSlide}
   className={`w-fit rounded-full transition-all duration-300 ${
-    isFirstSlide ? 'bg-grey-1' : clickedArrow === 'left' ? 'bg-brand text-white' : 'bg-[#d2d2d2]'
+    isFirstSlide ? 'bg-gray-100' : clickedArrow === 'left' ? 'bg-brand text-white' : 'bg-[#d2d2d2]'
   }`}
   aria-label="Previous slide"
 >

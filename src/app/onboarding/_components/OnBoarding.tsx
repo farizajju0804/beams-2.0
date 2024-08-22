@@ -149,7 +149,7 @@ const OnboardingPage = () => {
 
         <div className="px-6 mt-4 text-center max-w-3xl">
           <h2 className="text-3xl text-purple lg:text-4xl font-bold font-poppins mb-4">{slides[currentSlide].title}</h2>
-          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-sm md:text-base lg:text-lg" />
+          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg" />
         </div>
       </div>
 

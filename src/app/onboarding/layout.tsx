@@ -16,12 +16,13 @@ export default function Layout({
 }) {
 
   return (
-    
+    <SessionProviders>
       <div className={quicksand.className}>
      
         {children}
       
       </div>
+      </SessionProviders>
       
  
 

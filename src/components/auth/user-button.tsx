@@ -87,7 +87,7 @@ export default function UserButton() {
           <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
-          <DropdownItem onClick={customSignOut} key="logout" color="danger">
+          <DropdownItem  onClick={customSignOut} key="logout" color="danger">
             Log Out
           </DropdownItem>
         </DropdownMenu>

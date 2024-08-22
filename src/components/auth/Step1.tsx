@@ -192,7 +192,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
             {isPending ? "Creating Account..." : "Create Account"}
           </Button>
           {error && <FormError message={error} />}
-          {success && <FormSuccess message={success} />}
+          {!isPending && success && <FormSuccess message={success} />}
         </form>
       </Form>
     </CardWrapper>
