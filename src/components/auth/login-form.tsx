@@ -18,9 +18,10 @@ import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
 import { useEmailStore } from "@/store/email";
 interface LoginFormProps{
-  ip :string
+  ip :string,
+  pendingEmail?: any;
 }
-const LoginForm: FC<LoginFormProps>= ({ip}) => {
+const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : "";
   const [error, setError] = useState<string | undefined>(urlError);
@@ -58,13 +59,10 @@ const LoginForm: FC<LoginFormProps>= ({ip}) => {
   }, []);
   
   useEffect(() => {
-    const pendingEmail = localStorage.getItem("pendingVerificationEmail");
-    const pendingIp = localStorage.getItem("pendingVerificationIp");
-
-    if (pendingEmail && pendingIp) {
-      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail)}`);
+    if (pendingEmail) {
+      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail.email)}`);
     }
-  }, [router]);
+  }, [pendingEmail, router]);
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");

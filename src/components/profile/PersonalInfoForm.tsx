@@ -56,7 +56,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   const [year, setYear] = useState<string>('');
 
   const form = useForm<SettingsFormData>({
-    // resolver: zodResolver(SettingsSchema),
+    resolver: zodResolver(SettingsSchema),
     defaultValues: {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
@@ -218,7 +218,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-center space-x-4">
+                  <FormItem className="flex items-start flex-col justify-center space-x-4">
                     
                     <FormControl>
                       <Input {...field} label="First Name" disabled={isPending} />
@@ -231,7 +231,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-center space-x-4">
+                  <FormItem className="flex items-start flex-col justify-center space-x-4">
                     
                     <FormControl>
                       <Input {...field} label="Last Name" disabled={isPending} />
@@ -246,7 +246,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                     control={form.control}
                     name="grade"
                     render={({ field }) => (
-                      <FormItem className="flex items-center justify-center space-x-4">
+                      <FormItem className="flex items-start flex-col justify-center space-x-4">
                         
                         <FormControl>
                           <Select
@@ -282,7 +282,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                     control={form.control}
                     name="dob"
                     render={({ field }) => (
-                      <FormItem className="flex items-center justify-center space-x-4">
+                      <FormItem className="flex items-start flex-col justify-center space-x-4">
                         <FormControl>
                           <CustomDateInput
                             day={day}
@@ -305,7 +305,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   control={form.control}
                   name="email"
                   render={() => (
-                    <FormItem className="flex items-center justify-center space-x-4">
+                    <FormItem className="flex items-start flex-col justify-center space-x-4">
                       <div className="w-24 flex items-center justify-center">
                         <label className="text-sm text-text">Email:</label>
                       </div>

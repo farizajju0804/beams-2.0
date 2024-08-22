@@ -17,9 +17,10 @@ import { useRouter } from "next/navigation";
 
 interface RegisterFormProps {
   ip: string;
+  pendingEmail?: any; 
 }
 
-const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
+const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -28,7 +29,6 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false);
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [emailJustSet, setEmailJustSet] = useState(false); // New state to avoid immediate redirection
   const router = useRouter();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -51,13 +51,13 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // If there's a pending email, redirect to the verification page immediately
   useEffect(() => {
-    const pendingEmail = localStorage.getItem("pendingVerificationEmail");
-    const pendingIp = localStorage.getItem("pendingVerificationIp");
-    if (pendingEmail && pendingIp && !emailJustSet) {
-      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail)}`);
+    if (pendingEmail) {
+      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail.email)}`);
+      
     }
-  }, [router, emailJustSet]);
+  }, [pendingEmail, router]);
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setError("");
@@ -65,21 +65,13 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
     startTransition(async () => {
       try {
         const result: any = await registerAndSendVerification(values, ip);
-       
-          if (result?.error === "VERIFY_EMAIL") {
-            router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
-          }
-          else if (result?.error) {
+
+        if (result?.error === "VERIFY_EMAIL") {
+          router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
+        } else if (result?.error) {
           setError(result.error);
         } else if (result?.success) {
           setSuccess(result.success);
-
-          // Store the email and IP in localStorage
-          localStorage.setItem("pendingVerificationEmail", values.email);
-          localStorage.setItem("pendingVerificationIp", ip);
-
-          // Set flag to avoid immediate redirect in this session
-          setEmailJustSet(true);
 
           // Redirect to the verification page
           router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`);
@@ -95,7 +87,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip }) => {
 
   return (
     <CardWrapper
-      headerLabel="Join Beams"
+      headerLabel="Sign Up"
       backButtonLabel="Already have an account?"
       backButtonHref="/auth/login"
       showSocial

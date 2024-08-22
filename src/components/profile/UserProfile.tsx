@@ -9,8 +9,7 @@ import { useTheme } from "next-themes";
 
 const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
   const [selectedTab, setSelectedTab] = useState("Personal Info");
-  const theme =  useTheme()
-  console.log(theme)
+
   const tabs = [
     { name: "Personal Info", component: <PersonalInfoForm user={user} isOAuth={isOAuth} /> },
     ...(!isOAuth ? [

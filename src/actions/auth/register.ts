@@ -22,6 +22,7 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
   
   if (existingUser) {
     if (!existingUser?.emailVerified) {
+      
       const verificationToken = await getVerificationToken(existingUser?.email);
       await sendVerificationEmail(verificationToken.email, verificationToken.token);
       return { error: "VERIFY_EMAIL", success: undefined };
@@ -36,6 +37,13 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
       password: hashedPassword,
       lastLoginIp : ip,
       lastLoginAt: new Date(),
+    },
+  });
+
+  await db.pendingVerification.create({
+    data: {
+      email: values.email,
+      ip: ip,
     },
   });
 
@@ -141,3 +149,24 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
   redirect('/user-info')
 };
 
+export const checkPendingVerification = async (ip: string) => {
+  const res =  await db.pendingVerification.findFirst({
+    where: {ip} ,
+    orderBy: {
+      createdAt: 'desc', 
+    },
+    select : {
+      email : true
+    }
+  });
+  console.log(res)
+  return res
+}
+
+export const deletePendingVerification = async (email: string) => {
+  const res =  await db.pendingVerification.delete({
+    where: {email} ,
+  });
+  console.log(res)
+  return res
+}

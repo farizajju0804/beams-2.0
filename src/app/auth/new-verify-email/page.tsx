@@ -8,7 +8,7 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import CardWrapper from "@/components/auth/card-wrapper";
 import { useSearchParams } from "next/navigation";
-import { resendVerificationCode } from "@/actions/auth/register";
+import { deletePendingVerification, resendVerificationCode } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -51,8 +51,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       const result = await verifyCode(code);
       if (result?.success) {
         console.log("Email verified successfully!");
-        localStorage.removeItem("pendingVerificationEmail");
-        localStorage.removeItem("pendingVerificationIp");
+        await deletePendingVerification(email)
         router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`);
       } else {
         setError(result?.error || "Verification failed.");

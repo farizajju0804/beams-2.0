@@ -118,6 +118,14 @@ model TwoFactorConfirmation {
   @@unique([userId])
 }
 
+model PendingVerification {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
+  ip        String
+  createdAt DateTime @default(now())
+}
+
+
 //// Beams Today
 model BeamsToday {
   id                    String                     @id @default(auto()) @map("_id") @db.ObjectId

@@ -9,30 +9,30 @@ interface RegisterFormProps {
 }
 const RegisterPage: React.FC<RegisterFormProps> = ({ip}) => {
 
-  const [currentStep, setCurrentStep] = useState(() => {
-    if (typeof window !== "undefined") {
-      return parseInt(localStorage.getItem("currentStep") || "1", 10);
-    }
-    return 1;
-  });
+  // const [currentStep, setCurrentStep] = useState(() => {
+  //   if (typeof window !== "undefined") {
+  //     return parseInt(localStorage.getItem("currentStep") || "1", 10);
+  //   }
+  //   return 1;
+  // });
 
   // Update local storage whenever the step changes
-  const handleNext = () => {
-    setCurrentStep((prevStep) => {
-      const nextStep = prevStep + 1;
-      if (nextStep > TOTAL_STEPS) {
-        localStorage.removeItem("currentStep");
+  // const handleNext = () => {
+  //   setCurrentStep((prevStep) => {
+  //     const nextStep = prevStep + 1;
+  //     if (nextStep > TOTAL_STEPS) {
+  //       localStorage.removeItem("currentStep");
        
-      } else {
-        localStorage.setItem("currentStep", nextStep.toString());
-      }
-      return nextStep;
-    });
-  };
+  //     } else {
+  //       localStorage.setItem("currentStep", nextStep.toString());
+  //     }
+  //     return nextStep;
+  //   });
+  // };
 
   return (
     <div className="w-full flex items-center justify-center">
-       <Step1Form ip={ip}  />
+       {/* <Step1Form ip={ip}  /> */}
     </div>
   );
 };
