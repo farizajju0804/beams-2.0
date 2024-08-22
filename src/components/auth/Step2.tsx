@@ -47,7 +47,7 @@ const Step2Form: React.FC<{ onNext: () => void }> = ({ onNext }) => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const result = await verifyCode(code);
+      const result = await verifyCode(code,email);
       if (result?.success) {
         console.log("Email verified successfully!");
         onNext();
