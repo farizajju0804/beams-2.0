@@ -48,7 +48,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setSuccess("");
     setIsLoading(true);
     try {
-      const result = await verifyCode(code);
+      const result = await verifyCode(code,email);
       if (result?.success) {
         console.log("Email verified successfully!");
         await deletePendingVerification(email)
@@ -79,7 +79,10 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       setError("An unexpected error occurred.");
     }
   };
-
+  const handleRedirect = async () => {
+    await deletePendingVerification(email)
+    router.push(`/auth/register`);
+  };
   return (
     <CardWrapper headerLabel="Verify Your Email">
       <div className="flex justify-center mb-4">
@@ -121,7 +124,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
         {error && <FormError message={error} />}
         {success && <FormSuccess message={success} />}
       </form>
-      <div className="mt-4 text-center">
+      <div className="my-4 text-center">
         <p className="text-sm text-grey-2">
           Did not receive the code? <br />Check your spam folder or{" "}
           <button
@@ -130,6 +133,18 @@ const VerifyEmail: React.FC<{}> = ({}) => {
             onClick={handleResendCode}
           >
             Resend
+          </button>
+        </p>
+      </div>
+      <div className="my-4 text-center">
+        <p className="text-sm text-grey-2">
+          Not You? or Do you want to change your email{" "}
+          <button
+            type="button"
+            className="text-primary hover:underline focus:outline-none"
+            onClick={handleRedirect}
+          >
+            Click Here
           </button>
         </p>
       </div>

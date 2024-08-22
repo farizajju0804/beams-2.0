@@ -7,7 +7,15 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 
-export const verifyCode = async (code: string) => {
+export const verifyCode = async (code: string,email:string) => {
+  
+  const existingUser = await getUserByEmail(email);
+  if (!existingUser) {
+    return { error: "User not found." };
+  }
+  if(existingUser?.emailVerified){
+    return { success: "Email Already verified. try Logging in with your credentials" };
+  }
   const existingToken = await getVerificationTokenByToken(code);
 
   if (!existingToken) {
@@ -19,10 +27,8 @@ export const verifyCode = async (code: string) => {
     return { error: "Code has expired." };
   }
 
-  const existingUser = await getUserByEmail(existingToken.email);
-  if (!existingUser) {
-    return { error: "User not found." };
-  }
+  // const existingUser = await getUserByEmail(existingToken.email);
+ 
 
   await db.user.update({
     where: { email: existingToken.email },

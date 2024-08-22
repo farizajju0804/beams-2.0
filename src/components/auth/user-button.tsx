@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
@@ -52,7 +52,7 @@ export default function UserButton() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return null; 
   }
 
   const user = storeUser;
