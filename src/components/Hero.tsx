@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@nextui-org/react';
+import Link from 'next/link';
 
 const HeroSection: React.FC = () => {
   return (
@@ -51,9 +52,11 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mt-8 mb-4"
       >
+        <Link href="/auth/register">
         <Button className="bg-brand text-white text-lg md:text-xl py-6 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
           Discover the Future Now
         </Button>
+        </Link>
       </motion.div>
     </section>
   );
