@@ -45,7 +45,7 @@ const PublicFooter: React.FC = () => {
             <div className="flex space-x-4">
               <Button
                 color="primary"
-                className="font-medium text-lg w-28"
+                className="font-medium text-base md:text-lg w-28"
                 onClick={() => router.push('/auth/register')} 
               >
                 Sign Up
@@ -53,7 +53,7 @@ const PublicFooter: React.FC = () => {
               <Button
                 color="primary"
                 variant="bordered"
-                className="font-medium text-lg w-28"
+                className="font-medium text-base md:text-lg w-28"
                 onClick={() => router.push('/auth/login')}
               >
                 Login

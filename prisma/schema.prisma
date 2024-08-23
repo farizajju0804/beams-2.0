@@ -125,7 +125,14 @@ model PendingVerification {
   createdAt DateTime @default(now())
 }
 
-
+model FAQ {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  answer    String
+  category  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 //// Beams Today
 model BeamsToday {
   id                    String                     @id @default(auto()) @map("_id") @db.ObjectId

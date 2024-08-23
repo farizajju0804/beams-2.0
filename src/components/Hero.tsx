@@ -13,10 +13,10 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-3xl"
       >
-        <p className="text-gray-800 font-poppins text-lg sm:text-xl md:text-3xl">
+        <p className="text-gray-800 font-poppins text-lg mb-4 sm:text-xl md:text-2xl">
           Walk through the world with
         </p>
-        <h1 className="text-purple font-poppins text-3xl sm:text-5xl underline mb-4 underline-offset-[10px] md:text-5xl font-bold mt-2">
+        <h1 className="text-purple font-poppins text-3xl mb-4  md:text-4xl font-bold mt-2">
           Beams
         </h1>
         <p className="text-gray-700 text-sm sm:text-base md:text-lg mt-2">
@@ -41,7 +41,7 @@ const HeroSection: React.FC = () => {
             ease: "easeInOut", // Smooth easing
           }}
         >
-          <Image src="/images/hero.png" alt="Beams Hero Image" width={300} height={300} />
+          <Image src="/images/hero.png" alt="Beams Hero Image" width={260} height={260} />
         </motion.div>
       </motion.div>
       
@@ -49,9 +49,9 @@ const HeroSection: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="mt-8"
+        className="mt-8 mb-4"
       >
-        <Button className="bg-brand text-white text-lg md:text-xl py-3 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
+        <Button className="bg-brand text-white text-lg md:text-xl py-6 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
           Discover the Future Now
         </Button>
       </motion.div>
