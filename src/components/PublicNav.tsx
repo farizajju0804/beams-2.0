@@ -22,10 +22,10 @@ const PublicNav: React.FC = () => {
   const isActive = (path: string) => currentPage === path;
 
   return (
-    <nav className="w-full max-w-6xl mx-auto flex items-center justify-between p-4 bg-white">
+    <nav className="w-full max-w-6xl mx-auto flex items-center justify-between px-6 p-4 bg-white">
       <div className="flex items-center">
       <Link href="/">
-        <Image src="/images/logo.png" alt="Beams Logo" width={100} height={40} />
+        <Image src="/images/logo.png" alt="Beams Logo" width={85} height={30} />
         </Link>
       </div>
       
@@ -84,7 +84,7 @@ const PublicNav: React.FC = () => {
             <Link 
               key={item.href}
               href={item.href} 
-              className={`text-xl text-black ${isActive(item.href) ? 'font-bold border-b-2 border-brand' : ''}`}
+              className={`text-xl text-black ${isActive(item.href) ? ' border-b-2 border-brand' : ''}`}
               onClick={() => setIsOpen(false)}
             >
               {item.label}

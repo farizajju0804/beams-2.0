@@ -50,8 +50,8 @@ const PublicFooter: React.FC = () => {
                 <Image
                   src="/images/logo.png"
                   alt="Beams Logo"
-                  width={100}
-                  height={40}
+                  width={85}
+                  height={30}
                 />
                 </Link>
               </div>
