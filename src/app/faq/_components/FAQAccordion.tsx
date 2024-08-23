@@ -12,8 +12,8 @@ const FAQAccordion: React.FC<FAQAccordionProps> = ({ data }) => {
   const toggleExpandAll = () => setExpandAll(!expandAll);
 
   return (
-    <div className="mt-4">
-      <div className="flex justify-end mb-2">
+    <div className="">
+      <div className="flex justify-end p-3">
         <button
           onClick={toggleExpandAll}
           className="text-purple underline hover:text-purple-700 focus:outline-none"

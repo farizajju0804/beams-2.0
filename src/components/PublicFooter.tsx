@@ -46,12 +46,14 @@ const PublicFooter: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 fade-in">
             <div className="flex flex-col space-y-4">
               <div>
+              <Link href="/">
                 <Image
                   src="/images/logo.png"
                   alt="Beams Logo"
                   width={100}
                   height={40}
                 />
+                </Link>
               </div>
               <p className="text-gray-600">Email: info@beams.world</p>
             </div>

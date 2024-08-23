@@ -7,7 +7,7 @@ interface FAQContainerProps {
 
 const FAQContainer: React.FC<FAQContainerProps> = ({ faqData }) => {
   return (
-    <div className="md:mt-4 mb-4 px-6 max-w-3xl mx-auto">
+    <div className="mb-4 px-6 bg-white max-w-3xl md:rounded-b-3xl md:shadow-lg mx-auto">
       <FAQAccordion data={faqData} />
     </div>
   );

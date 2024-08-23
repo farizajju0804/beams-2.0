@@ -22,7 +22,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
   };
 
   return (
-    <div className="md:bg-gray-100 max-w-3xl mx-auto md:p-4 md:px-6 z-[20] rounded-xl">
+    <div className="md:bg-gray-100 max-w-3xl mx-auto md:p-4 md:px-6 z-[20] rounded-t-3xl">
       {/* Dropdown for mobile view */}
       <div className="relative block lg:hidden">
         <button
@@ -43,7 +43,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute w-full mt-2 text-left bg-white border border-gray-300 rounded-xl shadow-lg z-10"
+              className="w-5/6 mx-auto mt-6 text-left bg-white border border-gray-300 rounded-xl shadow-lg z-10"
             >
               {categories.map(tab => (
                 <li key={tab}>
@@ -51,8 +51,8 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
                     onClick={() => handleSelect(tab)}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className={`w-full text-left p-2 px-4 text-black hover:bg-gray-100 ${
-                      selectedTab === tab ? 'bg-gray-200' : ''
+                    className={`w-full text-left p-2 px-4 text-black ${
+                      selectedTab === tab ? 'bg-gray-100' : ''
                     }`}
                   >
                     {tab}
