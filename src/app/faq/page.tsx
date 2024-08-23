@@ -4,6 +4,7 @@ import StickyHeader from './_components/StickyHeader';
 import FAQContainer from './_components/FAQContainer';
 import FAQFooter from './_components/FAQFooter';
 import { getAllFAQs } from '@/actions/others/faq';
+import GoToTopButton from '@/components/GoToTopButton';
 
 
 
@@ -14,8 +15,9 @@ const FAQ = async() => {
     <>
       <FAQHeader />
       <StickyHeader categories={categories} faqData={faqData} />
-      <FAQContainer faqData={faqData} />
+      {/* <FAQContainer faqData={faqData} /> */}
       <FAQFooter />
+      <GoToTopButton />
     </>
   );
 };

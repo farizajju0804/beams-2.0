@@ -15,7 +15,7 @@ const PublicNav: React.FC = () => {
 
   const navItems = [
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/contact-us', label: 'Contact' },
     { href: '/faq', label: 'FAQ' },
   ];
 
@@ -48,7 +48,7 @@ const PublicNav: React.FC = () => {
         </Button>
         <Button 
           color='primary' 
-          className='font-medium text-lg w-32'
+          className='font-medium text-lg text-white w-32'
           onClick={() => router.push('/auth/register')}
         >
           Sign Up
