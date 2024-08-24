@@ -14,13 +14,13 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-3xl"
       >
-        <p className="text-gray-800 font-poppins text-lg mb-4 sm:text-xl md:text-2xl">
+        <p className="text-gray-800 font-semibold text-2xl mb-4 md:text-3xl">
           Walk through the world with
         </p>
-        <h1 className="text-purple font-poppins text-3xl mb-4  md:text-4xl font-bold mt-2">
+        <h1 className="text-brand font-poppins text-2xl mb-4  md:text-3xl font-bold mt-2">
           Beams
         </h1>
-        <p className="text-gray-700 text-sm sm:text-base md:text-lg mt-2">
+        <p className="text-black font-medium text-sm sm:text-base md:text-lg">
           Bringing the Future to Your Fingertips
         </p>
       </motion.div>
@@ -28,7 +28,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        transition={{ duration: 0.5, delay: 1.5 }}
         whileHover={{ scale: 1.05 }}
         className="mt-6"
       >
@@ -37,7 +37,7 @@ const HeroSection: React.FC = () => {
             y: [0, -10, 0], // Float effect: Move up and down
           }}
           transition={{
-            duration: 4, // Duration of one full float cycle
+            duration: 8, // Duration of one full float cycle
             repeat: Infinity, // Repeat the float animation infinitely
             ease: "easeInOut", // Smooth easing
           }}

@@ -14,7 +14,7 @@ const PublicNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { href: '/about', label: 'About' },
+    // { href: '/about', label: 'About' },
     { href: '/contact-us', label: 'Contact' },
     { href: '/faq', label: 'FAQ' },
   ];
@@ -22,7 +22,7 @@ const PublicNav: React.FC = () => {
   const isActive = (path: string) => currentPage === path;
 
   return (
-    <nav className="w-full max-w-6xl mx-auto flex items-center justify-between px-6 p-4 bg-white">
+    <nav className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 p-4 bg-white">
       <div className="flex items-center">
       <Link href="/">
         <Image src="/images/logo.png" alt="Beams Logo" width={85} height={30} />
@@ -43,7 +43,7 @@ const PublicNav: React.FC = () => {
         <Button 
           color="primary" 
           variant="bordered" 
-          className='w-32 font-medium text-lg'
+          className='w-32 font-medium text-black text-lg'
           onClick={() => router.push('/auth/login')}
         >
           Login
@@ -93,7 +93,7 @@ const PublicNav: React.FC = () => {
           <Button 
             color="primary" 
             variant="bordered" 
-            className='w-full font-medium text-lg'
+            className='w-full font-medium text-black text-lg'
             onClick={() => {
               setIsOpen(false);
               router.push('/auth/login');
@@ -103,7 +103,7 @@ const PublicNav: React.FC = () => {
           </Button>
           <Button 
             color='primary' 
-            className='font-medium text-lg w-full'
+            className='font-medium text-lg text-white w-full'
             onClick={() => {
               setIsOpen(false);
               router.push('/auth/register');

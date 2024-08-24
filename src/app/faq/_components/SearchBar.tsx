@@ -5,7 +5,7 @@ import { IoSearch } from 'react-icons/io5';
 
 const SearchBar: React.FC = () => {
   return (
-    <div className=" w-full mx-auto max-w-md z-20 px-6 mb-6 py-2">
+    <div className=" w-full mx-auto max-w-md z-20 px-6 mb-4 py-2">
       <div className="relative flex items-center">
         <span className="absolute left-4 text-gray-500">
           <IoSearch size={20} />

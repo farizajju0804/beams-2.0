@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown2 } from 'iconsax-react';
+import { motion } from 'framer-motion';
 
 interface FAQTabsProps {
   categories: string[];
@@ -10,63 +9,38 @@ interface FAQTabsProps {
 }
 
 const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedTab }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
   const handleSelect = (tab: string) => {
     setSelectedTab(tab);
-    setIsOpen(false);
   };
 
   return (
-    <div className="md:bg-gray-100 max-w-3xl mx-auto md:p-4 md:px-6 z-[20] rounded-t-3xl">
-      {/* Dropdown for mobile view */}
-      <div className="relative block lg:hidden">
-        <button
-          onClick={toggleDropdown}
-          className="w-5/6 mx-auto p-2 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand text-left text-black flex justify-between items-center"
+    <div className="md:bg-gray-100 max-w-3xl mx-auto md:p-4 px-4 md:px-6 z-[20] rounded-t-3xl">
+      {/* Horizontal scrolling for mobile view */}
+      <div className="block lg:hidden">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex flex-wrap gap-y-4 justify-center space-x-4 p-4 "
         >
-          <span>{selectedTab}</span>
-          <span
-            className={`transform transition-transform ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-          >
-            <ArrowDown2 size="20" color="currentColor" />
-          </span>
-        </button>
-
-        <AnimatePresence>
-          {isOpen && (
-            <motion.ul
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="w-5/6 mx-auto mt-6 text-left bg-white border border-gray-300 rounded-xl shadow-lg z-10"
+          {categories.map((tab) => (
+            <motion.button
+              key={tab}
+              onClick={() => handleSelect(tab)}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className={`flex-shrink-0 py-2 px-4 rounded-xl text-sm md:text-base text-center whitespace-nowrap ${
+                selectedTab === tab ? 'bg-gray-800 text-white' : 'bg-gray-100 md:bg-white text-gray-700'
+              }`}
             >
-              {categories.map(tab => (
-                <li key={tab}>
-                  <motion.button
-                    onClick={() => handleSelect(tab)}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`w-full text-left p-2 px-4 text-black ${
-                      selectedTab === tab ? 'bg-gray-100' : ''
-                    }`}
-                  >
-                    {tab}
-                  </motion.button>
-                </li>
-              ))}
-            </motion.ul>
-          )}
-        </AnimatePresence>
+              {tab}
+            </motion.button>
+          ))}
+        </motion.div>
       </div>
 
       {/* Buttons for larger screens */}
       <div className="hidden lg:flex justify-center gap-6 flex-wrap">
-        {categories.map(tab => (
+        {categories.map((tab) => (
           <motion.button
             key={tab}
             onClick={() => setSelectedTab(tab)}

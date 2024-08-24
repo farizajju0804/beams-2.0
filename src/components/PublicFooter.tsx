@@ -40,11 +40,11 @@ const PublicFooter: React.FC = () => {
     <>
       <footer
         ref={footerRef}
-        className="w-full max-w-6xl mx-auto bg-white border-t border-gray-200"
+        className="w-full max-w-7xl mx-auto bg-white border-gray-200"
       >
-        <div className="w-full max-w-6xl mx-auto py-8 px-8 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto pb-4 px-8 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 fade-in">
-            <div className="flex flex-col space-y-4">
+            {/* <div className="flex flex-col space-y-4">
               <div>
               <Link href="/">
                 <Image
@@ -56,9 +56,9 @@ const PublicFooter: React.FC = () => {
                 </Link>
               </div>
               <p className="text-gray-600">Email: info@beams.world</p>
-            </div>
+            </div> */}
 
-            <div className="flex flex-col items-start md:items-end space-y-4 fade-in">
+            {/* <div className="flex flex-col items-start md:items-end space-y-4 fade-in">
               <p className="text-gray-800 font-medium">
                 Get started with <span className="text-brand">Beams</span> now
               </p>
@@ -79,10 +79,20 @@ const PublicFooter: React.FC = () => {
                   Login
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col-reverse md:flex-row justify-between items-center fade-in">
+          <div className="pt-4 border-t border-gray-200 flex flex-col-reverse md:flex-row justify-between items-center fade-in">
+          <div className='my-4 md:my-0'>
+              <Link href="/">
+                <Image
+                  src="/images/logo.png"
+                  alt="Beams Logo"
+                  width={85}
+                  height={30}
+                />
+                </Link>
+              </div>
             <p className="text-gray-500 text-sm mt-4 md:mt-0">
               © 2024 Beams Inc. All rights reserved.
             </p>
@@ -103,7 +113,7 @@ const PublicFooter: React.FC = () => {
           </div>
         </div>
       </footer>
-      <div className="w-full h-1 bg-brand"></div>
+      {/* <div className="w-full h-1 bg-brand"></div> */}
     </>
   );
 };

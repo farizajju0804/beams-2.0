@@ -32,7 +32,7 @@ const FAQAccordionItem: React.FC<FAQAccordionItemProps> = ({ question, answer, e
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: isOpen ? 'auto' : 0 }}
-        transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }} // Bouncy animation
+        transition={{ duration: 0.5, ease: "anticipate"} }// Bouncy animation
         className="overflow-hidden mt-2 text-gray-700"
       >
         <div className="p-2"> <p dangerouslySetInnerHTML={{ __html: answer }}></p></div>
