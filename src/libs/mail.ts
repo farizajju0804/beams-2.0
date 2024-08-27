@@ -180,6 +180,27 @@ export const sendPasswordResetReminderEmail = async (email: string) => {
   return sendEmailBrevo(payload);
 };
 
+export const sendContactResponseEmail = async (email: string) => {
+
+
+  const payload = {
+    sender: {
+      email: "innbrieff@gmail.com",
+      name: "Beams",
+    },
+    to: [
+      {
+        email: email,
+      },
+    ],
+    subject: "Thank You for Reaching Out to Us!",
+    templateId: 16,
+    params: {
+      
+    },
+  };
+  return sendEmailBrevo(payload);
+};
 
 
 // import { sendEmailBrevo } from "@/libs/brewo";

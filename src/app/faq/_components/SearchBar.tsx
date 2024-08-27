@@ -81,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ faqData }) => {
             <ul className="space-y-4">
               {results.map(({ item, matches }, index) => (
                 <li key={index} className="bg-white p-4 rounded-xl shadow-md">
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold text-lg text-black">
                     {highlightMatches(item.question, query)}
                   </h3>
                   <p className="text-gray-600 mt-2">
