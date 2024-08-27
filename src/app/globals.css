@@ -73,6 +73,9 @@
 .black-text{
   color : rgba(var(--color-text)) !important;
 }
+.black-text-1{
+  color : #181818 !important;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 

@@ -12,34 +12,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PublicFooter: React.FC = () => {
   const router = useRouter();
-  const footerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const footerElement = footerRef.current;
-
-    if (footerElement) {
-      gsap.fromTo(
-        footerElement.querySelectorAll('.fade-in'),
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: footerElement,
-            start: 'top bottom', // when the top of the footer hits the bottom of the viewport
-            toggleActions: 'play none none none', // Play animation when it enters, no reverse
-          },
-        }
-      );
-    }
-  }, []);
+ 
 
   return (
     <>
       <footer
-        ref={footerRef}
+       
         className="w-full max-w-7xl mx-auto bg-white border-gray-200"
       >
         <div className="w-full max-w-7xl mx-auto pb-4 px-8 lg:px-8">

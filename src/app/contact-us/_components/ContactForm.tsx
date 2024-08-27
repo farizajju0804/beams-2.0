@@ -57,7 +57,7 @@ const ContactForm: React.FC = () => {
       <Toaster position="top-center" />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='flex-1 bg-white p-8 lg:px-12 lg:py-8 rounded-lg md:shadow-lg'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='flex-1 bg-background p-8 lg:px-12 lg:py-8 md:rounded-lg text-black md:shadow-lg'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mb-6'>
             <FormField
               control={control}
@@ -177,7 +177,7 @@ const ContactForm: React.FC = () => {
                       
                       selectedKeys={field.value ? [field.value] : []}
                       onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}
-                      className="w-full space-y-0"
+                      className="w-full space-y-0 text-text"
                     >
                       {subjectOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>

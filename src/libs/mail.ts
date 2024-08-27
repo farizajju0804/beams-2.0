@@ -159,7 +159,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetReminderEmail = async (email: string) => {
-
+  const link = `${process.env.URL}/auth/login}`;
 
   const payload = {
     sender: {
@@ -174,7 +174,7 @@ export const sendPasswordResetReminderEmail = async (email: string) => {
     subject: "Your Password has been changed",
     templateId: 12,
     params: {
-      email : email
+      link : link
     },
   };
   return sendEmailBrevo(payload);
