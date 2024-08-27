@@ -195,9 +195,7 @@ export const sendContactResponseEmail = async (email: string) => {
     ],
     subject: "Thank You for Reaching Out to Us!",
     templateId: 16,
-    params: {
-      
-    },
+   
   };
   return sendEmailBrevo(payload);
 };

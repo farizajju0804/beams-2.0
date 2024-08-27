@@ -16,7 +16,7 @@ interface SendEmailPayload {
   }[];
   subject: string;
   templateId: number;
-  params: Record<string, any>;
+  params?: Record<string, any>;
 }
 
 export const sendEmailBrevo = async (payload: SendEmailPayload) => {
