@@ -23,8 +23,8 @@ const StickyHeader: React.FC<StickyHeaderProps> = ({ categories, faqData }) => {
 
   return (
     <div className="w-full bg-white z-20">
-      <div className="mx-auto pt-4">
-        <SearchBar />
+      <div className="mx-auto pt-2">
+        <SearchBar  faqData={faqData}/>
         <FAQTabs categories={categories} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       </div>
       <FAQContainer faqData={filteredData} />
