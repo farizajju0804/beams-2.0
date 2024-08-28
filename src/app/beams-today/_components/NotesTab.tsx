@@ -40,7 +40,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
     <>
       <Toaster position="top-center" />
 
-      <div className="mt-4">
+      <div className="mt-4 min-h-[50vh]">
         {notes.length === 0 ? (
           <p>No notes found.</p>
         ) : (

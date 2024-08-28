@@ -78,7 +78,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   }
 
   return (
-    <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 md:px-0">
+    <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 lg:px-0">
       <div className="flex justify-between items-center">
         <div className="w-full flex flex-col items-start lg:items-center">
           <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Now Trending</h1>

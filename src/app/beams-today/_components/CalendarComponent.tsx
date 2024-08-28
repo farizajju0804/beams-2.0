@@ -24,40 +24,50 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
       close: () => setIsOpen(false),
     }));
 
-    const handleDateChange = useCallback((date: DateValue | null) => {
+    const handleDateChange = (date: DateValue | null) => {
       onDateChange(date);
       setIsOpen(false);
-    }, [onDateChange]);
+    };
 
-    const handleOpenChange = useCallback((open: boolean) => {
+    const handleOpenChange = (open: boolean) => {
       setIsOpen(open);
-    }, []);
+    };
 
-    const handleCalendarClick = useCallback((e: React.MouseEvent) => {
+    const handleCalendarClick = (e: React.MouseEvent) => {
       e.stopPropagation();
-    }, []);
+    };
 
     return (
       <Popover
-        placement="top"
+        placement="bottom-end"
+        shouldFlip={false}
+        shouldUpdatePosition={false}
+        
         isOpen={isOpen}
         onOpenChange={handleOpenChange}
       >
-        <PopoverTrigger>
+        <PopoverTrigger >
           <Button className="bg-grey-1" isIconOnly>
             <CalendarIcon size="24" className="text-grey-2" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0 m-0">
-          <div onClick={handleCalendarClick}>
+        <PopoverContent className="p-0 m-0 min-w-[256px] flex">
+          {/* <div > */}
             <Calendar
               value={selectedDate}
               onChange={handleDateChange}
+              
               minValue={minValue}
               maxValue={maxValue}
-              className="border-none m-0"
+              onClick={handleCalendarClick}
+              calendarWidth={256}
+              classNames={{
+                gridWrapper:"w-full",
+                content: 'w-[256px]'
+              }}
+              className="border-none m-0 min-w-full"
             />
-          </div>
+          {/* </div> */}
         </PopoverContent>
       </Popover>
     );

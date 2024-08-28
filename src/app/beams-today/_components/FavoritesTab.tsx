@@ -34,7 +34,7 @@ const FavoritesTab: React.FC<FavoritesTabProps> = ({ favorites }) => {
   return (
     <>
       <Toaster position="top-center" />
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4 min-h-[50vh] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {favorites.length === 0 ? (
           <p className="col-span-full">No favorites found.</p>
         ) : (
@@ -45,7 +45,7 @@ const FavoritesTab: React.FC<FavoritesTabProps> = ({ favorites }) => {
                   <p className="text-lg font-bold">{favorite.beamsToday.title}</p>
                 </CardHeader>
                 <CardBody>
-                  <Image width={200} height={150} src={favorite.beamsToday.thumbnailUrl} alt={favorite.beamsToday.title} className="w-full object-cover aspect-video rounded-md" />
+                  <Image priority width={200} height={150} src={favorite.beamsToday.thumbnailUrl} alt={favorite.beamsToday.title} className="w-full object-cover aspect-video rounded-md" />
                 </CardBody>
                 <CardFooter>
                   <Button

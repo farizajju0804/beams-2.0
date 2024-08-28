@@ -70,7 +70,7 @@ const PublicFooter: React.FC = () => {
                 </Link>
               </div>
             
-            <div className="flex space-x-6">
+            <div className="flex items-center justify-center lg:ml-40 gap-6">
               <Link
                 href="/terms"
                 className="text-gray-400 text-sm"
