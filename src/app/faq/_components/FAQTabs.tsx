@@ -29,7 +29,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className={`flex-shrink-0 py-2 px-4 rounded-xl text-sm md:text-base text-center whitespace-nowrap ${
-                selectedTab === tab ? 'bg-gray-800 text-white' : 'bg-gray-100 md:bg-white text-gray-700'
+                selectedTab === tab ? 'bg-gray-800 text-white' : 'bg-gray-100 border-gray-800 border-1 md:bg-white text-gray-800'
               }`}
             >
               {tab}
@@ -48,7 +48,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
             whileTap={{ scale: 0.97 }}
             animate={{ opacity: selectedTab === tab ? 1 : 0.8 }}
             className={`py-2 px-4 rounded-xl text-sm font-medium focus:outline-none flex items-center justify-center h-10 min-w-[110px] ${
-              selectedTab === tab ? 'bg-gray-800 text-white' : 'bg-white text-gray-700'
+              selectedTab === tab ? 'bg-gray-800 text-white' : 'border-gray-800 border-1 bg-white text-gray-700'
             }`}
           >
             {tab}

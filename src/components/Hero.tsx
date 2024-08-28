@@ -15,7 +15,7 @@ const HeroSection: React.FC = () => {
         className="max-w-3xl"
       >
         <p className="text-gray-800 font-semibold text-2xl mb-4 md:text-3xl">
-          Walk through the world with
+          Power through the world with
         </p>
         <h1 className="text-brand font-poppins text-2xl mb-4  md:text-3xl font-bold mt-2">
           Beams

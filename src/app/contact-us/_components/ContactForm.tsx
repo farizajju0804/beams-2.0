@@ -17,12 +17,14 @@ const formSchema = z.object({
   subject: z.enum(['General Inquiry', 'Technical Support', 'Account', 'Feedback and Suggestions']),
   message: z.string().min(1, 'Message is required').max(500, 'Message cannot exceed 500 characters'),
 });
+
 const subjectOptions = [
-    { value: 'General Inquiry', label: 'General Inquiry' },
-    { value: 'Technical Support', label: 'Technical Support' },
-    { value: 'Account', label: 'Account' },
-    { value: 'Feedback and Suggestions', label: 'Feedback and Suggestions' },
-  ];
+  { value: 'General Inquiry', label: 'General Inquiry' },
+  { value: 'Technical Support', label: 'Technical Support' },
+  { value: 'Account', label: 'Account' },
+  { value: 'Feedback and Suggestions', label: 'Feedback and Suggestions' },
+];
+
 type FormData = z.infer<typeof formSchema>;
 
 const ContactForm: React.FC = () => {
@@ -41,8 +43,7 @@ const ContactForm: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const savedResponse = await saveContactFormResponse(data);
-      console.log('Form Submitted:', savedResponse);
+      await saveContactFormResponse(data);
       toast.success('Message sent successfully!');
     } catch (error) {
       toast.error('Failed to send message. Please try again later.');
@@ -50,7 +51,7 @@ const ContactForm: React.FC = () => {
   };
 
   const inputClasses = "border-gray-200 focus:border-purple shadow-none";
-  const labelClasses = "text-sm black-text font-medium";
+  const labelClasses = "text-sm text-gray-400 group-data-[has-value=true]:text-gray-400 font-medium";
 
   return (
     <>
@@ -58,7 +59,7 @@ const ContactForm: React.FC = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='flex-1 bg-background p-8 lg:px-12 lg:py-8 md:rounded-lg text-black md:shadow-lg'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mb-6'>
+          <div className='mb-6'>
             <FormField
               control={control}
               name="firstName"
@@ -68,33 +69,13 @@ const ContactForm: React.FC = () => {
                     <Input
                       {...field}
                       label="First Name"
+                      isRequired
                       classNames={{
                         inputWrapper: inputClasses,
-                        label: labelClasses
+                        label: labelClasses,
+                        input : "text-black font-medium"
                       }}
                       variant="underlined"
-                      className="border-gray-200 focus:border-purple shadow-none"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      key={field.value}
-                      label="Last Name"
-                      variant="underlined"
-                      classNames={{
-                        inputWrapper: inputClasses,
-                        label: labelClasses
-                      }}
                       className="border-gray-200 focus:border-purple shadow-none"
                     />
                   </FormControl>
@@ -104,32 +85,58 @@ const ContactForm: React.FC = () => {
             />
           </div>
           <div className='mb-6'>
-  <FormField
-    control={control}
-    name="email"
-    render={({ field }) => (
-      <FormItem>
-        <FormControl>
-          <Input
-            {...field}
-            classNames={{
-              inputWrapper: inputClasses,
-              label: labelClasses
-            }}
-            type="text"
-            label="Email"
-            variant="underlined"
-            
-            className="border-gray-200 focus:border-purple shadow-none"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-</div>
-          <div className='mb-6 hidden '>
-            <p className="mb-2 black-text font-medium text-xs">Select Subject</p>
+            <FormField
+              control={control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      label="Last Name"
+                      isRequired
+                      classNames={{
+                        inputWrapper: inputClasses,
+                        label: labelClasses,
+                        input : "text-black font-medium"
+                      }}
+                      variant="underlined"
+                      className="border-gray-200 focus:border-purple shadow-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='mb-6'>
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      classNames={{
+                        inputWrapper: inputClasses,
+                        label: labelClasses,
+                        input : "text-black font-medium"
+                      }}
+                      type="text"
+                      isRequired
+                      label="Email"
+                      variant="underlined"
+                      className="border-gray-200 focus:border-purple shadow-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* <div className='mb-6 hidden'>
+            <p className="mb-2 text-gray-400 font-medium text-xs">Select Subject</p>
             <FormField
               control={control}
               name="subject"
@@ -148,17 +155,16 @@ const ContactForm: React.FC = () => {
                         tabContent: "group-data-[selected=true]:text-black"
                       }}
                     >
-                      <Tab key="General Inquiry" title="General Inquiry" />
-                      <Tab key="Technical Support" title="Technical Support" />
-                      <Tab key="Account" title="Account" />
-                      <Tab key="Feedback and Suggestions" title="Feedback and Suggestions" />
+                      {subjectOptions.map((option) => (
+                        <Tab key={option.value} title={option.label} />
+                      ))}
                     </Tabs>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
+          </div> */}
           <div className='mb-6'>
             <FormField
               control={control}
@@ -168,13 +174,14 @@ const ContactForm: React.FC = () => {
                   <FormControl>
                     <Select
                       label="Select Subject"
+                      isRequired
                       labelPlacement='outside'
                       variant='underlined'
                       classNames={{
                         trigger:"mt-8",
-                        label: labelClasses
+                        label: "group-data-[filled=true]:text-gray-400 text-xs",
+                        value : "text-black font-medium"
                       }}
-                      
                       selectedKeys={field.value ? [field.value] : []}
                       onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}
                       className="w-full space-y-0 text-text"
@@ -191,7 +198,6 @@ const ContactForm: React.FC = () => {
               )}
             />
           </div>
-
           <div className='mb-6'>
             <FormField
               control={control}
@@ -202,11 +208,12 @@ const ContactForm: React.FC = () => {
                     <Textarea
                       {...field}
                       label="Message"
+                      isRequired
                       variant="underlined"
-                    //   placeholder="Write your message..."
                       classNames={{
                         inputWrapper: inputClasses,
-                        label: labelClasses
+                        label: labelClasses,
+                        input : "text-black font-medium"
                       }}
                       className="border-gray-200 focus:border-purple shadow-none"
                     />
@@ -222,7 +229,7 @@ const ContactForm: React.FC = () => {
             variant="solid"
             type="submit"
             startContent={<Send2 />}
-            className='w-full md:w-fit text-white font-medium mt-4 text-lg'
+            className='w-full md:w-fit text-white font-medium text-lg'
           >
             Send Message
           </Button>
