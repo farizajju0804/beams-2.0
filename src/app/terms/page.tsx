@@ -134,17 +134,17 @@ const TermsOfServicePage: React.FC = () => {
   const renderContent = (item: TermsSection) => {
     switch (item.type) {
       case 'header':
-        return <h1 className="text-3xl md:text-4xl font-poppins font-bold text-center text-gray-900 mb-6">{item.content}</h1>;
+        return <h1 className="text-3xl md:text-4xl font-poppins font-bold text-center text-text mb-6">{item.content}</h1>;
       case 'subheader':
-        return <h2 className="text-xl md:text-2xl font-poppins font-semibold text-gray-800 mt-8 mb-4">{item.content}</h2>;
+        return <h2 className="text-xl md:text-2xl font-poppins font-semibold text-text mt-8 mb-4">{item.content}</h2>;
       case 'paragraph':
         return (
-          <p className="text-gray-600 leading-relaxed mb-4">
+          <p className="text-grey-2 leading-relaxed mb-4">
             {item.content?.split(' ').map((word, index) => {
               if (word.startsWith('www.') || word.startsWith('http')) {
-                return <a key={index} href={word.startsWith('www.') ? `https://${word}` : word} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{word} </a>;
+                return <a key={index} href={word.startsWith('www.') ? `https://${word}` : word} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">{word} </a>;
               } else if (word.includes('@')) {
-                return <a key={index} href={`mailto:${word}`} className="text-blue-600 hover:underline">{word} </a>;
+                return <a key={index} href={`mailto:${word}`} className="text-brand hover:underline">{word} </a>;
               }
               return `${word} `;
             })}
@@ -166,7 +166,7 @@ const TermsOfServicePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {termsOfServiceData.map((item, index) => (
           <React.Fragment key={index}>

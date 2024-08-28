@@ -12,11 +12,10 @@ const PublicNav: React.FC = () => {
   const currentPage = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
   const navItems = [
     // { href: '/about', label: 'About' },
     { href: '/contact-us', label: 'Contact' },
-    { href: '/faq', label: 'FAQ' },
+    // { href: '/faq', label: 'FAQ' },
   ];
 
   const isActive = (path: string) => currentPage === path;
@@ -30,8 +29,8 @@ const PublicNav: React.FC = () => {
       </div>
       
       {/* Desktop Menu */}
-      <div className="hidden md:flex items-center space-x-6">
-        {navItems.map((item) => (
+      <div className="flex items-center space-x-6">
+        {/* {navItems.map((item) => (
           <Link 
             key={item.href}
             href={item.href} 
@@ -39,18 +38,20 @@ const PublicNav: React.FC = () => {
           >
             {item.label}
           </Link>
-        ))}
+        ))} */}
         <Button 
           color="primary" 
+          size='md'
           variant="bordered" 
-          className='w-32 font-medium text-black text-lg'
+          className=' font-medium md:text-lg text-black md:w-32 md:px-4 '
           onClick={() => router.push('/auth/login')}
         >
           Login
         </Button>
         <Button 
           color='primary' 
-          className='font-medium text-lg text-white w-32'
+          size='md'
+          className='font-medium md:text-lg md:w-32 text-white md:px-4 '
           onClick={() => router.push('/auth/register')}
         >
           Sign Up
@@ -58,7 +59,7 @@ const PublicNav: React.FC = () => {
       </div>
 
       {/* Mobile Menu Button */}
-      <div className="md:hidden z-[100]">
+      {/* <div className="hidden z-[100]">
         <motion.div
           initial={false}
           animate={isOpen ? "open" : "closed"}
@@ -70,10 +71,10 @@ const PublicNav: React.FC = () => {
             <HambergerMenu size="32" color="#000000"/>
           )}
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Mobile Menu */}
-      <motion.div
+      {/* <motion.div
         className="fixed top-0 left-0 w-full h-full bg-white z-50 md:hidden"
         initial={{ x: '-100%' }}
         animate={{ x: isOpen ? 0 : '-100%' }}
@@ -93,7 +94,7 @@ const PublicNav: React.FC = () => {
           <Button 
             color="primary" 
             variant="bordered" 
-            className='w-full font-medium text-black text-lg'
+            className='w-full font-medium text-black md:text-lg'
             onClick={() => {
               setIsOpen(false);
               router.push('/auth/login');
@@ -103,7 +104,7 @@ const PublicNav: React.FC = () => {
           </Button>
           <Button 
             color='primary' 
-            className='font-medium text-lg text-white w-full'
+            className='font-medium md:text-lg text-white w-full'
             onClick={() => {
               setIsOpen(false);
               router.push('/auth/register');
@@ -112,7 +113,7 @@ const PublicNav: React.FC = () => {
             Sign Up
           </Button>
         </div>
-      </motion.div>
+      </motion.div> */}
     </nav>
   );
 };

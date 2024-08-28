@@ -14,7 +14,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
   };
 
   return (
-    <div className="md:bg-gray-100 max-w-3xl mx-auto md:p-4 px-4 md:px-6 z-[20] rounded-t-3xl">
+    <div className="md:bg-grey-1 max-w-3xl mx-auto md:p-4 px-4 md:px-6 z-[20] rounded-t-3xl">
       {/* Horizontal scrolling for mobile view */}
       <div className="block lg:hidden">
         <motion.div
@@ -29,7 +29,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ categories, selectedTab, setSelectedT
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className={`flex-shrink-0 py-2 px-4 rounded-xl text-sm md:text-base text-center whitespace-nowrap ${
-                selectedTab === tab ? 'bg-gray-800 text-white' : 'bg-gray-100 border-gray-800 border-1 md:bg-white text-gray-800'
+                selectedTab === tab ? 'bg-text text-background' : 'bg-grey-1 border-grey-2 border-1 text-grey-2'
               }`}
             >
               {tab}

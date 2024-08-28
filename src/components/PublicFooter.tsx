@@ -4,21 +4,19 @@ import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@nextui-org/react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRouter } from 'next/navigation';
 
-gsap.registerPlugin(ScrollTrigger);
+import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
+
 
 const PublicFooter: React.FC = () => {
   const router = useRouter();
- 
 
   return (
     <>
       <footer
        
-        className="w-full max-w-7xl mx-auto bg-white border-gray-200"
+        className="w-full max-w-7xl mx-auto bg-background border-gray-200"
       >
         <div className="w-full max-w-7xl mx-auto pb-4 px-8 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 fade-in">
@@ -60,7 +58,7 @@ const PublicFooter: React.FC = () => {
             </div> */}
           </div>
 
-          <div className="pt-4 border-t border-gray-200 flex flex-col-reverse md:flex-row justify-between items-center fade-in">
+          <div className="pt-4 flex flex-col md:flex-row justify-between items-center fade-in">
           <div className='my-4 md:my-0'>
               <Link href="/">
                 <Image
@@ -71,23 +69,24 @@ const PublicFooter: React.FC = () => {
                 />
                 </Link>
               </div>
-            <p className="text-gray-500 text-sm mt-4 md:mt-0">
-              © 2024 Beams Inc. All rights reserved.
-            </p>
+            
             <div className="flex space-x-6">
               <Link
                 href="/terms"
-                className="text-gray-500 hover:text-gray-700 text-sm"
+                className="text-gray-400 text-sm"
               >
                 Terms of Service
               </Link>
               <Link
                 href="/privacy"
-                className="text-gray-500 hover:text-gray-700 text-sm"
+                className="text-gray-400 text-sm"
               >
                 Privacy Policy
               </Link>
             </div>
+            <p className="text-gray-400 text-sm mt-4 md:mt-0">
+              © 2024 Beams Inc. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>

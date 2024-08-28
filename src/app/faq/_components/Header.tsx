@@ -6,17 +6,17 @@ import SearchBar from './SearchBar';
 
 const FAQHeader: React.FC = () => {
   return (
-    <header className="relative w-full bg-white flex flex-col items-center justify-center text-center pt-6 pb-3 md:pt-12 md:pb-4 md:mb-4 px-6">
+    <header className="relative w-full bg-background flex flex-col items-center justify-center text-center pt-6 pb-3 md:pt-12 md:pb-4 md:mb-4 px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-3xl z-10"
       >
-        <h1 className="text-black font-poppins font-bold text-2xl md:text-3xl">
+        <h1 className="text-text font-poppins font-bold text-2xl md:text-3xl">
           Got Questions?
         </h1>
-        <h2 className="text-purple font-poppins font-bold text-2xl md:text-3xl mt-4">
+        <h2 className="text-secondary-2 font-poppins font-bold text-2xl md:text-3xl mt-4">
           We have got the Answers
         </h2>
       </motion.div>

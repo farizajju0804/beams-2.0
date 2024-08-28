@@ -3,6 +3,7 @@ import { Quicksand } from "next/font/google";
 import { SessionProviders } from "../SessionProviders";
 import PublicNav from "@/components/PublicNav";
 import PublicFooter from "@/components/PublicFooter";
+import Nav from "@/components/Navbar";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
@@ -20,8 +21,8 @@ export default function Layout({
   return (
   
    
-      <div className={`bg-white ${quicksand.className}`}>
-         <PublicNav/>
+      <div className={` ${quicksand.className}`}>
+         <Nav/>
         {children}
           <PublicFooter/>
       </div>

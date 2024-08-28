@@ -6,6 +6,7 @@ import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
 import { motion } from 'framer-motion';
 import { currentUser } from "@/libs/auth";
 import { useTheme } from "next-themes";
+import TwoFactorAuthForm from "./2FAForm";
 
 const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
   const [selectedTab, setSelectedTab] = useState("Personal Info");
@@ -17,6 +18,7 @@ const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
         <div className="w-full flex items-center gap-8 justify-center flex-col">
           <ChangeEmailForm user={user} />
           <ChangePasswordForm />
+          <TwoFactorAuthForm user={user}/>
         </div>
       ) },
     ] : []),

@@ -29,7 +29,7 @@ export const highlightMatches = (inputText: string, query: string): JSX.Element 
           // This is plain text, apply the highlight
           return part.split(regex).map((subPart, subIndex) =>
             regex.test(subPart) ? (
-              <span key={`${index}-${subIndex}`} className='bg-yellow'>{subPart}</span>
+              <span key={`${index}-${subIndex}`} className='bg-secondary-1'>{subPart}</span>
             ) : (
               subPart
             )

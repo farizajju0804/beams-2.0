@@ -83,6 +83,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
         await update();
         router.push("/beams-today");
       } else if (data?.twoFactor) {
+        console.log("Two-factor authentication required");
         setShowTwoFactor(true);  
         setIsLoading(false);
       }

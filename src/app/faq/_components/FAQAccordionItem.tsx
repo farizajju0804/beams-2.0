@@ -22,18 +22,18 @@ const FAQAccordionItem: React.FC<FAQAccordionItemProps> = ({ question, answer, e
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center focus:outline-none"
       >
-        <span className={`text-lg text-left font-medium ${isOpen ? 'text-purple font-bold' : 'text-gray-900'}`}>
+        <span className={`text-lg text-left text-text ${isOpen ? 'font-medium' : 'font-medium'}`}>
           {question}
         </span>
         <span>
-          {isOpen ? <Minus size="20" color="currentColor" className="text-purple" /> : <Add size="20" color="currentColor" className="text-gray-500" />}
+          {isOpen ? <Minus size="20" color="currentColor" className="text-secondary-2" /> : <Add size="20" color="currentColor" className="text-gray-500" />}
         </span>
       </button>
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: isOpen ? 'auto' : 0 }}
         transition={{ duration: 0.5, ease: "anticipate"} }// Bouncy animation
-        className="overflow-hidden mt-2 text-gray-700"
+        className="overflow-hidden mt-2 text-text"
       >
         <div className="p-2"> <p dangerouslySetInnerHTML={{ __html: answer }}></p></div>
       </motion.div>

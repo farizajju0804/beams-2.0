@@ -113,7 +113,7 @@ const ChangePasswordForm = () => {
             />
           </div>
           
-          <Button type="submit" className="w-full bg-brand font-medium text-white py-3">
+          <Button type="submit" className="w-full bg-brand text-lg font-medium text-white py-3">
             Change Password
           </Button>
           <FormError message={error} />

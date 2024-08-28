@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
@@ -77,16 +77,32 @@ export default function UserButton() {
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="User Actions" variant="flat">
+        <DropdownSection showDivider> 
           <DropdownItem key="profile" className="h-14 gap-2">
             <p className="font-bold">Signed in with</p>
             <p className="font-bold">{user.email}</p>
           </DropdownItem>
+          
+          <DropdownItem key="beams-today" onClick={() => handleNavigation("/beams-today")}>
+            Beams Today
+          </DropdownItem>
+          </DropdownSection>
+          <DropdownSection title="Account" showDivider> 
           <DropdownItem key="library" onClick={() => handleNavigation("/beams-today/library")}>
             My Library
           </DropdownItem>
           <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>
+          </DropdownSection>
+          <DropdownSection title="Support" showDivider>  
+          <DropdownItem key="FAQ" onClick={() => handleNavigation("/faq")}>
+            FAQ
+          </DropdownItem>
+          <DropdownItem key="contact" onClick={() => handleNavigation("/contact-us")}>
+            Contact
+          </DropdownItem>
+          </DropdownSection>
           <DropdownItem  onClick={customSignOut} key="logout" color="danger">
             Log Out
           </DropdownItem>

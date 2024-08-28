@@ -317,7 +317,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 />
               )}
             </div>
-            <Button type="submit" color="primary" className="w-full font-medium text-white" isLoading={isPending}>
+            <Button type="submit" color="primary" className="w-full font-medium text-lg text-white" isLoading={isPending}>
               Save
             </Button>
             <FormError message={error} />

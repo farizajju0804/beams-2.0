@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Fuse from 'fuse.js';
 import { IoSearch, IoClose } from 'react-icons/io5';
 import { highlightMatches } from './highlightMatches';
+import { Input } from '@nextui-org/react';
+
 
 interface FAQItem {
   question: string;
@@ -50,41 +52,41 @@ const SearchBar: React.FC<SearchBarProps> = ({ faqData }) => {
   };
 
   return (
-    <div className="w-full mx-auto max-w-xl z-20 px-6 mb-4 md:mb-6 py-2">
+    <div className="w-full mx-auto max-w-xl z-20 px-4 mb-4 md:mb-6 py-2">
       <div className="relative flex items-center">
-        <span className="absolute left-4 text-gray-500">
-          <IoSearch size={20} />
-        </span>
-        <input
+        <Input
           type="text"
+          radius='full'
+          startContent={<IoSearch size={20} />}
           value={query}
           onChange={handleSearch}
           placeholder="Type your question here"
-          className="w-full py-3 px-12 rounded-full bg-gray-100 text-black  focus:outline-none focus:ring-1 focus:ring-brand placeholder-black"
+          className="w-full py-3 px-4 rounded-full placeholder-text"
+          endContent={query && (
+            <button
+              onClick={handleClearSearch}
+              className="absolute right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <IoClose size={20} />
+            </button>
+          )}
         />
-        {query && (
-          <button
-            onClick={handleClearSearch}
-            className="absolute right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            <IoClose size={20} />
-          </button>
-        )}
+        
       </div>
 
       {query && (
         <div className="mt-4">
-          <h2 className="text-gray-700 text-sm mb-2">
+          <h2 className="text-grey-2 text-sm ml-4 mb-2">
             {results.length} result{results.length !== 1 && 's'} for &apos;{query}&apos;
           </h2>
           {results.length > 0 ? (
             <ul className="space-y-4">
               {results.map(({ item, matches }, index) => (
-                <li key={index} className="bg-white p-4 rounded-xl shadow-md">
-                  <h3 className="font-semibold text-lg text-black">
+                <li key={index} className="bg-background p-4 rounded-xl shadow-md">
+                  <h3 className="font-semibold text-lg text-text">
                     {highlightMatches(item.question, query)}
                   </h3>
-                  <p className="text-gray-600 mt-2">
+                  <p className="text-grey-2 mt-2">
                     {highlightMatches(item.answer, query)}
                   </p>
                 </li>

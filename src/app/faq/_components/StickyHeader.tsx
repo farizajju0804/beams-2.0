@@ -22,7 +22,7 @@ const StickyHeader: React.FC<StickyHeaderProps> = ({ categories, faqData }) => {
   }, [selectedTab, faqData]);
 
   return (
-    <div className="w-full bg-white z-20">
+    <div className="w-full bg-background z-20">
       <div className="mx-auto pt-2">
         <SearchBar  faqData={faqData}/>
         <FAQTabs categories={categories} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />

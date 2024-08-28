@@ -9,7 +9,7 @@ import { useTheme } from "next-themes";
 
 export default function Nav() {
   const { theme } = useTheme();
-  const isMobile = window.innerWidth < 767;
+  // const isMobile = window.innerWidth < 767;
 
   const menuItems = [
     "Profile",
@@ -20,16 +20,22 @@ export default function Nav() {
 
 
   return (
-    <Navbar className="max-w-none w-full bg-background">
+    <Navbar className="max-w-none w-full bg-background z-[800]">
       <NavbarContent className="max-w-none w-full">
         <NavbarBrand>
-          <Link href="/beams-today">
-            <Image 
+          <Link href="/">
+            {/* <Image 
               src={theme === 'dark' ? darkLogo : lightLogo} 
               alt="logo"  
               width={isMobile ? 100 : 140} 
               height={isMobile ? 70 : 100} 
-            />
+            /> */}
+            <Image
+                  src="/images/logo.png"
+                  alt="Beams Logo"
+                  width={85}
+                  height={30}
+                />
           </Link>
         </NavbarBrand>
       </NavbarContent>

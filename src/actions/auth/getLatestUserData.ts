@@ -20,7 +20,8 @@ export async function getLatestUserData() {
       grade: true,
       dob: true,
       userFormCompleted: true,
-      onBoardingCompleted: true
+      onBoardingCompleted: true,
+      isTwoFactorEnabled:true
     },
   });
   
