@@ -1,5 +1,6 @@
 'use client';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+
+import React, { forwardRef, useImperativeHandle, useState, useCallback } from 'react';
 import { Button, Calendar, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react';
 import { Calendar as CalendarIcon } from 'iconsax-react';
 import { DateValue, CalendarDate } from '@internationalized/date';
@@ -23,18 +24,22 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
       close: () => setIsOpen(false),
     }));
 
-    const handleDateChange = (date: DateValue | null) => {
+    const handleDateChange = useCallback((date: DateValue | null) => {
       onDateChange(date);
-      setIsOpen(false); // Close the calendar after selecting a date
-    };
+      setIsOpen(false);
+    }, [onDateChange]);
 
-    const handleOpenChange = (open: boolean) => {
+    const handleOpenChange = useCallback((open: boolean) => {
       setIsOpen(open);
-    };
+    }, []);
+
+    const handleCalendarClick = useCallback((e: React.MouseEvent) => {
+      e.stopPropagation();
+    }, []);
 
     return (
       <Popover
-        placement="bottom"
+        placement="top"
         isOpen={isOpen}
         onOpenChange={handleOpenChange}
       >
@@ -44,13 +49,15 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 m-0">
-          <Calendar
-            value={selectedDate}
-            onChange={handleDateChange}
-            minValue={minValue}
-            maxValue={maxValue}
-            className="border-none m-0"
-          />
+          <div onClick={handleCalendarClick}>
+            <Calendar
+              value={selectedDate}
+              onChange={handleDateChange}
+              minValue={minValue}
+              maxValue={maxValue}
+              className="border-none m-0"
+            />
+          </div>
         </PopoverContent>
       </Popover>
     );
