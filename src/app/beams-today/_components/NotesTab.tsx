@@ -67,7 +67,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
           ))
         )}
 
-        <Modal placement='center' isOpen={selectedNote !== null} onClose={() => setSelectedNote(null)}>
+        <Modal placement='center' isOpen={selectedNote !== null} className='z-[1100]' onClose={() => setSelectedNote(null)}>
           <ModalContent>
             <ModalHeader>Delete Note</ModalHeader>
             <ModalBody>

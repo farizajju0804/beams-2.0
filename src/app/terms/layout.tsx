@@ -23,7 +23,7 @@ export default async function Layout({
   return (
   
    
-      <div className={`bg-background ${quicksand.className}`}>
+      <div className={`relative bg-background ${quicksand.className}`}>
          {user ? <Nav/> : <PublicNav/>}
         {children}
           <PublicFooter/>

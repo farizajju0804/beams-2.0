@@ -21,7 +21,7 @@ export default function Layout({
   return (
   
    
-      <div className={` ${quicksand.className}`}>
+      <div className={`relative ${quicksand.className}`}>
          <Nav/>
         {children}
           <PublicFooter/>

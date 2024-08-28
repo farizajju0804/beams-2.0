@@ -27,7 +27,7 @@ const FAQHeader: React.FC = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="hidden lg:block absolute z-[40] right-[15%] top-12"
+        className="hidden lg:block absolute right-[15%] top-12"
       >
         <Image src="/images/faq.png" alt="FAQ Illustration" width={100} height={100} />
       </motion.div>

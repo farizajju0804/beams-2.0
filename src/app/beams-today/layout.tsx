@@ -16,7 +16,7 @@ export default function Layout({
 }) {
 
   return (
-         <div className="w-full max-w-full overflow-x-hidden">
+         <div className="relative w-full max-w-full overflow-x-hidden">
         <Nav />
         {children}
         <PublicFooter/>

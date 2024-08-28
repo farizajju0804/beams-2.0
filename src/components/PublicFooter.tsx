@@ -16,7 +16,7 @@ const PublicFooter: React.FC = () => {
     <>
       <footer
        
-        className="w-full max-w-7xl mx-auto bg-background border-gray-200"
+        className="absolute bottom-0 left-0 right-0 w-full max-w-7xl mx-auto bg-background border-gray-200"
       >
         <div className="w-full max-w-7xl mx-auto pb-4 px-8 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 fade-in">
