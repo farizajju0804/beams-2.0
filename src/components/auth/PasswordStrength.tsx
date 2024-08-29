@@ -24,7 +24,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose }
   }, [allValid, onClose]);
 
   return (
-    <div className="absolute top-10 w-full mt-2 bg-background shadow-lg rounded-lg p-4 z-10 transition-all duration-300 ease-in-out">
+    <div className="absolute w-full mt-2 bg-background shadow-lg rounded-lg p-4 z-10 transition-all duration-300 ease-in-out">
       <div className="grid grid-cols-2 gap-2">
         {rules.map((rule, index) => {
           const isValid = rule.regex.test(password);

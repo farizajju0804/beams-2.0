@@ -67,7 +67,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
       <Toaster position="top-center" />
       <Button size="sm" isIconOnly startContent={isExistingNote ? <Edit2  size={20} className='text-gray-2' /> :<Note  size={20}  className='text-grey-2' />} className='bg-grey-1' onPress={onOpen}>
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose} size='3xl' placement="center" hideCloseButton className=''>
+      <Modal isOpen={isOpen} onClose={onClose} size='3xl' placement="top-center" hideCloseButton className=''>
         <ModalContent className='py-2 px-2 md:px-6'>
           <>
             <ModalHeader className="flex justify-start items-center">

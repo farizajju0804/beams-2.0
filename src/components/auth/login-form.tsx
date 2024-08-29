@@ -160,7 +160,13 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                           disabled={isLoading}
                           startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
                           onFocus={() => setIsTypingEmail(true)}
-                          onBlur={() => setIsTypingEmail(false)}
+                          // onBlur={() => setIsTypingEmail(false)}
+                          onBlur={() => {
+                            if (field.value.length === 0) {
+                              setIsTypingEmail(false);
+                              setShowPasswordStrength(false);
+                            }
+                          }}
                           onChange={(e) => {
                             field.onChange(e);
                             if (e.target.value.length === 0) setIsTypingEmail(false);
