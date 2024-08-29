@@ -86,7 +86,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
-              <p className="text-center text-sm text-gray-600 ">
+              <p className="text-center text-sm text-grey-2 ">
                 {resendMessage ? (
                   <span dangerouslySetInnerHTML={{ __html: resendMessage }} />
                 ) : (
@@ -134,7 +134,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       ) : (
         <div className="text-center space-y-6">
           <p className="text-lg text-grey-2 mb-6">
-            Your email has been successfully changed from <strong className="font-bold text-purple">{oldEmail}</strong> to <strong className="font-bold text-purple">{email}</strong>.
+            Your email has been successfully changed from <strong className="font-bold text-secondary-2">{oldEmail}</strong> to <strong className="font-bold text-secondary-2">{email}</strong>.
           </p>
           <Link href="/auth/login" passHref>
             <Button color="primary" className="w-full font-semibold text-white text-lg mb-4">
