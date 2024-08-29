@@ -106,7 +106,7 @@ const ChangeEmail = () => {
             className="w-full text-white bg-primary font-medium text-lg"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Changing Email..." : "Change Email"}
+            {isSubmitting ? "Validating..." : "Change Email"}
           </Button>
           {error && <FormError message={error} />}
         </form>

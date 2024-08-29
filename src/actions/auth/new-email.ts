@@ -35,7 +35,7 @@ export const newEmail = async (token: string, newEmail: string) => {
     return { error: "Link has expired!" };
   }
 
-  const user = await db.user.findUnique({
+  const user:any = await db.user.findUnique({
     where: { email: existingToken.email }
   });
 
@@ -56,7 +56,7 @@ export const newEmail = async (token: string, newEmail: string) => {
     where: { id: existingToken.id }
   });
   const verificationToken = await getVerificationToken(newEmail);
-  await sendVerificationEmail2(verificationToken.email,existingToken.email, existingUser.firstName,verificationToken.token);
+  await sendVerificationEmail2(verificationToken.email,existingToken.email, user.firstName,verificationToken.token);
 
   return { success: "Verification email sent. Please check your inbox." , oldEmail : existingToken.email};
 

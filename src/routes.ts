@@ -3,7 +3,7 @@
  * These routes don't require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/",'/auth/new-verification','/privacy','/terms', '/auth/change-email'];
+export const publicRoutes = ["/",'/auth/new-verification','/privacy','/terms', '/auth/change-email','/auth/change-email-verify'];
 
 /**
  * An array of routes which are used for authentication
@@ -21,7 +21,7 @@ export const authRoutes = [
     '/auth/verify-email',
     '/auth/new-verify-email',
     '/auth/security-questions',
-    '/auth/change-email-verify'
+    
 ];
 
 /**
