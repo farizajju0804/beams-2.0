@@ -48,7 +48,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
   });
   
   useEffect(() => {
-    const checkMobile = () => {
+    const checkMobile:any = () => {
       setIsMobile(window.innerWidth < 767);
     };
 
@@ -149,7 +149,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                             label: 'w-20 font-medium',
                             mainWrapper: "w-full flex-1",
                             input: [
-                              "placeholder:text-grey-2 text-xs",
+                              "placeholder:text-grey-2 ",
                               'w-full flex-1 font-medium'
                             ]
                           }}
@@ -184,7 +184,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                           label: 'w-20 font-medium',
                           mainWrapper: "w-full flex-1",
                           input: [
-                            "placeholder:text-grey-2 text-xs",
+                            "placeholder:text-grey-2 ",
                             'w-full flex-1 font-medium'
                           ]
                         }}
@@ -203,7 +203,10 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                             {showPassword ? <EyeSlash variant="Bold" size={16} /> : <Eye variant="Bold" size={16} />}
                           </span>
                         }
-                        onFocus={() => setShowPasswordStrength(true)}
+                        onFocus={() => 
+                          {setShowPasswordStrength(true)
+                            setIsTypingPassword(true)
+                          }}
                         onBlur={() => {
                           if (field.value.length === 0) {
                             setIsTypingPassword(false);

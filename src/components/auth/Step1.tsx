@@ -14,6 +14,7 @@ import CardWrapper from "@/components/auth/card-wrapper";
 import PasswordStrength from "./PasswordStrength2";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface RegisterFormProps {
   ip: string;
@@ -30,7 +31,8 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
-
+  const [showPasswordStrength, setShowPasswordStrength] = useState(false);
+  
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onSubmit",
@@ -92,7 +94,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
       backButtonHref="/auth/login"
       showSocial
     >
-      <Form {...form}>
+      {/* <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex flex-col gap-8">
             <FormField
@@ -193,6 +195,124 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
           </Button>
           {error && <FormError message={error} />}
           {!isPending && success && <FormSuccess message={success} />}
+        </form>
+      </Form> */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className={`flex flex-col gap-6  `}>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          label="Email"
+                          classNames={{
+                            label: 'w-20 font-medium',
+                            mainWrapper: "w-full flex-1",
+                            input: [
+                              "placeholder:text-grey-2 ",
+                              'w-full flex-1 font-medium'
+                            ]
+                          }}
+                          {...field}
+                          type="email"
+                         disabled={isPending}
+                          labelPlacement={isMobile ? "outside" :"outside-left"}
+                          placeholder="Enter your email"
+                        
+                          startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
+                          onFocus={() => setIsTypingEmail(true)}
+                         
+                          onBlur={() => {
+                            if (field.value.length === 0) {
+                              setIsTypingEmail(false)
+                            }
+                          }}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            if (e.target.value.length === 0) setIsTypingEmail(false);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              <div className="relative h-auto transition-all duration-500 ease-soft-spring">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        isRequired
+                        classNames={{
+                          label: 'w-20 font-medium',
+                          mainWrapper: "w-full flex-1",
+                          input: [
+                            "placeholder:text-grey-2 ",
+                            'w-full flex-1 font-medium'
+                          ]
+                        }}
+                        label="Password"
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                         disabled={isPending}
+                        labelPlacement={isMobile ? "outside" :"outside-left"}
+                        placeholder="Enter your password"
+                        startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
+                        endContent={
+                          <span
+                            className="cursor-pointer text-[#888888]"
+                            onClick={togglePasswordVisibility}
+                          >
+                            {showPassword ? <EyeSlash variant="Bold" size={16} /> : <Eye variant="Bold" size={16} />}
+                          </span>
+                        }
+                        onFocus={() => 
+                        {
+                          setIsTypingPassword(true);
+                          setShowPasswordStrength(true)
+                        }}
+                        onBlur={() => {
+                          if (field.value.length === 0) {
+                            setIsTypingPassword(false);
+                            setShowPasswordStrength(false);
+                          }
+                        }}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setIsTypingPassword(true);
+                          if (e.target.value.length === 0) {
+                            setIsTypingPassword(false);
+                            setShowPasswordStrength(false);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {showPasswordStrength && (
+                <PasswordStrength
+                  password={form.watch('password')}
+                  onClose={() => setShowPasswordStrength(false)}
+                  showCrackTime={true}
+                />
+              )}
+              </div>
+            </div>
+          
+          <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isPending}>
+          {isPending ? "Creating Account..." : "Create Account"}
+          </Button>
+            {error && (<FormError message={error} />)}
+            {success && (<FormSuccess message={success} />)}
         </form>
       </Form>
     </CardWrapper>
