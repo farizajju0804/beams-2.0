@@ -33,7 +33,7 @@ export const newPassword = async( values : z.infer<typeof NewPasswordSchema>,tok
     }
    
 
-    const existingUser = await getUserByEmail(existingToken.email);
+    const existingUser:any = await getUserByEmail(existingToken.email);
 
     if(!existingUser){
         return { error : "Email does not exist!"};
@@ -57,7 +57,7 @@ export const newPassword = async( values : z.infer<typeof NewPasswordSchema>,tok
         }
     })
 
-    await sendPasswordResetReminderEmail(existingToken.email)
+    await sendPasswordResetReminderEmail(existingToken.email,existingUser.firstName)
 
     return {success : "Password Updated"}
 } 

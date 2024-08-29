@@ -45,7 +45,7 @@ export const newEmail = async (token: string, newEmail: string) => {
   if (user.email === newEmail) {
     return { error: "New email must be different from your current email" };
   }
-  const existingUser = await getUserByEmail(newEmail);
+  const existingUser:any = await getUserByEmail(newEmail);
 
   if (existingUser) {
     return { error: "Email already in use!" };
@@ -56,7 +56,7 @@ export const newEmail = async (token: string, newEmail: string) => {
     where: { id: existingToken.id }
   });
   const verificationToken = await getVerificationToken(newEmail);
-  await sendVerificationEmail2(verificationToken.email,existingToken.email, verificationToken.token);
+  await sendVerificationEmail2(verificationToken.email,existingToken.email, existingUser.firstName,verificationToken.token);
 
   return { success: "Verification email sent. Please check your inbox." , oldEmail : existingToken.email};
 

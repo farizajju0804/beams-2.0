@@ -33,16 +33,16 @@ export default function Nav() {
             <Image
                   src="/images/logo.png"
                   alt="Beams Logo"
-                  width={85}
-                  height={30}
+                  width={70}
+                  height={25}
                 />
           </Link>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem>
+        {/* <NavbarItem>
            <ThemeSwitcher />
-        </NavbarItem>
+        </NavbarItem> */}
         <NavbarItem>
            <UserButton />
         </NavbarItem>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@nextui-org/react';
 import Link from 'next/link';
+import { Microscope } from 'iconsax-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -42,7 +43,7 @@ const HeroSection: React.FC = () => {
             ease: "easeInOut", // Smooth easing
           }}
         >
-          <Image src="/images/hero.png" alt="Beams Hero Image" width={260} height={260} />
+          <Image priority src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1724913498/email%20images/hero_qeunij.webp" alt="Beams Hero Image" width={260} height={260} />
         </motion.div>
       </motion.div>
       
@@ -53,7 +54,7 @@ const HeroSection: React.FC = () => {
         className="mt-8 mb-4"
       >
         <Link href="/auth/register">
-        <Button className="bg-brand text-white text-lg md:text-xl py-6 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
+        <Button endContent={<Microscope variant='Bold'/>} className="bg-brand text-white text-lg md:text-xl py-6 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
           Discover the Future Now
         </Button>
         </Link>

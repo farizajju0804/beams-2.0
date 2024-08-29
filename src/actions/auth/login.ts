@@ -20,7 +20,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
 
   const { email, password, code } = validatedFields.data;
 
-  let existingUser = await getUserByEmail(email);
+  let existingUser:any = await getUserByEmail(email);
 
   
 
@@ -50,7 +50,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
 
   if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
-    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    await sendVerificationEmail(verificationToken.email, existingUser.firstName,verificationToken.token);
     return { error: "VERIFY_EMAIL", success: undefined };
   
     
@@ -96,7 +96,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
       });
     } else {
       const twoFactorToken:any = await getTwoFactorToken(existingUser.email);
-      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+      await sendTwoFactorTokenEmail(twoFactorToken.email,existingUser.firstName, twoFactorToken.token);
 
       return { twoFactor: true };
     }

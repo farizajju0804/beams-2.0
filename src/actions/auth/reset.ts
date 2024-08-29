@@ -15,7 +15,7 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
   }
 
   const { email } = validatedFields.data;
-  const existingUser = await getUserByEmail(email);
+  const existingUser:any = await getUserByEmail(email);
   
   if (!existingUser) {
     return { error: "No account found" };
@@ -34,6 +34,7 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
   const passwordResetToken = await getPasswordResetToken(email);
   await sendPasswordResetEmail(
     passwordResetToken.email,
+    existingUser.firstName,
     passwordResetToken.token
   );
 

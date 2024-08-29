@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Button } from '@nextui-org/react';
 import CalendarComponent from '@/app/beams-today/_components/CalendarComponent';
@@ -10,7 +10,6 @@ import { Filter, SearchNormal1, CloseCircle } from 'iconsax-react';
 import BeamsTodaySearchCard from './BeamsTodaySearchCard';
 import FilterChips from '@/app/beams-today/_components/FilterChips';
 import CustomPagination from '@/components/Pagination';
-// import FormattedDate from '@/components/FormattedDate';
 import Fuse from 'fuse.js';
 
 const commonTerms = ["the", "is", "in", "a", "an", "of", "and", "to", "it", "that", "on", "for", "with", "as", "this", "by", "from", "or", "at", "be", "are"];
@@ -18,12 +17,11 @@ const commonTerms = ["the", "is", "in", "a", "an", "of", "and", "to", "it", "tha
 const preprocessScript = (script:string) => {
   if (!script) return [];
   return script
-    .split(',') // Split by commas
-    .map((phrase:string) => phrase.trim()) // Trim whitespace
+    .split(',')
+    .map((phrase:string) => phrase.trim())
     .filter((phrase:string) => !commonTerms.includes(phrase.toLowerCase()) && phrase.length > 0); 
 };
 
-// Preprocess topics to split script into words
 const preprocessTopics = (topics:any) => {
   return topics.map((topic:any) => ({
     ...topic,
@@ -55,6 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     keys: ['title', 'shortDesc', 'scriptWords'],
     threshold: 0.3, 
   });
+
   const highlightDates1 = topics.map((topic: any) =>
     new Date(topic.date).toISOString().split("T")[0]
   );
@@ -129,23 +128,41 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     setShowResults(true);
   };
 
+  // useEffect(() => {
+  //   if (query || selectedDate || filters.length > 0) {
+  //     filterTopics();
+  //   } else {
+  //     setFilteredTopics(topics.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)); 
+  //     setShowResults(false);
+  //   }
+  // }, [query, selectedDate, sortBy, filters, currentPage]);
   useEffect(() => {
-    if (query || selectedDate || filters.length > 0) {
+    if (query) {
+      // Remove date filter when searching
+      setSelectedDate(null);
+      setFilters(prevFilters => prevFilters.filter(filter => filter.type !== 'date'));
+      filterTopics();
+    } else if (filters.length > 0 || selectedDate) {
       filterTopics();
     } else {
-      setFilteredTopics(topics.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)); // Show all topics if no filters are applied
+      setFilteredTopics(topics.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
       setShowResults(false);
     }
-  }, [query, selectedDate, sortBy, filters, currentPage]);
-
+  }, [query, sortBy, filters, currentPage, selectedDate]);
   const handleSearch = () => {
+    // Reset the date picker filters   when search is performed
+    setSelectedDate(null);
+    setFilters(filters.filter(filter => filter.type !== 'date'));
     filterTopics();
+    setShowResults(true);
   };
 
   const handleDateChange = (date: DateValue | null) => {
     setSelectedDate(date);
     if (date) {
-      setFilters([...filters, { id: 'date', label: `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`, type: 'date' }]);
+      setFilters([{ id: 'date', label: `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`, type: 'date' }]);
+       // Clear the search input when date is selected
+       setQuery('');
     } else {
       setFilters(filters.filter(filter => filter.type !== 'date'));
     }
@@ -153,7 +170,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
 
   const handleReset = () => {
     setFilters([]);
-    filterTopics(); // Reapply filters to update the results
+    setSelectedDate(null);
+    setQuery(''); // Clear the search input on reset
+    filterTopics(); 
   };
 
   const handleSortChange = (sortOption: string) => {
@@ -180,7 +199,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const handleClearInput = () => {
     setQuery('');
     setShowResults(false);
-    setFilteredTopics(topics.slice(0, itemsPerPage)); // Reset to show all topics if no query
+    setFilteredTopics(topics.slice(0, itemsPerPage));
   };
 
   return (
@@ -196,7 +215,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
           placeholder="Search topics"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          isDisabled={!!selectedDate}
+          // isDisabled={!!selectedDate}  
           endContent={
             query ? (
               <CloseCircle
@@ -213,7 +232,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             )
           }
         />
-        {!query && minDate && maxDate && !selectedDate && (
+        {!query && minDate && maxDate && (
           <CalendarComponent
             ref={calendarRef}
             selectedDate={selectedDate}

@@ -21,7 +21,7 @@ export const settings = async (
   
   if ("changeEmail" in values && values.changeEmail === true) {
     const verificationToken = await getVerificationToken(user.email);
-    await sendChangeEmail(user.email, verificationToken.token);
+    await sendChangeEmail(user.email, user.firstName, verificationToken.token);
 
     return { success: `We have sent an email to ${user.email} with the instructions to change your email.` };
   }

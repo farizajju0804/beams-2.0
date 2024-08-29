@@ -9,6 +9,7 @@ import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { currentUser } from '@/libs/auth';
 
 export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>,ip:string) => {
   const validatedFields = RegisterSchema.safeParse(values);
@@ -24,7 +25,7 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
     if (!existingUser?.emailVerified) {
       
       const verificationToken = await getVerificationToken(existingUser?.email);
-      await sendVerificationEmail(verificationToken.email, verificationToken.token);
+      await sendVerificationEmail(verificationToken.email, existingUser.firstName,verificationToken.token);
       return { error: "VERIFY_EMAIL", success: undefined };
     }
     return { error: "Account already exists. Try using a different email." };
@@ -48,31 +49,34 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
   });
 
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail(verificationToken.email, existingUser.firstName,verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };
 };
 
 export const resendVerificationCode = async (email:string) => {
+  const user:any= await currentUser()
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail(verificationToken.email,user?.firstName, verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };
 }
 
 export const resendVerificationCode2 = async (email:string) => {
+  const user:any= await currentUser()
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail(verificationToken.email,user?.firstName, verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };
 }
 
 export const resendVerificationCode3 = async (email:string,oldEmail:string) => {
+  const user:any= await currentUser()
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail2(verificationToken.email,oldEmail, verificationToken.token);
+  await sendVerificationEmail2(verificationToken.email,oldEmail, user?.firstName,verificationToken.token);
   console.log("Verification email sent. Please check your inbox.");
 
   return { success: "Verification email sent. Please check your inbox." };

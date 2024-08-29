@@ -38,6 +38,7 @@ export function ThemeSwitcher() {
   
   return (
     <div className="flex items-center space-x-4">
+
       <Switch
         defaultSelected={isDarkMode}
         onChange={(e) => {
@@ -45,11 +46,12 @@ export function ThemeSwitcher() {
           setTheme(newTheme);
           setIsDarkMode(e.target.checked);
         }}
-        size="lg"
+        size="sm"
         color="primary"
         startContent={<SunIcon />}
         endContent={<MoonIcon />}
-      />
+        className="text-sm"
+      >Dark Mode</Switch>
     </div>
   );
 }

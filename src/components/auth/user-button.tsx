@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection, User } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 import { signOut, useSession } from "next-auth/react";
+import { ThemeSwitcher } from "../ThemeSwitcher";
+import { ArrowDown2 } from "iconsax-react";
 
 
 const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
@@ -64,17 +66,32 @@ export default function UserButton() {
   return (
     <div className="flex items-center gap-4">
       <Dropdown placement="bottom-start" size="sm">
+        
         <DropdownTrigger>
-          <Avatar 
-            isBordered 
-            src={getAvatarSrc(user)}
-            imgProps={{ 
-              onError: (e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user.firstName || ''} ${user.lastName || ''}`)}`;
-              }
-            }}
-          />
+        <div className="flex items-center gap-2 cursor-pointer">
+        <User   
+        isFocusable={true}
+      name={`${user.firstName} ${user.lastName}`}
+      
+      // description={user.}
+      avatarProps={{
+        src: getAvatarSrc(user),
+        size:"sm",
+        isBordered :true,
+        imgProps : { 
+          onError: (e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user.firstName || ''} ${user.lastName || ''}`)}`;
+          }
+        },
+        // color : "primary"
+      }}
+      classNames={{
+        name : "font-medium"
+      }}
+    />
+    <ArrowDown2 size={16}/>
+    </div>
         </DropdownTrigger>
         <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownSection showDivider> 
@@ -103,6 +120,9 @@ export default function UserButton() {
             Contact
           </DropdownItem>
           </DropdownSection>
+          <DropdownItem  className="cursor-auto" key="theme">
+            <ThemeSwitcher/>
+          </DropdownItem>
           <DropdownItem  onClick={customSignOut} key="logout" color="danger">
             Log Out
           </DropdownItem>
