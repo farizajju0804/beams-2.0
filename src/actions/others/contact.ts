@@ -14,7 +14,7 @@ export async function saveContactFormResponse(data: {
     const response = await db.contactFormResponse.create({
       data,
     });
-    await sendContactResponseEmail(data.email)
+    await sendContactResponseEmail(data.email,data.firstName)
     return response;
   } catch (error) {
     console.error('Failed to save contact form response:', error);
