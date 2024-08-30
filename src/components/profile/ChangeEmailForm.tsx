@@ -9,6 +9,7 @@ import { Button, Modal, ModalBody, ModalHeader, ModalContent, Input } from "@nex
 import { settings } from "@/actions/auth/settings";
 import { Edit } from "iconsax-react";
 import { signOut } from "next-auth/react";
+import RedirectionMessage from "../RedirectionMessage";
 
 const ChangeEmailForm = ({ user }: { user: any }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -16,7 +17,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const form = useForm<z.infer<typeof ChangeEmailSchema>>({
     resolver: zodResolver(ChangeEmailSchema),
     defaultValues: {
@@ -58,10 +59,15 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
 
   const handleSuccessModalClose = () => {
     setIsSuccessModalOpen(false);
+    setIsRedirecting(true);
     customSignOut();
   };
 
   return (
+    <>
+     {isRedirecting ? (
+        <RedirectionMessage/>
+      ) : (
     <div className="w-full max-w-lg p-4 rounded-3xl bg-background shadow-lg">
       <h2 className="text-base lg:text-2xl font-semibold mb-4 text-left">Change Email</h2>
       <Form {...form}>
@@ -139,6 +145,8 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
         </ModalContent>
       </Modal>
     </div>
+      )}
+    </>
   );
 };
 
