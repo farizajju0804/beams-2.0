@@ -78,6 +78,7 @@ export default function UserButton() {
         src: getAvatarSrc(user),
         size:"sm",
         showFallback:true,
+        name:"",
         isBordered :true,
         // imgProps : { 
         //   onError: (e) => {
