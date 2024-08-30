@@ -13,10 +13,10 @@ const FAQHeader: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-3xl z-10"
       >
-        <h1 className="text-text font-poppins font-bold text-2xl md:text-3xl">
+        <h1 className="text-text font-poppins font-semibold text-2xl md:text-3xl">
           Got Questions?
         </h1>
-        <h2 className="text-secondary-2 font-poppins font-bold text-2xl md:text-3xl mt-4">
+        <h2 className="text-secondary-2 font-poppins font-semibold text-2xl md:text-3xl mt-4">
           We have got the Answers
         </h2>
       </motion.div>

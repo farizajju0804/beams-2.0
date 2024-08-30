@@ -20,7 +20,7 @@ export default function Nav() {
 
 
   return (
-    <Navbar className="max-w-none w-full bg-background ">
+    <Navbar className="max-w-none px-2 w-full bg-background ">
       <NavbarContent className="max-w-none w-full">
         <NavbarBrand>
           <Link href="/">

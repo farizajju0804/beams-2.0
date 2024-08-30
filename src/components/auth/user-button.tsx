@@ -8,7 +8,8 @@ import { ThemeSwitcher } from "../ThemeSwitcher";
 import { ArrowDown2 } from "iconsax-react";
 
 
-const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+// const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+const getAvatarSrc = (user: any) => user?.image
 
 export default function UserButton() {
   const { user: storeUser, setUser: setStoreUser } = useUserStore();
@@ -21,7 +22,6 @@ export default function UserButton() {
         setIsLoading(true);
         const userData = await getLatestUserData();
         if (userData) {
-          console.log(userData)
           setStoreUser(userData); 
         }
       } catch (error) {
@@ -77,13 +77,14 @@ export default function UserButton() {
       avatarProps={{
         src: getAvatarSrc(user),
         size:"sm",
+        showFallback:true,
         isBordered :true,
-        imgProps : { 
-          onError: (e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user.firstName || ''} ${user.lastName || ''}`)}`;
-          }
-        },
+        // imgProps : { 
+        //   onError: (e) => {
+        //     const target = e.target as HTMLImageElement;
+        //     target.src = `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user.firstName || ''} ${user.lastName || ''}`)}`;
+        //   }
+        // },
         // color : "primary"
       }}
       classNames={{
@@ -96,7 +97,7 @@ export default function UserButton() {
         <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownSection showDivider> 
           <DropdownItem key="profile" className="h-14 gap-2">
-            <p className="font-bold">Signed in with</p>
+            <p className="font-bold">Signed in as</p>
             <p className="font-bold">{user.email}</p>
           </DropdownItem>
           
