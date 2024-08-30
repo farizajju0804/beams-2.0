@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Input, Button } from "@nextui-org/react"
 import { useRouter } from "next/navigation"
+import RedirectionMessage from "@/components/RedirectionMessage"
 
 const emailSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -22,7 +23,7 @@ const ChangeEmail = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isTokenValid, setIsTokenValid] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
   const router = useRouter()
@@ -70,6 +71,7 @@ const ChangeEmail = () => {
       if (result.error) {
         setError(result.error)
       } else {
+        setIsRedirecting(true);
         router.push(`/auth/change-email-verify?email=${encodeURIComponent(data.email)}&oldEmail=${encodeURIComponent(result.oldEmail)}`)
       }
     } catch {
@@ -90,6 +92,10 @@ const ChangeEmail = () => {
   }
 
   return (
+    <>
+     {isRedirecting ? (
+        <RedirectionMessage/>
+      ) : (
     <CardWrapper headerLabel={isTokenValid ? "Enter New Email" : "Identity Verification Failed"}>
       {isTokenValid && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-4">
@@ -112,6 +118,8 @@ const ChangeEmail = () => {
         </form>
       )}
     </CardWrapper>
+    )}
+    </>
   )
 }
 

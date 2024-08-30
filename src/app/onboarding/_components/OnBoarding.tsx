@@ -9,11 +9,12 @@ import Image from 'next/image'
 import ProgressDots from './ProgressDots'
 import Pagination from './Pagination'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import RedirectionMessage from '@/components/RedirectionMessage'
 
 const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const { data:session, update } = useSession();
   const router = useRouter();
   const slides = [
@@ -103,6 +104,7 @@ const OnboardingPage = () => {
         }
         );
         console.log("Updated session data:", updated);
+        setIsRedirecting(true);
         router.push(DEFAULT_LOGIN_REDIRECT);
   
        }
@@ -110,61 +112,68 @@ const OnboardingPage = () => {
   }
 
   return (
-    <div 
-      className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
-      style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
+    <div className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
+       style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
-      <div className="w-full flex justify-between items-center px-6 lg:py-2">
-      <ProgressDots
-          totalDots={totalSlides}
-          activeDot={currentSlide}
-          activeColor={activeColor}
-          inactiveColor={inactiveColor}
-          onDotClick={handleDotClick}
-        />
-        <Button
-          onClick={() => handleAction()}
-          size='sm'
-          className="w-fit text-sm bg-white text-black rounded-full"
-          isLoading={isPending}
-        >
-          Skip
-        </Button>
-      </div>
-      <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative animate-float">
-      <Image
-        src={slides[currentSlide].mainImage}
-        alt="Onboarding illustration"
-        layout="fill"
-        priority
-        objectFit="contain"
-        className="transition-opacity duration-500 ease-in-out"
-        
-      />
-    </div>
-       
-       <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
-      <div className="flex flex-col items-center justify-start">
-        
+      {isRedirecting ? (
+        <RedirectionMessage/>
+      ) : (
+        <>
+          <div className="w-full flex justify-between items-center px-6 lg:py-2">
+            <ProgressDots
+              totalDots={totalSlides}
+              activeDot={currentSlide}
+              activeColor={activeColor}
+              inactiveColor={inactiveColor}
+              onDotClick={handleDotClick}
+            />
+            <Button
+              onClick={() => handleAction()}
+              size='sm'
+              className="w-fit text-sm bg-white text-black rounded-full"
+              isLoading={isPending}
+            >
+              Skip
+            </Button>
+          </div>
+          <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative animate-float">
+            <Image
+              src={slides[currentSlide].mainImage}
+              alt="Onboarding illustration"
+              layout="fill"
+              priority
+              objectFit="contain"
+              className="transition-opacity duration-500 ease-in-out"
+            />
+          </div>
+          <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
+            <div className="flex flex-col items-center justify-start">
+              <div className="px-6 mt-4 text-center max-w-3xl">
+                <h2 className="text-3xl text-purple lg:text-4xl font-bold font-poppins mb-4">
+                  {slides[currentSlide].title}
+                </h2>
+                <p 
+                  dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} 
+                  className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg" 
+                />
+              </div>
+            </div>
 
-        <div className="px-6 mt-4 text-center max-w-3xl">
-          <h2 className="text-3xl text-purple lg:text-4xl font-bold font-poppins mb-4">{slides[currentSlide].title}</h2>
-          <p dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg" />
-        </div>
-      </div>
-
-      <Pagination
-        currentSlide={currentSlide}
-        totalSlides={totalSlides}
-        onPrev={handlePrev}
-        onNext={handleNext}
-        onComplete={() => handleAction()}
-        completeBtnText="Yes I'm Ready"
-        isPending={isPending}
-      />
-      </div>
+            <Pagination
+              currentSlide={currentSlide}
+              totalSlides={totalSlides}
+              onPrev={handlePrev}
+              onNext={handleNext}
+              onComplete={() => handleAction()}
+              completeBtnText="Yes I'm Ready"
+              isPending={isPending}
+            />
+          </div>
+        </>
+      )}
     </div>
   )
 }
+
 
 export default OnboardingPage

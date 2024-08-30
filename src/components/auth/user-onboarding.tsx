@@ -11,6 +11,7 @@ import { getLatestUserData } from '@/actions/auth/getLatestUserData';
 import { useRouter } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
+import RedirectionMessage from '../RedirectionMessage';
 interface UserOnboardingProps {
   sessionData: any; 
 }
@@ -25,6 +26,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
   console.log(session)
   const router =  useRouter()
   const [isPending, setIsPending] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     mode: 'onSubmit',
@@ -111,6 +113,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
       }
       );
       console.log("Updated session data:", updated);
+      setIsRedirecting(true);
       router.push('/onboarding');
 
      }
@@ -124,25 +127,17 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
 
   return (
     <div className="min-h-screen w-[80%] md:w-auto flex items-center justify-center md:p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-3xl md:p-4"
-      >
+      {isRedirecting ? (
+        <RedirectionMessage/>
+      ) : (
+      <div className="w-full max-w-3xl md:p-4">
         <div className="mb-8">
-          <motion.h2
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+          <h2
             className="text-3xl lg:text-4xl font-bold text-text font-poppins mb-6"
           >
             Welcome to Beams
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+          </h2>
+          <div
             className="flex justify-between items-center"
           >
             <p className="text-sm text-grey-2">Step {step} of 2</p>
@@ -150,15 +145,12 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
               <div className={`h-2 w-12 rounded-full ${step === 1 ? 'bg-brand' : 'bg-gray-300'} mr-2 transition-colors`}></div>
               <div className={`h-2 w-12 rounded-full ${step === 2 ? 'bg-brand' : 'bg-gray-300'} transition-colors`}></div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <Form {...form}>
           {step === 1 ? (
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+            <div
             >
               <FormField
                 control={form.control}
@@ -192,12 +184,9 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
               >
                 Next
               </Button>
-            </motion.div>
+            </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+            <div
             >
               <form onSubmit={form.handleSubmit(onSubmit)} className="">
                 <div className='space-y-6'>
@@ -320,10 +309,11 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                   </Button>
                 </div>
               </form>
-            </motion.div>
+            </div>
           )}
         </Form>
-      </motion.div>
+      </div>
+      )}
     </div>
   );
 };
