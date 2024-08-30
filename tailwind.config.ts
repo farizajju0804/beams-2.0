@@ -34,7 +34,7 @@ const config = {
       },
       fontFamily: {
         'display': 'Clover',
-        'poppins': 'Poppins'
+        'poppins': ['Poppins']
       },
       aspectRatio: {
         '4/3': '4 / 3',
