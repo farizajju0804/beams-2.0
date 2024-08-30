@@ -141,21 +141,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
       // Remove date filter when searching
       setSelectedDate(null);
       setFilters(prevFilters => prevFilters.filter(filter => filter.type !== 'date'));
-      filterTopics();
-    } else if (filters.length > 0 || selectedDate) {
-      filterTopics();
-    } else {
+    }
+  }, [query]);
+  
+  useEffect(() => {
+    filterTopics();
+  }, [query, sortBy, filters, currentPage, selectedDate]);
+  
+  useEffect(() => {
+    if (!query && !filters.length && !selectedDate) {
       setFilteredTopics(topics.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
       setShowResults(false);
     }
-  }, [query, sortBy, filters, currentPage, selectedDate]);
-  const handleSearch = () => {
-    // Reset the date picker filters   when search is performed
-    setSelectedDate(null);
-    setFilters(filters.filter(filter => filter.type !== 'date'));
-    filterTopics();
-    setShowResults(true);
-  };
+  }, [topics, query, filters, selectedDate, currentPage, itemsPerPage]);
+  // const handleSearch = () => {
+  //   // Reset the date picker filters   when search is performed
+  //   setSelectedDate(null);
+  //   setFilters(filters.filter(filter => filter.type !== 'date'));
+  //   filterTopics();
+  //   setShowResults(true);
+  // };
 
   const handleDateChange = (date: DateValue | null) => {
     setSelectedDate(date);
