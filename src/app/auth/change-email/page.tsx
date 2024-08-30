@@ -60,6 +60,7 @@ const ChangeEmail = () => {
   }, [verifyTokenCallback])
 
   const onSubmit = async (data: z.infer<typeof emailSchema>) => {
+    setError(undefined);
     if (!token) {
       setError("Invalid Link")
       return
@@ -85,7 +86,7 @@ const ChangeEmail = () => {
     return (
       <CardWrapper headerLabel="Verifying Your Identity">
         <div className="flex items-center justify-center w-full">
-          <BeatLoader />
+          <BeatLoader color="#f96f2e" />
         </div>
       </CardWrapper>
     )

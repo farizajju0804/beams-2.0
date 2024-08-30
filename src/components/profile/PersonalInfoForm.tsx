@@ -306,11 +306,9 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   name="email"
                   render={() => (
                     <FormItem className="flex items-start flex-col justify-center space-x-4">
-                      <div className="w-24 flex items-center justify-center">
-                        <label className="text-sm text-text">Email:</label>
-                      </div>
+                      
                       <FormControl>
-                        <Input value={user.email} disabled />
+                        <Input label="Email" value={user.email} disabled />
                       </FormControl>
                     </FormItem>
                   )}

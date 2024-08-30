@@ -16,7 +16,7 @@ const FormError: FC<Readonly<FormErrorProps>> = ({ message }) => {
       // Start the border shrinking animation
       borderControls.start({
         width: "0%",
-        transition: { duration: 3, ease: "easeInOut" },
+        transition: { duration: 5, ease: "easeInOut" },
       }).then(() => {
         // After the border animation is complete, fade out the container
         containerControls.start({
