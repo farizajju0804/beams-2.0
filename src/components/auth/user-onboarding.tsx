@@ -236,6 +236,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
                         <FormItem>
                           <FormControl>
                             <Select
+                            isRequired
                               label="Grade"
                               placeholder="Select your grade"
                               defaultSelectedKeys={form.getValues('grade') ? [form.getValues('grade')] : []}
