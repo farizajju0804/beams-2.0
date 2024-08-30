@@ -21,7 +21,7 @@ const PublicNav: React.FC = () => {
   const isActive = (path: string) => currentPage === path;
 
   return (
-    <nav className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 p-4 bg-white">
+    <nav className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 p-4 bg-background">
       <div className="flex items-center">
       <Link href="/">
         <Image src="/images/logo.png" alt="Beams Logo" width={85} height={30} />
@@ -43,7 +43,7 @@ const PublicNav: React.FC = () => {
           color="primary" 
           size='md'
           variant="bordered" 
-          className=' font-medium md:text-lg text-black md:w-32 md:px-4 '
+          className=' font-medium md:text-lg text-text md:w-32 md:px-4 '
           onClick={() => router.push('/auth/login')}
         >
           Login

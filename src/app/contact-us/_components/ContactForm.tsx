@@ -1,22 +1,25 @@
 'use client';
 
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast, Toaster } from 'react-hot-toast';
 import { Send2 } from 'iconsax-react';
-import { Input, Textarea, Button, Tabs, Tab, Select, SelectItem } from '@nextui-org/react';
+import { Input, Textarea, Button, Select, SelectItem } from '@nextui-org/react';
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { saveContactFormResponse } from '@/actions/others/contact';
 
 const formSchema = z.object({
-  firstName: z.string().min(1, 'First Name is required'),
-  lastName: z.string().min(1, 'Last Name is required'),
-  email: z.string().email({ message: 'Invalid email!' }).min(1, { message: 'Email is required!' }),
-  subject: z.enum(['General Inquiry', 'Technical Support', 'Account', 'Feedback and Suggestions']),
-  message: z.string().min(1, 'Message is required').max(500, 'Message cannot exceed 500 characters'),
-});
+  firstName: z.string().min(1, { message: 'First Name is required' }),
+  lastName: z.string().min(1, { message: 'Last Name is required' }),
+  email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),
+  subject: z.enum(['General Inquiry', 'Technical Support', 'Account', 'Feedback and Suggestions'], {
+    required_error: 'Please select a subject',
+    invalid_type_error: 'Please select a valid subject',
+  }),
+  message: z.string().min(1, { message: 'Message is required' }).max(500, { message: 'Message cannot exceed 500 characters' }),
+}).required();
 
 const subjectOptions = [
   { value: 'General Inquiry', label: 'General Inquiry' },
@@ -30,22 +33,34 @@ type FormData = z.infer<typeof formSchema>;
 const ContactForm: React.FC = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    mode: 'onBlur',
     defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
       subject: 'General Inquiry',
+      message: '',
     },
   });
 
-  const { control, watch } = form;
+  const { control, watch, reset, formState: { errors } } = form;
 
   const message = watch('message', '');
+  const subject = watch('subject');
+
+  React.useEffect(() => {
+    console.log('Form errors:', errors);
+    console.log('Selected subject:', subject);
+  }, [errors, subject]);
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log('Form submitted with data:', data);
       await saveContactFormResponse(data);
       toast.success('Message sent successfully!');
+      reset();
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error('Failed to send message. Please try again later.');
     }
   };
@@ -70,13 +85,14 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="First Name"
                       isRequired
+                      // isInvalid={!!errors.firstName}
+                      // errorMessage={errors.firstName?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
-                        input : "text-black font-medium"
+                        input: "text-black font-medium"
                       }}
                       variant="underlined"
-                      className="border-gray-200 focus:border-purple shadow-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -95,13 +111,14 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Last Name"
                       isRequired
+                      // isInvalid={!!errors.lastName}
+                      // errorMessage={errors.lastName?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
-                        input : "text-black font-medium"
+                        input: "text-black font-medium"
                       }}
                       variant="underlined"
-                      className="border-gray-200 focus:border-purple shadow-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -118,16 +135,17 @@ const ContactForm: React.FC = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      type="email"
+                      label="Email"
+                      isRequired
+                      // isInvalid={!!errors.email}
+                      // errorMessage={errors.email?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
-                        input : "text-black font-medium"
+                        input: "text-black font-medium"
                       }}
-                      type="text"
-                      isRequired
-                      label="Email"
                       variant="underlined"
-                      className="border-gray-200 focus:border-purple shadow-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -135,36 +153,6 @@ const ContactForm: React.FC = () => {
               )}
             />
           </div>
-          {/* <div className='mb-6 hidden'>
-            <p className="mb-2 text-gray-400 font-medium text-xs">Select Subject</p>
-            <FormField
-              control={control}
-              name="subject"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Tabs
-                      {...field}
-                      aria-label="Subject options"
-                      selectedKey={field.value}
-                      onSelectionChange={field.onChange}
-                      className='p-0 text-black bg-transparent'
-                      color='warning'
-                      classNames={{
-                        tabList: "p-0 m-0",
-                        tabContent: "group-data-[selected=true]:text-black"
-                      }}
-                    >
-                      {subjectOptions.map((option) => (
-                        <Tab key={option.value} title={option.label} />
-                      ))}
-                    </Tabs>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div> */}
           <div className='mb-6'>
             <FormField
               control={control}
@@ -177,13 +165,19 @@ const ContactForm: React.FC = () => {
                       isRequired
                       labelPlacement='outside'
                       variant='underlined'
+                      // isInvalid={!!errors.subject}
+                      // errorMessage={errors.subject?.message}
                       classNames={{
-                        trigger:"mt-8",
+                        trigger: "mt-8",
                         label: "group-data-[filled=true]:text-gray-400 text-xs",
-                        value : "text-black font-medium"
+                        value: "text-black font-medium"
                       }}
                       selectedKeys={field.value ? [field.value] : []}
-                      onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        console.log('Subject changed to:', value);
+                        field.onChange(value);
+                      }}
                       className="w-full space-y-0 text-text"
                     >
                       {subjectOptions.map((option) => (
@@ -209,13 +203,14 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Message"
                       isRequired
+                      // isInvalid={!!errors.message}
+                      // errorMessage={errors.message?.message}
                       variant="underlined"
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
-                        input : "text-black font-medium"
+                        input: "text-black font-medium"
                       }}
-                      className="border-gray-200 focus:border-purple shadow-none"
                     />
                   </FormControl>
                   <FormMessage />
