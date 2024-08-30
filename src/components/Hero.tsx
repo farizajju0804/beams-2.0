@@ -29,7 +29,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 1.5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         whileHover={{ scale: 1.05 }}
         className="mt-6"
       >
@@ -50,7 +50,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="mt-8 mb-4"
       >
         <Link href="/auth/register">
