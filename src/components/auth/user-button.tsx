@@ -71,7 +71,7 @@ export default function UserButton() {
         <div className="flex items-center gap-2 cursor-pointer">
         <User   
         isFocusable={true}
-      name={`${user.firstName} ${user.lastName}`}
+      name={`${user.firstName}`}
       
       // description={user.}
       avatarProps={{

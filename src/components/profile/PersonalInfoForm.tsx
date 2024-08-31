@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Spinner, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Card, CardHeader, CardBody, Spinner, Select, SelectItem, Avatar } from "@nextui-org/react";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
@@ -14,10 +14,23 @@ import { Gallery } from "iconsax-react";
 import { z } from "zod";
 import CustomDateInput from "../auth/CustomDateInput";
 
+
 export const SettingsSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters long"),
   lastName: z.string().min(2, "Last name must be at least 2 characters long"),
-  dob: z.date().optional().nullable(),
+  dob: z
+    .object({
+      day: z.string().optional(),
+      month: z.string().optional(),
+      year: z.string().optional(),
+    })
+    .optional()
+    .refine((dob) => {
+      if (!dob?.day && !dob?.month && !dob?.year) {
+        return true; 
+      }
+      return dob?.day && dob?.month && dob?.year; // If any part is filled, require all parts
+    }, "If any one of day, month, or year is provided, all three must be provided"),
   grade: z.string().optional().nullable(),
   userType: z.enum(["STUDENT", "NON_STUDENT"]),
   email: z.string().email().optional(),
@@ -38,7 +51,8 @@ interface PersonalInfoFormProps {
   isOAuth: boolean;
 }
 
-const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+// const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+const getAvatarSrc = (user: any) => user?.image;
 
 const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -63,7 +77,11 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
       userType: user.userType,
       grade: user.grade || undefined,
       email: user.email,
-      dob: user.dob,
+      dob: {
+        day: day || '',
+        month: month || '',
+        year: year || ''
+      },
     },
   });
 
@@ -77,15 +95,8 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   }, [user.dob]);
 
   const handleDateChange = () => {
-    if (day && month && year) {
-      const newDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      if (!isNaN(newDate.getTime())) {
-        form.setValue('dob', newDate); // Set the dob in form state
-      } else {
-        form.setValue('dob', undefined); // Reset if the date is invalid
-      }
-    }
-  };
+    form.setValue('dob', { day, month, year });
+  }
 
   useEffect(() => {
     handleDateChange();
@@ -145,30 +156,45 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   };
 
   const onSubmit = (values: SettingsFormData) => {
+    // Reset error and success states at the beginning of each submission
     setError(undefined);
-    setSuccess(undefined); 
+    setSuccess(undefined);
+  
+    let dob: Date | undefined = undefined;
+  
+    const { day, month, year } = values.dob || {};
+    if ((day && (!month || !year)) || (month && (!day || !year)) || (year && (!day || !month))) {
+      setError("Please fill in all the date fields.");
+      return;
+    }
+  
+    if (day && month && year) {
+      dob = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+  
+    const dataToUpdate = {
+      ...values,
+      dob: dob ? dob.toISOString() : undefined,
+    };
+  
     startTransition(() => {
-      
-      settings(values)
+      settings(dataToUpdate)
         .then((data) => {
-          console.log("Settings Response:", data); // Add this line
+          console.log("Settings Response:", data);
           if (data.error) {
             setError(data.error);
-            setSuccess("");
           } else if (data.success) {
             setSuccess(data.success);
-          console.log("success:", success);
-            setError("");
-            setUser(values); 
+            setUser(values);
           }
         })
         .catch((err) => {
           console.error("Error submitting form:", err);
           setError("Something went wrong");
-          setSuccess("");
         });
     });
   };
+  
   
   return (
     <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
@@ -184,15 +210,15 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
           )}
           <div className="relative">
             <div
-              className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer  ${isUploading ? 'opacity-50' : ''}`}
+              className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
               onClick={handleFileInputClick}
             >
-              <Image 
+              <Avatar 
                 src={profileImage}
+                showFallback
+                isBordered
                 alt="Profile" 
-                width={200} 
-                height={200} 
-                className="w-full h-full rounded-full border-1 border-brand object-cover" 
+                className="w-24 h-24 text-large"
               />
               <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
                 <Gallery size={16} className="text-white" />
@@ -207,19 +233,14 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
           />
         </div>
         <Form {...form}>
-        <form onSubmit={(e) => { 
-      console.log("Form is being submitted"); 
-      form.handleSubmit(onSubmit)(e);
-    }} 
-    className="space-y-6"
-  >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6"
+          >
             <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="flex items-start flex-col justify-center space-x-4">
-                    
                     <FormControl>
                       <Input {...field} label="First Name" disabled={isPending} />
                     </FormControl>
@@ -232,7 +253,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="flex items-start flex-col justify-center space-x-4">
-                    
                     <FormControl>
                       <Input {...field} label="Last Name" disabled={isPending} />
                     </FormControl>
@@ -247,7 +267,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                     name="grade"
                     render={({ field }) => (
                       <FormItem className="flex items-start flex-col justify-center space-x-4">
-                        
                         <FormControl>
                           <Select
                             {...field}
@@ -306,7 +325,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   name="email"
                   render={() => (
                     <FormItem className="flex items-start flex-col justify-center space-x-4">
-                      
                       <FormControl>
                         <Input label="Email" value={user.email} disabled />
                       </FormControl>
@@ -318,8 +336,8 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
             <Button type="submit" color="primary" className="w-full font-medium text-lg text-white" isLoading={isPending}>
               Save
             </Button>
-            <FormError message={error} />
-            <FormSuccess message={success} />
+            {error && <FormError message={error} /> }
+            {success && <FormSuccess message={success} />}
           </form>
         </Form>
       </CardBody>
