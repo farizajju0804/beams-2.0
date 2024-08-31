@@ -58,11 +58,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  useEffect(() => {
-    if (pendingEmail) {
-      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail.email)}`);
-    }
-  }, [pendingEmail, router]);
+
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError("");

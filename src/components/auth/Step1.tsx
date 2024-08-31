@@ -53,13 +53,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // If there's a pending email, redirect to the verification page immediately
-  useEffect(() => {
-    if (pendingEmail) {
-      router.push(`/auth/new-verify-email?email=${encodeURIComponent(pendingEmail.email)}`);
-      
-    }
-  }, [pendingEmail, router]);
+  
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     setError("");
