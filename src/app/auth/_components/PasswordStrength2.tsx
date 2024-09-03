@@ -51,7 +51,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose }
   }, [password, allValid]);
 
   return (
-    <div className="w-full mt-2">
+    <div className="w-full mt-4">
       <div className="w-full h-2 ">
         <div className={`h-full ${barColor} rounded-full`} style={{ width: `${(rules.filter(rule => rule.regex.test(password)).length / rules.length) * 100}%` }}></div>
       </div>

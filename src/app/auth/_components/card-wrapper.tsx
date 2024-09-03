@@ -13,6 +13,7 @@ import {
 interface CardWrapperProps {
   children: React.ReactNode;
   headerLabel: string;
+  subMessage?: string;
   backButtonLabel?: string;
   backButtonSubText? : string;
   backButtonPosition? : "top" | "bottom";
@@ -28,9 +29,10 @@ const CardWrapper: FC<Readonly<CardWrapperProps>> = ({
   backButtonHref,
   backButtonPosition,
   showSocial,
+  subMessage
 }) => {
   return (
-    <Card className="w-full max-w-lg px-4 shadow-none">
+    <Card className="w-full max-w-lg px-4 pb-4 shadow-none">
       <CardHeader className="mt-2 flex flex-col md:flex-row items-start md:items-center gap-4 w-full py-4 justify-between">
         <Header label={headerLabel} />
         {backButtonLabel && backButtonHref && backButtonPosition == "top" && (
@@ -38,13 +40,16 @@ const CardWrapper: FC<Readonly<CardWrapperProps>> = ({
       )
       }
       </CardHeader>
+      {subMessage && (
+          <p className="px-3 mb-4 text-left font-medium text-text ">{subMessage}</p>
+      )}
       {showSocial && (
           <Social />
       )}
       <CardBody>{children}</CardBody>
      
       {backButtonLabel && backButtonHref && backButtonPosition == "bottom" &&(
-        <CardFooter>
+        <CardFooter className="p-0">
         
         <BackButton position="bottom" subText={backButtonSubText} label={backButtonLabel} href={backButtonHref} />
       </CardFooter>

@@ -43,7 +43,7 @@ const FormError: FC<Readonly<FormErrorProps>> = ({ message }) => {
           className="absolute top-0 left-0 h-1 bg-red-500"
         />
         <ExclamationTriangleIcon className="h-4 w-4" />
-        <p>{message}</p>
+        <p className="font-semibold">{message}</p>
       </motion.div>
     )
   );

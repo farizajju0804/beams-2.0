@@ -7,7 +7,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@nextui-org/react";
@@ -15,15 +14,17 @@ import CardWrapper from "@/app/auth/_components/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@nextui-org/react";
 import { newPassword } from "@/actions/auth/new-password";
-import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useTransition, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Eye, EyeSlash, Key } from "iconsax-react";
-import Link from "next/link";
 import FormError from "../../../components/form-error";
+import PasswordStrength from "./PasswordStrength2";
+import Image from "next/image";
 
 const NewPasswordForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<boolean>(false);
@@ -51,18 +52,36 @@ const NewPasswordForm = () => {
     });
   };
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        router.push("/auth/login");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success, router]);
+
   return (
-    <CardWrapper headerLabel={success ? "Password Reset Successfully" : "Reset Password"}>
+    <CardWrapper subMessage={success ? "" : "Time to choose a new password. Just make sure it's not the same password again."} headerLabel={success ? "Your password has been successfully reset." : "Reset Password"}>
       {success ? (
         <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700 mb-6">
-            Your password has been successfully reset. You can now use your new password to login.
-          </p>
-          <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold mb-4 text-white text-lg">
-              Go to Login
-            </Button>
-          </Link>
+          <Image
+            className="mx-auto"
+            priority
+            alt="password"
+            src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1725374175/authentication/passwrod-reset-3d_qsqm3a.webp"}
+            width={200}
+            height={200}
+          />
+          <p className="text-lg text-text mb-6">Mission Accomplished</p>
+          <Button
+            color="primary"
+            className="w-full font-semibold py-6 mb-4 text-white md:text-xl text-lg"
+            isLoading={true} // Keep the button in loading state
+          >
+            Redirecting to Login
+          </Button>
         </div>
       ) : (
         <Form {...form}>
@@ -77,19 +96,18 @@ const NewPasswordForm = () => {
                       <Input
                         isRequired
                         classNames={{
-                          label: "w-20",
+                          label: "font-semibold text-text",
                           mainWrapper: "w-full flex-1",
+                          innerWrapper: 'h-12',
                           input: ["placeholder:text-grey-2 text-xs", "w-full flex-1"],
                         }}
                         label="Password"
+                        variant="underlined"
                         {...field}
                         type={showPassword ? "text" : "password"}
                         disabled={isPending}
-                        labelPlacement="outside-left"
+                        labelPlacement="outside"
                         placeholder="Enter a new password"
-                        startContent={
-                          <Key variant="Bold" className="text-secondary-2" size={20} />
-                        }
                         endContent={
                           <span
                             className="cursor-pointer text-[#888888]"
@@ -108,14 +126,19 @@ const NewPasswordForm = () => {
                   </FormItem>
                 )}
               />
+              <PasswordStrength 
+                  password={form.watch('password')}
+                  onClose={() =>{}}
+                />
             </div>
             <Button
               type="submit"
               color="primary"
-              className="w-full text-white text-lg font-medium"
+              endContent={<Key variant="Bold"/>}
+              className="w-full text-white text-lg mdtext-xl font-semibold py-6"
               isLoading={isPending}
             >
-              Reset
+              Reset Password
             </Button>
             <FormError message={error} />
           </form>

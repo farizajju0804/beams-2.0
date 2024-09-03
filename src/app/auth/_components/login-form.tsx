@@ -142,7 +142,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                       <FormControl>
                         <Input
                           isRequired
-                          color="primary"
+                          // color="primary"
                           label="Email Address"
                           classNames={{
                             label: 'font-semibold  text-text',
@@ -187,7 +187,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                     <FormControl>
                       <Input
                         isRequired
-                        color="primary"
+                        // color="primary"
                         variant="underlined"
                         classNames={{
                           label: 'font-semibold text-text',

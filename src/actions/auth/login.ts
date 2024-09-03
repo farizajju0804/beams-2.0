@@ -25,7 +25,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
   
 
   if (!existingUser || !existingUser.email) {
-    return { error: "No account found", success: undefined };
+    return { error: "Hmm, can't find that email. Sure it's right?", success: undefined };
   }
 
   if (!existingUser.password) {
@@ -37,7 +37,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
     });
 
     if (linkedAccount) {
-      return { error: `Your account is linked with ${linkedAccount.provider}. Try logging in with that.`, success: undefined };
+      return { error: `Looks like you signed up with ${linkedAccount.provider}. Use ${linkedAccount.provider} to log in!`, success: undefined };
     }
 
     return { error: "Your account may be linked with other providers", success: undefined };
@@ -45,7 +45,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
 
   const passwordMatch = await bcrypt.compare(password, existingUser.password);
   if (!passwordMatch) {
-    return { error: "Invalid Credentials", success: undefined };
+    return { error: "Those credentials don't seem to match. Try again", success: undefined };
   }
 
   if (!existingUser.emailVerified) {
@@ -129,7 +129,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
         // case "CallbackRouteError":
         //   return { error: "Invalid Credentials", success: undefined };
         default:
-          return { error: "Something went wrong!", success: undefined };
+          return { error: "Something went wrong! Let's try that again", success: undefined };
       }
     }
 

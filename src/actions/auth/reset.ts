@@ -40,3 +40,23 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
 
   return { success: "Email Sent!" };
 };
+
+
+export const resendPasswordResetEmail = async (email: string) => {
+  const existingUser: any = await getUserByEmail(email);
+
+  if (!existingUser) {
+    return { error: "No account found" };
+  }
+
+ 
+
+  const passwordResetToken = await getPasswordResetToken(email);
+  await sendPasswordResetEmail(
+    passwordResetToken.email,
+    existingUser.firstName,
+    passwordResetToken.token
+  );
+
+  return { success: "Email Resent!" };
+};

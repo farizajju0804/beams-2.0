@@ -16,7 +16,7 @@ const LoginPage: FC<LoginPageProps> = async({}) => {
   return (
     <Suspense>
       <div className="flex flex-col lg:flex-row min-h-screen w-full items-center">
-            <LoginSide/>
+            <LoginSide show={false}/>
             <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
             <LoginForm ip={ip} pendingEmail={pendingEmail} />
             </div>
