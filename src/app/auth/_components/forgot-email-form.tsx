@@ -11,13 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@nextui-org/react";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { Input } from "@nextui-org/react";
 import { forgotEmail } from "@/actions/auth/forgotEmail";
 import Link from "next/link";
-import FormError from "../form-error";
+import FormError from "../../../components/form-error";
 
 const ForgotEmailForm = () => {
   const [error, setError] = useState<string | undefined>("");

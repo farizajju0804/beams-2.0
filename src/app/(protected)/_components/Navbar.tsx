@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@nextui-org/react'
 import path from 'path'
-import UserButton from '@/components/auth/user-button'
+import UserButton from '@/app/auth/_components/user-button'
 const Navbar = () => {
     const pathname = usePathname()
   return (

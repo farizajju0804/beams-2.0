@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import UserOnboarding from "@/components/auth/user-onboarding";
+import UserOnboarding from "@/app/auth/_components/user-onboarding";
 
 const Page = async() => {
 

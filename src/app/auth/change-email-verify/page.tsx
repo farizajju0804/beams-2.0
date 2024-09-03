@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { verifyCodeAndChangeEmail } from "@/actions/auth/verifyCode";
 import { Input, Button } from "@nextui-org/react";
 import FormError from "@/components/form-error";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import { resendVerificationCode3 } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";

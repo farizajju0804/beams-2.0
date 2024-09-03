@@ -1,4 +1,4 @@
-import ForgotEmailForm from '@/components/auth/forgot-email-form'
+import ForgotEmailForm from '@/app/auth/_components/forgot-email-form'
 import React from 'react'
 
 const page = () => {

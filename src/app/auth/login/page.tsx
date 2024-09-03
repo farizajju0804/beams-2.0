@@ -1,10 +1,11 @@
 
 import type { FC } from "react";
-import LoginForm from "@/components/auth/login-form";
+import LoginForm from "@/app/auth/_components/login-form";
 import { Suspense } from 'react';
 import { headers } from 'next/headers'
 import { getClientIp } from "@/utils/getClientIp";
 import { checkPendingVerification } from "@/actions/auth/register";
+import LoginSide from "../_components/LoginSide";
 interface LoginPageProps {}
 
  
@@ -14,13 +15,14 @@ const LoginPage: FC<LoginPageProps> = async({}) => {
   const pendingEmail:any = await checkPendingVerification(ip);
   return (
     <Suspense>
-      <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden ">
-        <div className="flex items-center justify-center md:justify-center px-4 md:px-12 w-full ">
-          <div className="w-full flex items-center justify-center max-w-md md:max-w-lg">
+      <div className="flex flex-col lg:flex-row min-h-screen w-full items-center">
+            <LoginSide/>
+            <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
             <LoginForm ip={ip} pendingEmail={pendingEmail} />
+            </div>
+            
           </div>
-        </div>
-      </div>
+  
     </Suspense>
   );
 };

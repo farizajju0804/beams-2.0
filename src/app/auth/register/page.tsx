@@ -1,22 +1,21 @@
 import { checkPendingVerification } from "@/actions/auth/register";
-import RegisterPage from "@/components/auth/register-form";
-import Step1Form from "@/components/auth/Step1";
+import RegisterPage from "@/app/auth/_components/register-form";
+import Step1Form from "@/app/auth/_components/Step1";
 import { getClientIp } from "@/utils/getClientIp";
 import { Suspense } from "react";
+import RegisterSide from "../_components/RegisterSide";
 
 const Page = async() => {
   const ip = getClientIp()
   const pendingEmail:any = await checkPendingVerification(ip);
   return (
     <Suspense>
-      <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden ">
-        <div className="flex items-center justify-center md:justify-center px-4 md:px-12 w-full ">
-          <div className="w-full flex items-center justify-center max-w-md md:max-w-lg">
+      <div className="flex flex-col lg:flex-row min-h-screen w-full items-center">
+        <RegisterSide/>
+      <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
             <Step1Form ip={ip} pendingEmail={pendingEmail}  />
-          </div>
-        </div>
-        
-      </div>
+            </div>
+.          </div>
       </Suspense>
   
   );

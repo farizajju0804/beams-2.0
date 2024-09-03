@@ -1,6 +1,6 @@
 "use client"
 
-import CardWrapper from "@/components/auth/card-wrapper"
+import CardWrapper from "@/app/auth/_components/card-wrapper"
 import { BeatLoader } from 'react-spinners'
 import { useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"

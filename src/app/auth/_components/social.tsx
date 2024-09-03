@@ -15,15 +15,15 @@ const Social = () => {
   };
 
   return (
-    <div className="flex items-center flex-col justify-center w-full gap-x-2">
-      <p className="text-xs mb-2 text-grey-2">Continue With</p>
+    <div className="flex items-center flex-col justify-center py-4 px-2 w-full">
       <Button
         size="lg"
-        className="bg-transparent"
-        isIconOnly
+        className="w-full bg-transparent font-medium text-text"
         onClick={handleSocialSignIn}
+        variant="bordered"
         startContent={<FcGoogle className="h-8 w-8" />}
       >
+        Continue With Google
       </Button>
     </div>
   );

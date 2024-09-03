@@ -1,5 +1,5 @@
 
-import UserInfoForm from "@/components/auth/user-info-form";
+import UserInfoForm from "@/app/auth/_components/user-info-form";
 
 
 const Page = () => {

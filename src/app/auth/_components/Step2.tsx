@@ -6,7 +6,7 @@ import { verifyCode } from "@/actions/auth/verifyCode";
 import { Input, Button } from "@nextui-org/react";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import Stepper from "./Stepper";
 import { resendVerificationCode } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";

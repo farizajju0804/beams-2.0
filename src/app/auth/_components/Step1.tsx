@@ -7,12 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/schema";
 import { Input, Button } from "@nextui-org/react";
 import { registerAndSendVerification } from "@/actions/auth/register";
-import { Eye, EyeSlash, Key, Sms } from "iconsax-react";
+import { Eye, EyeSlash, Key, Sms, User } from "iconsax-react";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import PasswordStrength from "./PasswordStrength2";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -83,9 +83,11 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
 
   return (
     <CardWrapper
-      headerLabel="Sign Up"
-      backButtonLabel="Already have an account?"
+      headerLabel="Sign Up 🚀"
+      backButtonLabel="Login"
+      backButtonSubText="Have an account?"
       backButtonHref="/auth/login"
+      backButtonPosition="top"
       showSocial
     >
       {/* <Form {...form}>
@@ -204,8 +206,9 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                           isRequired
                           label="Email"
                           classNames={{
-                            label: 'w-20 font-medium',
+                            label: 'font-semibold text-text',
                             mainWrapper: "w-full flex-1",
+                          inputWrapper : "h-12",
                             input: [
                               "placeholder:text-grey-2 ",
                               'w-full flex-1 font-medium'
@@ -214,10 +217,11 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                           {...field}
                           type="email"
                          disabled={isPending}
-                          labelPlacement={isMobile ? "outside" :"outside-left"}
+                          variant="underlined"
+                          labelPlacement={"outside"}
                           placeholder="Enter your email"
-                        
-                          startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
+                          color="primary"
+                          // startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
                           onFocus={() => setIsTypingEmail(true)}
                          
                           onBlur={() => {
@@ -245,8 +249,9 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                       <Input
                         isRequired
                         classNames={{
-                          label: 'w-20 font-medium',
+                          label: 'font-semibold text-text',
                           mainWrapper: "w-full flex-1",
+                          inputWrapper : "h-12",
                           input: [
                             "placeholder:text-grey-2 ",
                             'w-full flex-1 font-medium'
@@ -256,15 +261,17 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                         {...field}
                         type={showPassword ? "text" : "password"}
                          disabled={isPending}
-                        labelPlacement={isMobile ? "outside" :"outside-left"}
+                         variant="underlined"
+                         color="primary"
+                         labelPlacement={"outside"}
                         placeholder="Enter your password"
-                        startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
+                        // startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
                         endContent={
                           <span
                             className="cursor-pointer text-[#888888]"
                             onClick={togglePasswordVisibility}
                           >
-                            {showPassword ? <EyeSlash variant="Bold" size={16} /> : <Eye variant="Bold" size={16} />}
+                            {showPassword ? <EyeSlash variant="Bold" /> : <Eye variant="Bold"  />}
                           </span>
                         }
                         onFocus={() => 
@@ -302,7 +309,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
               </div>
             </div>
           
-          <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isPending}>
+          <Button endContent={<User size={18} variant="Bold"/>} type="submit" color="primary" className="w-full py-6 text-lg md:text-xl text-white font-semibold" isLoading={isPending}>
           {isPending ? "Creating Account..." : "Create Account"}
           </Button>
             {error && (<FormError message={error} />)}

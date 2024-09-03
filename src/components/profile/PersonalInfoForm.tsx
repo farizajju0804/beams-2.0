@@ -12,7 +12,7 @@ import { useUserStore } from "@/store/userStore";
 import Image from "next/image";
 import { Gallery } from "iconsax-react";
 import { z } from "zod";
-import CustomDateInput from "../auth/CustomDateInput";
+import CustomDateInput from "../../app/auth/_components/CustomDateInput";
 
 
 export const SettingsSchema = z.object({

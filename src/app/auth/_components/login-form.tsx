@@ -11,12 +11,12 @@ import { login } from "@/actions/auth/login";
 import { useRouter, useSearchParams } from 'next/navigation';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
-import { useEmailStore } from "@/store/email";
+import { RiLoginCircleFill } from "react-icons/ri";
 interface LoginFormProps{
   ip :string,
   pendingEmail?: any;
@@ -93,10 +93,12 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
 
   return (
     <CardWrapper
-      headerLabel="Login"
-      backButtonLabel="Don't have an account?"
+      headerLabel="Login 🔓"
+      backButtonLabel="Sign Up"
       backButtonHref="/auth/register"
+      backButtonSubText="No account?"
       showSocial
+      backButtonPosition="top"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -140,10 +142,12 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                       <FormControl>
                         <Input
                           isRequired
-                          label="Email"
+                          color="primary"
+                          label="Email Address"
                           classNames={{
-                            label: 'w-20 font-medium',
+                            label: 'font-semibold  text-text',
                             mainWrapper: "w-full flex-1",
+                          inputWrapper : "h-12",
                             input: [
                               "placeholder:text-grey-2 ",
                               'w-full flex-1 font-medium'
@@ -151,10 +155,11 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                           }}
                           {...field}
                           type="email"
-                          labelPlacement={isMobile ? "outside" :"outside-left"}
+                          variant="underlined"
+                          labelPlacement={"outside"}
                           placeholder="Enter your email"
                           disabled={isLoading}
-                          startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
+                          // startContent={!isTypingEmail && <Sms variant="Bold" className="text-gray-500" size={16} />}
                           onFocus={() => setIsTypingEmail(true)}
                           // onBlur={() => setIsTypingEmail(false)}
                           onBlur={() => {
@@ -182,11 +187,14 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                     <FormControl>
                       <Input
                         isRequired
+                        color="primary"
+                        variant="underlined"
                         classNames={{
-                          label: 'w-20 font-medium',
+                          label: 'font-semibold text-text',
                           mainWrapper: "w-full flex-1",
+                          inputWrapper : "h-12",
                           input: [
-                            "placeholder:text-grey-2 ",
+                            "placeholder:text-grey-2",
                             'w-full flex-1 font-medium'
                           ]
                         }}
@@ -194,15 +202,15 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                         {...field}
                         type={showPassword ? "text" : "password"}
                         disabled={isLoading}
-                        labelPlacement={isMobile ? "outside" :"outside-left"}
+                        labelPlacement="outside"
                         placeholder="Enter your password"
-                        startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
+                        // startContent={!isTypingPassword && <Key variant="Bold" className="text-gray-500" size={18} />}
                         endContent={
                           <span
                             className="cursor-pointer text-[#888888]"
                             onClick={togglePasswordVisibility}
                           >
-                            {showPassword ? <EyeSlash variant="Bold" size={16} /> : <Eye variant="Bold" size={16} />}
+                            {showPassword ? <EyeSlash variant="Bold" size={18} /> : <Eye variant="Bold" size={18} />}
                           </span>
                         }
                         onFocus={() => 
@@ -229,22 +237,22 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
                   </FormItem>
                 )}
               />
-              {showPasswordStrength && (
+              {/* {showPasswordStrength && (
                 <PasswordStrength
                   password={form.watch('password')}
                   onClose={() => setShowPasswordStrength(false)}
                 />
-              )}
+              )} */}
             </div>
               </>
             )}
             <div className="w-full flex justify-between lg:px-0">
-              <Link className="font-normal text-xs" href="/auth/reset">Forgot password?</Link>
-              <Link className="font-normal text-xs" href="/auth/forgot-identifiers">Forgot email?</Link>
+              <Link className="font-normal text-sm" href="/auth/reset">Forgot password?</Link>
+              <Link className="font-normal text-sm" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>
           
           </div>
-          <Button type="submit" color="primary" className="w-full text-lg text-white font-medium" isLoading={isLoading}>
+          <Button endContent={<RiLoginCircleFill/>} type="submit" color="primary" className="w-full text-lg lg:text-xl text-white py-6 font-semibold" isLoading={isLoading}>
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
             {error && (<FormError message={error} />)}

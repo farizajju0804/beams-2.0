@@ -1,5 +1,5 @@
-import BackButton from "@/components/auth/back-button";
-import { Header } from "@/components/auth/header";
+import BackButton from "@/app/auth/_components/back-button";
+import { Header } from "@/app/auth/_components/header";
 import {
   Card,
   CardBody,

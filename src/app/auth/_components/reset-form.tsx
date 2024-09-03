@@ -11,13 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@nextui-org/react";
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@nextui-org/react";
 import { reset } from "@/actions/auth/reset";
 import { useState, useTransition } from "react";
 import { Sms } from "iconsax-react";
-import FormError from "../form-error";
+import FormError from "../../../components/form-error";
 import Link from "next/link";
 
 const ResetForm = () => {

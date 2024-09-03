@@ -16,7 +16,7 @@ import { Button } from "@nextui-org/react";
 import { submitSecurityAnswers } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";
 import { useRouter, useSearchParams } from "next/navigation"; 
-import CardWrapper from "@/components/auth/card-wrapper";
+import CardWrapper from "@/app/auth/_components/card-wrapper";
 
 
 

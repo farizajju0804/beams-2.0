@@ -11,7 +11,7 @@ import { getLatestUserData } from '@/actions/auth/getLatestUserData';
 import { useRouter } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
-import RedirectionMessage from '../RedirectionMessage';
+import RedirectionMessage from '../../../components/RedirectionMessage';
 interface UserOnboardingProps {
   sessionData: any; 
 }

@@ -1,4 +1,4 @@
-import { LoginButton } from "@/components/auth/login-button";
+import { LoginButton } from "@/app/auth/_components/login-button";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Navbar";
 import PublicFooter from "@/components/PublicFooter";
