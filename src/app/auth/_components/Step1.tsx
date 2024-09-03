@@ -220,7 +220,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                           variant="underlined"
                           labelPlacement={"outside"}
                           placeholder="Enter your email"
-                          color="primary"
+                          // color="primary"
                           // startContent={!isTypingEmail && <Sms variant="Bold" className="text-secondary-2" size={16} />}
                           onFocus={() => setIsTypingEmail(true)}
                          
@@ -239,7 +239,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                     </FormItem>
                   )}
                 />
-              <div className="relative h-auto transition-all duration-500 ease-soft-spring">
+              <div className="h-auto">
               <FormField
                 control={form.control}
                 name="password"
@@ -262,7 +262,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                         type={showPassword ? "text" : "password"}
                          disabled={isPending}
                          variant="underlined"
-                         color="primary"
+                        //  color="primary"
                          labelPlacement={"outside"}
                         placeholder="Enter your password"
                         // startContent={!isTypingPassword && <Key variant="Bold" className="text-secondary-2" size={16} />}
@@ -299,15 +299,15 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                   </FormItem>
                 )}
               />
-              {showPasswordStrength && (
+             
                 <PasswordStrength
                   password={form.watch('password')}
                   onClose={() => setShowPasswordStrength(false)}
-                  showCrackTime={true}
+                 
                 />
-              )}
+            
               </div>
-              <div className="w-ful">
+              <div className="w-full">
               <p className="text-xs text-gra-500">By continuing, you agree to the <span className="text-brand font-medium"><Link href='/terms'>Terms of Service</Link></span> and acknowledge you&apos;ve read our <span className="text-brand font-medium"><Link href='/privacy'>Privacy Policy</Link></span>. </p>
             </div>
             </div>

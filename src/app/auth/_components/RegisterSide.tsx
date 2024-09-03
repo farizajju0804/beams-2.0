@@ -23,7 +23,7 @@ const RegisterSide = () => {
         <FaStar className="text-purple w-4 h-4 mt-1" />
         <div>
           <h3 className="text-purple text-lg font-bold">Stay Ahead of the Curve</h3>
-          <p className="text-text ">Discover the latest futuristic ideas before they hit the mainstream</p>
+          <p className="text-black ">Discover the latest futuristic ideas before they hit the mainstream</p>
         </div>
       </div>
 
@@ -31,7 +31,7 @@ const RegisterSide = () => {
         <FaStar className="text-purple w-4 h-4 mt-1" />
         <div>
           <h3 className="text-purple text-lg font-bold">Lead the Way</h3>
-          <p className="text-text ">Learn about the latest technological advancements and innovations.</p>
+          <p className="text-black ">Learn about the latest technological advancements and innovations.</p>
         </div>
       </div>
 
@@ -39,7 +39,7 @@ const RegisterSide = () => {
         <FaStar className="text-purple w-4 h-4 mt-1" />
         <div>
           <h3 className="text-purple text-lg font-bold">2 Minute to Futuristic Bliss</h3>
-          <p className="text-text">Experience the thrill of learning about the future in just 2 minutes.</p>
+          <p className="text-black">Experience the thrill of learning about the future in just 2 minutes.</p>
         </div>
       </div>
     </div>
