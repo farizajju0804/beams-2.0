@@ -307,6 +307,9 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                 />
               )}
               </div>
+              <div className="w-ful">
+              <p className="text-xs text-gra-500">By continuing, you agree to the <span className="text-brand font-medium"><Link href='/terms'>Terms of Service</Link></span> and acknowledge you&apos;ve read our <span className="text-brand font-medium"><Link href='/privacy'>Privacy Policy</Link></span>. </p>
+            </div>
             </div>
           
           <Button endContent={<User size={18} variant="Bold"/>} type="submit" color="primary" className="w-full py-6 text-lg md:text-xl text-white font-semibold" isLoading={isPending}>

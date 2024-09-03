@@ -14,7 +14,7 @@ export const ErrorCard = () => {
                 <Header label="Oops! Something Went Wrong!"/>
             </CardHeader>
             <CardFooter>
-                <BackButton label="Back to login" href="/auth/login"/>
+                <BackButton position="bottom" label="Back to login" href="/auth/login"/>
           </CardFooter>
 
         </Card>
