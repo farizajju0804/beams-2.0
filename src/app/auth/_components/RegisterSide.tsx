@@ -5,7 +5,7 @@ import { FaStar } from 'react-icons/fa'
 
 const RegisterSide = () => {
   return (
-    <div className='h-full lg:min-h-screen p-4 flex flex-col items-center justify-center xl:justify-around gap-5 bg-yellow w-full lg:w-[50%]'>
+    <div className='h-full lg:min-h-[110vh] p-4 py-6 m-0 flex flex-col items-center justify-center xl:justify-around gap-5 bg-yellow w-full lg:w-[50%]'>
         <div className="flex items-start w-full pl-2 md:pl-6">
         <Link href="/">
         <Image src="/images/logo.png" alt="Beams Logo" width={85} height={30} />

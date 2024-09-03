@@ -17,6 +17,7 @@ import { submitSecurityAnswers } from "@/actions/auth/register";
 import { useEmailStore } from "@/store/email";
 import { useRouter, useSearchParams } from "next/navigation"; 
 import CardWrapper from "@/app/auth/_components/card-wrapper";
+import RegisterSide from "../_components/RegisterSide";
 
 
 
@@ -60,6 +61,9 @@ const Step3Form: React.FC = ({ }) => {
   };
 
   return (
+    <div className="h-full m-0 flex flex-col lg:flex-row min-h-screen w-full items-center justify-center">
+    <RegisterSide/>
+    <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
     <CardWrapper headerLabel="Security Questions">
       {/* <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
       <Form {...form}>
@@ -112,6 +116,8 @@ const Step3Form: React.FC = ({ }) => {
         </form>
       </Form>
     </CardWrapper>
+    </div>
+    </div>
   );
 };
 

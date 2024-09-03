@@ -41,12 +41,12 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
     },
   });
 
-  await db.pendingVerification.create({
-    data: {
-      email: values.email,
-      ip: ip,
-    },
-  });
+  // await db.pendingVerification.create({
+  //   data: {
+  //     email: values.email,
+  //     ip: ip,
+  //   },
+  // });
 
   const verificationToken = await getVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, existingUser.firstName,verificationToken.token);
