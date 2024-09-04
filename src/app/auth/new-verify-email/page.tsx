@@ -127,7 +127,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
             )}
           </p>
           <p className="text-left text-text text-sm">
-          Enter the code below to verify your account. If you can't find it, check your spam or junk folder—sometimes magic hides there too! Be sure to mark it as safe!
+          Enter the code below to verify your account. If you can&apos;t find it, check your spam or junk folder—sometimes magic hides there too! Be sure to mark it as safe!
           </p>
           <div className="flex justify-center">
             <input
@@ -159,7 +159,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
       </form>
       <div className="my-4 flex flex-col items-center gap-2 text-center">
         <p className="text-sm text-grey-2">
-          Didn't receive the code? Click below
+          Didn&apos;t receive the code? Click below
         </p>
         <button
             type="button"
