@@ -18,12 +18,14 @@ import { useEmailStore } from "@/store/email";
 import { useRouter, useSearchParams } from "next/navigation"; 
 import CardWrapper from "@/app/auth/_components/card-wrapper";
 import RegisterSide from "../_components/RegisterSide";
+import { ShieldTick } from "iconsax-react";
+import Image from "next/image";
 
 
 
 const securityQuestions = [
-  "What was your first pet's name?",
-  "What is your mother's maiden name?",
+  {question : "What was your first pet's name?", image :"https://res.cloudinary.com/drlyyxqh9/image/upload/v1725430098/authentication/cat-3d-1_sjfydd.webp" },
+  {question : "What is your mother's maiden name?", image : "https://res.cloudinary.com/drlyyxqh9/image/upload/v1725430100/authentication/mom-3d-1_hslv73.webp"}
 ];
 
 const Step3Form: React.FC = ({ }) => {
@@ -64,13 +66,18 @@ const Step3Form: React.FC = ({ }) => {
     <div className="h-full m-0 flex flex-col lg:flex-row min-h-screen w-full items-center justify-center">
     <RegisterSide/>
     <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
-    <CardWrapper headerLabel="Security Questions">
-      {/* <Stepper currentStep={4} totalSteps={4} stepLabels={ ["Account Info", "Email Verification", "User Info", "Security Questions"]} /> */}
+    <CardWrapper headerLabel="Security Questions 🛡️" subMessage="Answer This And Help Us Keep Your Future Self From Saying, 'I Forgot My Credentials!' 😅">
+     
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
        
           {securityQuestions.map((question, index) => (
-          // <div className="space-y-8">
+         
+          <>
+            <div className="flex w-full items-center justify-between">
+              <h1 className="text-left font-semibold text-xl">{question.question}</h1>
+              <Image src={question.image} alt="question" width={100} height={100} />
+            </div>
             <FormField
               key={index}
               control={form.control}
@@ -81,16 +88,17 @@ const Step3Form: React.FC = ({ }) => {
                     <Input
                       {...field}
                       isRequired
-                      label={question}
-                      placeholder={`Security Question ${index + 1}`}
-                      labelPlacement="outside"
+                      // label={question}
+                      placeholder={'Enter your answer'}
+                      variant="underlined"
+                      // labelPlacement="outside"
                    
                       classNames={{
-                        label: 'font-medium',
+                        // label: 'font-medium',
                         // inputWrapper: "w-full flex-1",
                         // base :"mb-4",
                         input: [
-                          "placeholder:text-grey-2 text-xs",
+                          "placeholder:text-grey-2",
                           'w-full  font-medium'
                         ]
                       }}
@@ -102,15 +110,16 @@ const Step3Form: React.FC = ({ }) => {
                
               )}
             />
-            // </div>
+          </>
           ))}
           <Button
             type="submit"
             color="primary"
-            className="w-full text-white font-medium"
+            endContent={<ShieldTick variant="Bold"/>}
+            className="w-full text-white font-semibold py-6 text-lg md:text-xl"
             isLoading={isPending}
           >
-            {isPending ? "Submitting..." : "Submit"}
+            {isPending ? "Securing..." : "Secure Me"}
           </Button>
          
         </form>

@@ -18,10 +18,13 @@ import { Input } from "@nextui-org/react";
 import { forgotEmail } from "@/actions/auth/forgotEmail";
 import Link from "next/link";
 import FormError from "../../../components/form-error";
+import { Sms } from "iconsax-react";
+import Image from "next/image";
+import { RiLoginCircleFill } from "react-icons/ri";
 
 const ForgotEmailForm = () => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(true);
   const [maskedEmail, setMaskedEmail] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
@@ -32,6 +35,10 @@ const ForgotEmailForm = () => {
       securityAnswer2: "",
     },
   });
+  const securityQuestions = [
+    {question : "What was your first pet's name?", image :"https://res.cloudinary.com/drlyyxqh9/image/upload/v1725430098/authentication/cat-3d-1_sjfydd.webp" },
+    {question : "What is your mother's maiden name?", image : "https://res.cloudinary.com/drlyyxqh9/image/upload/v1725430100/authentication/mom-3d-1_hslv73.webp"}
+  ];
 
   const onSubmit = (values: z.infer<typeof ForgotEmailSchema>) => {
     setError("");
@@ -51,75 +58,85 @@ const ForgotEmailForm = () => {
 
   return (
     <CardWrapper
-      headerLabel={success ? "Email Recovered Successfully" : "Recover your account"}
-      backButtonLabel={success ? "" : "Back to login"}
-      backButtonHref={success ? "" : "/auth/login"}
+      headerLabel={success ? "Email Found 🎉" : "Forgot Email 🤔"}
+      subMessage={success ? "" : "Forgot your email? No worries! Answer your security questions, and we'll help you find your email."}
+      backButtonLabel={!success ? "Contact Us" : "Reset Password"}
+      backButtonHref={!success ? "/contact-us" : "/auth/reset"}
+      backButtonPosition="bottom"
+      backButtonSubText={!success ? "If you're still stuck, don't worry! You can always contact our support team for a helping hand. " : "Forgot your password? No problem! Click below to reset."}
     >
       {success ? (
-        <div className="text-center space-y-6">
-          <p className="text-lg text-gray-700 mb-6">
-            Your email has been successfully recovered: <strong className="text-purple">{maskedEmail}</strong>.
+        <div className="text-center">
+          <Image
+            className="mx-auto mb-6"
+            priority
+            alt="password"
+            src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1725433680/authentication/email-found-3d_abjjme.webp"}
+            width={180}
+            height={200}
+          />
+          <p className="text-lg font-medium text-text mb-6">
+            Great Job! We&apos;have uncovered your email: <strong className="font-bold text-secondary-2">{maskedEmail}</strong>
           </p>
           <Link href="/auth/login" passHref>
-            <Button color="primary" className="w-full font-semibold text-white text-lg mb-4">
+            <Button color="primary" endContent={<RiLoginCircleFill/>} className="w-full font-semibold text-white text-lg py-6 md:text-xl mb-4">
               Go to Login
             </Button>
           </Link>
         </div>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-4">
-              <div>
-                <FormLabel className="mb-4">What was your first pet&apos;s name?</FormLabel>
-                <FormField
-                  control={form.control}
-                  name="securityAnswer1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          isRequired
-                          label="Answer"
-                          {...field}
-                          type="text"
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div>
-                <FormLabel className="mb-2">What is your mother&apos;s maiden name?</FormLabel>
-                <FormField
-                  control={form.control}
-                  name="securityAnswer2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          isRequired
-                          label="Answer"
-                          {...field}
-                          type="text"
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+       
+          {securityQuestions.map((question, index) => (
+         
+          <>
+            <div className="flex w-full items-center justify-between">
+              <h1 className="text-left font-semibold text-xl">{question.question}</h1>
+              <Image src={question.image} alt="question" width={100} height={100} />
             </div>
+            <FormField
+              key={index}
+              control={form.control}
+              name={`securityAnswer${index + 1}` as "securityAnswer1" | "securityAnswer2"}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      isRequired
+                      // label={question}
+                      placeholder={'Enter your answer'}
+                      variant="underlined"
+                      // labelPlacement="outside"
+                   
+                      classNames={{
+                        // label: 'font-medium',
+                        // inputWrapper: "w-full flex-1",
+                        // base :"mb-4",
+                        input: [
+                          "placeholder:text-grey-2",
+                          'w-full  font-medium'
+                        ]
+                      }}
+                   
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+               
+              )}
+            />
+          </>
+          ))}
             <Button
               type="submit"
               color="primary"
-              className="w-full font-medium text-white"
+              endContent={<Sms variant="Bold"/>}
+              className="w-full font-semibold py-6 text-lg md:text-xl text-white"
               isLoading={isPending}
             >
-              Submit
+              Show Me My Email
             </Button>
             {error && <FormError message={error} />}
           </form>

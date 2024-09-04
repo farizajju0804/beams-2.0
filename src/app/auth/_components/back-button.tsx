@@ -11,9 +11,9 @@ interface BackButtonProps {
 
 const BackButton: FC<Readonly<BackButtonProps>> = ({position,subText, href, label }) => {
   return (
-    <div className={`${position =="top" ? "mx-0" : "mx-auto"}`}>
-      <span className="text-text">{subText} </span>
-      <Link className="text-brand font-semibold" href={href}>{label}</Link>
+    <div className={`${position =="top" ? "mx-0" : "px-3 mx-auto text-center"}`}>
+      <span className="text-sm text-text text-center">{subText} </span>
+      <Link className="text-sm text-brand font-semibold" href={href}>{label}</Link>
 
     </div>
   );

@@ -49,7 +49,7 @@ const CardWrapper: FC<Readonly<CardWrapperProps>> = ({
       <CardBody>{children}</CardBody>
      
       {backButtonLabel && backButtonHref && backButtonPosition == "bottom" &&(
-        <CardFooter className="p-0">
+        <CardFooter className="p-0 ">
         
         <BackButton position="bottom" subText={backButtonSubText} label={backButtonLabel} href={backButtonHref} />
       </CardFooter>
