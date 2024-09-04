@@ -4,7 +4,7 @@ import ProgressBar from './_components/ProgressBar'
 import Slide1 from './_components/Slide1'
 import MainSlide from './_components/MainSlide'
 
-const page = () => {
+const Page = () => {
  const [currentSlide, setCurrentSlide] = useState(0);
  const [formData, setFormData] = useState<{ userType?: string, firstName?: string, lastName?: string }>({});
  const handleNext = (data: { userType?: string; firstName?: string; lastName?: string }) => {
@@ -31,4 +31,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
