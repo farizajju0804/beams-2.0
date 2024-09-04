@@ -102,7 +102,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                 )}
               </p>
               <p className="text-left text-text text-sm">
-                    Enter the code below to verify your account. If you can't find it,
+                    Enter the code below to verify your account. If you can&apos;t find it,
                     check your spam or junk folder—sometimes magic hides there too! Be
                     sure to mark it as safe!
                   </p>
@@ -155,7 +155,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
           height={200}
         />
           <p className="text-text font-medium mb-6">
-          You're all set! Your email has been changed from <strong className="font-bold text-secondary-2">{oldEmail}</strong>  to <strong className="font-bold text-secondary-2">{email}</strong>.
+          You&apos;re all set! Your email has been changed from <strong className="font-bold text-secondary-2">{oldEmail}</strong>  to <strong className="font-bold text-secondary-2">{email}</strong>.
           </p>
           <p className="text-sm text-text font-normal mb-6">
           Remember to use your new email next time you log in.
