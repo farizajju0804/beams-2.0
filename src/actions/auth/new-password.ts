@@ -38,6 +38,12 @@ export const newPassword = async( values : z.infer<typeof NewPasswordSchema>,tok
     if(!existingUser){
         return { error : "Email does not exist!"};
     }
+     
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+  if (passwordMatch) {
+    return { error: "New password cannot be same as the old password", success: undefined };
+  }
+    
 
     const hashedPassword = await bcrypt.hash(password,10);
 

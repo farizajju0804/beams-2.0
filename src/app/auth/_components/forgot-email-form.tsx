@@ -63,7 +63,7 @@ const ForgotEmailForm = () => {
       backButtonLabel={!success ? "Contact Us" : "Reset Password"}
       backButtonHref={!success ? "/contact-us" : "/auth/reset"}
       backButtonPosition="bottom"
-      backButtonSubText={!success ? "If you're still stuck, don't worry! You can always contact our support team for a helping hand. " : "Forgot your password? No problem! Click below to reset."}
+      backButtonSubText={!success ? "If you're still stuck, don't worry! You can always contact our support team for a helping hand. " : "Forgot your password? No problem! Click below"}
     >
       {success ? (
         <div className="text-center">
@@ -76,7 +76,7 @@ const ForgotEmailForm = () => {
             height={200}
           />
           <p className="text-lg font-medium text-text mb-6">
-            Great Job! We&apos;have uncovered your email: <strong className="font-bold text-secondary-2">{maskedEmail}</strong>
+            Great Job! We&apos;ve found your email: <strong className="font-bold text-secondary-2">{maskedEmail}</strong>
           </p>
           <Link href="/auth/login" passHref>
             <Button color="primary" endContent={<RiLoginCircleFill/>} className="w-full font-semibold text-white text-lg py-6 md:text-xl mb-4">

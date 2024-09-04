@@ -10,6 +10,7 @@ import ProgressDots from './ProgressDots'
 import Pagination from './Pagination'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import RedirectionMessage from '@/components/RedirectionMessage'
+import { motion } from 'framer-motion';
 
 const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
@@ -136,16 +137,28 @@ const OnboardingPage = () => {
               Skip
             </Button>
           </div>
-          <div className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative animate-float">
+      
+          <motion.div 
+          animate={{
+            y: [0, -10, 0], // Float effect: Move up and down
+          }}
+          transition={{
+            duration: 8, // Duration of one full float cycle
+            repeat: Infinity, // Repeat the float animation infinitely
+            ease: "easeInOut", // Smooth easing
+          
+          }}
+          className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative">
             <Image
               src={slides[currentSlide].mainImage}
               alt="Onboarding illustration"
               layout="fill"
               priority
               objectFit="contain"
-              className="transition-opacity duration-500 ease-in-out"
+              className=""
             />
-          </div>
+          </motion.div>
+       
           <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
             <div className="flex flex-col items-center justify-start">
               <div className="px-6 mt-4 text-center max-w-3xl">
