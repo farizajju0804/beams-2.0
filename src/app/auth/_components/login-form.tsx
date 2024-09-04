@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import PasswordStrength from './PasswordStrength';
 import { RiLoginCircleFill } from "react-icons/ri";
+import { AnyARecord } from "dns";
 interface LoginFormProps{
   ip :string,
   pendingEmail?: any;
@@ -60,7 +61,7 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
   
 
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit:any = async (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
     setIsLoading(true);
