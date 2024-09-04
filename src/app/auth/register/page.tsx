@@ -10,12 +10,12 @@ const Page = async() => {
   const pendingEmail:any = await checkPendingVerification(ip);
   return (
     <Suspense>
-      <div className="m-0 flex flex-col lg:flex-row min-h-screen w-full items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 md:min-h-screen w-full">
         <RegisterSide/>
-      <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
+      <div className="w-full md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
             <Step1Form ip={ip} pendingEmail={pendingEmail}  />
             </div>
-.          </div>
+          </div>
       </Suspense>
   
   );

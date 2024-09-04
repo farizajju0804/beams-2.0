@@ -63,9 +63,9 @@ const Step3Form: React.FC = ({ }) => {
   };
 
   return (
-    <div className="h-full m-0 flex flex-col lg:flex-row min-h-screen w-full items-center justify-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2 md:min-h-screen w-full ">
     <RegisterSide/>
-    <div className="w-full lg:w-[50%] md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
+    <div className="w-full md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
     <CardWrapper headerLabel="Security Questions 🛡️" subMessage="Answer This And Help Us Keep Your Future Self From Saying, 'I Forgot My Credentials!' 😅">
      
       <Form {...form}>

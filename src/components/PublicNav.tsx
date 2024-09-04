@@ -24,7 +24,7 @@ const PublicNav: React.FC = () => {
     <nav className="w-full max-w-7xl mx-auto flex items-center justify-between px-4 p-4 bg-background">
       <div className="flex items-center">
       <Link href="/">
-        <Image src="/images/logo.png" alt="Beams Logo" width={85} height={30} />
+        <Image src="/images/logo.png" alt="Beams Logo" width={70} height={25} />
         </Link>
       </div>
       

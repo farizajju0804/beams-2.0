@@ -9,7 +9,7 @@ const AuthLayout: FC<Readonly<AuthLayoutProps>> = ({ children }) => {
   return (
     <Suspense>
       
-    <div className="min-h-screen w-full flex flex-col max-w-full items-center justify-center">
+    <div className="min-h-screen w-full flex flex-col max-w-full justify-start items-center lg:justify-center">
       {children}
     </div>
     </Suspense>

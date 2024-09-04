@@ -7,7 +7,7 @@ interface LoginSideProps{
 }
 const LoginSide: FC<LoginSideProps> = ({show}) => {
   return (
-    <div className='lg:min-h-screen m-0 p-4 px-6 flex flex-col items-center justify-center gap-8 bg-yellow w-full lg:w-[50%]'>
+    <div className='lg:min-h-screen m-0 p-4 px-6 flex flex-col items-center justify-center gap-8 bg-yellow w-full'>
         <div className="flex items-start w-full md:pl-6">
         <Link href="/">
         <Image priority src="/images/logo.png" alt="Beams Logo" width={85} height={30} />
@@ -22,8 +22,8 @@ const LoginSide: FC<LoginSideProps> = ({show}) => {
           alt="login"
           width={0} 
           height={0} 
-          sizes="100vw" 
-          className={`${show ? "block" :"hidden"} md:block w-[60%] h-full aspect-auto`}
+          sizes="60vw" 
+          className={`${show ? "block" :"hidden"} md:block w-[300px] h-[400px]`}
         />
     </div>
   )

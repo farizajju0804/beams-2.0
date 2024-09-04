@@ -247,8 +247,8 @@ const LoginForm: FC<LoginFormProps>= ({ip,pendingEmail}) => {
               </>
             )}
             <div className="w-full flex justify-between lg:px-0">
-              <Link className="font-normal text-sm" href="/auth/reset">Forgot password?</Link>
-              <Link className="font-normal text-sm" href="/auth/forgot-identifiers">Forgot email?</Link>
+              <Link className="font-medium text-gray-400 text-sm" href="/auth/reset">Forgot password?</Link>
+              <Link className="font-medium text-gray-400 text-sm" href="/auth/forgot-identifiers">Forgot email?</Link>
             </div>
           
           </div>

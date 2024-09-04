@@ -24,7 +24,7 @@ import { RiLoginCircleFill } from "react-icons/ri";
 
 const ForgotEmailForm = () => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<boolean>(true);
+  const [success, setSuccess] = useState<boolean>(false);
   const [maskedEmail, setMaskedEmail] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
@@ -59,7 +59,7 @@ const ForgotEmailForm = () => {
   return (
     <CardWrapper
       headerLabel={success ? "Email Found 🎉" : "Forgot Email 🤔"}
-      subMessage={success ? "" : "Forgot your email? No worries! Answer your security questions, and we'll help you find your email."}
+      subMessage={success ? "" : "Answer your security questions, and we'll help you find your email."}
       backButtonLabel={!success ? "Contact Us" : "Reset Password"}
       backButtonHref={!success ? "/contact-us" : "/auth/reset"}
       backButtonPosition="bottom"
