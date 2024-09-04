@@ -74,7 +74,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
         }
       } catch (err) {
         console.error("Error:", err);
-        setError("An unexpected error occurred.");
+        setError("An unexpected error occurred. Please try again.");
       }
     });
   };

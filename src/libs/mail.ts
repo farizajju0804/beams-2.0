@@ -4,7 +4,7 @@ import { link } from 'fs';
 
 
 
-export const sendVerificationEmail = async (email: string, firstName:string, token: string) => {
+export const sendVerificationEmail = async (email: string, token: string) => {
   const link = `${process.env.URL}/auth/new-verify-email?email=${email}`;
 
   const payload = {
@@ -21,7 +21,6 @@ export const sendVerificationEmail = async (email: string, firstName:string, tok
     templateId: 13,
     params: {
       token: token,
-      firstName : firstName,
       link : link
     },
   };
