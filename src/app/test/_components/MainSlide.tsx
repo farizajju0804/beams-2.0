@@ -48,14 +48,14 @@ const MainSlide: React.FC<MainSlideProps> = ({ onNext }) => {
         
         <div
           onClick={() => handleSelection('NON_STUDENT')}
-          className={`w-60 cursor-pointer p-4 rounded-lg ${selectedType === 'NON_STUDENT' ? 'bg-yellow' : 'bg-white'} shadow-md flex flex-col items-center`}
+          className={`w-60 cursor-pointer p-4 rounded-lg ${selectedType === 'NON_STUDENT' ? 'bg-yellow text-black' : 'bg-white text-black'} shadow-md flex flex-col items-center`}
         >
           {/* <Image src="/path/to/professional-image.png" alt="Professional" width={100} height={100} /> */}
           <p className="mt-2 font-semibold">I&apos;m a Professional 💼</p>
         </div>
         <div
           onClick={() => handleSelection('STUDENT')}
-          className={`w-60 cursor-pointer p-4 rounded-lg ${selectedType === 'STUDENT' ? 'bg-yellow' : 'bg-white'} shadow-md flex flex-col items-center`}
+          className={`w-60 cursor-pointer p-4 rounded-lg ${selectedType === 'STUDENT' ? 'bg-yellow text-black' : 'bg-white text-black'} shadow-md flex flex-col items-center`}
         >
           {/* <Image src="/path/to/student-image.png" alt="Student" width={100} height={100} /> */}
           <p className="mt-2 font-semibold">I&apos;m a Student 🎓</p>
