@@ -50,7 +50,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip:string) => {
 
   if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
-    await sendVerificationEmail(verificationToken.email, existingUser.firstName,verificationToken.token);
+    await sendVerificationEmail(verificationToken.email,verificationToken.token);
     return { error: "VERIFY_EMAIL", success: undefined };
   
     
