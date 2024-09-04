@@ -102,7 +102,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
             width={200}
             height={200}
           />
-          <p className="text-lg text-text mb-6">You're Ready to Rock and Roll! </p>
+          <p className="text-lg text-text mb-6">You&apos;re Ready to Rock and Roll! </p>
           <Button
             color="primary"
             className="w-full font-semibold py-6 mb-4 text-white md:text-xl text-lg"
