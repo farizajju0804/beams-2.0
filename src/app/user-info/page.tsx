@@ -47,35 +47,44 @@ const Page = () => {
     setCurrentSlide((prevSlide) => prevSlide - 1);
   };
 
-  // Final form submission function
-  const handleSubmit = async () => {
+  const handleNextAndSubmit = (data: any) => {
+    console.log("Data from final slide (before submission):", data);
+  
+    // Update formData with the latest data from the final slide
+    setFormData((prev) => ({
+      ...prev,
+      ...data,
+    }));
+  
+    // After formData is updated, call handleSubmit explicitly for final submission
+    handleSubmit(data); // Pass the final data explicitly to ensure topics are included
+  };
+  
+  // handleSubmit function to be called when on the last slide
+  const handleSubmit = async (data: any) => {
     try {
-      console.log("Form data before submission:", formData);
-
       if (!session?.user?.email) {
         throw new Error('Email not found in session.');
       }
-
+  
       const values = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        gender: formData.gender,
+        firstName: formData.firstName || data.firstName, // Ensure the latest data is used
+        lastName: formData.lastName || data.lastName,
+        gender: formData.gender || data.gender, 
         ...(formData.userType === 'STUDENT' && {
-          grade: formData.grade,
-          schoolName: formData.schoolName,
+          grade: formData.grade || data.grade,
+          schoolName: formData.schoolName || data.schoolName,
         }),
-        dob: formData.dob,
+        dob: formData.dob || data.dob,
         userType: formData.userType,
-        interests: formData.topics || [],
+        interests: formData.topics || data.topics || [],
         userFormCompleted: true,
       };
-
-      console.log("Values being sent to updateUserMetadata:", values);
-
+  
+      console.log("Form data before submission:", values);
+  
       // Call API to update user metadata
       const updatedUser = await updateUserMetadata(session.user.email, values);
-      console.log("User updated in database:", updatedUser);
-
       if (updatedUser) {
         // Update session after successfully updating user metadata
         await update({
@@ -85,10 +94,10 @@ const Page = () => {
             userFormCompleted: true,
           },
         });
-
-        // Set redirection to true
+  
+        // Set redirection flag to true before redirecting
         setIsRedirecting(true);
-
+  
         // Redirect to /onboarding after successful form submission
         router.push('/onboarding');
       }
@@ -97,25 +106,6 @@ const Page = () => {
       alert("There was an error submitting the form.");
     }
   };
-
-  // This function updates the formData with the final slide data and then submits it
-  const handleNextAndSubmit = (data: any) => {
-    console.log("Data from final slide (before submission):", data);
-  
-    // Update formData with the latest data from the final slide
-    setFormData((prev) => ({
-      ...prev,
-      ...data,
-    }));
-  };
-  
-  // Use a useEffect to listen for formData changes and trigger handleSubmit
-  useEffect(() => {
-    if (currentSlide === totalSlides) {
-      // Call the final submission function after the last slide
-      handleSubmit();
-    }
-  }, [formData]); // This will trigger whenever formData is updated
   
   return (
     <div className='flex flex-col w-full min-h-screen px-4 py-8 items-center justify-center'>
@@ -139,7 +129,7 @@ const Page = () => {
           {/* Slide 4: Final submit for NON_STUDENT */}
           {currentSlide === 4 && formData.userType === 'NON_STUDENT' && (
             <Slide4
-              onNext={handleNextAndSubmit} // Ensure the final data is set before submission
+              onNext={handleNextAndSubmit} 
               formData={formData}
               handleBack={handleBack}
             />
