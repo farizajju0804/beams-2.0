@@ -7,8 +7,20 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { FaChevronRight } from "react-icons/fa6";
 import BackButton from "./BackButton";
 
+// Custom error messages
+const customErrorMap = {
+  required: 'Select at least 3 topics',
+  invalidType: 'Invalid topic selection',
+};
+
+// Schema for validation
 const TopicsSchema = z.object({
-  topics: z.array(z.string()).min(3, "Please select at least three topics"),
+  topics: z
+    .array(z.string(), {
+      required_error: customErrorMap.required,
+      invalid_type_error: customErrorMap.invalidType,
+    })
+    .min(3, customErrorMap.required), // Ensure at least 3 topics are selected
 });
 
 type TopicsData = z.infer<typeof TopicsSchema>;
@@ -41,7 +53,7 @@ const TopicOption = ({
   return (
     <div
       onClick={() => handleSelect(topicName)}
-      className={`cursor-pointer flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 ${isSelected ? "bg-yellow-200" : "bg-white"} transition-all`}
+      className={`cursor-pointer flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 bg-background transition-all`}
       style={{ border: borderColor }}
     >
       <span className="text-4xl">{emoji}</span> {/* Use Emoji instead of image */}
@@ -58,13 +70,12 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
   const form = useForm<TopicsData>({
     resolver: zodResolver(TopicsSchema),
     mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    reValidateMode: 'onChange',
     defaultValues: {
-      topics: formData.topics || [], // Prefill topics if available
+      topics: formData.topics || [], 
     },
   });
 
-  // Use emojis instead of images
   const topics = [
     { title: 'Art', name: 'ART', emoji: '🎨' },
     { title: 'Maths', name: 'MATHS', emoji: '📐' },
@@ -78,10 +89,10 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
 
   const feedbackMessages = [
     "Fantastic picks, [Name]! 🎨 Your journey just got a whole lot more interesting!",
-    "Great choices, [Name]! 🌟 We’re curating something special just for you!",
-    "[Name], you’ve got style! 😎 Get ready for some personalized content!",
-    "You’re all set, [Name]! 🚀 We’re tailoring your experience based on your awesome picks!",
-    "Excellent selection, [Name]! 🎉 We’re building a journey around your interests!"
+    "Great choices, [Name]! 🌟 We're curating something special just for you!",
+    "[Name], you've got style! 😎 Get ready for some personalized content!",
+    "You're all set, [Name]! 🚀 We're tailoring your experience based on your awesome picks!",
+    "Excellent selection, [Name]! 🎉 We're building a journey around your interests!"
   ];
 
   useEffect(() => {
@@ -105,9 +116,7 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
   };
 
   const onSubmit = (data: TopicsData) => {
-    if (selectedTopics.length >= 3) {
-      onNext({ topics: selectedTopics });
-    }
+    onNext({ topics: selectedTopics });
   };
 
   return (
@@ -145,7 +154,7 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
                     <input
                       {...field}
                       type="hidden"
-                      value={selectedTopics}
+                      value={selectedTopics.join(',')} // Join selected topics as a string
                     />
                   </FormControl>
                   <FormMessage />
@@ -167,7 +176,6 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
                 color="primary"
                 endContent={<FaChevronRight />}
                 className="w-full font-semibold text-lg py-6 md:text-xl text-white"
-                disabled={selectedTopics.length < 3} // Disable until at least 3 topics are selected
               >
                 {ctaText}
               </Button>

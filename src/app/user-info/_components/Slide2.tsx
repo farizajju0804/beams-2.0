@@ -8,9 +8,23 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { FaChevronRight } from "react-icons/fa6";
 import BackButton from "./BackButton";
 
+
+const customErrorMap = {
+  required: 'Gender is required.',
+  invalidType: 'Gender is required',
+  tooManyTopics: 'You can select up to 10 topics only.',
+  tooLong: 'The input is too long.',
+};
 // Define the schema for form validation
 const GenderSchema = z.object({
-  gender: z.string().nonempty("Gender selection is required"), // Only gender should be validated
+  gender: z
+    .string({
+      errorMap: (issue, { defaultError }) => ({
+        message: issue.code === 'invalid_type' ? customErrorMap.invalidType : defaultError,
+      }),
+    })
+    .min(1, { message: customErrorMap.required }) // Ensures non-empty string for gender
+    .max(255, { message: customErrorMap.tooLong }) // Optional: Limits gender string length
 });
 
 type GenderData = z.infer<typeof GenderSchema>;
@@ -91,7 +105,9 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
 
   useEffect(() => {
     if (formData.firstName) {
+      const truncatedFirstName = formData.firstName.length > 10 ? formData.firstName.slice(0, 10) : formData.firstName;
       setCtaText(`Keep Going, ${formData.firstName}`);
+     
     }
   }, [formData.firstName]);
 
@@ -109,7 +125,7 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
 
   const handleGenderSelect = (genderName: string) => {
     setSelectedGender(genderName);
-    form.setValue('gender', genderName); 
+    form.setValue('gender', genderName, { shouldValidate: true })
   };
 
   const onSubmit = (data: GenderData) => {
@@ -150,6 +166,7 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
                   <FormControl>
                     {/* Hidden input to store the selected gender */}
                     <input
+                      required
                       {...field}
                       type="hidden"
                       value={selectedGender}
@@ -173,7 +190,7 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
               color="primary"
               endContent={<FaChevronRight />}
               className="w-full font-semibold text-lg py-6 md:text-xl text-white"
-              disabled={!selectedGender} // Disable until a gender is selected
+              // disabled={!selectedGender} // Disable until a gender is selected
             >
               {ctaText}
             </Button>

@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/react";
+import { FaChevronLeft } from "react-icons/fa";
 
 interface BackButtonProps {
     handleBack: () => void;
@@ -8,11 +9,13 @@ interface BackButtonProps {
   const BackButton: React.FC<BackButtonProps> = ({ handleBack, disabled }) => {
     return (
       <Button
+        isIconOnly
+       
         onClick={handleBack}
         disabled={disabled}
-        className={`px-6 py-3 bg-gray-200 text-gray-800 rounded-lg ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`px-3 py-3 text-white rounded-lg ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        Back
+       <FaChevronLeft/>
       </Button>
     );
   };

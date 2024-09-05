@@ -37,7 +37,7 @@ const MainSlide: React.FC<MainSlideProps> = ({ onNext }) => {
 
   return (
     <div className="flex flex-col items-center justify-start w-full">
-      <h1 className="text-2xl md:text-3xl font-poppins font-medium text-center mb-4">Choose Your Path?</h1>
+      <h1 className="text-2xl md:text-3xl font-poppins font-medium text-center mb-4">Choose Your Role?</h1>
       <div className='mb-6 text-center'>
         <span className='text-text font-semibold'>Please note: </span>
         <span className="text-grey-2">Once you choose, it can&apos;t be changed later.</span>
