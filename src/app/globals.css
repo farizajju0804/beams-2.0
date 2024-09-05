@@ -77,7 +77,9 @@ textarea {
   animation: float 3s ease-in-out infinite;
 }
 
-
+.react-datepicker-wrapper{
+  width: 100% !important;
+}
 
 [data-theme="dark"] {
   --color-brand : 249,111,46;

@@ -22,12 +22,13 @@ type NameData = z.infer<typeof NameSchema>;
 
 interface Slide1Props {
   onNext: (data: { firstName: string, lastName: string }) => void;
+  formData : any;
 }
 
-const Slide1: React.FC<Slide1Props> = ({ onNext }) => {
+const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
   const [ctaText, setCtaText] = useState("Let's Do This!");
   const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState(""); // Keep the template with [Name]
-  
+   console.log(formData)
   const feedbackMessages = [
     "[Name], that's a name destined for greatness! 🌟 Let's make it legendary!",
     "Well, hello there, [Name]! 👋 Your name is as awesome as you are!",
@@ -41,8 +42,8 @@ const Slide1: React.FC<Slide1Props> = ({ onNext }) => {
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName:  formData.firstName,
+      lastName:  formData.lastName
     },
   });
 
