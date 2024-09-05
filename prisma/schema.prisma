@@ -35,7 +35,10 @@ model User {
   password             String?
   dob                  DateTime?            
   userType             UserType              @default(NON_STUDENT) 
-  grade                String?               
+  grade                String?  
+  gender               String?        
+  schoolName           String?  
+  interests            String[]             @default([])
   securityQuestion1    String?
   securityAnswer1      String?
   securityQuestion2    String?

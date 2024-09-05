@@ -25,10 +25,9 @@ interface Slide1Props {
   formData : any;
 }
 
-const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
+const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => { 
   const [ctaText, setCtaText] = useState("Let's Do This!");
   const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState(""); // Keep the template with [Name]
-   console.log(formData)
   const feedbackMessages = [
     "[Name], that's a name destined for greatness! 🌟 Let's make it legendary!",
     "Well, hello there, [Name]! 👋 Your name is as awesome as you are!",
@@ -42,7 +41,7 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      firstName:  formData.firstName,
+      firstName:  formData.firstName ,
       lastName:  formData.lastName
     },
   });
