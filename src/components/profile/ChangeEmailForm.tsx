@@ -10,6 +10,8 @@ import { settings } from "@/actions/auth/settings";
 import { Edit } from "iconsax-react";
 import { signOut } from "next-auth/react";
 import RedirectionMessage from "../RedirectionMessage";
+import { signOutUser } from "@/actions/auth/signout";
+import { useRouter } from "next/navigation";
 
 const ChangeEmailForm = ({ user }: { user: any }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -18,6 +20,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const router = useRouter()
   const form = useForm<z.infer<typeof ChangeEmailSchema>>({
     resolver: zodResolver(ChangeEmailSchema),
     defaultValues: {
@@ -47,6 +50,14 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
     });
   };
 
+  const handleSignOut = async () => {
+    const result = await signOutUser(); 
+    
+    if (result.success) {
+      router.push("/auth/login"); 
+    }
+  };
+
   const customSignOut = async () => {
     await signOut({ redirect: false });
     document.cookie.split(";").forEach((c) => {
@@ -60,7 +71,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   const handleSuccessModalClose = () => {
     setIsSuccessModalOpen(false);
     setIsRedirecting(true);
-    customSignOut();
+    handleSignOut();
   };
 
   return (

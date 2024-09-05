@@ -1,6 +1,13 @@
-"use server"
-import { signOut } from "@/auth"
+// app/actions/signOutUser.js
+"use server";
+import { signOut } from "@/auth";
 
-export const signout = async() => {
-  await signOut({redirectTo: "/auth/login"})
+ // This directive allows the function to be a server action
+
+
+export async function signOutUser() {
+  console.log('clicked')
+  await signOut({ redirect: false });
+  console.log('signout called')
+  return { success: true };
 }

@@ -6,6 +6,7 @@ import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 import { signOut, useSession } from "next-auth/react";
 import { ThemeSwitcher } from "../../../components/ThemeSwitcher";
 import { ArrowDown2 } from "iconsax-react";
+import { signOutUser } from "@/actions/auth/signout";
 
 
 // const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
@@ -38,7 +39,14 @@ export default function UserButton() {
     router.push(path);
   };
 
- 
+  const handleSignOut = async () => {
+    console.log('clicked')
+    const result = await signOutUser(); 
+    console.log('signout called')
+    if (result.success) {
+      router.push("/auth/login"); 
+    }
+  };
 
   const customSignOut = async () => {
     await signOut({ redirect: false });
@@ -125,7 +133,7 @@ export default function UserButton() {
           <DropdownItem  className="cursor-auto" key="theme">
             <ThemeSwitcher/>
           </DropdownItem>
-          <DropdownItem  onClick={customSignOut} key="logout" color="danger">
+          <DropdownItem  onClick={handleSignOut} key="logout" color="danger">
             Log Out
           </DropdownItem>
         </DropdownMenu>

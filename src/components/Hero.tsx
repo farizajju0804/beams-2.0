@@ -38,7 +38,7 @@ const HeroSection: React.FC = () => {
             y: [0, -10, 0], // Float effect: Move up and down
           }}
           transition={{
-            duration: 8, // Duration of one full float cycle
+            duration: 5, // Duration of one full float cycle
             repeat: Infinity, // Repeat the float animation infinitely
             ease: "easeInOut", // Smooth easing
           }}

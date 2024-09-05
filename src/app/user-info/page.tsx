@@ -15,6 +15,7 @@ import RedirectionMessage from '@/components/RedirectionMessage';
 
 const Page = () => {
   const { data: session, update } = useSession();  
+  console.log("session",session)
   const router = useRouter(); 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isRedirecting, setIsRedirecting] = useState(false); // For showing redirection message
