@@ -123,7 +123,7 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
         How Do You Identify? 🌟
       </h1>
       <p className="text-grey-2 text-center mb-6">
-        Pick the option that best represents you. We're all about inclusivity here.
+        Pick the option that best represents you. We&apos;re all about inclusivity here.
       </p>
       
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center max-w-md w-full mb-6">
