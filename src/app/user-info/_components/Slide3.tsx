@@ -31,10 +31,10 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      // Convert formData.dob to Date object if it's a string
-      dob: formData.dob ? new Date(formData.dob) : undefined,
+      dob: formData.dob ? new Date(formData.dob) : undefined, // Convert formData.dob to Date object
     },
   });
+  
   const datePickerRef = useRef<ReactDatePicker>(null);
   const years = Array.from({ length: 100 }, (_, index) => new Date().getFullYear() - index);
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -54,14 +54,24 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
   const handleDateChange = (date: Date | null) => {
     if (date) {
       form.setValue("dob", date, { shouldValidate: true });
-      const daysUntilBirthday = calculateDaysUntilBirthday(date);
-      setFeedbackMessage(`${daysUntilBirthday} days until your next birthday! 🎉 We’ll make sure it’s special! 🎈✨`);
+      
+      const now = new Date();
+      if (
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear()
+      ) {
+        setFeedbackMessage(`It's your birthday today! 🎉 Happy Birthday! 🎂✨`);
+      } else {
+        const daysUntilBirthday = calculateDaysUntilBirthday(date);
+        setFeedbackMessage(`${daysUntilBirthday} days until your next birthday! 🎉 We’ll make sure it’s special! 🎈✨`);
+      }
     }
   };
 
   const onSubmit = (data: { dob: Date }) => {
-    const formattedDob = data.dob.toISOString(); // Convert to ISO string
-    onNext({ dob: formattedDob });
+    const correctedDob = new Date(data.dob.getTime() - data.dob.getTimezoneOffset() * 60000);
+    onNext({ dob: correctedDob.toISOString() }); // Correct the timezone issue
   };
 
   return (
@@ -143,11 +153,10 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
                             </button>
                         </div>
                         )}
-                        dateFormat="yyyy-MM-dd"
+                        dateFormat="MM-dd-yyyy" // Display in MM DD YYYY format
                         placeholderText="Select your date of birth"
                         className="w-full px-4 h-12 border-b-2 border-grey-300 focus:ring-2 focus:ring-blue-500" // Custom focus ring for the input
                     />
-            
                     <Calendar
                      onClick={() => datePickerRef.current?.setFocus()}
                         size="24" 
