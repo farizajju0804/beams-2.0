@@ -13,7 +13,7 @@ interface BackButtonProps {
        
         onClick={handleBack}
         disabled={disabled}
-        className={`px-3 py-3 text-white rounded-lg ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`px-3  bg-text py-3 text-background rounded-lg ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
        <FaChevronLeft/>
       </Button>

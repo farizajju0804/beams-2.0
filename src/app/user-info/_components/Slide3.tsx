@@ -22,8 +22,12 @@ const DateSchema = z.object({
     })
     .refine((value) => value !== null, {
       message: 'Date of birth is required',  // Custom message for required date
+    })
+    .refine((value) => value && value.year && value.month && value.day, {
+      message: 'Please enter a valid and complete date of birth',  // Custom message for incomplete date
     }),
 });
+
 type DateData = z.infer<typeof DateSchema>;
 
 interface Slide3Props {
@@ -77,6 +81,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
   }
 };
   const maxDate = parseDate('2016-12-31');
+  const minDate = parseDate('1900-01-01');
  
   const onSubmit = (data: DateData) => {
     if (data.dob) {
@@ -88,7 +93,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
   
       // Convert to ISO format with the time set to 00:00 UTC
       const isoString = utcDate.toISOString();
-  
+      console.log(isoString)
       // Store the date as ISO string
       onNext({ dob: isoString });
     }
@@ -122,6 +127,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
                       <DatePicker
                         label="Birth Date"
                         calendarWidth={256}
+                        minValue={minDate}
                         maxValue={maxDate}
                         value={field.value || undefined}
                         onChange={(date) => {

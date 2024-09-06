@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import ProgressBar from './_components/ProgressBar';
@@ -12,13 +12,16 @@ import Slide6 from './_components/Slide6';
 import Slide4 from './_components/Slide4';
 import { updateUserMetadata } from '@/actions/auth/register';
 import RedirectionMessage from '@/components/RedirectionMessage';
+import Image from 'next/image';
+import { Button } from '@nextui-org/react'; // Import Button from NextUI
 
 const Page = () => {
   const { data: session, update } = useSession();  
-  console.log("session",session)
   const router = useRouter(); 
+  const [isLoading, setIsLoading] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isRedirecting, setIsRedirecting] = useState(false); // For showing redirection message
+  const [isModalOpen, setIsModalOpen] = useState(true); // Modal state
   const [formData, setFormData] = useState<{
     userType?: "STUDENT" | "NON_STUDENT";
     firstName?: string;
@@ -34,9 +37,7 @@ const Page = () => {
   });
 
   const totalSlides = formData.userType === 'STUDENT' ? 6 : 4; // Conditional total slides
-
   const handleNext = (data: any) => {
-    console.log("Data from current slide:", data);
     setFormData((prev) => ({
       ...prev,
       ...data,
@@ -48,20 +49,19 @@ const Page = () => {
     setCurrentSlide((prevSlide) => prevSlide - 1);
   };
 
-  const handleNextAndSubmit = (data: any) => {
-    console.log("Data from final slide (before submission):", data);
-  
-    // Update formData with the latest data from the final slide
-    setFormData((prev) => ({
-      ...prev,
-      ...data,
-    }));
-  
-    // After formData is updated, call handleSubmit explicitly for final submission
-    handleSubmit(data); // Pass the final data explicitly to ensure topics are included
+  const handleNextAndSubmit = async (data: any) => {
+    setIsLoading(true); // Start loading
+    try {
+      setFormData((prev) => ({
+        ...prev,
+        ...data,
+      }));
+      await handleSubmit(data);
+    } finally {
+      setIsLoading(false); // End loading
+    }
   };
-  
-  // handleSubmit function to be called when on the last slide
+
   const handleSubmit = async (data: any) => {
     try {
       if (!session?.user?.email) {
@@ -69,7 +69,7 @@ const Page = () => {
       }
   
       const values = {
-        firstName: formData.firstName || data.firstName, // Ensure the latest data is used
+        firstName: formData.firstName || data.firstName,
         lastName: formData.lastName || data.lastName,
         gender: formData.gender || data.gender, 
         ...(formData.userType === 'STUDENT' && {
@@ -82,12 +82,8 @@ const Page = () => {
         userFormCompleted: true,
       };
   
-      console.log("Form data before submission:", values);
-  
-      // Call API to update user metadata
       const updatedUser = await updateUserMetadata(session.user.email, values);
       if (updatedUser) {
-        // Update session after successfully updating user metadata
         await update({
           ...session,
           user: {
@@ -95,11 +91,7 @@ const Page = () => {
             userFormCompleted: true,
           },
         });
-  
-        // Set redirection flag to true before redirecting
         setIsRedirecting(true);
-  
-        // Redirect to /onboarding after successful form submission
         router.push('/onboarding');
       }
     } catch (error) {
@@ -107,10 +99,32 @@ const Page = () => {
       alert("There was an error submitting the form.");
     }
   };
-  
+
   return (
     <div className='flex flex-col w-full min-h-screen px-4 py-8 items-center justify-center'>
       {currentSlide !== 0 && <ProgressBar totalSlides={totalSlides} currentSlide={currentSlide} />}
+
+      {/* Custom Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex z-[100] items-center justify-center  bg-black bg-opacity-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
+            <Image
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725629881/authentication/welcome_jdqwjj.webp"
+              alt="Welcome image"
+              width={150}
+              height={150}
+              className="mx-auto mb-4"
+            />
+            <h2 className="font-bold text-black font-poppins text-2xl mb-4">Welcome To Beams 🎉</h2>
+            <p className="text-black font-medium mb-4">
+              You&apos;re in, explorer! But first, let&apos;s fuel your curiosity. Answer some questions, shall we?
+            </p>
+            <Button className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
+              Start
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Render RedirectionMessage while redirecting */}
       {isRedirecting ? (
@@ -122,7 +136,7 @@ const Page = () => {
           {currentSlide === 2 && <Slide2 onNext={handleNext} handleBack={handleBack} formData={formData} />}
           {currentSlide === 3 && <Slide3 onNext={handleNext} formData={formData} handleBack={handleBack} />}
 
-          {/* Slide 4: Final slide for STUDENT */}
+         
           {currentSlide === 4 && formData.userType === 'STUDENT' && (
             <Slide4 onNext={handleNext} formData={formData} handleBack={handleBack} />
           )}
@@ -133,11 +147,12 @@ const Page = () => {
               onNext={handleNextAndSubmit} 
               formData={formData}
               handleBack={handleBack}
+              isLoading={isLoading}
             />
           )}
 
           {currentSlide === 5 && formData.userType === 'STUDENT' && <Slide5 onNext={handleNext} formData={formData} handleBack={handleBack} />}
-          {currentSlide === 6 && formData.userType === 'STUDENT' && <Slide6 onNext={handleNextAndSubmit} formData={formData} handleBack={handleBack} />}
+          {currentSlide === 6 && formData.userType === 'STUDENT' && <Slide6 onNext={handleNextAndSubmit}  isLoading={isLoading} formData={formData} handleBack={handleBack} />}
         </>
       )}
     </div>

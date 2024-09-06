@@ -70,8 +70,6 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
   };
 
   const onSubmit = (data: { firstName: string, lastName: string }) => {
-    console.log("First Name:", data.firstName);
-    console.log("Last Name:", data.lastName);
     onNext(data); // Call the onNext function to move to the next slide
   };
 

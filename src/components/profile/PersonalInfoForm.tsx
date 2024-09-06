@@ -163,9 +163,15 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
       );
     });
   };
+  const handleCalendarClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   const formatter = useDateFormatter({ dateStyle: "full" });
   const maxDate = parseDate('2016-12-31');
+  const minDate = parseDate('1900-01-01');
+
   return (
     <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
       <CardHeader className="text-text">
@@ -250,39 +256,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="dob"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <DatePicker
-                        label="Birth Date"
-                        calendarWidth={256}
-                        maxValue={maxDate}
-                        defaultValue={field.value ? parseDate(field.value.toString()) : undefined}
-                        value={field.value ? parseDate(field.value.toString()) : null}
-                        onChange={field.onChange}
-                        showMonthAndYearPickers
-                        calendarProps={{
-                          calendarWidth : 256,
-                          classNames : {
-                            gridWrapper : "w-full",
-                            content: 'w-[256px]'
-                          }
-                        }}
-                        classNames={
-                          {
-                            calendarContent : 'w-[256px]'
-                          }
-                        }
-                        className="border-none m-0 min-w-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+             
               {userType === "STUDENT" && (
               <FormField
                 control={form.control}
@@ -336,6 +310,41 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   )}
                 />
               )}
+               <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <DatePicker
+                        label="Birth Date"
+                        calendarWidth={256}
+                        maxValue={maxDate}
+                        minValue={minDate}
+                        onClick={handleCalendarClick}
+                        defaultValue={field.value ? parseDate(field.value.toString()) : undefined}
+                        value={field.value ? parseDate(field.value.toString()) : null}
+                        onChange={field.onChange}
+                        showMonthAndYearPickers
+                        calendarProps={{
+                          calendarWidth : 256,
+                          classNames : {
+                            gridWrapper : "w-full",
+                            content: 'w-[256px]'
+                          }
+                        }}
+                        classNames={
+                          {
+                            calendarContent : 'w-[256px]'
+                          }
+                        }
+                        className="border-none m-0 min-w-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {isOAuth && (
                 <FormField
                   control={form.control}

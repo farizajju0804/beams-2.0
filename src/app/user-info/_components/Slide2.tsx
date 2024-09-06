@@ -52,7 +52,7 @@ const GenderOption = ({
   title,
   handleChange,
 }: GenderOptionProps) => {
-  const borderColor = isSelected ? "2px solid #F96f2e" : ""; // Yellow border for selected option
+  const borderColor = isSelected ? "4px solid #F96f2e" : ""; // Yellow border for selected option
 
   return (
     <div 
@@ -129,7 +129,6 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
   };
 
   const onSubmit = (data: GenderData) => {
-    console.log("Selected Gender:", data.gender);
     onNext({ gender: data.gender });
   };
 

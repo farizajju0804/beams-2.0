@@ -19,6 +19,7 @@ interface Slide6Props {
   onNext: (data: any) => void;
   formData: any;
   handleBack: () => void;
+  isLoading?: boolean;
 }
 
 // List of random schools in San Francisco
@@ -39,7 +40,7 @@ const feedbackMessages = [
   "[Name], you and [School Name] are a perfect match! 🎒 Let’s get ready to make some magic happen!"
 ];
 
-const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack }) => {
+const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading }) => {
   const [ctaText, setCtaText] = useState("Finish"); // Default CTA text
   const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState<string | null>(null); // Fixed feedback message template
 
@@ -135,10 +136,11 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack }) => {
               <Button
                 type="submit"
                 color="primary"
+                isLoading={isLoading}
                 endContent={<FaChevronRight />}
                 className="w-full font-semibold text-lg py-6 md:text-xl text-white"
               >
-                {ctaText}
+                {isLoading ? 'Submitting...' : ctaText}
               </Button>
             </div>
           </form>

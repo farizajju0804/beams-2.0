@@ -29,6 +29,7 @@ interface Slide4Props {
   onNext: (data: any) => void;
   formData: any; // First name, userType, etc. from previous form data
   handleBack: () => void;
+  isLoading?: boolean;
 }
 
 // TopicOption component for reusable topic options
@@ -62,7 +63,7 @@ const TopicOption = ({
   );
 };
 
-const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
+const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading }) => {
   const [ctaText, setCtaText] = useState(formData.userType === 'STUDENT' ? "Proceed" : "Finish");
   const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState<string>(''); // To store feedback template
   const [selectedTopics, setSelectedTopics] = useState<string[]>(formData.topics || []); // Selected topics
@@ -174,10 +175,11 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack }) => {
               <Button
                 type="submit"
                 color="primary"
+                isLoading={isLoading}
                 endContent={<FaChevronRight />}
                 className="w-full font-semibold text-lg py-6 md:text-xl text-white"
               >
-                {ctaText}
+                {isLoading ? 'Submitting...' : ctaText}
               </Button>
             </div>
           </form>

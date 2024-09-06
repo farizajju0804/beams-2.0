@@ -16,8 +16,11 @@ const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const { data:session, update } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(true); // First modal state
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // Second modal state
+  const { data: session, update } = useSession();
   const router = useRouter();
+  
   const slides = [
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723791783/onboarding/boy_flying_mlb9at.png',
@@ -33,7 +36,7 @@ const OnboardingPage = () => {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723820625/onboarding/discover_p39zka.png',
       title: 'Discover the latest breakthroughs ',
       content: 'Explore cutting-edge innovations across various categories like Technology, Medicine, etc.',
-    },  
+    },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/poll_gbkqsh.png',
       title: 'Voice Your Opinion',
@@ -54,70 +57,69 @@ const OnboardingPage = () => {
   const totalSlides = slides.length;
   const isEvenSlide = currentSlide % 2 === 0;
   const [isMobile, setIsMobile] = useState(false);
-  const activeColor = isEvenSlide ? '#370075' : '#F9D42E'; // Example: orange for even, purple for odd
-  const inactiveColor = isEvenSlide ? '#fefefe' : '#ffffff'; // Example: white for even, light gray for odd
+  const activeColor = isEvenSlide ? '#370075' : '#F9D42E'; 
+  const inactiveColor = isEvenSlide ? '#fefefe' : '#ffffff'; 
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 767);
     };
 
-  
     handleResize();
-
     window.addEventListener('resize', handleResize);
 
-    // Clean up
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
   const backgroundImage = isEvenSlide 
     ? isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png' // Mobile image for even slides
-        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png' // Desktop image for even slides
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png'
+        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png' 
     : isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/purple-bg-mobile_oarvy7.png' // Mobile image for odd slides
-        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png'; // Desktop image for odd slides
+        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/purple-bg-mobile_oarvy7.png'
+        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png';
 
   const handleDotClick = (index: number) => {
     setCurrentSlide(index);
-    console.log('Current Slide:', currentSlide);
   };
 
   const handlePrev = () => {
     setCurrentSlide((prev) => Math.max(0, prev - 1));
-    console.log('Current Slide:', currentSlide);
   };
 
   const handleNext = () => {
     setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1));
-    console.log('Current Slide:', currentSlide);
   };
 
   const handleAction = () => {
     startTransition(async () => {
-      const updatedUser:any  = await updateOnboardingStatus(true)
-      if(updatedUser){
-        const updated = await update({
-          ...session,
-          user:{
-          ...session?.user,
-          onBoardingCompleted : true
-          }
-        }
-        );
-        console.log("Updated session data:", updated);
-        setIsRedirecting(true);
-        router.push(DEFAULT_LOGIN_REDIRECT);
-  
-       }
-    })
-  }
+      const updatedUser: any = await updateOnboardingStatus(true);
+      if (updatedUser) {
+        // Show the completion modal before updating session
+        setIsCompletionModalOpen(true);
+      }
+    });
+  };
+
+  const handleFinalSubmit = async () => {
+    setIsCompletionModalOpen(false); // Close the completion modal
+    const updated = await update({
+      ...session,
+      user: {
+        ...session?.user,
+        onBoardingCompleted: true,
+      },
+    });
+    setIsRedirecting(true);
+    router.push(DEFAULT_LOGIN_REDIRECT);
+  };
 
   return (
-    <div className="flex flex-col items-center gap-0 justify-between  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
-       style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
+    <div className="flex flex-col items-center gap-0 justify-between bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
+    style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
       {isRedirecting ? (
-        <RedirectionMessage/>
+        <RedirectionMessage />
       ) : (
         <>
           <div className="w-full flex justify-between items-center px-6 lg:py-2">
@@ -137,28 +139,26 @@ const OnboardingPage = () => {
               Skip
             </Button>
           </div>
-      
-          <motion.div 
-          animate={{
-            y: [0, -10, 0], // Float effect: Move up and down
-          }}
-          transition={{
-            duration: 8, // Duration of one full float cycle
-            repeat: Infinity, // Repeat the float animation infinitely
-            ease: "easeInOut", // Smooth easing
-          
-          }}
-          className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative">
+
+          <motion.div
+            animate={{
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative">
             <Image
               src={slides[currentSlide].mainImage}
               alt="Onboarding illustration"
               layout="fill"
               priority
               objectFit="contain"
-              className=""
             />
           </motion.div>
-       
+
           <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
             <div className="flex flex-col items-center justify-start">
               <div className="px-6 mt-4 text-center max-w-3xl">
@@ -167,7 +167,7 @@ const OnboardingPage = () => {
                 </h2>
                 <p 
                   dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} 
-                  className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg" 
+                  className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg"
                 />
               </div>
             </div>
@@ -184,9 +184,53 @@ const OnboardingPage = () => {
           </div>
         </>
       )}
+
+      {/* First Modal: Initial Welcome Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex z-[100] items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
+            <Image
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725632828/authentication/onboarding-popup_y2qcaa.webp"
+              alt="Welcome image"
+              width={100}
+              height={100}
+              className="mx-auto mb-4"
+            />
+            <h2 className="font-bold text-black font-poppins text-2xl mb-4">Beam-tastic! 🎉</h2>
+            <p className="text-black font-medium mb-4">
+              Let’s take a quick spin through Beams and unlock all its potential. You’re going to love what’s in store!
+            </p>
+            <Button className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
+              Show Me Around!
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Second Modal: Completion Modal */}
+      {isCompletionModalOpen && (
+        <div className="fixed inset-0 flex z-[100] items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
+            <Image
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725632820/authentication/product-popup_wmd7kl.webp"
+              alt="Completion image"
+              width={100}
+              height={100}
+              className="mx-auto mb-4"
+            />
+            <h2 className="font-bold text-black font-poppins text-2xl mb-4">Brace for Blastoff! 🚀</h2>
+            <p className="text-black font-medium mb-4">
+              Tour complete! Now it’s time to journey into a world full of learning and discovery.
+            </p>
+            <Button className='font-semibold text-lg text-white' color="primary" onClick={handleFinalSubmit}>
+              Let’s Get Started!
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
+export default OnboardingPage;
 
-export default OnboardingPage
