@@ -21,7 +21,9 @@ export async function getLatestUserData() {
       dob: true,
       userFormCompleted: true,
       onBoardingCompleted: true,
-      isTwoFactorEnabled:true
+      isTwoFactorEnabled:true,
+      gender:true,
+      schoolName:true,
     },
   });
   

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/react";
+import { Button, DatePicker } from "@nextui-org/react";
 import { useState, useEffect, useRef } from "react";
 import * as z from 'zod';
 import ReactDatePicker from "react-datepicker";
@@ -10,12 +10,20 @@ import { FaChevronRight } from "react-icons/fa6";
 import { Calendar } from "iconsax-react";
 import Image from "next/image";
 import BackButton from "./BackButton";
+import { parseDate, getLocalTimeZone, CalendarDate, today } from "@internationalized/date";
+import { differenceInCalendarDays } from "date-fns";
+
 
 // Date validation schema
 const DateSchema = z.object({
-  dob: z.date().nullable().refine((value) => value !== null, "Date of birth is required"),
+  dob: z
+    .instanceof(CalendarDate, {
+      message: 'Date of birth is required',  // Custom message for invalid date type
+    })
+    .refine((value) => value !== null, {
+      message: 'Date of birth is required',  // Custom message for required date
+    }),
 });
-
 type DateData = z.infer<typeof DateSchema>;
 
 interface Slide3Props {
@@ -25,13 +33,13 @@ interface Slide3Props {
 }
 
 const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
-  const [feedbackMessage, setFeedbackMessage] = useState(""); // Store feedback message
+  const [feedbackMessage, setFeedbackMessage] = useState("");
   const form = useForm<DateData>({
     resolver: zodResolver(DateSchema),
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      dob: formData.dob ? new Date(formData.dob) : undefined, // Convert formData.dob to Date object
+      dob: formData.dob ? parseDate(formData.dob.split('T')[0]) : undefined,
     },
   });
   
@@ -39,39 +47,52 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
   const years = Array.from({ length: 100 }, (_, index) => new Date().getFullYear() - index);
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  const calculateDaysUntilBirthday = (dob: Date) => {
-    const now = new Date();
-    const thisYear = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
-    const nextYear = new Date(now.getFullYear() + 1, dob.getMonth(), dob.getDate());
-    
-    const birthdayThisYear = thisYear >= now ? thisYear : nextYear;
-    const differenceInTime = birthdayThisYear.getTime() - now.getTime();
-    const daysUntilBirthday = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
-
-    return daysUntilBirthday;
-  };
-
-  const handleDateChange = (date: Date | null) => {
-    if (date) {
-      form.setValue("dob", date, { shouldValidate: true });
-      
-      const now = new Date();
-      if (
-        date.getDate() === now.getDate() &&
-        date.getMonth() === now.getMonth() &&
-        date.getFullYear() === now.getFullYear()
-      ) {
-        setFeedbackMessage(`It's your birthday today! 🎉 Happy Birthday! 🎂✨`);
-      } else {
-        const daysUntilBirthday = calculateDaysUntilBirthday(date);
-        setFeedbackMessage(`${daysUntilBirthday} days until your next birthday! 🎉 We’ll make sure it’s special! 🎈✨`);
-      }
+  const calculateDaysUntilBirthday = (dob: CalendarDate) => {
+    const now = today(getLocalTimeZone());
+  
+    const nowDate = now.toDate(getLocalTimeZone());
+    const thisYearDate = new CalendarDate(now.year, dob.month, dob.day).toDate(getLocalTimeZone());
+    const nextYearDate = new CalendarDate(now.year + 1, dob.month, dob.day).toDate(getLocalTimeZone());
+  
+    // Check if the birthday is in this year or next year
+    const birthdayThisYear = thisYearDate >= nowDate ? thisYearDate : nextYearDate;
+  
+    // Calculate difference in time using native Date methods
+    const differenceInTime = birthdayThisYear.getTime() - nowDate.getTime();
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+  
+    // Special case for birthday today
+    if (differenceInDays === 0) {
+      return "It's your birthday today! 🎉 Happy Birthday! 🎂✨";
     }
+  
+    return `${differenceInDays} days until your next birthday! 🎉 We'll make sure it's special! 🎈✨`;
   };
 
-  const onSubmit = (data: { dob: Date }) => {
-    const correctedDob = new Date(data.dob.getTime() - data.dob.getTimezoneOffset() * 60000);
-    onNext({ dob: correctedDob.toISOString() }); // Correct the timezone issue
+  const handleDateChange = (date: CalendarDate | null) => {
+  if (date) {
+    form.setValue("dob", date, { shouldValidate: true });
+    const feedbackMessage = calculateDaysUntilBirthday(date);
+    setFeedbackMessage(feedbackMessage);
+  }
+};
+  const maxDate = parseDate('2016-12-31');
+ 
+  const onSubmit = (data: DateData) => {
+    if (data.dob) {
+      // Get the year, month, and day directly from CalendarDate
+      const { year, month, day } = data.dob;
+  
+      // Create a Date object in UTC without time zone shifts
+      const utcDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); // month is zero-based in JS Date
+  
+      // Convert to ISO format with the time set to 00:00 UTC
+      const isoString = utcDate.toISOString();
+  
+      // Store the date as ISO string
+      onNext({ dob: isoString });
+    }
+   
   };
 
   return (
@@ -92,86 +113,44 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
       <div className="w-full max-w-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="dob"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                  <div className="relative">
-                    <ReactDatePicker
-                        selected={field.value}
-                        ref={datePickerRef}
-                        onChange={(date) => handleDateChange(date)}
-                        renderCustomHeader={({
-                        date,
-                        changeYear,
-                        changeMonth,
-                        decreaseMonth,
-                        increaseMonth,
-                        prevMonthButtonDisabled,
-                        nextMonthButtonDisabled,
-                        }) => (
-                        <div className="focus:outline-none flex w-full items-center justify-center space-x-4">
-                            <button
-                            type="button"
-                            onClick={decreaseMonth}
-                            disabled={prevMonthButtonDisabled}
-                            className="focus:outline-none bg-white"
-                            >
-                            &#8592;
-                            </button>
-                            <select
-                            value={date.getFullYear()}
-                            onChange={({ target: { value } }) => changeYear(Number(value))}
-                            className="border rounded-md p-1 bg-white focus:ring-2 focus:ring-blue-500" // Custom focus ring color
-                            >
-                            {years.map((year) => (
-                                <option key={year} value={year}>
-                                {year}
-                                </option>
-                            ))}
-                            </select>
-                            <select
-                            value={months[date.getMonth()]}
-                            onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
-                            className="border bg-white rounded-md p-1 focus:ring-2 focus:ring-blue-500" // Custom focus ring color
-                            >
-                            {months.map((month) => (
-                                <option key={month} value={month}>
-                                {month}
-                                </option>
-                            ))}
-                            </select>
-                            <button
-                            type="button"
-                            onClick={increaseMonth}
-                            disabled={nextMonthButtonDisabled}
-                            className="focus:outline-none bg-white"
-                            >
-                            &#8594;
-                            </button>
-                        </div>
-                        )}
-                        dateFormat="MM-dd-yyyy" // Display in MM DD YYYY format
-                        placeholderText="Select your date of birth"
-                        className="w-full px-4 h-12 border-b-2 border-grey-300 focus:ring-2 focus:ring-blue-500" // Custom focus ring for the input
-                    />
-                    <Calendar
-                     onClick={() => datePickerRef.current?.setFocus()}
-                        size="24" 
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-                    />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+               <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <DatePicker
+                        label="Birth Date"
+                        calendarWidth={256}
+                        maxValue={maxDate}
+                        value={field.value || undefined}
+                        onChange={(date) => {
+                          field.onChange(date);
+                          handleDateChange(date);
+                        }}
+                        showMonthAndYearPickers
+                        calendarProps={{
+                          calendarWidth : 256,
+                          classNames : {
+                            gridWrapper : "w-full",
+                            content: 'w-[256px]'
+                          }
+                        }}
+                        classNames={
+                          {
+                            calendarContent : 'w-[256px]'
+                          }
+                        }
+                        className="border-none m-0 min-w-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             {feedbackMessage && (
               <p className="font-medium text-text mt-4 text-left">
-                {feedbackMessage} {/* Display feedback message dynamically */}
+                {feedbackMessage}
               </p>
             )}
              <div className="flex justify-between items-center gap-4">

@@ -6,32 +6,40 @@ import { Form, FormField, FormControl, FormItem, FormMessage } from '@/component
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import { Button, Input, Card, CardHeader, CardBody, Spinner, Select, SelectItem, Avatar } from "@nextui-org/react";
+import { DatePicker } from "@nextui-org/react";
+import { parseDate, getLocalTimeZone, CalendarDate, DateValue } from "@internationalized/date";
+import { useDateFormatter } from "@react-aria/i18n";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
-import Image from "next/image";
 import { Gallery } from "iconsax-react";
 import { z } from "zod";
-import CustomDateInput from "../../app/auth/_components/CustomDateInput";
 
+const genders = [
+  { title: 'Male', name: 'MALE' },
+  { title: 'Female', name: 'FEMALE' },
+  { title: 'Transgender', name: 'TRANSGENDER' },
+  { title: 'Bisexual', name: 'BISEXUAL' },
+  { title: 'Prefer Not to Say', name: 'PREFER_NOT_TO_SAY' },
+];
+
+const schools = [
+  'Lowell High School',
+  'Washington High School',
+  'Galileo Academy',
+  'Balboa High School',
+  'Mission High School'
+];
+
+const grades = ['Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'];
 
 export const SettingsSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters long"),
   lastName: z.string().min(2, "Last name must be at least 2 characters long"),
-  dob: z
-    .object({
-      day: z.string().optional(),
-      month: z.string().optional(),
-      year: z.string().optional(),
-    })
-    .optional()
-    .refine((dob) => {
-      if (!dob?.day && !dob?.month && !dob?.year) {
-        return true; 
-      }
-      return dob?.day && dob?.month && dob?.year; // If any part is filled, require all parts
-    }, "If any one of day, month, or year is provided, all three must be provided"),
+  gender: z.enum(['MALE', 'FEMALE', 'TRANSGENDER', 'BISEXUAL', 'PREFER_NOT_TO_SAY']),
+  dob: z.instanceof(CalendarDate).nullable().optional(), // Use CalendarDate from @internationalized/date
   grade: z.string().optional().nullable(),
+  schoolName: z.string().optional().nullable(),
   userType: z.enum(["STUDENT", "NON_STUDENT"]),
   email: z.string().email().optional(),
 });
@@ -45,13 +53,14 @@ interface PersonalInfoFormProps {
     email: string;
     image: string;
     userType: "STUDENT" | "NON_STUDENT";
+    gender?: 'MALE' | 'FEMALE' | 'TRANSGENDER' | 'BISEXUAL' | 'PREFER_NOT_TO_SAY';
     dob?: Date;
     grade?: string;
+    schoolName?: string;
   };
   isOAuth: boolean;
 }
 
-// const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
 const getAvatarSrc = (user: any) => user?.image;
 
 const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) => {
@@ -65,78 +74,24 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   const updateUserImage = useUserStore((state) => state.updateUserImage);
   const setUser = useUserStore((state) => state.setUser);
 
-  const [day, setDay] = useState<string>('');
-  const [month, setMonth] = useState<string>('');
-  const [year, setYear] = useState<string>('');
-
   const form = useForm<SettingsFormData>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
       firstName: user.firstName || '',
       lastName: user.lastName || '',
+      gender: user.gender,
       userType: user.userType,
       grade: user.grade || undefined,
+      schoolName: user.schoolName || undefined,
       email: user.email,
-      dob: {
-        day: day || '',
-        month: month || '',
-        year: year || ''
-      },
+      dob: user.dob ? parseDate(user.dob.toISOString().split("T")[0]) : null, // Using parseDate for DateValue
     },
   });
-
-  useEffect(() => {
-    if (user.dob) {
-      const date = new Date(user.dob);
-      setDay(date.getDate().toString().padStart(2, '0'));
-      setMonth((date.getMonth() + 1).toString().padStart(2, '0'));
-      setYear(date.getFullYear().toString());
-    }
-  }, [user.dob]);
-
-  const handleDateChange = () => {
-    form.setValue('dob', { day, month, year });
-  }
-
-  useEffect(() => {
-    handleDateChange();
-  }, [day, month, year]);
 
   const handleFileInputClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
       fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = event.target;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
-
-      setIsUploading(true);
-
-      try {
-        const uploadResult = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: "POST",
-          body: formData,
-        }).then(res => res.json());
-
-        if (uploadResult.secure_url) {
-          await changeProfileImageHandler(uploadResult.secure_url);
-        } else {
-          setError("Cloudinary upload failed");
-        }
-      } catch (error) {
-        setError("Error uploading image");
-      } finally {
-        setIsUploading(false);
-      }
-    } else {
-      console.error("No files selected.");
     }
   };
 
@@ -155,32 +110,45 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
     }
   };
 
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "");
+  
+      setIsUploading(true);
+  
+      try {
+        const uploadResult = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData,
+        }).then(res => res.json());
+  
+        if (uploadResult.secure_url) {
+          await changeProfileImageHandler(uploadResult.secure_url);
+        } else {
+          setError("Cloudinary upload failed");
+        }
+      } catch (error) {
+        setError("Error uploading image");
+      } finally {
+        setIsUploading(false);
+      }
+    } else {
+      console.error("No files selected.");
+    }
+  };
+
   const onSubmit = (values: SettingsFormData) => {
-    // Reset error and success states at the beginning of each submission
     setError(undefined);
     setSuccess(undefined);
-  
-    let dob: Date | undefined = undefined;
-  
-    const { day, month, year } = values.dob || {};
-    if ((day && (!month || !year)) || (month && (!day || !year)) || (year && (!day || !month))) {
-      setError("Please fill in all the date fields.");
-      return;
-    }
-  
-    if (day && month && year) {
-      dob = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    }
-  
-    const dataToUpdate = {
-      ...values,
-      dob: dob ? dob.toISOString() : undefined,
-    };
-  
+    let dob = values.dob ? new Date(Date.UTC(values.dob.year, values.dob.month - 1, values.dob.day, 0, 0, 0)) : null;
+  const updatedValues = { ...values, dob };
     startTransition(() => {
-      settings(dataToUpdate)
+      settings(updatedValues)
         .then((data) => {
-          console.log("Settings Response:", data);
           if (data.error) {
             setError(data.error);
           } else if (data.success) {
@@ -188,14 +156,16 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
             setUser(values);
           }
         })
-        .catch((err) => {
-          console.error("Error submitting form:", err);
-          setError("Something went wrong");
-        });
+        .catch(() => {
+          console.error(error)
+          setError("Something went wrong")
+          }
+      );
     });
   };
-  
-  
+
+  const formatter = useDateFormatter({ dateStyle: "full" });
+  const maxDate = parseDate('2016-12-31');
   return (
     <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
       <CardHeader className="text-text">
@@ -209,10 +179,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
             </div>
           )}
           <div className="relative">
-            <div
-              className={`w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer ${isUploading ? 'opacity-50' : ''}`}
-              onClick={handleFileInputClick}
-            >
+            <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer" onClick={handleFileInputClick}>
               <Avatar 
                 src={profileImage}
                 showFallback
@@ -233,8 +200,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
           />
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -260,64 +226,115 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem className="flex items-start flex-col justify-center space-x-4">
+                    <FormControl>
+                      <Select
+                        {...field}
+                        label="Gender"
+                        defaultSelectedKeys={user.gender ? [user.gender] : ""}
+                        value={field.value}
+                        disabled={isPending}
+                      >
+                        {genders.map((gender) => (
+                          <SelectItem key={gender.name} value={gender.name}>
+                            {gender.title}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <DatePicker
+                        label="Birth Date"
+                        calendarWidth={256}
+                        maxValue={maxDate}
+                        defaultValue={field.value ? parseDate(field.value.toString()) : undefined}
+                        value={field.value ? parseDate(field.value.toString()) : null}
+                        onChange={field.onChange}
+                        showMonthAndYearPickers
+                        calendarProps={{
+                          calendarWidth : 256,
+                          classNames : {
+                            gridWrapper : "w-full",
+                            content: 'w-[256px]'
+                          }
+                        }}
+                        classNames={
+                          {
+                            calendarContent : 'w-[256px]'
+                          }
+                        }
+                        className="border-none m-0 min-w-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {userType === "STUDENT" && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="grade"
-                    render={({ field }) => (
-                      <FormItem className="flex items-start flex-col justify-center space-x-4">
-                        <FormControl>
-                          <Select
-                            {...field}
-                            label="Grade"
-                            value={field.value || undefined}
-                            placeholder="Select your grade"
-                            disabled={isPending}
-                            defaultSelectedKeys={user.grade ? [user.grade] : undefined}
-                          >
-                            <SelectItem key="5" value="5">
-                              Grade 5
-                            </SelectItem>
-                            <SelectItem key="6" value="6">
-                              Grade 6
-                            </SelectItem>
-                            <SelectItem key="7" value="7">
-                              Grade 7
-                            </SelectItem>
-                            <SelectItem key="8" value="8">
-                              Grade 8
-                            </SelectItem>
-                            <SelectItem key="9" value="9">
-                              Grade 9
-                            </SelectItem>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="dob"
-                    render={({ field }) => (
-                      <FormItem className="flex items-start flex-col justify-center space-x-4">
-                        <FormControl>
-                          <CustomDateInput
-                            day={day}
-                            month={month}
-                            year={year}
-                            onDayChange={setDay}
-                            onMonthChange={setMonth}
-                            onYearChange={setYear}
-                            labelPlacement="top"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
+              <FormField
+                control={form.control}
+                name="grade"
+                render={({ field }) => (
+                  <FormItem className="flex items-start flex-col justify-center space-x-4">
+                    <FormControl>
+                      <Select
+                        {...field}
+                        label="Grade"
+                        value={field.value || undefined}
+                        defaultSelectedKeys={user.grade ? [user.grade] : []}
+                        placeholder="Select your grade"
+                        disabled={isPending}
+                      >
+                        {grades.map((grade) => (
+                          <SelectItem key={grade} value={grade}>
+                            {grade}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              )}
+              {userType === "STUDENT" && (
+                <FormField
+                  control={form.control}
+                  name="schoolName"
+                  render={({ field }) => (
+                    <FormItem className="flex items-start flex-col justify-center space-x-4">
+                      <FormControl>
+                        <Select
+                          {...field}
+                          label="School Name"
+                          value={field.value || undefined}
+                          defaultSelectedKeys={user.schoolName ? [user.schoolName] : []}
+                          disabled={isPending}
+                        >
+                         {schools.map((school) => (
+                          <SelectItem key={school} value={school}>
+                            {school}
+                          </SelectItem>
+                        ))}
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
               {isOAuth && (
                 <FormField
