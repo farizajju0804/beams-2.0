@@ -49,8 +49,8 @@ const TwoFactorAuthForm: React.FC<TwoFactorAuthFormProps> = ({ user }) => {
   };
 
   const modalContent = is2FAEnabled
-    ? "Are you sure you want to disable Two-Factor Authentication? You will no longer receive a 2FA code to your email for login."
-    : "Are you sure you want to enable Two-Factor Authentication? You will receive a 2FA code to your email for login.";
+  ? "You are about to disable Two-Factor Authentication (2FA). This means you will no longer need to enter a 2FA code sent to your email when logging in. Are you sure you want to proceed?"
+  : "You are about to enable Two-Factor Authentication (2FA). This adds an extra layer of security by requiring a 2FA code sent to your email when logging in. Are you sure you want to enable 2FA?";
 
   return (
     <div className="w-full max-w-lg p-4 rounded-3xl bg-background shadow-lg">

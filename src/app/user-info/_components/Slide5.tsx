@@ -22,10 +22,11 @@ interface Slide5Props {
 }
 
 // Define the grades and feedback messages
-const grades = ['Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'] as const;
+const grades = ['Grade 4','Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'] as const;
 type Grade = typeof grades[number];
 
 const feedbackMessages: Record<Grade, string> = {
+  'Grade 4': "[Name], you're officially a Grade 4 legend! 🎒 Ready to unlock the mysteries of the future.",
   'Grade 5': "[Name], you're officially a Grade 5 legend! 🎒 Ready to unlock the mysteries of the future.",
   'Grade 6': "Watch out, world—[Name] is in Grade 6! 📚 Time to show everyone that you're the boss of middle school madness!",
   'Grade 7': "Grade 7 just got a whole lot cooler with [Name] around! 🔥 Get ready to master the art of being awesome (and acing those tests)!",

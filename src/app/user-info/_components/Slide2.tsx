@@ -64,6 +64,7 @@ const GenderOption = ({
         className="rounded-full border-2" // Rounded full image
         src={imageUrl}
         alt={genderName}
+        priority
         height={100}
         width={100}
       />

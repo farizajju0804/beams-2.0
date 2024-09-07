@@ -134,9 +134,11 @@ const Page = () => {
           {currentSlide === 0 && <MainSlide onNext={handleNext} />}
           {currentSlide === 1 && <Slide1 onNext={handleNext} formData={formData} />}
           {currentSlide === 2 && <Slide2 onNext={handleNext} handleBack={handleBack} formData={formData} />}
-          {currentSlide === 3 && <Slide3 onNext={handleNext} formData={formData} handleBack={handleBack} />}
+          {/* {currentSlide === 3 && <Slide3 onNext={handleNext} formData={formData} handleBack={handleBack} />} */}
 
-         
+          {currentSlide === 3 && formData.userType === 'STUDENT' && (
+            <Slide3 onNext={handleNext} formData={formData} handleBack={handleBack} />
+          )}
           {currentSlide === 4 && formData.userType === 'STUDENT' && (
             <Slide4 onNext={handleNext} formData={formData} handleBack={handleBack} />
           )}

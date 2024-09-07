@@ -1,19 +1,20 @@
 'use client';
-import React, { useRef, useState, useTransition, useEffect } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Button, Input, Card, CardHeader, CardBody, Spinner, Select, SelectItem, Avatar } from "@nextui-org/react";
+import { Button, Input, Card, CardBody, Spinner, Select, SelectItem, Avatar } from "@nextui-org/react";
 import { DatePicker } from "@nextui-org/react";
-import { parseDate, getLocalTimeZone, CalendarDate, DateValue } from "@internationalized/date";
+import { parseDate, CalendarDate } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
 import { settings } from "@/actions/auth/settings";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
-import { Gallery } from "iconsax-react";
+import { Gallery, Edit2 } from "iconsax-react";
 import { z } from "zod";
+import toast, { Toaster } from 'react-hot-toast';
 
 const genders = [
   { title: 'Male', name: 'MALE' },
@@ -31,13 +32,13 @@ const schools = [
   'Mission High School'
 ];
 
-const grades = ['Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'];
+const grades = ['Grade 4','Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'];
 
 export const SettingsSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters long"),
   lastName: z.string().min(2, "Last name must be at least 2 characters long"),
   gender: z.enum(['MALE', 'FEMALE', 'TRANSGENDER', 'BISEXUAL', 'PREFER_NOT_TO_SAY']),
-  dob: z.instanceof(CalendarDate).nullable().optional(), // Use CalendarDate from @internationalized/date
+  dob: z.instanceof(CalendarDate).nullable().optional(),
   grade: z.string().optional().nullable(),
   schoolName: z.string().optional().nullable(),
   userType: z.enum(["STUDENT", "NON_STUDENT"]),
@@ -70,6 +71,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
   const [profileImage, setProfileImage] = useState<string>(getAvatarSrc(user));
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [userType, setUserType] = useState<"STUDENT" | "NON_STUDENT">(user.userType);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const updateUserImage = useUserStore((state) => state.updateUserImage);
   const setUser = useUserStore((state) => state.setUser);
@@ -84,7 +86,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
       grade: user.grade || undefined,
       schoolName: user.schoolName || undefined,
       email: user.email,
-      dob: user.dob ? parseDate(user.dob.toISOString().split("T")[0]) : null, // Using parseDate for DateValue
+      dob: user.dob ? parseDate(user.dob.toISOString().split("T")[0]) : null,
     },
   });
 
@@ -101,10 +103,9 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
       setProfileImage(url);
       updateUserImage(url);
       setUser({ ...useUserStore.getState().user, image: url });
-      setSuccess("Profile image updated and saved successfully");
-      setError("");
+      toast.success("Profile image updated successfully", { position: 'top-center' });
     } catch (err) {
-      setError("Please try again");
+      toast.error("Failed to update profile image. Please try again.", { position: 'top-center' });
     } finally {
       setIsUploading(false);
     }
@@ -129,75 +130,76 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
         if (uploadResult.secure_url) {
           await changeProfileImageHandler(uploadResult.secure_url);
         } else {
-          setError("Cloudinary upload failed");
+          toast.error("Failed to upload image to Cloudinary", { position: 'top-center' });
         }
       } catch (error) {
-        setError("Error uploading image");
+        toast.error("Error uploading image", { position: 'top-center' });
       } finally {
         setIsUploading(false);
       }
-    } else {
-      console.error("No files selected.");
     }
   };
 
   const onSubmit = (values: SettingsFormData) => {
-    setError(undefined);
-    setSuccess(undefined);
     let dob = values.dob ? new Date(Date.UTC(values.dob.year, values.dob.month - 1, values.dob.day, 0, 0, 0)) : null;
-  const updatedValues = { ...values, dob };
+    const updatedValues = { ...values, dob };
     startTransition(() => {
       settings(updatedValues)
         .then((data) => {
           if (data.error) {
-            setError(data.error);
+            toast.error(data.error, { position: 'top-center' });
           } else if (data.success) {
-            setSuccess(data.success);
+            toast.success(data.success, { position: 'top-center' });
             setUser(values);
+            setIsEditing(true);
           }
         })
         .catch(() => {
-          console.error(error)
-          setError("Something went wrong")
-          }
-      );
+          toast.error("Something went wrong", { position: 'top-center' });
+        });
     });
   };
+
   const handleCalendarClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
+  const toggleEditing = () => {
+    setIsEditing(!isEditing);
+  };
+
   const formatter = useDateFormatter({ dateStyle: "full" });
-  const maxDate = parseDate('2016-12-31');
+  const maxDate = parseDate('2018-12-31');
   const minDate = parseDate('1900-01-01');
 
   return (
+    <>
+    <Toaster />
     <Card className="w-full max-w-lg p-0 border-0 mb-6 shadow-none">
-      <CardHeader className="text-text">
-        <p className="text-base lg:text-xl font-semibold text-center">Edit Profile</p>
-      </CardHeader>
       <CardBody className="border-0 shadow-none">
-        <div className="flex items-center justify-center mb-4 relative">
-          {isUploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-75 rounded-full">
+      <div className="flex items-center justify-center mb-2 relative">
+          {isUploading ? (
+            <div className="z-[40] flex items-center justify-center bg-background bg-opacity-75 rounded-full">
               <Spinner size="lg" color="primary" />
             </div>
-          )}
+          ) : 
           <div className="relative">
-            <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center cursor-pointer" onClick={handleFileInputClick}>
-              <Avatar 
-                src={profileImage}
-                showFallback
-                isBordered
-                alt="Profile" 
-                className="w-24 h-24 text-large"
-              />
-              <div className="absolute bottom-0 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
-                <Gallery size={16} className="text-white" />
-              </div>
+          <div className="w-24 h-24 mb-2 rounded-full overflow-hidden flex items-center justify-center cursor-pointer" onClick={handleFileInputClick}>
+            <Avatar 
+              src={profileImage}
+              showFallback
+              
+              isBordered
+              alt="Profile" 
+              className="w-24 h-24 text-large"
+            />
+            <div className="absolute bottom-1 right-0 bg-brand p-1 flex items-center justify-center z-[30] rounded-full">
+              <Gallery size={16} className="text-white" />
             </div>
           </div>
+        </div>}
+         
           <input
             ref={fileInputRef}
             type="file"
@@ -205,6 +207,22 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
             onChange={handleFileChange}
           />
         </div>
+          {/* {(error || success) && (
+            <div className="my-3 text-center">
+              {error && <FormError message={error} />}
+              {success && <FormSuccess message={success} />}
+            </div>
+          )} */}
+          
+        <Button
+            color="primary"
+            variant="light"
+            startContent={<Edit2 size={18} />}
+            className={`mb-4 mx-auto `}
+            onClick={toggleEditing}
+          >
+            {isEditing ? "Cancel Editing" : "Edit Profile"}
+          </Button>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
@@ -214,7 +232,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 render={({ field }) => (
                   <FormItem className="flex items-start flex-col justify-center space-x-4">
                     <FormControl>
-                      <Input {...field} label="First Name" disabled={isPending} />
+                      <Input {...field} label="First Name" isDisabled={!isEditing || isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -226,7 +244,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                 render={({ field }) => (
                   <FormItem className="flex items-start flex-col justify-center space-x-4">
                     <FormControl>
-                      <Input {...field} label="Last Name" disabled={isPending} />
+                      <Input {...field} label="Last Name" isDisabled={!isEditing || isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -243,7 +261,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                         label="Gender"
                         defaultSelectedKeys={user.gender ? [user.gender] : ""}
                         value={field.value}
-                        disabled={isPending}
+                        isDisabled={!isEditing || isPending}
                       >
                         {genders.map((gender) => (
                           <SelectItem key={gender.name} value={gender.name}>
@@ -258,93 +276,92 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
               />
              
               {userType === "STUDENT" && (
-              <FormField
-                control={form.control}
-                name="grade"
-                render={({ field }) => (
-                  <FormItem className="flex items-start flex-col justify-center space-x-4">
-                    <FormControl>
-                      <Select
-                        {...field}
-                        label="Grade"
-                        value={field.value || undefined}
-                        defaultSelectedKeys={user.grade ? [user.grade] : []}
-                        placeholder="Select your grade"
-                        disabled={isPending}
-                      >
-                        {grades.map((grade) => (
-                          <SelectItem key={grade} value={grade}>
-                            {grade}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <>
+                  <FormField
+                    control={form.control}
+                    name="grade"
+                    render={({ field }) => (
+                      <FormItem className="flex items-start flex-col justify-center space-x-4">
+                        <FormControl>
+                          <Select
+                            {...field}
+                            label="Grade"
+                            value={field.value || undefined}
+                            defaultSelectedKeys={user.grade ? [user.grade] : []}
+                            placeholder="Select your grade"
+                            isDisabled={!isEditing || isPending}
+                          >
+                            {grades.map((grade) => (
+                              <SelectItem key={grade} value={grade}>
+                                {grade}
+                              </SelectItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="schoolName"
+                    render={({ field }) => (
+                      <FormItem className="flex items-start flex-col justify-center space-x-4">
+                        <FormControl>
+                          <Select
+                            {...field}
+                            label="School Name"
+                            value={field.value || undefined}
+                            defaultSelectedKeys={user.schoolName ? [user.schoolName] : []}
+                            isDisabled={!isEditing || isPending}
+                          >
+                            {schools.map((school) => (
+                              <SelectItem key={school} value={school}>
+                                {school}
+                              </SelectItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <DatePicker
+                            label="Birth Date"
+                            calendarWidth={256}
+                            maxValue={maxDate}
+                            minValue={minDate}
+                            onClick={handleCalendarClick}
+                            defaultValue={field.value ? parseDate(field.value.toString()) : undefined}
+                            value={field.value ? parseDate(field.value.toString()) : null}
+                            onChange={field.onChange}
+                            showMonthAndYearPickers
+                            calendarProps={{
+                              calendarWidth: 256,
+                              classNames: {
+                                gridWrapper: "w-full",
+                                content: 'w-[256px]'
+                              }
+                            }}
+                            classNames={{
+                              calendarContent: 'w-[256px]'
+                            }}
+                            className="border-none m-0 min-w-full"
+                            isDisabled={!isEditing || isPending}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
               )}
-              {userType === "STUDENT" && (
-                <FormField
-                  control={form.control}
-                  name="schoolName"
-                  render={({ field }) => (
-                    <FormItem className="flex items-start flex-col justify-center space-x-4">
-                      <FormControl>
-                        <Select
-                          {...field}
-                          label="School Name"
-                          value={field.value || undefined}
-                          defaultSelectedKeys={user.schoolName ? [user.schoolName] : []}
-                          disabled={isPending}
-                        >
-                         {schools.map((school) => (
-                          <SelectItem key={school} value={school}>
-                            {school}
-                          </SelectItem>
-                        ))}
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-               <FormField
-                control={form.control}
-                name="dob"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <DatePicker
-                        label="Birth Date"
-                        calendarWidth={256}
-                        maxValue={maxDate}
-                        minValue={minDate}
-                        onClick={handleCalendarClick}
-                        defaultValue={field.value ? parseDate(field.value.toString()) : undefined}
-                        value={field.value ? parseDate(field.value.toString()) : null}
-                        onChange={field.onChange}
-                        showMonthAndYearPickers
-                        calendarProps={{
-                          calendarWidth : 256,
-                          classNames : {
-                            gridWrapper : "w-full",
-                            content: 'w-[256px]'
-                          }
-                        }}
-                        classNames={
-                          {
-                            calendarContent : 'w-[256px]'
-                          }
-                        }
-                        className="border-none m-0 min-w-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               {isOAuth && (
                 <FormField
                   control={form.control}
@@ -352,22 +369,25 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
                   render={() => (
                     <FormItem className="flex items-start flex-col justify-center space-x-4">
                       <FormControl>
-                        <Input label="Email" value={user.email} disabled />
+                        <Input label="Email" value={user.email} isDisabled />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               )}
             </div>
-            <Button type="submit" color="primary" className="w-full font-medium text-lg text-white" isLoading={isPending}>
-              Save
-            </Button>
-            {error && <FormError message={error} /> }
-            {success && <FormSuccess message={success} />}
+            {isEditing && (
+              <Button type="submit" color="primary" className="w-full font-medium text-lg text-white" isLoading={isPending}>
+                Save Changes
+              </Button>
+            )}
+            {/* {error && !isUploading && <FormError message={error} />}
+            {success && !isUploading && <FormSuccess message={success} />} */}
           </form>
         </Form>
       </CardBody>
     </Card>
+    </>
   );
 };
 

@@ -80,7 +80,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
     setFeedbackMessage(feedbackMessage);
   }
 };
-  const maxDate = parseDate('2016-12-31');
+  const maxDate = parseDate('2018-12-31');
   const minDate = parseDate('1900-01-01');
  
   const onSubmit = (data: DateData) => {
