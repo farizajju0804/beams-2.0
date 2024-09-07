@@ -36,7 +36,7 @@ const Page = () => {
     lastName: session?.user.lastName
   });
 
-  const totalSlides = formData.userType === 'STUDENT' ? 6 : 4; // Conditional total slides
+  const totalSlides = formData.userType === 'STUDENT' ? 6 : 3; // Conditional total slides
   const handleNext = (data: any) => {
     setFormData((prev) => ({
       ...prev,
@@ -144,7 +144,7 @@ const Page = () => {
           )}
 
           {/* Slide 4: Final submit for NON_STUDENT */}
-          {currentSlide === 4 && formData.userType === 'NON_STUDENT' && (
+          {currentSlide === 3 && formData.userType === 'NON_STUDENT' && (
             <Slide4
               onNext={handleNextAndSubmit} 
               formData={formData}
