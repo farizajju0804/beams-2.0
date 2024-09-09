@@ -4,6 +4,7 @@ import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
 import { BeamsToday } from "@/types/beamsToday";
 import { Spinner } from "@nextui-org/react";
+import Loader from "@/components/Loader";
 
 interface TopicOfTheDayContainerProps {
   user: any;
@@ -25,9 +26,7 @@ const TopicOfTheDayContainer: React.FC<TopicOfTheDayContainerProps> = ({ user })
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" />
-      </div>
+      <Loader/>
     );
   }
 

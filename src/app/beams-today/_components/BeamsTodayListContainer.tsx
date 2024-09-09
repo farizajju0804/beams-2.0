@@ -5,6 +5,7 @@ import BeamsTodayCard from "./BeamsTodayCard";
 import { BeamsToday } from "@/types/beamsToday";
 import { Spinner, Button } from "@nextui-org/react";
 import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';
+import Loader from "@/components/Loader";
 
 interface BeamsTodayListContainerProps {
   completedTopics: string[];
@@ -84,9 +85,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   // Show a loading spinner while fetching topics
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" />
-      </div>
+      <Loader/>
     );
   }
 
