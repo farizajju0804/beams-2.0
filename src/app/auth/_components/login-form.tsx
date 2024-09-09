@@ -118,18 +118,21 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
                     <FormControl>
                       <Input
                         isRequired
+                        variant="underlined"
                         label="Two-Factor Code"
                         classNames={{
-                          label: 'w-32 font-medium',
+                          label: 'font-semibold  text-text',
                           mainWrapper: "w-full flex-1",
+                          inputWrapper: "h-12",
                           input: [
-                            "placeholder:text-grey-2 text-xs",
+                            "placeholder:text-grey-2",
                             'w-full flex-1 font-medium',
                           ],
                         }}
                         {...field}
                         type="text"
                         disabled={isLoading}
+                        labelPlacement="outside"
                         placeholder="Enter your code"
                       />
                     </FormControl>
