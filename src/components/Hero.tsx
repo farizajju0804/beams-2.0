@@ -14,7 +14,7 @@ const HeroSection: React.FC = () => {
   const handleClick = () => {
     setTimeout(() => {
       router.push('/auth/register');
-    }, 2000); // 2-second delay
+    }, 1000); // 2-second delay
   };
 
   return (

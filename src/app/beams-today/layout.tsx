@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import Nav from "@/components/Navbar";
 import PublicFooter from "@/components/PublicFooter";
+import { SessionProviders } from "../SessionProviders";
 
 
 const quicksand = Quicksand({ subsets: ["latin"] });
@@ -16,11 +17,12 @@ export default function Layout({
 }) {
 
   return (
+    <SessionProviders>
          <div className="relative w-full max-w-full overflow-x-hidden">
         <Nav />
         {children}
         <PublicFooter/>
         </div>
-  
+        </SessionProviders>
   );
 }

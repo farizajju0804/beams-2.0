@@ -1,8 +1,9 @@
 'use client';
 
+import { Spinner } from '@nextui-org/react';
 import React, { useEffect, useState } from 'react';
-import Lottie from "lottie-react";
-import animationData from '../../public/loader.json';
+// import Lottie from "lottie-react";
+// import animationData from '../../public/loader.json';
 
 const loadingMessages = [
   "Hang tight, we’re brewing something awesome! ☕",
@@ -34,10 +35,11 @@ const Loader: React.FC = () => {
         style={{ height: '150px', width: '150px' }}
       /> */}
       {/* Random Loading Message */}
-      <Lottie animationData={animationData} 
+      {/* <Lottie animationData={animationData} 
       className="flex justify-center items-center w-40"
-      autoPlay loop={true} />
-      <p className="text-base mt-4">{loadingMessage}</p>
+      autoPlay loop={true} /> */}
+      <Spinner size='lg' className='mx-auto'/>
+      <p className="text-base text-center mx-auto mt-4">{loadingMessage}</p>
     </div>
   );
 };

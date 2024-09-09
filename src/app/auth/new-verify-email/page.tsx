@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react"; // Import React hooks for managing state, lifecycle, and refs
 import { useForm, SubmitHandler } from "react-hook-form"; // React Hook Form utilities for form handling
+import { z } from "zod"; // Zod for schema validation
+import { zodResolver } from "@hookform/resolvers/zod"; // Zod resolver for React Hook Form
 import { verifyCode } from "@/actions/auth/verifyCode"; // Action to verify the code
 import { Input, Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
 import FormError from "@/components/form-error"; // Import component for displaying form errors
@@ -13,10 +15,18 @@ import { useRouter } from "next/navigation"; // Next.js router hook for navigati
 import RegisterSide from "../_components/RegisterSide"; // Side UI component for the registration page
 import { TickCircle } from "iconsax-react"; // Icon for visual feedback
 
-// TypeScript interface for form data
-interface VerifyEmailFormData {
-  code: string; // The verification code field
-}
+// Define the Zod schema for validation
+const verifyEmailSchema = z.object({
+  code: z
+    .string()
+    .min(1, { message: "Code required." })
+    .min(6, { message: "Code must be exactly 6 digits." })
+    .max(6, { message: "Code must be exactly 6 digits." })
+    .regex(/^\d{6}$/, { message: "Code must contain only numbers." }), // Ensure the code is numeric
+});
+
+// TypeScript interface for form data based on Zod schema
+type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
 
 /**
  * VerifyEmail is a React functional component for verifying a user's email
@@ -24,9 +34,10 @@ interface VerifyEmailFormData {
  * error handling, and the ability to resend the verification code.
  */
 const VerifyEmail: React.FC<{}> = ({}) => {
-  // Initialize form handling with default value for the code
-  const { register, handleSubmit, watch, setValue } = useForm<VerifyEmailFormData>({
+  // Initialize form handling with default value for the code and Zod schema
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<VerifyEmailFormData>({
     defaultValues: { code: "" },
+    resolver: zodResolver(verifyEmailSchema), // Zod schema resolver
   });
 
   // State management for error, success, loading, and resend message
@@ -51,12 +62,12 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   };
 
   // Form submission handler
-  const onSubmit: SubmitHandler<VerifyEmailFormData> = async () => {
+  const onSubmit: SubmitHandler<VerifyEmailFormData> = async (data) => {
     setError(""); // Reset error state
     setSuccess(false); // Reset success state
     setIsLoading(true); // Set loading state to true
     try {
-      const result = await verifyCode(code, email); // Verify the code
+      const result = await verifyCode(data.code, email); // Verify the code
       if (result?.success) {
         setSuccess(true); // Set success state if the result is successful
       } else {
@@ -152,7 +163,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                   </p>
                   <div className="flex justify-center">
                     <input
-                      {...register("code", { required: true, pattern: /^\d{6}$/ })} // Register input field for code with validation
+                      {...register("code")} // Register input field for code with validation from Zod
                       type="text"
                       maxLength={6}
                       onChange={handleInputChange}
@@ -162,6 +173,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                       className="w-full h-10 text-center border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-primary text-2xl tracking-widest"
                     />
                   </div>
+                  {errors.code && <p className="text-red-500 text-sm font-medium text-left">{errors.code.message}</p>} {/* Display Zod validation error */}
                 </div>
 
                 <Button
