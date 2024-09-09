@@ -101,7 +101,6 @@ const OnboardingPage = () => {
  
     frame();
     setTimeout(() => {
-      setIsCompletionModalOpen(false); 
       handleFinalSubmit(); 
     }, 3000);
   };
@@ -136,7 +135,7 @@ const OnboardingPage = () => {
   };
 
   const handleFinalSubmit = async () => {
-    setIsCompletionModalOpen(false); // Close the completion modal
+    setIsCompletionModalOpen(false); 
     const updated = await update({
       ...session,
       user: {
@@ -144,6 +143,7 @@ const OnboardingPage = () => {
         onBoardingCompleted: true,
       },
     });
+    console.log("updated",updated)
     setIsRedirecting(true);
     router.push(DEFAULT_LOGIN_REDIRECT);
   };

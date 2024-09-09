@@ -84,7 +84,7 @@ export function BeamsTodayRecents({ topics }: any) {
                 <div className="flex  items-start px-4 pt-4">
                     <motion.h3
                       layoutId={`title-${active.title}-${id}`}
-                      className="font-medium font-poppins text-neutral-700 dark:text-neutral-200 text-lg"
+                      className="font-medium font-poppins text-text text-lg"
                     >
                       {active.title}
                     </motion.h3>
@@ -104,7 +104,7 @@ export function BeamsTodayRecents({ topics }: any) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-sm md:text-sm lg:text-base pb-6 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                    className="text-grey-2 text-sm md:text-sm lg:text-base pb-6 flex flex-col items-start gap-4 overflow-auto  [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                   >
                     {active.shortDesc}
                   </motion.div>
@@ -138,7 +138,7 @@ export function BeamsTodayRecents({ topics }: any) {
             layoutId={`card-${topic.title}-${id}`}
             key={topic.id}
             onClick={() => setActive(topic)}
-            className="p-4 flex flex-col hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className="p-4 flex flex-col  rounded-xl cursor-pointer"
           >
             <div className="flex gap-4 flex-col  w-full">
               <motion.div layoutId={`image-${topic.title}-${id}`}>
