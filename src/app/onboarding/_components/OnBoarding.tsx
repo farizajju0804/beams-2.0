@@ -1,5 +1,5 @@
 'use client'
-
+import confetti from "canvas-confetti";
 import React, { useEffect, useState, useTransition } from 'react'
 import { updateOnboardingStatus } from '@/actions/auth/onboarding'
 import { Button } from '@nextui-org/react'
@@ -71,6 +71,40 @@ const OnboardingPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+
+  const handleEndClick = () => {
+    const end = Date.now() + 3 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+ 
+    const frame = () => {
+      if (Date.now() > end) return;
+ 
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      });
+ 
+      requestAnimationFrame(frame);
+    };
+ 
+    frame();
+    setTimeout(() => {
+      setIsCompletionModalOpen(false); 
+      handleFinalSubmit(); 
+    }, 3000);
+  };
   const backgroundImage = isEvenSlide 
     ? isMobile 
         ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png'
@@ -222,7 +256,7 @@ const OnboardingPage = () => {
             <p className="text-black font-medium mb-4">
               Tour complete! Now it&apos;s time to journey into a world full of learning and discovery.
             </p>
-            <Button className='font-semibold text-lg text-white' color="primary" onClick={handleFinalSubmit}>
+            <Button className='font-semibold text-lg text-white' color="primary" onClick={handleEndClick}>
               Let&apos;s Get Started!
             </Button>
           </div>

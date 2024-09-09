@@ -2,11 +2,21 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Button } from '@nextui-org/react';
-import Link from 'next/link';
+import { Button } from "@/components/ui/button";
 import { Microscope } from 'iconsax-react';
+import { CoolMode } from './ui/cool-mode';
+import { useRouter } from 'next/navigation';
 
 const HeroSection: React.FC = () => {
+  const router = useRouter();
+
+  // Handler for the button click to delay the navigation
+  const handleClick = () => {
+    setTimeout(() => {
+      router.push('/auth/register');
+    }, 2000); // 2-second delay
+  };
+
   return (
     <section className="w-full bg-yellow flex flex-col items-center justify-center text-center py-8 px-6 ">
       <motion.div
@@ -53,11 +63,19 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="mt-8 mb-4"
       >
-        <Link href="/auth/register">
-        <Button endContent={<Microscope variant='Bold'/>} className="bg-brand text-white text-lg md:text-xl py-6 px-8 font-semibold shadow-md hover:bg-orange-600 transition-colors">
-          Discover the Future Now
-        </Button>
-        </Link>
+        <CoolMode
+          // options={{
+          //   particle:
+          //     "https://res.cloudinary.com/drlyyxqh9/image/upload/v1724914561/email%20images/futuristic-particle_hw4pmx.webp",
+          // }}
+        >
+          <Button
+            onClick={handleClick} // Add click handler with delay
+            className="bg-brand text-white text-lg gap-3 lg:text-xl py-6 px-8 font-semibold shadow-md"
+          >
+            Discover the Future Now  <Microscope variant='Bold'/>
+          </Button>
+        </CoolMode>
       </motion.div>
     </section>
   );

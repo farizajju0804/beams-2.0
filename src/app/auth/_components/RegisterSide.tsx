@@ -1,3 +1,4 @@
+import { FlipWords } from '@/components/ui/flip-words';
 import Image from 'next/image'; // Import optimized image component from Next.js
 import Link from 'next/link'; // Import Link component for client-side navigation
 import React from 'react'; // Import React
@@ -8,6 +9,7 @@ import { FaStar } from 'react-icons/fa'; // Import star icon from react-icons fo
  * It includes a logo, motivational text, feature highlights, and an image.
  */
 const RegisterSide = () => {
+  const words = ["Unlock","Discover","Explore", "Ignite", "Uncover","Awaken"];
   return (
     <div className="lg:min-h-screen p-4 m-0 flex flex-col items-center justify-center xl:justify-around gap-5 bg-yellow w-full">
       
@@ -20,8 +22,8 @@ const RegisterSide = () => {
 
       {/* Header Text Section */}
       <div className="flex flex-col items-start gap-3 w-full pl-2 md:pl-6">
-        <div className="flex items-center gap-2">
-          <span className="font-poppins text-2xl md:text-3xl font-semibold text-purple">Unlock</span> {/* Unlock text */}
+        <div className="flex items-center gap-1">
+        <FlipWords className='font-poppins text-2xl md:text-3xl font-semibold text-purple' words={words} />
           <span className="font-poppins text-2xl md:text-3xl text-black">the</span> {/* "the" text */}
         </div>
         <h1 className="font-poppins text-2xl md:text-3xl text-black">Future with Beams</h1> {/* Main headline */}
