@@ -5,6 +5,7 @@ import BeamsTodayListContainer from "./BeamsTodayListContainer";
 import SearchBar from "./SearchBar";
 import BeamsTodayCard from "./BeamsTodayCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { BeamsTodayRecents } from "./BeamsTodayRecents";
 
 interface BeamsTodayPageProps {
   completedTopics: string[];
@@ -47,6 +48,8 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
           <BeamsTodayListContainer categories={categories} completedTopics={completedTopics} user={user} />
         </>
       )}
+
+      <BeamsTodayRecents topics={topics}/>
     </div>
   );
 };
