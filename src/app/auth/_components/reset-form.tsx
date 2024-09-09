@@ -1,30 +1,37 @@
-"use client";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { ResetSchema } from "@/schema/index";
+"use client"; // Ensures this component runs on the client side
+
+import { useForm } from "react-hook-form"; // Import React Hook Form for form handling
+import * as z from "zod"; // Import Zod for schema validation
+import { ResetSchema } from "@/schema/index"; // Import validation schema for password reset
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@nextui-org/react";
-import CardWrapper from "@/app/auth/_components/card-wrapper";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@nextui-org/react";
-import { resendPasswordResetEmail, reset } from "@/actions/auth/reset";
-import { useState, useTransition } from "react";
-import { Send2 } from "iconsax-react";
-import FormError from "../../../components/form-error";
-import Link from "next/link";
+} from "@/components/ui/form"; // Import custom form components
+import { Button } from "@nextui-org/react"; // Import Button component from NextUI
+import CardWrapper from "@/app/auth/_components/card-wrapper"; // Import CardWrapper for consistent UI layout
+import { zodResolver } from "@hookform/resolvers/zod"; // Integrate Zod with React Hook Form
+import { Input } from "@nextui-org/react"; // Import Input component from NextUI
+import { resendPasswordResetEmail, reset } from "@/actions/auth/reset"; // Actions to handle password reset and resending email
+import { useState, useTransition } from "react"; // Import necessary React hooks
+import { Send2 } from "iconsax-react"; // Import Send2 icon for button UI
+import FormError from "../../../components/form-error"; // Component to display form errors
+import Link from "next/link"; // Import Link component for navigation
 
+/**
+ * ResetForm component provides a user interface for requesting a password reset.
+ * It also allows users to resend reset instructions if needed.
+ */
 const ResetForm = () => {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<boolean>(false);
-  const [isResending, setIsResending] = useState<boolean>(false);
-  const [hasResent, setHasResent] = useState<boolean>(false);
-  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>(""); // State for managing error messages
+  const [success, setSuccess] = useState<boolean>(false); // State for managing success status
+  const [isResending, setIsResending] = useState<boolean>(false); // State for resending email status
+  const [hasResent, setHasResent] = useState<boolean>(false); // State for tracking if the reset email has been resent
+  const [isPending, startTransition] = useTransition(); // Hook to manage transition state during form submission
+
+  // Set up form with Zod validation and default values
   const form = useForm<z.infer<typeof ResetSchema>>({
     resolver: zodResolver(ResetSchema),
     defaultValues: {
@@ -32,32 +39,34 @@ const ResetForm = () => {
     },
   });
 
+  // Handle resending the password reset email
   const handleResend = () => {
-    setError("");
-    setIsResending(true); 
+    setError(""); // Clear previous errors
+    setIsResending(true); // Set resending state
     startTransition(() => {
-      const values = form.getValues(); 
+      const values = form.getValues(); // Get current form values (email)
       resendPasswordResetEmail(values.email).then((data) => {
         setIsResending(false); // Reset resending state
         if (data?.success) {
-          setHasResent(true);
-          setSuccess(true);
+          setHasResent(true); // Track that email was resent
+          setSuccess(true); // Show success state
         } else {
-          setError(data?.error || "Failed to resend reset instructions.");
+          setError(data?.error || "Failed to resend reset instructions."); // Set error if resending fails
         }
       });
     });
   };
 
+  // Handle form submission to request password reset
   const onSubmit = (values: z.infer<typeof ResetSchema>) => {
-    setError("");
-    setSuccess(false);
+    setError(""); // Clear previous errors
+    setSuccess(false); // Reset success state
     startTransition(() => {
       reset(values).then((data) => {
         if (data?.success) {
-          setSuccess(true);
+          setSuccess(true); // Show success state if reset instructions are sent
         } else {
-          setError(data?.error || "Failed to send reset instructions.");
+          setError(data?.error || "Failed to send reset instructions."); // Set error if reset fails
         }
       });
     });
@@ -65,19 +74,19 @@ const ResetForm = () => {
 
   return (
     <CardWrapper
-      subMessage={success ? "" : "Don't worry, we've got your back."}
-      headerLabel={success ? (isResending ? "Resending Email..." : "Check Your Inbox 📧") : "Forgot Password 🔑"}
-      backButtonPosition="bottom"
-      backButtonSubText="Remember Password?"
-      backButtonHref="/auth/login"
-      backButtonLabel="Login"
+      subMessage={success ? "" : "Don't worry, we've got your back."} // Sub-message when reset instructions are sent
+      headerLabel={success ? (isResending ? "Resending Email..." : "Check Your Inbox 📧") : "Forgot Password 🔑"} // Header label changes based on success or resending state
+      backButtonPosition="bottom" // Back button at the bottom of the card
+      backButtonSubText="Remember Password?" // Subtext for the back button
+      backButtonHref="/auth/login" // Link for back button to navigate to login page
+      backButtonLabel="Login" // Label for the back button
     >
       {success && !isResending ? (
         <div className="text-left">
           <p className="text-sm text-text mb-4">
             {hasResent
               ? `We've resent the password reset instructions to your email at `
-              : `We've emailed the password reset instructions to you at `} 
+              : `We've emailed the password reset instructions to you at `}
             <strong className="font-bold text-secondary-2">{form.getValues("email")}</strong>.
           </p>
           <p className="text-sm text-text mb-4">
@@ -93,7 +102,7 @@ const ResetForm = () => {
             endContent={<Send2 variant="Bold" />}
             color="primary"
             className="w-full font-semibold text-white text-lg md:text-xl py-6 mb-4"
-            isLoading={isResending} // Show loading state on the button
+            isLoading={isResending} // Show loading state while resending
           >
             Resend Email
           </Button>
@@ -102,6 +111,7 @@ const ResetForm = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-4">
             <div className="space-y-4">
+              {/* Email input field */}
               <FormField
                 control={form.control}
                 name="email"
@@ -124,7 +134,7 @@ const ResetForm = () => {
                         placeholder="Enter your email"
                         {...field}
                         type="email"
-                        disabled={isPending || isResending} // Disable during loading
+                        disabled={isPending || isResending} // Disable input during submission or resending
                       ></Input>
                     </FormControl>
                     <FormMessage />
@@ -132,6 +142,7 @@ const ResetForm = () => {
                 )}
               />
             </div>
+            {/* Submit button */}
             <Button
               type="submit"
               color="primary"
@@ -141,7 +152,7 @@ const ResetForm = () => {
             >
               {isPending ? "Sending..." : "Send Reset Instructions"}
             </Button>
-            {error && <FormError message={error} />}
+            {error && <FormError message={error} />} {/* Show error message if present */}
           </form>
         </Form>
       )}
@@ -149,4 +160,4 @@ const ResetForm = () => {
   );
 };
 
-export default ResetForm;
+export default ResetForm; // Export the component

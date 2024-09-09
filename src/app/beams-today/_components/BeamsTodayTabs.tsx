@@ -1,31 +1,38 @@
 'use client';
 import React, { useRef, useEffect } from "react";
-import TabsComponent from "@/components/TabsComponent";
-import VideoPlayer from "./VideoPlayer";
-import ArticleComponent from "@/app/beams-today/_components/Article";
-import { Book1, VideoPlay, Headphone } from 'iconsax-react';
-import { markTopicAsCompleted } from "@/actions/beams-today/completedActions";
-import AudioPlayer from "@/app/beams-today/_components/AudioPlayer";
-import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime';
+import TabsComponent from "@/components/TabsComponent"; // Component to handle tab navigation
+import VideoPlayer from "./VideoPlayer"; // Video player component
+import ArticleComponent from "@/app/beams-today/_components/Article"; // Article component for displaying text format
+import { Book1, VideoPlay, Headphone } from 'iconsax-react'; // Icons for each tab (Video, Audio, Text)
+import { markTopicAsCompleted } from "@/actions/beams-today/completedActions"; // Action to mark topic as completed
+import AudioPlayer from "@/app/beams-today/_components/AudioPlayer"; // Audio player component
+import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime'; // Action to update watch time for analytics
 
 interface BeamsTodayTabsProps {
-  beamsToday: any;
+  beamsToday: any; // The beamsToday object that contains information about the current topic (video, audio, article)
 }
 
 const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
+  // Refs to manage video, audio, and article components
   const videoPlayerRef = useRef<any>(null);
   const audioPlayerRef = useRef<any>(null);
   const articleRef = useRef<any>(null);
 
+  /**
+   * Handle when the user switches between tabs (video, audio, text).
+   * This updates the watch time for the previous format and marks the topic as completed in the new format.
+   * @param tabKey - The key representing the current tab (video, audio, text)
+   */
   const handleTabChange = async (tabKey: string) => {
     let format: 'video' | 'audio' | 'text' = 'video';
 
     if (tabKey === 'audio') {
-      format = 'audio';
+      format = 'audio'; // Change to audio format
     } else if (tabKey === 'text') {
-      format = 'text';
+      format = 'text'; // Change to text format
     }
 
+    // Save video watch time when switching away from the video tab
     if (videoPlayerRef.current && format !== 'video') {
       const elapsedTime = videoPlayerRef.current.getElapsedTime();
       if (elapsedTime > 0) {
@@ -33,6 +40,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       }
     }
 
+    // Save audio watch time when switching away from the audio tab
     if (audioPlayerRef.current && format !== 'audio') {
       const elapsedTime = audioPlayerRef.current.getElapsedTime();
       if (elapsedTime > 0) {
@@ -40,6 +48,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       }
     }
 
+    // Save article reading time when switching away from the text tab
     if (articleRef.current && format !== 'text') {
       const elapsedTime = articleRef.current.getElapsedTime();
       if (elapsedTime > 0) {
@@ -47,49 +56,39 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       }
     }
 
+    // Mark the topic as completed for the current format
     await markTopicAsCompleted(beamsToday.id, format);
   };
 
-  // const videoJsOptions = {
-  //   autoplay: false,
-  //   width: 1020,
-  //   enableSmoothSeeking: true,
-  //   height: 600,
-  //   controls: true,
-  //   responsive: true,
-  //   poster : beamsToday.thumbnailUrl,
-  //   fluid: true,
-  //   playsinline: true,
-  //   playbackRates: [0.5, 1, 1.5, 2],
-  //   sources: [
-  //     {
-  //       src: beamsToday?.videoUrl,
-  //       type: 'video/mp4',
-  //     },
-  //   ],
-  // };
-
+  /**
+   * The tab data includes key (video/audio/text), title, icon, and the corresponding content.
+   * The content corresponds to the video player, audio player, or article component.
+   */
   const tabs = [
     {
       key: 'video',
       title: 'Video',
-      icon: <VideoPlay size="24"  />,
+      icon: <VideoPlay size="24" />, // Video play icon
       content: <VideoPlayer ref={videoPlayerRef} id={beamsToday.id} videoId={beamsToday?.videoUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
       key: 'audio',
       title: 'Audio',
-      icon: <Headphone size="24"  />,
+      icon: <Headphone size="24" />, // Headphone icon for audio
       content: <AudioPlayer ref={audioPlayerRef} audioUrl={beamsToday?.audioUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
       key: 'text',
       title: 'Text',
-      icon: <Book1 size="24"  />,
+      icon: <Book1 size="24" />, // Book icon for text/article
       content: <ArticleComponent ref={articleRef} articleUrl={beamsToday?.articleUrl} />,
     },
   ];
 
+  /**
+   * Handle when the user leaves the page (unload event).
+   * This function updates the watch time for the currently active format before the user leaves.
+   */
   const handleUnload = async () => {
     if (videoPlayerRef.current) {
       const elapsedTime = videoPlayerRef.current.getElapsedTime();
@@ -113,6 +112,10 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     }
   };
 
+  /**
+   * Set up the event listener for when the user tries to close or navigate away from the page.
+   * This ensures that the watch time is saved before the user leaves.
+   */
   useEffect(() => {
     window.addEventListener('beforeunload', handleUnload);
 
@@ -123,6 +126,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
 
   return (
     <div className="flex w-full items-center justify-center flex-col mt-4 ">
+      {/* Render the TabsComponent with the defined tabs */}
       <TabsComponent tabs={tabs} onTabChange={handleTabChange} />
     </div>
   );

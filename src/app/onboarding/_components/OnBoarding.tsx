@@ -198,7 +198,7 @@ const OnboardingPage = () => {
             />
             <h2 className="font-bold text-black font-poppins text-2xl mb-4">Beam-tastic! 🎉</h2>
             <p className="text-black font-medium mb-4">
-              Let’s take a quick spin through Beams and unlock all its potential. You’re going to love what’s in store!
+              Let&apos;s take a quick spin through Beams and unlock all its potential. You&apos;re going to love what&apos;s in store!
             </p>
             <Button className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
               Show Me Around!
@@ -220,10 +220,10 @@ const OnboardingPage = () => {
             />
             <h2 className="font-bold text-black font-poppins text-2xl mb-4">Brace for Blastoff! 🚀</h2>
             <p className="text-black font-medium mb-4">
-              Tour complete! Now it’s time to journey into a world full of learning and discovery.
+              Tour complete! Now it&apos;s time to journey into a world full of learning and discovery.
             </p>
             <Button className='font-semibold text-lg text-white' color="primary" onClick={handleFinalSubmit}>
-              Let’s Get Started!
+              Let&apos;s Get Started!
             </Button>
           </div>
         </div>
@@ -233,4 +233,3 @@ const OnboardingPage = () => {
 }
 
 export default OnboardingPage;
-

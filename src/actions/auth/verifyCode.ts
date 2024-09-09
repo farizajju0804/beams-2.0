@@ -7,17 +7,23 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 
-export const verifyCode = async (code: string,email:string) => {
-  
+/**
+ * Verifies the verification code for a user's email verification process.
+ * @param {string} code - The verification code.
+ * @param {string} email - The user's email.
+ * @returns {Object} - Returns an error or success message.
+ */
+export const verifyCode = async (code: string, email: string) => {
   const existingUser = await getUserByEmail(email);
   if (!existingUser) {
     return { error: "User not found." };
   }
-  if(existingUser?.emailVerified){
-    return { success: "Email Already verified. try Logging in with your credentials" };
-  }
-  const existingToken = await getVerificationTokenByToken(code);
 
+  if (existingUser.emailVerified) {
+    return { success: "Email already verified. Try logging in with your credentials." };
+  }
+
+  const existingToken = await getVerificationTokenByToken(code);
   if (!existingToken) {
     return { error: "Invalid or expired code." };
   }
@@ -26,9 +32,6 @@ export const verifyCode = async (code: string,email:string) => {
   if (hasExpired) {
     return { error: "Code has expired." };
   }
-
-  // const existingUser = await getUserByEmail(existingToken.email);
- 
 
   await db.user.update({
     where: { email: existingToken.email },
@@ -40,9 +43,13 @@ export const verifyCode = async (code: string,email:string) => {
   return { success: "Email verified successfully!" };
 };
 
+/**
+ * Verifies the code and signs in the user.
+ * @param {string} code - The verification code.
+ * @returns {Object} - Returns an error or success message with login details.
+ */
 export const verifyCode2 = async (code: string) => {
   const existingToken = await getVerificationTokenByToken(code);
-
   if (!existingToken) {
     return { error: "Invalid or expired code." };
   }
@@ -65,32 +72,29 @@ export const verifyCode2 = async (code: string) => {
   await db.verificationToken.delete({ where: { id: existingToken.id } });
 
   try {
-    console.log("Attempting to sign in the user...");
-
-    // Perform sign in using credentials
     const result = await signIn("credentials", {
       redirect: false,
       email: existingUser.email,
-      password: existingUser.password, 
-      isAutoLogin: true, 
+      password: existingUser.password, // Auto-login by using existing credentials.
+      isAutoLogin: true,
     });
-
-    
 
     console.log("Login successful!");
     return { success: "Login successful!", url: DEFAULT_LOGIN_REDIRECT };
   } catch (error: any) {
-    console.error("Something went wrong during sign-in:", error.message);
+    console.error("Error during sign-in:", error.message);
     throw new Error(`Something went wrong during sign-in: ${error.message}`);
   }
-
-  
 };
 
-
-export const verifyCodeAndChangeEmail = async (code: string, oldEmail:string) => {
+/**
+ * Verifies the code and changes the user's email.
+ * @param {string} code - The verification code.
+ * @param {string} oldEmail - The user's old email.
+ * @returns {Object} - Returns an error or success message.
+ */
+export const verifyCodeAndChangeEmail = async (code: string, oldEmail: string) => {
   const existingToken = await getVerificationTokenByToken(code);
-
   if (!existingToken) {
     return { error: "Invalid or expired code." };
   }
@@ -105,24 +109,20 @@ export const verifyCodeAndChangeEmail = async (code: string, oldEmail:string) =>
     return { error: "User not found." };
   }
 
-
-
   try {
-    const newUser = await db.user.update({
+    await db.user.update({
       where: { id: user.id },
       data: {
         emailVerified: new Date(),
-        email: existingToken.email
-      }
+        email: existingToken.email,
+      },
     });
-  
+
     await db.verificationToken.delete({ where: { id: existingToken.id } });
-  
+
     return { success: true };
   } catch (error) {
     console.error("Error updating user or deleting token:", error);
     return { error: "Failed to update email. Please try again." };
   }
-
-  
 };

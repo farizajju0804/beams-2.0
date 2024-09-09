@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useRef, useState, useEffect } from "react";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import BeamsTodayCard from "./BeamsTodayCard";
@@ -12,6 +12,11 @@ interface BeamsTodayListContainerProps {
   user: any;
 }
 
+/**
+ * Component to display a carousel of trending topics from recent uploads.
+ * Users can navigate between topics using left/right arrows or click on pagination dots.
+ * The carousel auto-scrolls through the topics every 5 seconds.
+ */
 const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   completedTopics,
   user,
@@ -23,6 +28,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
   const [clickedArrow, setClickedArrow] = useState<string | null>(null); // Track the last clicked arrow
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Fetch recent uploads on mount
   useEffect(() => {
     const fetchRecentUploads = async () => {
       const clientDate = new Date().toLocaleDateString("en-CA");
@@ -33,11 +39,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     fetchRecentUploads();
   }, []);
 
+  // Start auto-scrolling when there are uploads
   useEffect(() => {
     startTimer();
     return () => stopTimer();
   }, [allUploads.length]);
 
+  // Start the auto-scrolling timer
   const startTimer = () => {
     stopTimer();
     timerRef.current = setInterval(() => {
@@ -45,6 +53,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     }, 5000);
   };
 
+  // Stop the auto-scrolling timer
   const stopTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -52,23 +61,27 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
     }
   };
 
+  // Scroll to the previous topic
   const scrollLeft = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + allUploads.length) % allUploads.length);
     setClickedArrow('left');
     startTimer();
   };
 
+  // Scroll to the next topic
   const scrollRight = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % allUploads.length);
     setClickedArrow('right');
     startTimer();
   };
 
+  // Handle pagination dot clicks
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
     startTimer();
   };
 
+  // Show a loading spinner while fetching topics
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -79,6 +92,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
 
   return (
     <div className="w-full max-w-6xl pb-8 lg:mt-4 px-6 lg:px-0">
+      {/* Header Section */}
       <div className="flex justify-between items-center">
         <div className="w-full flex flex-col items-start lg:items-center">
           <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Now Trending</h1>
@@ -86,7 +100,9 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         </div>
       </div>
       
+      {/* Carousel Section */}
       <div className="relative mt-2 flex justify-center items-center">
+        {/* Left Arrow Button */}
         <Button
           size="sm"
           isIconOnly
@@ -96,12 +112,14 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
           <ArrowLeft2 className="w-full h-full" />
         </Button>
         
+        {/* Current Topic Card */}
         <div className="w-48 md:w-64 flex justify-center items-center mx-4">
           {allUploads?.length > 0 && (
             <BeamsTodayCard key={allUploads[currentIndex]?.id} topic={allUploads[currentIndex]} />
           )}
         </div>
         
+        {/* Right Arrow Button */}
         <Button
           size="sm"
           isIconOnly
@@ -112,6 +130,7 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
         </Button>
       </div>
       
+      {/* Pagination Dots */}
       <div className="flex justify-center mt-4">
         {allUploads.map((_, index) => (
           <div

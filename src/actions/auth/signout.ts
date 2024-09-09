@@ -2,12 +2,20 @@
 "use server";
 import { signOut } from "@/auth";
 
- // This directive allows the function to be a server action
-
-
+/**
+ * Signs out the current user using the signOut method.
+ * The `signOut` function is called with redirect set to false to prevent immediate redirection.
+ * The function returns an object with a success property when the user is signed out.
+ * 
+ * @returns {Object} - Returns { success: true } after successful sign out.
+ */
 export async function signOutUser() {
-  console.log('clicked')
+  console.log('clicked');
+  
+  // Calls the signOut function to log out the user
   await signOut({ redirect: false });
-  console.log('signout called')
-  return { success: true };
+  
+  console.log('signout called');
+  
+  return { success: true }; // Return success confirmation
 }

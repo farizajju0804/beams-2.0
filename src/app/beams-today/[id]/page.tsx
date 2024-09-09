@@ -1,4 +1,3 @@
-
 import React from "react";
 import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
 import { getPoll } from "@/actions/beams-today/pollActions";
@@ -18,37 +17,55 @@ interface BeamsTodayPlayerPageProps {
 }
 
 const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
+  // Destructure the topic ID from params
   const { id } = params;
+  
+  // Fetch the specific Beams Today topic by ID
   const beamsToday: any = await getBeamsTodayById(id);
+  
+  // Fetch the poll associated with the topic
   const poll: any = await getPoll(id);
-
+  
+  // Fetch related topics within the same category, excluding the current topic
   const relatedTopics = await fetchCategoryRelatedTopics(beamsToday.category.id);
   const filteredRelatedTopics: any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
+  
+  // Fetch all Beams Today topics for navigation purposes
   const allBeamsToday:any = await getAllBeamsToday();
   const currentIndex = allBeamsToday.findIndex((topic: BeamsToday) => topic.id === id);
+  
+  // Define URLs for the previous and next topics, if they exist
   const prevUrl = currentIndex > 0 ? `/beams-today/${allBeamsToday[currentIndex - 1].id}` : null;
   const nextUrl = currentIndex < allBeamsToday.length - 1 ? `/beams-today/${allBeamsToday[currentIndex + 1].id}` : null;
 
   return (
     <div className="max-w-5xl flex w-full flex-col mx-auto px-4 mt-4 overflow-x-hidden">
       <div className="px-4">
-      <Breadcrumbs
-        pageClassName="text-text"
-        linkClassName="text-grey-2"
-        items={[
-          { href: "/", name: "Home" },
-          { name: "Beams Today", href: "/beams-today" },
-          { name: beamsToday.title }
-        ]}
-      />
+        {/* Breadcrumbs navigation */}
+        <Breadcrumbs
+          pageClassName="text-text"
+          linkClassName="text-grey-2"
+          items={[
+            { href: "/", name: "Home" },
+            { name: "Beams Today", href: "/beams-today" },
+            { name: beamsToday.title }
+          ]}
+        />
       </div>
-     
+      
+      {/* Render tabs and details of the Beams Today topic */}
       <BeamsTodayTabs beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
+      
+      {/* Render the poll component for user interaction */}
       <BarPoll poll={poll} />
+      
+      {/* Display related topics if available */}
       {filteredRelatedTopics.length > 0 && (
         <RelatedSection topics={filteredRelatedTopics} categoryName={beamsToday.category.name} />
       )}
+      
+      {/* Bottom navigation to previous and next topics */}
       <BottomNavigation
         currentDate={beamsToday.date}
         prevUrl={prevUrl}

@@ -1,3 +1,4 @@
+// Import necessary dependencies and components
 'use client';
 
 import React from 'react';
@@ -5,11 +6,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast, Toaster } from 'react-hot-toast';
-import { Send2 } from 'iconsax-react';
-import { Input, Textarea, Button, Select, SelectItem } from '@nextui-org/react';
+import { Send2 } from 'iconsax-react'; // Icon for button
+import { Input, Textarea, Button, Select, SelectItem } from '@nextui-org/react'; // UI components from NextUI
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { saveContactFormResponse } from '@/actions/others/contact';
 
+// Define form validation schema using Zod
 const formSchema = z.object({
   firstName: z.string().min(1, { message: 'First Name is required' }),
   lastName: z.string().min(1, { message: 'Last Name is required' }),
@@ -21,6 +23,7 @@ const formSchema = z.object({
   message: z.string().min(1, { message: 'Message is required' }).max(500, { message: 'Message cannot exceed 500 characters' }),
 }).required();
 
+// Define subject options for the select dropdown
 const subjectOptions = [
   { value: 'General Inquiry', label: 'General Inquiry' },
   { value: 'Technical Support', label: 'Technical Support' },
@@ -28,9 +31,10 @@ const subjectOptions = [
   { value: 'Feedback and Suggestions', label: 'Feedback and Suggestions' },
 ];
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>; // Define form data type based on schema
 
 const ContactForm: React.FC = () => {
+  // Initialize form with react-hook-form and zodResolver for validation
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
@@ -44,27 +48,28 @@ const ContactForm: React.FC = () => {
   });
 
   const { control, watch, reset, formState: { errors } } = form;
-
-  const message = watch('message', '');
-  const subject = watch('subject');
+  const message = watch('message', ''); // Watch for changes in the message field
+  const subject = watch('subject'); // Watch for changes in the subject field
 
   React.useEffect(() => {
     console.log('Form errors:', errors);
     console.log('Selected subject:', subject);
   }, [errors, subject]);
 
+  // Handle form submission
   const onSubmit = async (data: FormData) => {
     try {
       console.log('Form submitted with data:', data);
-      await saveContactFormResponse(data);
-      toast.success('Message sent successfully!');
-      reset();
+      await saveContactFormResponse(data); // Save form data using server action
+      toast.success('Message sent successfully!'); // Show success toast
+      reset(); // Reset the form
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('Failed to send message. Please try again later.');
+      toast.error('Failed to send message. Please try again later.'); // Show error toast
     }
   };
 
+  // Define input and label styles
   const inputClasses = "border-gray-200 focus:border-purple shadow-none";
   const labelClasses = "text-sm text-gray-400 group-data-[has-value=true]:text-gray-400 font-medium";
 
@@ -85,8 +90,6 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="First Name"
                       isRequired
-                      // isInvalid={!!errors.firstName}
-                      // errorMessage={errors.firstName?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -111,8 +114,6 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Last Name"
                       isRequired
-                      // isInvalid={!!errors.lastName}
-                      // errorMessage={errors.lastName?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -138,8 +139,6 @@ const ContactForm: React.FC = () => {
                       type="email"
                       label="Email"
                       isRequired
-                      // isInvalid={!!errors.email}
-                      // errorMessage={errors.email?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -165,19 +164,13 @@ const ContactForm: React.FC = () => {
                       isRequired
                       labelPlacement='outside'
                       variant='underlined'
-                      // isInvalid={!!errors.subject}
-                      // errorMessage={errors.subject?.message}
                       classNames={{
                         trigger: "mt-8",
                         label: "group-data-[filled=true]:text-gray-400 text-xs",
                         value: "text-black font-medium"
                       }}
                       selectedKeys={field.value ? [field.value] : []}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        console.log('Subject changed to:', value);
-                        field.onChange(value);
-                      }}
+                      onChange={(e) => field.onChange(e.target.value)} // Handle subject change
                       className="w-full space-y-0 text-text"
                     >
                       {subjectOptions.map((option) => (
@@ -203,8 +196,6 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Message"
                       isRequired
-                      // isInvalid={!!errors.message}
-                      // errorMessage={errors.message?.message}
                       variant="underlined"
                       classNames={{
                         inputWrapper: inputClasses,
@@ -223,7 +214,7 @@ const ContactForm: React.FC = () => {
             color="primary"
             variant="solid"
             type="submit"
-            startContent={<Send2 />}
+            startContent={<Send2 />} // Add Send2 icon
             className='w-full md:w-fit text-white font-medium text-lg'
           >
             Send Message

@@ -6,19 +6,22 @@ import 'next-cloudinary/dist/cld-video-player.css';
 interface VideoPlayerProps {
   id: string;
   videoId: string;
-  thumbnailUrl : string;
+  thumbnailUrl: string;
 }
 
+// VideoPlayer component to play video using Cloudinary's CldVideoPlayer
 const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailUrl }, ref) => {
   const playerRef = useRef<any>(null);
   const videoRef = useRef<any>(null);
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
 
+  // Expose the elapsed time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
 
+  // Track video play time to calculate elapsed time
   useEffect(() => {
     const videoElement = videoRef.current;
 
@@ -79,10 +82,6 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         }}
         playbackRates={[0.5, 1, 1.5, 2]}
         pictureInPictureToggle={true}
-        logo={{
-          imageUrl: 'https://example.com/logo.png',
-          onClickUrl: 'https://example.com',
-        }}
         playerRef={playerRef}
         videoRef={videoRef}
       />

@@ -1,12 +1,15 @@
 import React from 'react';
 
+// Interface defining the structure of each section in the Terms of Service
 interface TermsSection {
-  type: 'header' | 'subheader' | 'paragraph' | 'list';
-  content?: string;
-  items?: Array<{ term: string; definition: string }>;
+  type: 'header' | 'subheader' | 'paragraph' | 'list'; // Types of content
+  content?: string; // For text-based content (headers, paragraphs, etc.)
+  items?: Array<{ term: string; definition: string }>; // For list items (used in 'list' type)
 }
 
+// Data for Terms of Service
 const termsOfServiceData: TermsSection[] = [
+  // Example data for headers, subheaders, paragraphs, and lists
   {
     type: 'header',
     content: 'Terms of Service'
@@ -88,22 +91,6 @@ const termsOfServiceData: TermsSection[] = [
     type: 'paragraph',
     content: 'We may terminate your access to the Services, without cause or notice, which may result in the forfeiture and destruction of all information associated with your account. All provisions of this Agreement that by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.'
   },
-  // {
-  //   type: 'subheader',
-  //   content: '7. Disclaimer of Warranties'
-  // },
-  // {
-  //   type: 'paragraph',
-  //   content: 'THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.'
-  // },
-  // {
-  //   type: 'subheader',
-  //   content: '8. Limitation of Liability'
-  // },
-  // {
-  //   type: 'paragraph',
-  //   content: 'IN NO EVENT SHALL BEAMS, ITS OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS, BE LIABLE TO YOU FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES WHATSOEVER RESULTING FROM ANY (I) ERRORS, MISTAKES, OR INACCURACIES OF CONTENT, (II) PERSONAL INJURY OR PROPERTY DAMAGE, OF ANY NATURE WHATSOEVER, RESULTING FROM YOUR ACCESS TO AND USE OF OUR SERVICES, (III) ANY UNAUTHORIZED ACCESS TO OR USE OF OUR SECURE SERVERS AND/OR ANY AND ALL PERSONAL INFORMATION AND/OR FINANCIAL INFORMATION STORED THEREIN.'
-  // },
   {
     type: 'subheader',
     content: '7. Governing Law'
@@ -130,7 +117,9 @@ const termsOfServiceData: TermsSection[] = [
   }
 ];
 
+// Main Terms of Service page component
 const TermsOfServicePage: React.FC = () => {
+  // Function to render content based on the type (header, subheader, paragraph, list)
   const renderContent = (item: TermsSection) => {
     switch (item.type) {
       case 'header':
@@ -140,6 +129,7 @@ const TermsOfServicePage: React.FC = () => {
       case 'paragraph':
         return (
           <p className="text-grey-2 leading-relaxed mb-4">
+            {/* Automatically detect and link URLs or email addresses */}
             {item.content?.split(' ').map((word, index) => {
               if (word.startsWith('www.') || word.startsWith('http')) {
                 return <a key={index} href={word.startsWith('www.') ? `https://${word}` : word} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">{word} </a>;

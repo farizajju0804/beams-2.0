@@ -1,79 +1,83 @@
-'use client';
+'use client'; // Ensures this component is rendered on the client side in a Next.js environment.
 
-import React, { forwardRef, useImperativeHandle, useState, useCallback } from 'react';
-import { Button, Calendar, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react';
-import { Calendar as CalendarIcon } from 'iconsax-react';
-import { DateValue, CalendarDate } from '@internationalized/date';
+import React, { forwardRef, useImperativeHandle, useState, useCallback } from 'react'; // React imports including forwardRef and hooks.
+import { Button, Calendar, Popover, PopoverTrigger, PopoverContent } from '@nextui-org/react'; // Import UI components from NextUI.
+import { Calendar as CalendarIcon } from 'iconsax-react'; // Calendar icon from iconsax-react.
+import { DateValue, CalendarDate } from '@internationalized/date'; // Types from internationalized date library.
 
 interface CalendarComponentProps {
-  selectedDate: DateValue | null;
-  onDateChange: (date: DateValue | null) => void;
-  minValue: CalendarDate;
-  maxValue: CalendarDate;
+  selectedDate: DateValue | null; // The currently selected date, or null if no date is selected.
+  onDateChange: (date: DateValue | null) => void; // Function to handle date changes.
+  minValue: CalendarDate; // Minimum date that can be selected.
+  maxValue: CalendarDate; // Maximum date that can be selected.
 }
 
 interface CalendarComponentHandle {
-  close: () => void;
+  close: () => void; // Method to allow the parent component to close the popover programmatically.
 }
 
+// The CalendarComponent is wrapped with forwardRef to expose methods to the parent component.
 const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentProps>(
   ({ selectedDate, onDateChange, minValue, maxValue }, ref) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); // State to manage the visibility of the popover.
 
+    // Expose a method to the parent component to close the popover using useImperativeHandle.
     useImperativeHandle(ref, () => ({
-      close: () => setIsOpen(false),
+      close: () => setIsOpen(false), // Allows the parent component to programmatically close the popover.
     }));
 
+    // Handle the date change, pass the selected date back to the parent component, and close the popover.
     const handleDateChange = (date: DateValue | null) => {
       onDateChange(date);
-      setIsOpen(false);
+      setIsOpen(false); // Close the popover after a date is selected.
     };
 
+    // Handle popover open/close state.
     const handleOpenChange = (open: boolean) => {
-      setIsOpen(open);
+      setIsOpen(open); // Update the popover's open state based on user interaction.
     };
 
+    // Prevent the calendar click from closing the popover.
     const handleCalendarClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
+      e.stopPropagation(); // Stop the event from propagating to prevent unintended popover closing.
     };
 
     return (
       <Popover
-        placement="bottom-end"
-        shouldFlip={false}
-        shouldUpdatePosition={false}
-        
-        isOpen={isOpen}
-        onOpenChange={handleOpenChange}
+        placement="bottom-end" // Places the popover at the bottom right of the button.
+        shouldFlip={false} // Prevents the popover from flipping to other positions.
+        shouldUpdatePosition={false} // Prevents the popover from updating its position dynamically.
+        isOpen={isOpen} // Controls whether the popover is open or closed.
+        onOpenChange={handleOpenChange} // Handles changes in the popover's open state.
       >
-        <PopoverTrigger >
+        {/* Popover trigger is a button with a calendar icon */}
+        <PopoverTrigger>
           <Button className="bg-grey-1" isIconOnly>
-            <CalendarIcon size="24" className="text-grey-2" />
+            <CalendarIcon size="24" className="text-grey-2" /> {/* Button to open the calendar */}
           </Button>
         </PopoverTrigger>
+        
+        {/* Popover content that contains the Calendar component */}
         <PopoverContent className="p-0 m-0 min-w-[256px] flex">
-          {/* <div > */}
-            <Calendar
-              value={selectedDate}
-              onChange={handleDateChange}
-              
-              minValue={minValue}
-              maxValue={maxValue}
-              onClick={handleCalendarClick}
-              calendarWidth={256}
-              classNames={{
-                gridWrapper:"w-full",
-                content: 'w-[256px]'
-              }}
-              className="border-none m-0 min-w-full"
-            />
-          {/* </div> */}
+          <Calendar
+            value={selectedDate} // The currently selected date.
+            onChange={handleDateChange} // Handles the date change.
+            minValue={minValue} // Minimum selectable date.
+            maxValue={maxValue} // Maximum selectable date.
+            onClick={handleCalendarClick} // Prevents the popover from closing when clicking inside the calendar.
+            calendarWidth={256} // Sets a fixed width for the calendar.
+            classNames={{
+              gridWrapper: "w-full", // Ensures the calendar grid takes full width.
+              content: 'w-[256px]', // Ensures the content is correctly sized.
+            }}
+            className="border-none m-0 min-w-full" // Calendar styling.
+          />
         </PopoverContent>
       </Popover>
     );
   }
 );
 
-CalendarComponent.displayName = 'CalendarComponent';
+CalendarComponent.displayName = 'CalendarComponent'; // Set the display name for the forwardRef component.
 
-export default CalendarComponent;
+export default CalendarComponent; // Export the component for use in other parts of the application.

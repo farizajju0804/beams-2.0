@@ -1,88 +1,103 @@
+// Import NextAuth for handling authentication in Next.js
 import NextAuth from "next-auth";
+// Import the custom authentication configuration (e.g., providers, pages)
 import authConfig from "@/auth.config";
+// Import the Prisma Adapter to integrate Prisma with NextAuth
 import { PrismaAdapter } from "@auth/prisma-adapter";
+// Import the Prisma database instance
 import { db } from "@/libs/db";
-// import { getUserById } from "./actions/auth/getUserByEmail";
+
+// Importing custom actions for authentication logic
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
-import { authRoutes, publicRoutes } from "./routes";
 import { getUserByEmail, getUserById2 } from "./actions/auth/getUserByEmail";
 
+// Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
   handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
+  auth, // Auth method to manage authentication
+  signIn, // Sign-in method
+  signOut, // Sign-out method
 } = NextAuth({
   pages: {
-    signIn: "/auth/login",
-    error: "auth/error",
+    signIn: "/auth/login", // Custom sign-in page
+    error: "auth/error", // Custom error page
   },
+  
+  // Event handlers for specific authentication events
   events: {
     async linkAccount({ user }) {
+      // When an account is linked, update the user's email verification status
       await db.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() },
+        data: { emailVerified: new Date() }, // Set emailVerified to the current date
       });
     },
   },
+
+  // Callbacks to customize sign-in, session, and JWT handling
   callbacks: {
+    // Sign-in callback to handle additional validation like two-factor authentication
     async signIn({ user, account }) {
+      // Skip validation if the provider is not credentials-based (e.g., Google OAuth)
       if (account?.provider !== "credentials") return true;
+      
+      // Fetch user data to check if email is verified
       const existingUser = await getUserById2(user.id as string);
       if (!existingUser?.emailVerified) {
-        return false;
+        return false; // Block login if email is not verified
       }
 
+      // If two-factor authentication is enabled, validate it
       if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
-          existingUser.id
-        );
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+        if (!twoFactorConfirmation) return false; // Block login if 2FA is not completed
 
-        if (!twoFactorConfirmation) return false;
-
+        // Once confirmed, remove the 2FA token
         await db.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
         });
       }
-
-      return true;
+      return true; // Allow login if all conditions are satisfied
     },
+
+    // Callback to customize session data
     async session({ token, session }) {
       if (token.sub && session.user) {
-        session.user.id = token.sub;
+        session.user.id = token.sub; // Attach the user's ID to the session
       }
-
       if (token.role && session.user) {
-        session.user.role = token.role as "ADMIN" | "USER";
+        session.user.role = token.role as "ADMIN" | "USER"; // Attach user role to the session
       }
       if (session.user) {
+        // Attach other user-related data to the session
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-      }
-      if (session.user) {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
-        session.user.userFormCompleted = token.userFormCompleted as boolean; // Add this line to include user info completion status
-        session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Add this line to include onboarding status
+        session.user.userFormCompleted = token.userFormCompleted as boolean; // Attach form completion status
+        session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Attach onboarding completion status
       }
-      return session;
+      return session; // Return the session with additional user info
     },
+
+    // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
+      // Update token with session data when explicitly triggered
       if (trigger === "update") {
-        return {...token, ...session.user};
-      };
-      
+        return { ...token, ...session.user };
+      }
+
+      // If the token contains a user identifier (sub), update it with fresh data
       if (token.sub) {
         const existingUser = await getUserByEmail(token.email as string);
-        token.sub = existingUser?.id
+        token.sub = existingUser?.id; // Update token with the user's ID
         if (existingUser) {
+          // Fetch the user's account and update token with relevant user data
           const existingAccount = await getAccountByUserId(existingUser.id);
-          
-          // Update token with latest user data
-          token.isOAuth = !!existingAccount;
+          token.isOAuth = !!existingAccount; // Check if the user has an OAuth account
           token.firstName = existingUser.firstName;
           token.lastName = existingUser.lastName;
           token.email = existingUser.email;
@@ -93,15 +108,24 @@ export const {
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
         }
       }
-      return token;
+      return token; // Return updated token
     },
+
+    // Redirect callback to control redirects after authentication actions
     async redirect({ url, baseUrl }) {
+      // Handle internal redirects or external redirects to the base URL
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       else if (new URL(url).origin === baseUrl) return url;
       return `${baseUrl}`;
     }
   },
+
+  // Use the Prisma adapter for connecting NextAuth to the database
   adapter: PrismaAdapter(db),
+
+  // Use JWTs to manage session state
   session: { strategy: "jwt" },
+
+  // Spread additional authentication configuration from authConfig
   ...authConfig,
 });

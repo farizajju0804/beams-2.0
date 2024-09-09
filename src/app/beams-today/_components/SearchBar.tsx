@@ -47,13 +47,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9;
   const calendarRef = useRef<any>(null);
+  // Preprocess the topics to extract script words for fuzzy search
   const processedTopics = preprocessTopics(topics);
+  // Fuse.js setup for fuzzy searching through the topics.
   const fuse = new Fuse(processedTopics, {
     includeScore: true,
     keys: ['title', 'shortDesc', 'scriptWords'],
     threshold: 0.3, 
   });
-
+// Highlight dates to be passed into the calendar component.
   const highlightDates1 = topics.map((topic: any) =>
     new Date(topic.date).toISOString().split("T")[0]
   );
@@ -62,7 +64,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     const date = new Date(dateString);
     return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
   });
-
+// Parse the date strings into DateValue objects.
   const minDateString =
     highlightDates.length > 0
       ? format(new Date(Math.min(...highlightDates.map((date: any) => date.getTime()))), "yyyy-MM-dd")
@@ -75,10 +77,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
 
   const minDate = minDateString ? parseDate(minDateString) : null;
   const maxDate = maxDateString ? parseDate(maxDateString) : null;
-
+  // Function to filter topics based on search query, date, and selected filters.
   const filterTopics = () => {
     let filtered = query ? fuse.search(query).map(result => result.item) : topics;
-
+ // Filter by selected date if provided.
     if (selectedDate) {
       const dateString = `${selectedDate.year}-${String(selectedDate.month).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
       filtered = filtered.filter((topic: any) => {
@@ -86,7 +88,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
         return topicDate === dateString;
       });
     }
-
+ // Filter by selected categories.
     const selectedCategories = filters.filter(filter => filter.type === 'category').map(filter => filter.id);
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((topic: any) => {
@@ -97,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
         }
       });
     }
-
+ // Filter by completed/uncompleted topics.
     const beamedStatusFilter = filters.find(filter => filter.type === 'beamedStatus');
     if (beamedStatusFilter) {
       if (beamedStatusFilter.id === "beamed") {
@@ -106,7 +108,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
         filtered = filtered.filter((topic: any) => !completedTopics.includes(topic.id));
       }
     }
-
+// Sort the filtered topics based on the selected sort option.
     switch (sortBy) {
       case "nameAsc":
         filtered = filtered.sort((a: any, b: any) => a.title.localeCompare(b.title));
@@ -128,14 +130,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     setShowResults(true);
   };
 
-  // useEffect(() => {
-  //   if (query || selectedDate || filters.length > 0) {
-  //     filterTopics();
-  //   } else {
-  //     setFilteredTopics(topics.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)); 
-  //     setShowResults(false);
-  //   }
-  // }, [query, selectedDate, sortBy, filters, currentPage]);
+
   useEffect(() => {
     if (query) {
       // Remove date filter when searching
@@ -143,7 +138,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
       setFilters(prevFilters => prevFilters.filter(filter => filter.type !== 'date'));
     }
   }, [query]);
-  
+  // Effect to trigger topic filtering whenever relevant state variables change.
   useEffect(() => {
     filterTopics();
   }, [query, sortBy, filters, currentPage, selectedDate]);
@@ -154,14 +149,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
       setShowResults(false);
     }
   }, [topics, query, filters, selectedDate, currentPage, itemsPerPage]);
-  // const handleSearch = () => {
-  //   // Reset the date picker filters   when search is performed
-  //   setSelectedDate(null);
-  //   setFilters(filters.filter(filter => filter.type !== 'date'));
-  //   filterTopics();
-  //   setShowResults(true);
-  // };
 
+
+// Function to handle date changes and reset the query.
   const handleDateChange = (date: DateValue | null) => {
     setSelectedDate(date);
     if (date) {
@@ -172,7 +162,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
       setFilters(filters.filter(filter => filter.type !== 'date'));
     }
   };
-
+ // Function to reset all filters and the search query.
   const handleReset = () => {
     setFilters([]);
     setSelectedDate(null);
@@ -190,17 +180,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
     }
     setFilters(filters.filter(f => f.id !== filter.id || f.type !== filter.type));
   };
-
+// Function to handle pagination changes.
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
+ // Function to return the number of search results.
   const getResultsCount = () => {
     const start = (currentPage - 1) * itemsPerPage + 1;
     const end = Math.min(currentPage * itemsPerPage, filteredTopics.length);
     return `Showing ${start}-${end} of ${filteredTopics.length} results for`;
   };
-
+// Function to clear the search input.
   const handleClearInput = () => {
     setQuery('');
     setShowResults(false);

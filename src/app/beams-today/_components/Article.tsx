@@ -1,3 +1,4 @@
+'use client';
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
@@ -9,6 +10,7 @@ interface ArticleProps {
   articleUrl: string | undefined;
 }
 
+// Article component to display PDF articles
 const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   const startTimeRef = useRef<number | null>(null);
   const elapsedTimeRef = useRef<number>(0);
@@ -16,6 +18,7 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   const { theme } = useTheme();
   const [isMobile, setIsMobile] = useState(false);
 
+  // Expose the elapsed reading time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => {
       if (startTimeRef.current) {
@@ -28,6 +31,7 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
     }
   }));
 
+  // Track reading time of the PDF
   useEffect(() => {
     startTimeRef.current = Date.now();
 
@@ -44,16 +48,11 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
       setIsMobile(window.innerWidth < 767);
     };
 
-    // Set initial value
     handleResize();
-
-    // Add event listener
     window.addEventListener('resize', handleResize);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
       if (startTimeRef.current) {
         const elapsedTime = Date.now() - startTimeRef.current;
         elapsedTimeRef.current += elapsedTime;
@@ -89,5 +88,4 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
 });
 
 Article.displayName = 'Article';
-
 export default Article;

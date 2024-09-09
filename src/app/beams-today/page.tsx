@@ -5,16 +5,27 @@ import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { getAllCategories } from "@/actions/beams-today/categoryActions";
 
 export default async function Page({ searchParams }: { searchParams: { query: string } }) {
+  // Fetch the currently authenticated user
   const user:any = await currentUser();
 
+  // If the user is not found, display a fallback message
   if (!user) {
     return <div>User not found</div>;
   }
 
+  // Fetch completed topics for the user
   const completedTopics = await getcompletedBeamsToday(user.id);
+  
+  // Fetch all available Beams Today topics
   const topics = await getAllBeamsToday();
+  
+  // Extract the search query parameter, or default to an empty string
   const searchQuery = searchParams.query || "";
+  
+  // Fetch all available categories
   const categories = await getAllCategories();
+
+  // Render the BeamsTodayPage component, passing all fetched data as props
   return (
     <BeamsTodayPage
       completedTopics={completedTopics}

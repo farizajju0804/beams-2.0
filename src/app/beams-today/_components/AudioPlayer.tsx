@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Image from 'next/image';
 import React, { useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
@@ -10,29 +10,29 @@ interface AudioPlayerProps {
   thumbnailUrl: string;
 }
 
+// AudioPlayer component to play audio with custom controls
 const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl }, ref) => {
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Expose the elapsed play time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
 
+  // Track play time
   const handlePlay = () => {
     setIsPlaying(true);
     lastTimeRef.current = new Date().getTime() / 1000;
-
   };
 
   const handlePause = () => {
     if (isPlaying) {
       const currentTime = new Date().getTime() / 1000;
       playTimeRef.current += currentTime - lastTimeRef.current;
-
     }
     setIsPlaying(false);
- 
   };
 
   const handleSeeked = () => {
@@ -41,7 +41,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
       playTimeRef.current += currentTime - lastTimeRef.current;
     }
     lastTimeRef.current = new Date().getTime() / 1000;
-   
   };
 
   const handleListen = () => {
@@ -49,7 +48,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
       const currentTime = new Date().getTime() / 1000;
       playTimeRef.current += currentTime - lastTimeRef.current;
       lastTimeRef.current = currentTime;
-     
     }
   };
 
@@ -59,7 +57,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ audioUrl, thumbnailUrl 
         <Image src={thumbnailUrl} alt="Thumbnail" className="rounded-3xl " width={500} height={500} />
       </div>
       <H5AudioPlayer
-        
         src={audioUrl}
         autoPlay={false}
         customIcons={{
