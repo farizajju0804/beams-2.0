@@ -45,7 +45,7 @@ model User {
   schoolName           String?               // Name of the user's school (optional)
   interests            String[]              @default([]) // List of user interests (default is an empty array)
   securityQuestion1    String?               // First security question (optional)
-  securityAnswer1      String?               // First security answer (optional)
+  securityAnswer1      String?             // First security answer (optional)
   securityQuestion2    String?               // Second security question (optional)
   securityAnswer2      String?               // Second security answer (optional)
   accounts             Account[]             // Relationship to the Account model (many-to-one)
@@ -181,6 +181,7 @@ model BeamsToday {
   thumbnailUrl          String?                    // Thumbnail URL for the content (optional)
   articleUrl            String?                    // Article URL for the content (optional)
   audioUrl              String?                    // Audio URL for the content (optional)
+  published             Boolean                    @default(false)
   categoryId            String                     @db.ObjectId // Foreign key to the BeamsTodayCategory model
   category              BeamsTodayCategory         @relation(fields: [categoryId], references: [id]) // Relationship to BeamsTodayCategory
   poll                  BeamsTodayPoll?            // Optional relationship to BeamsTodayPoll

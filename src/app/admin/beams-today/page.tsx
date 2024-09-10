@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries } from "@/actions/beams-today/admin/beamsTodayActions";
+import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries, toggleBeamsTodayPublish } from "@/actions/beams-today/admin/beamsTodayActions";
 import { getCategories, createCategory } from "@/actions/beams-today/admin/beamsTodayCategoryActions";
 import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput, BeamsTodayCategory } from "@/types/beamsToday";
-import { Spinner, Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalFooter, ModalBody } from "@nextui-org/react";
+import { Spinner, Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, Switch } from "@nextui-org/react";
 
 const AdminBeamsToday: React.FC = () => {
   const [entries, setEntries] = useState<BeamsToday[]>([]);
@@ -17,7 +17,7 @@ const AdminBeamsToday: React.FC = () => {
     title: "",
     shortDesc: "",
     videoUrl: "",
-    script: "", // Initialize script field
+    script: "",
     thumbnailUrl: "",
     articleUrl: "",
     audioUrl: "",
@@ -103,10 +103,32 @@ const AdminBeamsToday: React.FC = () => {
     }
   };
 
+  const handlePublishToggle = async (id: string, currentPublishState: boolean) => {
+    try {
+      await toggleBeamsTodayPublish(id, !currentPublishState);
+      setEntries((prevEntries) =>
+        prevEntries.map((entry) =>
+          entry.id === id ? { ...entry, published: !currentPublishState } : entry
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling publish state:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (isEditing) {
-        const updatedEntry = await updateBeamsToday((form as BeamsTodayUpdateInput).id!, form as BeamsTodayUpdateInput);
+        const updatedEntry = await updateBeamsToday((form as BeamsTodayUpdateInput).id!, {
+          ...form as BeamsTodayUpdateInput,
+          poll: {
+            ...form.poll,
+            options: form.poll.options.map(option => ({
+              id: option.id,
+              optionText: option.optionText
+            }))
+          }
+        });
         setEntries((prevEntries) => {
           const existingIndex = prevEntries.findIndex(entry => entry.id === updatedEntry.id);
           if (existingIndex >= 0) {
@@ -126,7 +148,7 @@ const AdminBeamsToday: React.FC = () => {
         title: "",
         shortDesc: "",
         videoUrl: "",
-        script: "", // Reset script field
+        script: "",
         thumbnailUrl: "",
         articleUrl: "",
         audioUrl: "",
@@ -156,12 +178,12 @@ const AdminBeamsToday: React.FC = () => {
   const handleEdit = (entry: BeamsToday) => {
     setForm({
       ...entry,
-      date: new Date(entry.date).toISOString(),
+      date: new Date(entry.date).toISOString().split('T')[0],
       poll: {
         title: entry.poll?.title || "",
         description: entry.poll?.description || "",
         question: entry.poll?.question || "",
-        options: entry.poll?.options.map(option => ({ optionText: option.optionText })) || [{ optionText: "" }],
+        options: entry.poll?.options.map(option => ({ id: option.id, optionText: option.optionText })) || [{ optionText: "" }],
       },
       categoryId: entry.category.id,
     });
@@ -206,6 +228,7 @@ const AdminBeamsToday: React.FC = () => {
               />
               <Input 
                 name="date"
+                type="date"
                 value={form.date}
                 onChange={handleChange}
                 placeholder="Date"
@@ -246,7 +269,6 @@ const AdminBeamsToday: React.FC = () => {
                 placeholder="Script"
                 fullWidth
               />
-              {/* Category Dropdown */}
               <div className="flex flex-col gap-2">
                 <label htmlFor="category" className="text-sm font-medium text-gray-700">Select Category</label>
                 <select
@@ -265,7 +287,6 @@ const AdminBeamsToday: React.FC = () => {
                   <option value="add">Add New Category</option>
                 </select>
               </div>
-              {/* Poll Title */}
               <Input
                 name="pollTitle"
                 value={form.poll.title}
@@ -273,7 +294,6 @@ const AdminBeamsToday: React.FC = () => {
                 placeholder="Poll Title"
                 fullWidth
               />
-              {/* Poll Description */}
               <Textarea
                 name="pollDescription"
                 value={form.poll.description}
@@ -281,7 +301,6 @@ const AdminBeamsToday: React.FC = () => {
                 placeholder="Poll Description"
                 fullWidth
               />
-              {/* Poll Question */}
               <Input
                 name="pollQuestion"
                 value={form.poll.question}
@@ -289,7 +308,6 @@ const AdminBeamsToday: React.FC = () => {
                 placeholder="Poll Question"
                 fullWidth
               />
-              {/* Poll Options */}
               {form.poll.options.map((option, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
@@ -335,7 +353,13 @@ const AdminBeamsToday: React.FC = () => {
                     <p className="text-xs">Date: {new Date(entry.date).toLocaleString()}</p>
                     <p className="text-xs">Category: {entry.category.name}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
+                    <Switch
+                      defaultSelected={entry.published}
+                      checked={entry.published}
+                      onChange={() => handlePublishToggle(entry.id, entry.published)}
+                    />
+                    <span>{entry.published ? "Published" : "Draft"}</span>
                     <Button size="sm" color="warning" onClick={() => handleEdit(entry)}>Edit</Button>
                     <Button size="sm" color="danger" onClick={() => handleDelete(entry.id)}>Delete</Button>
                   </div>

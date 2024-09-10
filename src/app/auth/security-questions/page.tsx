@@ -20,6 +20,8 @@ import CardWrapper from "@/app/auth/_components/card-wrapper"; // Card wrapper f
 import RegisterSide from "../_components/RegisterSide"; // Import RegisterSide for UI
 import { ShieldTick } from "iconsax-react"; // Import ShieldTick icon
 import Image from "next/image"; // Import Next.js optimized image component
+import FormError from "@/components/form-error";
+import { useSession } from "next-auth/react";
 
 // Array of security questions with corresponding images
 const securityQuestions = [
@@ -38,7 +40,8 @@ const Step3Form: React.FC = ({ }) => {
   const emailFromUrl = searchParams.get("email"); // Extract the email from URL params
   const email:any = emailFromUrl; // Typecast email
   const router = useRouter(); // Next.js router hook
-
+  const [error, setError] = useState("")
+  const { update } = useSession();
   // Initialize form with Zod schema and react-hook-form integration
   const form = useForm<z.infer<typeof SecuritySchema>>({
     resolver: zodResolver(SecuritySchema), // Using Zod as the form validation schema
@@ -56,8 +59,13 @@ const Step3Form: React.FC = ({ }) => {
     startTransition(async () => {
       try {
         const result = await submitSecurityAnswers(values, email); // Submit security answers
-        if (result) {
-          router.push('/user-info'); // Navigate to user-info on success
+        if (result.success) {
+        await update(); 
+        router.push('/user-info'); 
+        }
+        if(result?.error)
+        {
+          setError(error)
         }
       } catch (err) {
         console.error("Error submitting security answers:", err); // Log error on failure
@@ -109,6 +117,7 @@ const Step3Form: React.FC = ({ }) => {
                 </>
               ))}
               {/* Submit button */}
+              <FormError message={error} />
               <Button
                 type="submit"
                 color="primary"

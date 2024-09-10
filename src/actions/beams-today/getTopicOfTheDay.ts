@@ -18,7 +18,10 @@ export const getTopicOfTheDay = async (clientDate: string) => {
   try {
     // Attempt to retrieve the video with a matching date from the 'beamsToday' table.
     let video = await db.beamsToday.findUnique({
-      where: { date: today }, // Find a video that matches the provided date (in UTC).
+      where: { 
+        date: today,
+        published: true, // Only fetch if the topic is published
+       }, // Find a video that matches the provided date (in UTC).
       include: {
         category: true, // Include the related category in the result.
       },
@@ -27,6 +30,12 @@ export const getTopicOfTheDay = async (clientDate: string) => {
     // If no video is found for the given date, fetch the latest available topic.
     if (!video) {
       video = await db.beamsToday.findFirst({
+        where: {
+          date : {
+            lt : today
+          },
+          published: true, // Only fetch published topics
+        },
         orderBy: {
           date: 'desc', // Order by date in descending order to get the latest topic.
         },

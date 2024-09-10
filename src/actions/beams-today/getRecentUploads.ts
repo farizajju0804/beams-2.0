@@ -1,12 +1,13 @@
 "use server";
 import { db } from "@/libs/db"; // Import the Prisma database instance.
+import { getTopicOfTheDay } from "./getTopicOfTheDay"; // Assuming this is where the "Topic of the Day" logic is implemented.
 
 /**
- * Fetches recent BeamsToday video uploads based on a client-provided date, excluding the most recent topic.
+ * Fetches recent BeamsToday video uploads, excluding the "Topic of the Day".
  * Returns the 5 most recent videos uploaded before the provided date.
  * 
  * @param clientDate - The date provided by the client. Only videos uploaded before this date will be returned.
- * @returns A list of the 5 most recent videos (excluding the latest topic), including the ID, thumbnail, title, upload date, and category.
+ * @returns A list of the 5 most recent videos (excluding the "Topic of the Day"), including the ID, thumbnail, title, upload date, and category.
  * @throws Throws an error if there is a database issue while fetching recent uploads.
  */
 export const getRecentUploads = async (clientDate: string) => {
@@ -14,17 +15,10 @@ export const getRecentUploads = async (clientDate: string) => {
   today.setUTCHours(0, 0, 0, 0); // Ensure the time is set to midnight UTC to avoid timezone issues.
 
   try {
-    // Fetch the most recent topic to exclude it from the recent uploads
-    const mostRecentTopic = await db.beamsToday.findFirst({
-      orderBy: {
-        date: 'desc', // Get the most recent topic
-      },
-      include: {
-        category: true, // Include the related category
-      },
-    });
+    // Fetch the "Topic of the Day" to exclude it from the recent uploads
+    const topicOfTheDay = await getTopicOfTheDay(clientDate);
 
-    // Fetch the 5 most recent videos uploaded before the current date and excluding the most recent topic
+    // Fetch the 5 most recent videos uploaded before the current date and excluding the "Topic of the Day"
     const recentVideos = await db.beamsToday.findMany({
       where: {
         AND: [
@@ -35,8 +29,11 @@ export const getRecentUploads = async (clientDate: string) => {
           },
           {
             id: {
-              not: mostRecentTopic?.id, // Exclude the most recent topic
+              not: topicOfTheDay?.id, // Exclude the "Topic of the Day"
             },
+          },
+          {
+            published: true, // Only include published videos
           },
         ],
       },

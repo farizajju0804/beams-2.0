@@ -10,6 +10,9 @@ export const getAllBeamsToday = async () => {
   try {
     // Fetch all records from the 'beamsToday' table, ordered by date in ascending order.
     const videos = await db.beamsToday.findMany({
+      where : {
+        published : true
+      },
       orderBy: { date: 'desc' }, // Order the videos by their date (earliest first)
       include: {
         category: true, // Include the category details
@@ -40,6 +43,9 @@ export const getNewBeamsToday = async () => {
     // Fetch all videos, excluding the most recent 6, ordered by date in descending order.
     const videos = await db.beamsToday.findMany({
       skip: 6, // Skip the most recent 6 topics
+      where : {
+        published : true
+      },
       orderBy: { date: 'desc' }, // Order the remaining videos by date in descending order
       include: {
         category: true, // Include the category details

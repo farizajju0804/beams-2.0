@@ -73,15 +73,20 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
 
     try {
       const data = await login(values, ip); // Call login action with form values and IP address
+     
       if (data?.error === "VERIFY_EMAIL") {
         router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`); // Redirect if email verification is required
-      } else if (data?.error) {
+      } 
+      else if (data?.error === "SET_SECURITY_ANSWERS") {
+        router.push(`/auth/security-questions?email=${encodeURIComponent(values.email)}`);
+      }
+      else if (data?.error) {
         setError(data.error); // Set error message if login fails
         setIsLoading(false);
       } else if (data?.success) {
         setSuccess("Login successful!"); // Show success message
         setIsLoading(false);
-        await update(); // Update session on successful login
+        await update(); 
         router.push("/beams-today"); // Redirect to the main page
       } else if (data?.twoFactor) {
         setShowTwoFactor(true); // Show two-factor authentication field if required

@@ -148,13 +148,13 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
       return { error: "Sign-in failed." };
     }
 
-    console.log("Login successful!");
+    return { success: "Saved Successfully" };
+  
   } catch (error) {
     console.error("Error during sign-in:", error);
     return { error: "An unexpected error occurred during sign-in." };
   }
 
-  redirect('/user-info');
 };
 
 /**

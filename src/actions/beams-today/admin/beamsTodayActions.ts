@@ -142,3 +142,14 @@ export const deleteBeamsToday = async (id: string): Promise<void> => {
     throw new Error(`Error deleting beamsToday entry: ${(error as Error).message}`);
   }
 };
+
+export const toggleBeamsTodayPublish = async (id: string, publishState: boolean): Promise<void> => {
+  try {
+    await db.beamsToday.update({
+      where: { id },
+      data: { published: publishState },
+    });
+  } catch (error) {
+    throw new Error(`Error toggling beamsToday publish state: ${(error as Error).message}`);
+  }
+};

@@ -1,5 +1,5 @@
 // favoritesStore.ts
-import create from 'zustand';
+import {create} from 'zustand';
 import { toggleFavorite as apiToggleFavorite, isFavoriteBeamsToday } from '@/actions/beams-today/favoriteActions';
 
 interface FavoritesState {

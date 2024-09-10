@@ -36,22 +36,19 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
     return { error: "Hmm, can't find that email. Sure it's right?", success: undefined };
   }
 
-  // Check if the user has a linked account with a provider (e.g., Google, GitHub)
-  if (!existingUser.password) {
-    const linkedAccount = await db.account.findFirst({
-      where: {
-        userId: existingUser.id,
-      },
-    });
+  // Check if the user has a linked account with a provider (OAuth user)
+  const linkedAccount = await db.account.findFirst({
+    where: {
+      userId: existingUser.id,
+    },
+  });
 
-    if (linkedAccount) {
-      return { error: `Looks like you signed up with ${linkedAccount.provider}. Use ${linkedAccount.provider} to log in!`, success: undefined };
-    }
-
-    return { error: "Your account may be linked with other providers", success: undefined };
+  // Check if the user is an OAuth user (no password, linked to provider)
+  if (!existingUser.password && linkedAccount) {
+    return { error: `Looks like you signed up with ${linkedAccount.provider}. Use ${linkedAccount.provider} to log in!`, success: undefined };
   }
 
-  // Compare the provided password with the stored hash
+  // Compare the provided password with the stored hash (for non-OAuth users)
   const passwordMatch = await bcrypt.compare(password, existingUser.password);
   if (!passwordMatch) {
     return { error: "Those credentials don't seem to match. Try again", success: undefined };
@@ -61,7 +58,12 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
   if (!existingUser.emailVerified) {
     const verificationToken = await getVerificationToken(existingUser.email);
     await sendVerificationEmail(verificationToken.email, verificationToken.token);
-    return { error: "VERIFY_EMAIL", success: undefined };
+    return { error: "VERIFY_EMAIL", success: undefined }; // Redirect to email verification
+  }
+
+  // Check if the user has not set security answers (for non-OAuth users)
+  if (!existingUser.securityAnswer1 && !existingUser.securityAnswer2 && !linkedAccount) {
+    return { error: "SET_SECURITY_ANSWERS", success: undefined }; // Redirect to security answers setup page
   }
 
   // Handle two-factor authentication if enabled

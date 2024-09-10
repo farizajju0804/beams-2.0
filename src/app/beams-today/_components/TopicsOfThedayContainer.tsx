@@ -14,7 +14,6 @@ const TopicOfTheDayContainer: React.FC<TopicOfTheDayContainerProps> = ({ user })
   const [topicOfTheDay, setTopicOfTheDay] = useState<BeamsToday | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const clientDate = new Date().toLocaleDateString("en-CA");
-  
   useEffect(() => {
     const fetchTopicOfTheDay = async () => {
       const topic:any = await getTopicOfTheDay(clientDate);

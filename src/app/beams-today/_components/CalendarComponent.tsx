@@ -6,7 +6,8 @@ import { Calendar as CalendarIcon } from 'iconsax-react'; // Calendar icon from 
 import { DateValue, CalendarDate } from '@internationalized/date'; // Types from internationalized date library.
 
 interface CalendarComponentProps {
-  selectedDate: DateValue | null; // The currently selected date, or null if no date is selected.
+  selectedDate: DateValue | null; 
+  topics:any;// The currently selected date, or null if no date is selected.
   onDateChange: (date: DateValue | null) => void; // Function to handle date changes.
   minValue: CalendarDate; // Minimum date that can be selected.
   maxValue: CalendarDate; // Maximum date that can be selected.
@@ -18,8 +19,20 @@ interface CalendarComponentHandle {
 
 // The CalendarComponent is wrapped with forwardRef to expose methods to the parent component.
 const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentProps>(
-  ({ selectedDate, onDateChange, minValue, maxValue }, ref) => {
+  ({ selectedDate, topics, onDateChange, minValue, maxValue }, ref) => {
     const [isOpen, setIsOpen] = useState(false); // State to manage the visibility of the popover.
+
+
+    const availableDates = new Set(
+      topics.map((topic:any) => {
+        const date = new Date(topic.date);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      })
+    );
+    const isDateUnavailable = (date:any) => {
+      const dateString = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+      return !availableDates.has(dateString);
+    };
 
     // Expose a method to the parent component to close the popover using useImperativeHandle.
     useImperativeHandle(ref, () => ({
@@ -60,6 +73,7 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
         {/* Popover content that contains the Calendar component */}
         <PopoverContent className="p-0 m-0 min-w-[256px] flex">
           <Calendar
+            aria-label="Topic Dates"
             value={selectedDate} // The currently selected date.
             onChange={handleDateChange} // Handles the date change.
             minValue={minValue} // Minimum selectable date.
@@ -71,6 +85,7 @@ const CalendarComponent = forwardRef<CalendarComponentHandle, CalendarComponentP
               content: 'w-[256px]', // Ensures the content is correctly sized.
             }}
             className="border-none m-0 min-w-full" // Calendar styling.
+            isDateUnavailable={isDateUnavailable}
           />
         </PopoverContent>
       </Popover>

@@ -234,6 +234,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ topics, categories, completedTopi
             onDateChange={handleDateChange}
             minValue={minDate}
             maxValue={maxDate}
+            topics={topics}
           />
         )}
       </div>
