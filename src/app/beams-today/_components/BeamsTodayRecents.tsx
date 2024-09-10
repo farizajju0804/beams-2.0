@@ -195,8 +195,9 @@ export function BeamsTodayRecents({ topics }: any) {
             <div className="flex gap-4 flex-col w-full">
               <motion.div layoutId={`image-${topic.title}-${id}`}>
                 <Image
-                  width={100}
-                  height={100}
+                  priority
+                  width={200}
+                  height={200}
                   src={topic.thumbnailUrl}
                   alt={topic.title}
                   className="h-48 w-full rounded-lg object-cover object-center"
