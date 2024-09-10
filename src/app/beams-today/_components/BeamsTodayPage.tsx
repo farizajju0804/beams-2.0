@@ -11,11 +11,12 @@ interface BeamsTodayPageProps {
   completedTopics: string[];
   user: any;
   topics: any;
+  newTopics: any;
   searchQuery: string;
   categories: any;
 }
 
-const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, topics, searchQuery, categories }) => {
+const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, topics, newTopics, searchQuery, categories }) => {
   // Filter topics based on the search query
   const filteredTopics = searchQuery
     ? topics.filter((topic: any) =>
@@ -49,7 +50,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
         </>
       )}
 
-      <BeamsTodayRecents topics={topics}/>
+      <BeamsTodayRecents topics={newTopics}/>
     </div>
   );
 };

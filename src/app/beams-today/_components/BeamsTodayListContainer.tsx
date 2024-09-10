@@ -94,13 +94,13 @@ const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <div className="w-full flex flex-col items-start lg:items-center">
-          <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Now Trending</h1>
+          <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Now Trending</h1>
           <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '13%' }}></div>
         </div>
       </div>
       
       {/* Carousel Section */}
-      <div className="relative mt-2 flex justify-center items-center">
+      <div className="relative flex justify-center items-center">
         {/* Left Arrow Button */}
         <Button
           size="sm"

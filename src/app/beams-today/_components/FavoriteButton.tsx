@@ -1,48 +1,37 @@
-'use client'; // Ensures the component is rendered on the client side in a Next.js application.
+// FavoriteButton.tsx
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@nextui-org/react'; // Button component from NextUI for UI styling.
-import { Heart } from 'iconsax-react'; // Importing the Heart icon from the iconsax-react library.
-import { toggleFavorite, isFavoriteBeamsToday } from '@/actions/beams-today/favoriteActions'; // Functions to handle favorite state.
-import { motion } from 'framer-motion'; // Importing framer-motion for animation.
+import { Button } from '@nextui-org/react';
+import { Heart } from 'iconsax-react';
+import { motion } from 'framer-motion';
+import { useFavoritesStore } from '@/store/favoritesStore';
 
 interface FavoriteButtonProps {
-  beamsTodayId: string; // The unique ID of the item that can be favorited.
+  beamsTodayId: string;
 }
 
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
-  const [isFavorite, setIsFavorite] = useState(false); // State to track whether the item is marked as favorite.
-  const [isAnimating, setIsAnimating] = useState(false); // State to control the animation when toggling favorite.
+  const { toggleFavorite, initializeFavorites, isFavorite } = useFavoritesStore();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isFavoriteState, setIsFavoriteState] = useState(false);
 
-  // Effect to check if the item is already marked as favorite when the component mounts.
   useEffect(() => {
-    let isMounted = true; // Flag to prevent setting state if the component unmounts.
+    initializeFavorites();
+  }, []);
 
-    const checkFavorite = async () => {
-      const favorite = await isFavoriteBeamsToday(beamsTodayId); // Check the favorite status of the item.
-      if (isMounted) {
-        setIsFavorite(favorite); // Update the state if the component is still mounted.
-      }
-    };
+  useEffect(() => {
+    setIsFavoriteState(isFavorite(beamsTodayId));
+  }, [beamsTodayId, isFavorite]);
 
-    checkFavorite(); // Call the function to check the favorite status on mount.
-
-    return () => {
-      isMounted = false; // Clean up to avoid state update after component unmounts.
-    };
-  }, [beamsTodayId]); // Dependency on `beamsTodayId` to recheck the favorite status if the ID changes.
-
-  // Handler function to toggle the favorite status when the button is clicked.
   const handleFavoriteToggle = async (event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevents triggering any parent click events.
-    event.preventDefault(); // Prevents default behavior (useful in forms or links).
+    event.stopPropagation();
+    event.preventDefault();
     
-    await toggleFavorite(beamsTodayId); // Toggle the favorite status via an API or action.
+    await toggleFavorite(beamsTodayId);
+    setIsFavoriteState(isFavorite(beamsTodayId));
     
-    setIsAnimating(true); // Start the animation for feedback.
-    setIsFavorite((prev) => !prev); // Toggle the `isFavorite` state.
-    
-    // Stop the animation after 500ms.
+    setIsAnimating(true);
     setTimeout(() => {
       setIsAnimating(false);
     }, 500);
@@ -50,26 +39,25 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
 
   return (
     <Button 
-      size={"sm"} // Button size (small).
-      isIconOnly // Button has only an icon.
-      className={isFavorite ? 'bg-red-600' : 'bg-grey-1'} // Background color depends on favorite status.
-      aria-label="Like" // Accessibility label for screen readers.
-      onClick={handleFavoriteToggle} // Click handler to toggle the favorite status.
+      size="sm"
+      isIconOnly
+      className={isFavoriteState ? 'bg-red-600' : 'bg-grey-1'}
+      aria-label={isFavoriteState ? "Unlike" : "Like"}
+      onClick={handleFavoriteToggle}
     >
       <motion.div
-        initial={{ scale: 1 }} // Initial state of the scaling animation.
-        animate={{ scale: isAnimating ? 1.4 : 1 }} // Scale up the icon when toggling favorite.
-        transition={{ duration: 0.5, ease: "easeInOut" }} // Smooth transition over 0.5 seconds.
+        initial={{ scale: 1 }}
+        animate={{ scale: isAnimating ? 1.4 : 1 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        {/* Heart icon: changes its style depending on whether the item is favorited or not. */}
         <Heart 
-          size={20} // Icon size.
-          className={isFavorite ? "text-white" : "text-text"} // Icon color depends on favorite status.
-          variant={isFavorite ? "Bold" : "Linear"} // Icon style (bold if favorited, linear if not).
+          size={20}
+          className={isFavoriteState ? "text-white" : "text-text"}
+          variant={isFavoriteState ? "Bold" : "Linear"}
         />
       </motion.div>
     </Button>
   );
 };
 
-export default FavoriteButton; // Export the component for use in other parts of the application.
+export default FavoriteButton;

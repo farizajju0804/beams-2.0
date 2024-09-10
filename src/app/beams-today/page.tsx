@@ -1,7 +1,7 @@
 import { getcompletedBeamsToday } from "@/actions/beams-today/completedActions";
 import { currentUser } from "@/libs/auth";
 import BeamsTodayPage from "./_components/BeamsTodayPage";
-import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
+import { getAllBeamsToday, getNewBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { getAllCategories } from "@/actions/beams-today/categoryActions";
 
 export default async function Page({ searchParams }: { searchParams: { query: string } }) {
@@ -18,6 +18,7 @@ export default async function Page({ searchParams }: { searchParams: { query: st
   
   // Fetch all available Beams Today topics
   const topics = await getAllBeamsToday();
+  const newTopics = await getNewBeamsToday();
   
   // Extract the search query parameter, or default to an empty string
   const searchQuery = searchParams.query || "";
@@ -31,6 +32,7 @@ export default async function Page({ searchParams }: { searchParams: { query: st
       completedTopics={completedTopics}
       user={user}
       topics={topics}
+      newTopics={newTopics}
       categories={categories}
       searchQuery={searchQuery}
     />

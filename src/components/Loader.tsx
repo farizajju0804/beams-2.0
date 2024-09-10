@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 // import animationData from '../../public/loader.json';
 
 const loadingMessages = [
-  "Hang tight, we’re brewing something awesome! ☕",
+  "We’re brewing something awesome! ☕",
   "Almost there, stay curious! 🚀",
   "Loading... Awesomeness inbound! 🌟",
   "Hold on, greatness takes a second! ⏳",

@@ -22,8 +22,8 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
       
       {/* Heading */}
       <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
-        <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Topic of the Day</h1>
-        <div className="border-b-2 border-brand mb-4 md:mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Topic of the Day</h1>
+        <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
 
       {/* Main Content */}
@@ -53,15 +53,15 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           <div className="absolute inset-0 lg:rounded-lg"></div>
 
           {/* Topic Title and Beam Now Button */}
-          <div className="absolute lg:rounded-lg bottom-0 w-full p-2 px-6 bg-gradient-to-t from-text to-text/30 text-background">
+          <div className="absolute lg:rounded-lg bottom-0 w-full p-2 px-4 bg-gradient-to-t from-text to-text/30 text-background">
             <h2 className="text-2xl md:text-3xl mb-2 font-semibold">{topic.title}</h2>
             <div className="flex justify-between items-center">
               <div className="flex items-center my-2 justify-between w-full">
                 <div className="flex w-full items-center justify-start lg:justify-center flex-1">
                   {/* Beam Now Button */}
                   <Button
-                    endContent={<Microscope className="text-white" />}
-                    className="font-semibold text-white text-lg p-4 lg:px-8 py-6"
+                    endContent={<Microscope variant="Bold" className="text-white" />}
+                    className="font-semibold text-white text-base md:text-lg p-4 lg:px-8 py-6"
                     size="md"
                     as="a"
                     href={`/beams-today/${topic.id}`}
@@ -73,7 +73,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
 
                 {/* Date Component */}
                 <div>
-                  <DateComponent date={clientDate} />
+                  <DateComponent date={topic.date.toISOString().split('T')[0]} />
                 </div>
               </div>
             </div>

@@ -1,15 +1,26 @@
-"use client";
+'use client';
 import Image from "next/image";
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useState, useId, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import FavoriteButton from "./FavoriteButton";
+import { Button, Chip } from "@nextui-org/react";
+import { Microscope } from "iconsax-react";
+import SortByFilter from './SortByFilter';  // Assuming you have a SortByFilter component
+import CustomPagination from '@/components/Pagination';  // Assuming you have a CustomPagination component
+import DateComponent from "./DateComponent";
+import FormattedDate from "./FormattedDate";
 
 export function BeamsTodayRecents({ topics }: any) {
   const [active, setActive] = useState<any | boolean | null>(null);
+  const [sortBy, setSortBy] = useState("dateDesc"); // State for sorting
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [totalPages, setTotalPages] = useState(1); // State for total pages
+  const itemsPerPage = 9; // Number of items per page
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
+  // Effect to handle body overflow when a modal is active
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -29,7 +40,38 @@ export function BeamsTodayRecents({ topics }: any) {
 
   useOutsideClick(ref, () => setActive(null));
 
+  // Sorting the topics based on sortBy state
+  const sortedTopics = [...topics].sort((a: any, b: any) => {
+    switch (sortBy) {
+      case "nameAsc":
+        return a.title.localeCompare(b.title);
+      case "nameDesc":
+        return b.title.localeCompare(a.title);
+      case "dateAsc":
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "dateDesc":
+      default:
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+  });
+
+  // Pagination logic
+  useEffect(() => {
+    setTotalPages(Math.ceil(sortedTopics.length / itemsPerPage));
+  }, [sortedTopics]);
+
+  const paginatedTopics = sortedTopics.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
+    <>
+    {topics.length !== 0 && (
     <>
       <AnimatePresence>
         {active && typeof active === "object" && (
@@ -43,32 +85,40 @@ export function BeamsTodayRecents({ topics }: any) {
       </AnimatePresence>
       <AnimatePresence>
         {active && typeof active === "object" ? (
-          <div className="fixed inset-0  grid place-items-center z-[100]">
-            <motion.button
-              key={`button-${active.title}-${id}`}
-              layout
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: 0.05,
-                },
-              }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-              onClick={() => setActive(null)}
-            >
-              <CloseIcon />
-            </motion.button>
+          <div className="fixed inset-0 grid place-items-center z-[100]">
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:pb-6  flex flex-col bg-background sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] relative h-full md:h-fit  flex flex-col bg-background sm:rounded-3xl overflow-hidden"
             >
+              {/* Close Button */}
+              <motion.button
+                key={`button-${active.title}-${id}`}
+                layout
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    duration: 0.05,
+                  },
+                }}
+                className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+                onClick={() => setActive(null)}
+              >
+                <CloseIcon />
+              </motion.button>
+
+              {/* Chip */}
+              <Chip size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">
+                {active.category.name}
+              </Chip>
+
+              {/* Image */}
               <motion.div layoutId={`image-${active.title}-${id}`}>
                 <Image
                   priority
@@ -76,71 +126,73 @@ export function BeamsTodayRecents({ topics }: any) {
                   height={200}
                   src={active.thumbnailUrl}
                   alt={active.title}
-                  className="w-full h-60 lg:h-60  object-cover object-center"
+                  className="w-full h-60 lg:h-60 object-cover object-center"
                 />
               </motion.div>
 
-              <div className="">
-                <div className="flex  items-start px-4 pt-4">
-                    <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
-                      className="font-medium font-poppins text-text text-lg"
-                    >
-                      {active.title}
-                    </motion.h3>
-                    {/* <motion.p
-                      layoutId={`description-${active.shortDesc}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400 text-base"
-                    >
-                      {active.shortDesc}
-                    </motion.p> */}
-                 
-
-                  
-                </div>
-                <div className="pt-2 relative px-4">
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-grey-2 text-sm md:text-sm lg:text-base pb-6 flex flex-col items-start gap-4 overflow-auto  [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+              {/* Content */}
+              <div className="px-4 py-4">
+                <div className="flex justify-between items-center">
+                  <motion.h3
+                    layoutId={`title-${active.title}-${id}`}
+                    className="font-medium text-text font-poppins text-lg md:text-xl"
                   >
-                    {active.shortDesc}
-                  </motion.div>
-                </div>
-                <div className="pt-2 flex justify-between items-center relative px-4">
-                <motion.a
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    href={`/beams-today/${active.id}`}
-                    className="px-4 py-2 text-base rounded-lg font-bold bg-brand text-white"
-                  >
-                    Read Now
-                  </motion.a>
+                    {active.title}
+                  </motion.h3>
                   <FavoriteButton beamsTodayId={active?.id} />
-                  </div>
+                </div>
+
+                <motion.div
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-grey-2 text-sm md:text-base mt-4"
+                >
+                  {active.shortDesc}
+                </motion.div>
+
+                <div className="pt-4 flex justify-between items-center">
+                  <Button
+                    endContent={<Microscope variant="Bold" className="text-white" />}
+                    className="font-semibold text-white text-lg p-4 lg:px-8 py-6"
+                    size="md"
+                    as="a"
+                    href={`/beams-today/${active.id}`}
+                    color="primary"
+                  >
+                    Beam Now
+                  </Button>
+                  <FormattedDate date={active.date.toISOString().split('T')[0]} />
+
+                </div>
               </div>
             </motion.div>
           </div>
         ) : null}
       </AnimatePresence>
+      <div className="flex flex-col">
+      {/* Heading */}
       <div className="pl-6 lg:pl-0 w-full flex flex-col items-start lg:items-center">
-          <h1 className="text-lg md:text-2xl text-text font-display font-bold mb-[1px]">Recent Uploads</h1>
-          <div className="border-b-2 border-brand w-full" style={{ maxWidth: '13%' }}></div>
-        </div>
-      <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-4">
-      
-        {topics.map((topic: any, index: number) => (
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">New & Exclusive</h1>
+        <div className="border-b-2 mb-4 border-brand w-full" style={{ maxWidth: '13%' }}></div>
+      </div>
+
+      {/* Sort By Filter */}
+      <div className="flex justify-start pl-6 items-center mb-6">
+        <SortByFilter sortBy={sortBy} setSortBy={setSortBy} />
+      </div>
+
+      {/* List of Topics */}
+      <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-10">
+        {paginatedTopics.map((topic: any, index: number) => (
           <motion.div
             layoutId={`card-${topic.title}-${id}`}
             key={topic.id}
             onClick={() => setActive(topic)}
-            className="p-4 flex flex-col  rounded-xl cursor-pointer"
+            className="flex flex-col rounded-2xl cursor-pointer"
           >
-            <div className="flex gap-4 flex-col  w-full">
+            <div className="flex gap-4 flex-col w-full">
               <motion.div layoutId={`image-${topic.title}-${id}`}>
                 <Image
                   width={100}
@@ -157,21 +209,31 @@ export function BeamsTodayRecents({ topics }: any) {
                 >
                   {topic.title}
                 </motion.h3>
-                {/* <motion.p
-                  layoutId={`description-${topic.shortDesc}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-base"
-                >
-                  {topic.shortDesc}
-                </motion.p> */}
               </div>
             </div>
           </motion.div>
         ))}
       </ul>
+
+      {/* Pagination */}
+      <div className="mt-6">
+        {totalPages > 1 && (
+          <CustomPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </div>
+      </div>
     </>
+    )}
+    </>
+   
   );
 }
 
+// Close Icon Component
 export const CloseIcon = () => {
   return (
     <motion.svg
@@ -204,3 +266,5 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
+
+export default BeamsTodayRecents;
