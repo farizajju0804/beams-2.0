@@ -190,7 +190,7 @@ export function BeamsTodayRecents() {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full">
       {/* Heading */}
       <div className="pl-6 lg:pl-0 w-full flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Now Trending</h1>
@@ -236,7 +236,7 @@ export function BeamsTodayRecents() {
           layoutId={`card-${topic.title}-${id}`}
           key={topic.id}
           onClick={() => setActive(topic)}
-          className={`cursor-pointer relative h-[260px] md:h-[280px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]`}
+          className={`cursor-pointer relative h-[260px] w-full md:h-[280px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]`}
           style={{ 
             backgroundImage: `url(${topic?.thumbnailUrl})`, // Set background image from topic thumbnail
             backgroundSize: 'cover', 
