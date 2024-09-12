@@ -10,16 +10,29 @@ import SortByFilter from './SortByFilter';  // Assuming you have a SortByFilter 
 import CustomPagination from '@/components/Pagination';  // Assuming you have a CustomPagination component
 import DateComponent from "./DateComponent";
 import FormattedDate from "./FormattedDate";
+import { BeamsToday } from "@/types/beamsToday";
+import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
+import Loader from "@/components/Loader";
 
-export function BeamsTodayRecents({ topics }: any) {
+export function BeamsTodayRecents() {
   const [active, setActive] = useState<any | boolean | null>(null);
+  const [allUploads, setAllUploads] = useState<BeamsToday[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("dateDesc"); // State for sorting
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const [totalPages, setTotalPages] = useState(1); // State for total pages
   const itemsPerPage = 9; // Number of items per page
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-
+  useEffect(() => {
+    const fetchRecentUploads = async () => {
+      const clientDate = new Date().toLocaleDateString("en-CA");
+      const uploads: any = await getRecentUploads(clientDate);
+      setAllUploads(uploads.slice(0, 5)); // Limit to 5 items
+      setIsLoading(false);
+    };
+    fetchRecentUploads();
+  }, []);
   // Effect to handle body overflow when a modal is active
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -41,7 +54,7 @@ export function BeamsTodayRecents({ topics }: any) {
   useOutsideClick(ref, () => setActive(null));
 
   // Sorting the topics based on sortBy state
-  const sortedTopics = [...topics].sort((a: any, b: any) => {
+  const sortedTopics = [...allUploads].sort((a: any, b: any) => {
     switch (sortBy) {
       case "nameAsc":
         return a.title.localeCompare(b.title);
@@ -69,9 +82,15 @@ export function BeamsTodayRecents({ topics }: any) {
     setCurrentPage(page);
   };
 
+  if (isLoading) {
+    return (
+      <Loader/>
+    );
+  }
+
   return (
     <>
-    {topics.length !== 0 && (
+    {allUploads.length !== 0 && (
     <>
       <AnimatePresence>
         {active && typeof active === "object" && (
@@ -174,7 +193,7 @@ export function BeamsTodayRecents({ topics }: any) {
       <div className="flex flex-col">
       {/* Heading */}
       <div className="pl-6 lg:pl-0 w-full flex flex-col items-start lg:items-center">
-        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">New & Exclusive</h1>
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Now Trending</h1>
         <div className="border-b-2 mb-4 border-brand w-full" style={{ maxWidth: '13%' }}></div>
       </div>
 
@@ -186,34 +205,62 @@ export function BeamsTodayRecents({ topics }: any) {
       {/* List of Topics */}
       <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-10">
         {paginatedTopics.map((topic: any, index: number) => (
+          // <motion.div
+          //   layoutId={`card-${topic.title}-${id}`}
+          //   key={topic.id}
+          //   onClick={() => setActive(topic)}
+          //   className="flex flex-col rounded-2xl cursor-pointer"
+          // >
+          //   <div className="flex gap-4 flex-col w-full">
+          //     <motion.div layoutId={`image-${topic.title}-${id}`}>
+          //       <Image
+          //         priority
+          //         width={200}
+          //         height={200}
+          //         src={topic.thumbnailUrl}
+          //         alt={topic.title}
+          //         className="h-48 w-full rounded-lg object-cover object-center"
+          //       />
+          //     </motion.div>
+          //     <div className="flex justify-center items-center flex-col">
+          //       <motion.h3
+          //         layoutId={`title-${topic.title}-${id}`}
+          //         className="font-medium text-text font-poppins text-left text-base"
+          //       >
+          //         {topic.title}
+          //       </motion.h3>
+          //     </div>
+          //   </div>
+          // </motion.div>
           <motion.div
-            layoutId={`card-${topic.title}-${id}`}
-            key={topic.id}
-            onClick={() => setActive(topic)}
-            className="flex flex-col rounded-2xl cursor-pointer"
-          >
-            <div className="flex gap-4 flex-col w-full">
-              <motion.div layoutId={`image-${topic.title}-${id}`}>
-                <Image
-                  priority
-                  width={200}
-                  height={200}
-                  src={topic.thumbnailUrl}
-                  alt={topic.title}
-                  className="h-48 w-full rounded-lg object-cover object-center"
-                />
-              </motion.div>
-              <div className="flex justify-center items-center flex-col">
-                <motion.h3
-                  layoutId={`title-${topic.title}-${id}`}
-                  className="font-medium text-text font-poppins text-left text-base"
-                >
-                  {topic.title}
-                </motion.h3>
-              </div>
-            </div>
-          </motion.div>
+          layoutId={`card-${topic.title}-${id}`}
+          key={topic.id}
+          onClick={() => setActive(topic)}
+          className={`cursor-pointer relative h-[260px] md:h-[280px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]`}
+          style={{ 
+            backgroundImage: `url(${topic?.thumbnailUrl})`, // Set background image from topic thumbnail
+            backgroundSize: 'cover', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundPosition: 'center' 
+          }}
+  >    
+   <motion.div layoutId={`image-${topic.title}-${id}`} className="flex flex-row items-center justify-between py-0 px-1">
+      {topic?.category && (
+        <Chip size='sm' className="mb-2 bg-white text-black">
+          {topic?.category.name} {/* Category name displayed in a chip */}
+        </Chip>
+      )}
+    </motion.div>
+    <div className="absolute bottom-0 left-0 right-0 mt-auto [backdrop-filter:blur(5px)] rounded-b-3xl [background:linear-gradient(90deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_100%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-lg text-black">
+    
+    <motion.h3  layoutId={`title-${topic.title}-${id}`} className="m-0 relative text-inherit font-semibold font-inherit">
+        {topic?.title} {/* Topic title */}
+      </motion.h3>
+      
+    </div>
+  </motion.div>
         ))}
+        
       </ul>
 
       {/* Pagination */}

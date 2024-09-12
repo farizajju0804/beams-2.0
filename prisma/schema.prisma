@@ -219,7 +219,7 @@ model BeamsTodayPoll {
   question      String              // Poll question
   createdAt     DateTime            @default(now()) // Timestamp of poll creation
   beamsTodayId  String              @unique @db.ObjectId // Foreign key to BeamsToday
-  beamsToday    BeamsToday          @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday content
+  beamsToday    BeamsToday          @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade) // Relationship to BeamsToday content
   options       BeamsTodayPollOption[] // Relationship to poll options
 
 }
@@ -229,7 +229,7 @@ model BeamsTodayPollOption {
   id              String               @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   optionText      String               // Text for the poll option
   pollId          String               @db.ObjectId // Foreign key to the poll
-  poll            BeamsTodayPoll       @relation(fields: [pollId], references: [id]) // Relationship to the BeamsTodayPoll model
+  poll            BeamsTodayPoll       @relation(fields: [pollId], references: [id],onDelete: Cascade) // Relationship to the BeamsTodayPoll model
   userResponses   BeamsTodayPollResponse[] // Relationship to user responses
   votes           Int                 @default(0) // Count of votes for this option
 
@@ -241,7 +241,7 @@ model BeamsTodayPollResponse {
   id            String                @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId        String                @db.ObjectId // Foreign key to the User model
   pollOptionId  String                @db.ObjectId // Foreign key to the poll option
-  pollOption    BeamsTodayPollOption  @relation(fields: [pollOptionId], references: [id]) // Relationship to the poll option
+  pollOption    BeamsTodayPollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade) // Relationship to the poll option
   createdAt     DateTime              @default(now()) // Timestamp of the response
 
   @@index([userId]) // Index for faster queries on userId
@@ -278,11 +278,11 @@ model BeamsTodayDownloadableResource {
 model BeamsTodayUserNote {
   id              String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId          String     @db.ObjectId // Foreign key to the User model
-  user            User       @relation(fields: [userId], references: [id]) // Relationship to the User model
+  user            User       @relation(fields: [userId], references: [id],onDelete: Cascade) // Relationship to the User model
   note            String     // The note content
   date            DateTime   @default(now()) // Timestamp of note creation
   beamsTodayId    String     @db.ObjectId // Foreign key to BeamsToday
-  beamsToday      BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
+  beamsToday      BeamsToday @relation(fields: [beamsTodayId], references: [id],onDelete: Cascade) // Relationship to BeamsToday
 
   @@index([userId]) // Index for faster queries on userId
   @@index([beamsTodayId]) // Index for faster queries on beamsTodayId
@@ -295,8 +295,8 @@ model BeamsTodayFavorite {
   beamsTodayId  String     @db.ObjectId // Foreign key to BeamsToday
   createdAt     DateTime   @default(now()) // Timestamp of when the content was favorited
 
-  user          User       @relation(fields: [userId], references: [id]) // Relationship to the User model
-  beamsToday    BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
+  user          User       @relation(fields: [userId], references: [id],onDelete: Cascade) // Relationship to the User model
+  beamsToday    BeamsToday @relation(fields: [beamsTodayId], references: [id],onDelete: Cascade) // Relationship to BeamsToday
 
   @@unique([userId, beamsTodayId]) // Ensures each user can favorite a specific Beams Today item only once
   @@index([userId]) // Index for faster queries on userId

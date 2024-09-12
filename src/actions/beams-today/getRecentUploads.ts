@@ -47,6 +47,7 @@ export const getRecentUploads = async (clientDate: string) => {
         title: true, // Select the title of the video
         date: true, // Select the upload date of the video
         category: true, // Select the category of the video
+        shortDesc: true
       },
     });
 

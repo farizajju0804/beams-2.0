@@ -8,9 +8,7 @@ import { ArrowLeft2, ArrowRight2 } from 'iconsax-react';
 import Loader from "@/components/Loader";
 
 interface BeamsTodayListContainerProps {
-  completedTopics: string[];
-  categories: any;
-  user: any;
+
 }
 
 /**
@@ -19,9 +17,7 @@ interface BeamsTodayListContainerProps {
  * The carousel auto-scrolls through the topics every 5 seconds.
  */
 const BeamsTodayListContainer: React.FC<BeamsTodayListContainerProps> = ({
-  completedTopics,
-  user,
-  categories
+
 }) => {
   const [allUploads, setAllUploads] = useState<BeamsToday[]>([]);
   const [isLoading, setIsLoading] = useState(true);

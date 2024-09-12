@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries, toggleBeamsTodayPublish } from "@/actions/beams-today/admin/beamsTodayActions";
 import { getCategories, createCategory } from "@/actions/beams-today/admin/beamsTodayCategoryActions";
 import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput, BeamsTodayCategory } from "@/types/beamsToday";
-import { Spinner, Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, Switch } from "@nextui-org/react";
+import { Spinner, Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, Switch, Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminBeamsToday: React.FC = () => {
   const [entries, setEntries] = useState<BeamsToday[]>([]);
@@ -12,6 +14,8 @@ const AdminBeamsToday: React.FC = () => {
   const [categories, setCategories] = useState<BeamsTodayCategory[]>([]);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
   const [form, setForm] = useState<BeamsTodayCreateInput | BeamsTodayUpdateInput>({
     date: "",
     title: "",
@@ -38,6 +42,7 @@ const AdminBeamsToday: React.FC = () => {
         setCategories(categoriesData);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Failed to fetch data");
       } finally {
         setIsLoading(false);
       }
@@ -98,8 +103,10 @@ const AdminBeamsToday: React.FC = () => {
         ...prevForm,
         categoryId: newCategory.id,
       }));
+      toast.success("New category added successfully");
     } catch (error) {
       console.error("Error creating category:", error);
+      toast.error("Failed to create new category");
     }
   };
 
@@ -111,13 +118,20 @@ const AdminBeamsToday: React.FC = () => {
           entry.id === id ? { ...entry, published: !currentPublishState } : entry
         )
       );
+      toast.success(`Entry ${currentPublishState ? 'unpublished' : 'published'} successfully`);
     } catch (error) {
       console.error("Error toggling publish state:", error);
+      toast.error("Failed to toggle publish state");
     }
   };
 
   const handleSubmit = async () => {
     try {
+      if (!form.poll.title || !form.poll.question || form.poll.options.length < 2) {
+        toast.error("Please fill out all poll fields and provide at least two options");
+        return;
+      }
+
       if (isEditing) {
         const updatedEntry = await updateBeamsToday((form as BeamsTodayUpdateInput).id!, {
           ...form as BeamsTodayUpdateInput,
@@ -138,9 +152,11 @@ const AdminBeamsToday: React.FC = () => {
           }
           return [updatedEntry, ...prevEntries];
         });
+        toast.success("Entry updated successfully");
       } else {
         const newEntry = await createBeamsToday(form as BeamsTodayCreateInput);
         setEntries([newEntry, ...entries]);
+        toast.success("New entry created successfully");
       }
 
       setForm({
@@ -163,16 +179,28 @@ const AdminBeamsToday: React.FC = () => {
       setIsEditing(false);
     } catch (error) {
       console.error("Error creating/updating beamsToday entry:", error);
+      toast.error("Failed to create/update entry");
     }
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteBeamsToday(id);
-      setEntries((prevEntries) => prevEntries.filter(entry => entry.id !== id));
-    } catch (error) {
-      console.error("Error deleting beamsToday entry:", error);
+    setEntryToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (entryToDelete) {
+      try {
+        await deleteBeamsToday(entryToDelete);
+        setEntries((prevEntries) => prevEntries.filter(entry => entry.id !== entryToDelete));
+        toast.success("Entry deleted successfully");
+      } catch (error) {
+        console.error("Error deleting beamsToday entry:", error);
+        toast.error("Failed to delete entry");
+      }
     }
+    setIsDeleteModalOpen(false);
+    setEntryToDelete(null);
   };
 
   const handleEdit = (entry: BeamsToday) => {
@@ -203,6 +231,7 @@ const AdminBeamsToday: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full p-8 gap-8">
+      <Toaster position="top-center"/>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spinner size="lg" />
@@ -212,6 +241,7 @@ const AdminBeamsToday: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4">Admin: Manage Beams Today</h1>
           <div className="w-full max-w-5xl mb-8">
             <div className="flex flex-col gap-4">
+          
               <Input 
                 name="title"
                 value={form.title}
@@ -344,30 +374,41 @@ const AdminBeamsToday: React.FC = () => {
           </div>
           <div className="w-full max-w-5xl">
             <h2 className="text-xl font-bold mb-4">Entries</h2>
-            {entries.length > 0 ? (
-              entries.map((entry) => (
-                <div key={entry.id} className="flex flex-row justify-between items-center border-b border-gray-200 py-4">
-                  <div className="flex flex-col">
-                    <h3 className="text-lg font-bold">{entry.title}</h3>
-                    <p className="text-sm">{entry.shortDesc}</p>
-                    <p className="text-xs">Date: {new Date(entry.date).toLocaleString()}</p>
-                    <p className="text-xs">Category: {entry.category.name}</p>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Switch
-                      defaultSelected={entry.published}
-                      checked={entry.published}
-                      onChange={() => handlePublishToggle(entry.id, entry.published)}
-                    />
-                    <span>{entry.published ? "Published" : "Draft"}</span>
-                    <Button size="sm" color="warning" onClick={() => handleEdit(entry)}>Edit</Button>
-                    <Button size="sm" color="danger" onClick={() => handleDelete(entry.id)}>Delete</Button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-500">No entries found.</p>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {entries.length > 0 ? (
+                entries.map((entry) => (
+                  <Card key={entry.id}>
+                    <CardBody className="max-w-none">
+                      <Image
+                        src={entry.thumbnailUrl || "/placeholder-image.jpg"}
+                        alt={entry.title}
+                        width={200}
+                        height={200}
+                        className="object-center h-[200px] w-[200px] aspect-auto object-cover"
+                      />
+                      <h3 className="text-lg font-bold mt-2">{entry.title}</h3>
+                      <p className="text-sm">{entry.shortDesc}</p>
+                      <p className="text-xs">Date: {new Date(entry.date).toLocaleString()}</p>
+                      <p className="text-xs">Category: {entry.category.name}</p>
+                    </CardBody>
+                    <CardFooter>
+                      <div className="flex gap-2 items-center">
+                        <Switch
+                          defaultSelected={entry.published}
+                          checked={entry.published}
+                          onChange={() => handlePublishToggle(entry.id, entry.published)}
+                        />
+                        <span>{entry.published ? "Published" : "Draft"}</span>
+                        <Button size="sm" className="text-black" color="warning" onClick={() => handleEdit(entry)}>Edit</Button>
+                        <Button size="sm" color="danger" onClick={() => handleDelete(entry.id)}>Delete</Button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No entries found.</p>
+              )}
+            </div>
           </div>
         </>
       )}
@@ -391,6 +432,24 @@ const AdminBeamsToday: React.FC = () => {
             </Button>
             <Button onClick={handleAddCategory}>
               Add
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isDeleteModalOpen} size="sm" onClose={() => setIsDeleteModalOpen(false)}>
+        <ModalContent>
+          <ModalHeader>
+            <h2>Confirm Delete</h2>
+          </ModalHeader>
+          <ModalBody>
+            <p>Are you sure you want to delete this entry?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setIsDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="danger" onClick={confirmDelete}>
+              Delete
             </Button>
           </ModalFooter>
         </ModalContent>

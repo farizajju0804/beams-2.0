@@ -1,8 +1,10 @@
+// File: /actions/beams-today/admin/beamsTodayActions.ts
 'use server'
 import { db } from "@/libs/db";
+import { Prisma } from "@prisma/client";
 import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput } from "@/types/beamsToday";
 
-export const getBeamsTodayEntries = async (): Promise<BeamsToday[]> => {
+export const getBeamsTodayEntries = async (): Promise<any[]> => {
   try {
     const entries = await db.beamsToday.findMany({
       include: {
@@ -14,14 +16,13 @@ export const getBeamsTodayEntries = async (): Promise<BeamsToday[]> => {
         },
       },
     });
-  
-    return entries as any;
+    return entries;
   } catch (error) {
     throw new Error(`Error fetching beamsToday entries: ${(error as Error).message}`);
   }
 };
 
-export const createBeamsToday = async (data: any): Promise<BeamsToday> => {
+export const createBeamsToday = async (data: any): Promise<any> => {
   try {
     const newEntry = await db.beamsToday.create({
       data: {
@@ -50,95 +51,136 @@ export const createBeamsToday = async (data: any): Promise<BeamsToday> => {
         },
       },
     });
-    return newEntry as any;
+    return newEntry;
   } catch (error) {
     throw new Error(`Error creating beamsToday entry: ${(error as Error).message}`);
   }
 };
 
-export const updateBeamsToday = async (id: string, data: BeamsTodayUpdateInput): Promise<BeamsToday> => {
+export const updateBeamsToday = async (id: string, data: any): Promise<any> => {
   try {
-    const { id: _, date, poll, categoryId, ...updateData } = data; 
+    const { id: _, date, poll, categoryId, ...updateData } = data;
 
-    const updatedEntry = await db.$transaction(
-      async (prisma) => {
-        const existingPoll = await prisma.beamsTodayPoll.findUnique({
-          where: { beamsTodayId: id },
+    // Update the main BeamsToday entry
+    const updatedBeamsToday = await db.beamsToday.update({
+      where: { id },
+      data: {
+        ...updateData,
+        date: date ? new Date(date) : undefined,
+        category: {
+          connect: { id: categoryId },
+        },
+      },
+      include: {
+        category: true,
+        poll: {
           include: {
             options: true,
           },
-        });
-
-        if (!existingPoll) {
-          throw new Error(`Poll not found for beamsToday entry with id ${id}`);
-        }
-
-        const existingOptionIds = new Set(existingPoll.options.map((option) => option.id));
-        const optionsToUpdate = poll.options.filter((newOption) => newOption.id && existingOptionIds.has(newOption.id));
-        const optionsToCreate = poll.options.filter((newOption) => !newOption.id || !existingOptionIds.has(newOption.id));
-
-        for (const option of optionsToUpdate) {
-          await prisma.beamsTodayPollOption.update({
-            where: { id: option.id! },
-            data: { optionText: option.optionText },
-          });
-        }
-
-        for (const option of optionsToCreate) {
-          await prisma.beamsTodayPollOption.create({
-            data: {
-              optionText: option.optionText,
-              pollId: existingPoll.id,
-            },
-          });
-        }
-
-        const updatedEntry = await prisma.beamsToday.update({
-          where: { id },
-          data: {
-            ...updateData,
-            date: date ? new Date(date) : undefined,
-            category: {
-              connect: { id: categoryId },
-            },
-            poll: {
-              update: {
-                title: poll.title,
-                description: poll.description,
-                question: poll.question,
-              },
-            },
-          },
-          include: {
-            category: true,
-            poll: {
-              include: {
-                options: true,
-              },
-            },
-          },
-        });
-
-        return updatedEntry as any;
+        },
       },
-      {
-        maxWait: 5000,
-        timeout: 20000,
-      }
-    );
+    });
 
-    return updatedEntry;
+    // Handle poll update in a separate operation
+    if (poll) {
+      if (updatedBeamsToday.poll) {
+        // Update existing poll
+        await db.beamsTodayPoll.update({
+          where: { id: updatedBeamsToday.poll.id },
+          data: {
+            title: poll.title,
+            description: poll.description,
+            question: poll.question,
+          },
+        });
+
+        // Delete existing options
+        await db.beamsTodayPollOption.deleteMany({
+          where: { pollId: updatedBeamsToday.poll.id },
+        });
+
+        // Create new options
+        await db.beamsTodayPollOption.createMany({
+          data: poll.options.map((option:any) => ({
+            optionText: option.optionText,
+            pollId: updatedBeamsToday.poll?.id,
+          })),
+        });
+      } else {
+        // Create new poll
+        await db.beamsTodayPoll.create({
+          data: {
+            title: poll.title,
+            description: poll.description,
+            question: poll.question,
+            beamsTodayId: id,
+            options: {
+              create: poll.options.map((option:any) => ({
+                optionText: option.optionText
+              }))
+            }
+          },
+        });
+      }
+    }
+
+    // Fetch the final updated entry with all related data
+    const finalUpdatedEntry = await db.beamsToday.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        poll: {
+          include: {
+            options: true,
+          },
+        },
+      },
+    });
+
+    return finalUpdatedEntry;
   } catch (error) {
+    console.error('Error in updateBeamsToday:', error);
     throw new Error(`Error updating beamsToday entry: ${(error as Error).message}`);
   }
 };
 
 export const deleteBeamsToday = async (id: string): Promise<void> => {
   try {
-    await db.beamsToday.delete({
-      where: { id },
+    await db.$transaction(async (prisma) => {
+      // Delete associated favorites
+      await prisma.beamsTodayFavorite.deleteMany({
+        where: { beamsTodayId: id },
+      });
+
+      // Delete associated poll, options, and responses
+      const poll = await prisma.beamsTodayPoll.findUnique({
+        where: { beamsTodayId: id },
+        include: { options: true },
+      });
+      if (poll) {
+        // Delete poll responses
+        await prisma.beamsTodayPollResponse.deleteMany({
+          where: { pollOptionId: { in: poll.options.map(o => o.id) } },
+        });
+        // Delete poll options
+        await prisma.beamsTodayPollOption.deleteMany({
+          where: { pollId: poll.id },
+        });
+        // Delete the poll
+        await prisma.beamsTodayPoll.delete({
+          where: { id: poll.id },
+        });
+      }
+
+      // Delete the BeamsToday entry
+      await prisma.beamsToday.delete({
+        where: { id },
+      });
     });
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      throw new Error(`Database error: ${error.message}`);
+    }
     throw new Error(`Error deleting beamsToday entry: ${(error as Error).message}`);
   }
 };

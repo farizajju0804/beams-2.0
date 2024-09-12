@@ -11,11 +11,10 @@ interface BeamsTodayPageProps {
   completedTopics: string[];
   user: any;
   topics: any;
-  newTopics: any;
   categories: any;
 }
 
-const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, topics, newTopics, categories }) => {
+const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, topics,  categories }) => {
 
   return (
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col items-center justify-center w-full bg-background gap-6">
@@ -29,10 +28,10 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
 
     
-      <BeamsTodayListContainer categories={categories} completedTopics={completedTopics} user={user} />
+      {/* <BeamsTodayListContainer  /> */}
        
 
-      <BeamsTodayRecents topics={newTopics}/>
+      <BeamsTodayRecents />
     </div>
   );
 };

@@ -18,7 +18,7 @@ export default async function Page() {
   
   // Fetch all available Beams Today topics
   const topics = await getAllBeamsToday();
-  const newTopics = await getNewBeamsToday();
+  // const newTopics = await getNewBeamsToday();
   
   // Extract the search query parameter, or default to an empty string
  
@@ -32,7 +32,7 @@ export default async function Page() {
       completedTopics={completedTopics}
       user={user}
       topics={topics}
-      newTopics={newTopics}
+      // newTopics={newTopics}
       categories={categories}
     />
   );
