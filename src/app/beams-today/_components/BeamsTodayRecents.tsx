@@ -133,9 +133,12 @@ export function BeamsTodayRecents() {
               </motion.button>
 
               {/* Chip */}
-              <Chip size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">
+              <div className="px-4 mb-2 w-full absolute top-4 z-[3] flex justify-between items-center">
+              <Chip size="sm" className=" bg-white text-black">
                 {active.category.name}
               </Chip>
+              <FavoriteButton  beamsTodayId={active?.id} />
+              </div>
 
               {/* Image */}
               <motion.div layoutId={`image-${active.title}-${id}`}>
@@ -151,14 +154,13 @@ export function BeamsTodayRecents() {
 
               {/* Content */}
               <div className="px-4 py-4">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-start items-center">
                   <motion.h3
                     layoutId={`title-${active.title}-${id}`}
                     className="font-medium text-text font-poppins text-lg md:text-xl"
                   >
                     {active.title}
                   </motion.h3>
-                  <FavoriteButton beamsTodayId={active?.id} />
                 </div>
 
                 <motion.div
@@ -250,6 +252,9 @@ export function BeamsTodayRecents() {
           {topic?.category.name} {/* Category name displayed in a chip */}
         </Chip>
       )}
+         <div className="[backdrop-filter:blur(5px)] rounded-2xl bg-text flex flex-row items-start justify-start" onClick={(event) => event.stopPropagation()}>
+          <FavoriteButton beamsTodayId={topic?.id} /> {/* Favorite button */}
+        </div>
     </motion.div>
     <div className="absolute bottom-0 left-0 right-0 mt-auto [backdrop-filter:blur(5px)] rounded-b-3xl [background:linear-gradient(90deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_100%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-lg text-black">
     
