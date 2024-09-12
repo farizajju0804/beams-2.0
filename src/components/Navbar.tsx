@@ -20,7 +20,11 @@ export default function Nav() {
 
 
   return (
-    <Navbar className="max-w-none px-4 w-full bg-background ">
+    <Navbar className="max-w-none px-4 w-full bg-background "
+    
+    classNames={{
+      wrapper : "max-w-7xl"
+    }}>
       <NavbarContent className="max-w-none w-full">
         <NavbarBrand>
           <Link href="/">
