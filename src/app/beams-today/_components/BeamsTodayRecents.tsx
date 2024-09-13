@@ -133,12 +133,9 @@ export function BeamsTodayRecents() {
               </motion.button>
 
               {/* Chip */}
-              <div className="px-4 mb-2 w-full absolute top-4 z-[3] flex justify-between items-center">
-              <Chip size="sm" className=" bg-white text-black">
+              <Chip size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">
                 {active.category.name}
               </Chip>
-              <FavoriteButton  beamsTodayId={active?.id} />
-              </div>
 
               {/* Image */}
               <motion.div layoutId={`image-${active.title}-${id}`}>
@@ -154,13 +151,14 @@ export function BeamsTodayRecents() {
 
               {/* Content */}
               <div className="px-4 py-4">
-                <div className="flex justify-start items-center">
+                <div className="flex justify-between items-center">
                   <motion.h3
                     layoutId={`title-${active.title}-${id}`}
                     className="font-medium text-text font-poppins text-lg md:text-xl"
                   >
                     {active.title}
                   </motion.h3>
+                  <FavoriteButton beamsTodayId={active?.id} />
                 </div>
 
                 <motion.div

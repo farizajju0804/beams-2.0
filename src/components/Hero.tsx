@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Microscope } from 'iconsax-react';
 import { CoolMode } from './ui/cool-mode';
 import { useRouter } from 'next/navigation';
+import DailyProgress from './DailyProgress';
 
 const HeroSection: React.FC = () => {
   const router = useRouter();
@@ -77,6 +78,7 @@ const HeroSection: React.FC = () => {
           </Button>
         </CoolMode>
       </motion.div>
+      <DailyProgress/>
     </section>
   );
 };

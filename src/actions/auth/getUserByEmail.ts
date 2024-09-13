@@ -45,11 +45,12 @@ export const getUserById2 = async (id: string) => {
  * @returns {Promise<Object | null>} The user object if found, otherwise null.
  */
 export const getUserBySecurityAnswers = async (securityAnswer1: string, securityAnswer2: string) => {
-  return await db.user.findFirst({
+  // Fetch all users matching the security answers
+  return await db.user.findMany({
     where: {
       AND: [
-        { securityAnswer1: { equals: securityAnswer1, mode: 'insensitive' } }, // Case-insensitive match for securityAnswer1
-        { securityAnswer2: { equals: securityAnswer2, mode: 'insensitive' } }, // Case-insensitive match for securityAnswer2
+        { securityAnswer1: { equals: securityAnswer1, mode: 'insensitive' } }, // Case-insensitive match
+        { securityAnswer2: { equals: securityAnswer2, mode: 'insensitive' } },
       ],
     },
   });

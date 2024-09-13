@@ -32,7 +32,7 @@ const LoginSide: FC<LoginSideProps> = ({ show }) => {
           Welcome Back,
         </h1> {/* Main welcome message */}
         <p className="font-medium text-black text-base md:text-xl">
-          Your account missed you
+          We missed you
         </p> {/* Subtext */}
       </div>
 

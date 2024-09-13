@@ -61,8 +61,11 @@ export const SecuritySchema = z.object({
 export const ForgotEmailSchema = z.object({
 	securityAnswer1: z.string().max(20, { message: "Security answer must be at most 20 characters" }),
 	securityAnswer2: z.string().max(20, { message: "Security answer must be at most 20 characters" }),
+	
 });
-
+export const FirstNameSchema = z.object({
+	firstName: z.string().min(2, "First name must be at least 2 characters long"),
+  });
 
 
 export const SettingsSchema = z.object({
