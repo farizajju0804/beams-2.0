@@ -34,7 +34,7 @@
   --color-accent : 249, 212, 46;
   --color-yellow : 249, 212, 46;
   --color-purple :  55, 0, 117;
- 
+  --shadow: 112, 128, 176, 0.12;
 }
 
 
@@ -58,6 +58,24 @@ textarea {
 }
 
 
+.shadow-defined{
+  box-shadow: 0px 2px 10px 0px rgba(var(--shadow));
+}
+
+
+.sidebar {
+  width: 5rem; /* collapsed width */
+  transition: width 0.3s ease;
+}
+
+.sidebar-expanded {
+  width: 12rem; /* expanded width */
+}
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0; /* Hide sidebar on small screens */
+  }
+}
 @keyframes float {
   0% {
     transform: translateY(0px);
@@ -95,6 +113,7 @@ textarea {
   --color-accent : 255, 255, 255;
   --color-yellow : 249, 212, 46;
   --color-purple :  55, 0, 117;
+  --shadow: 53, 53, 53, 0.12;
 }
 
 .black-text{
@@ -146,8 +165,8 @@ input:-webkit-autofill:active{
     scrollbar-width: none;  /* Firefox */
   }
 
-/* .video-js{
-  width: 80vw !important;
+  .video-js{
+  width: 100% !important;
   height: auto !important;
   max-width: 1020px;
   margin: 0;
@@ -178,46 +197,7 @@ input:-webkit-autofill:active{
   transition: none !important;
 }
 
-  /* .doorOpen {
-    transform: perspective(1200px) rotateY(-105deg);
-  }
-  
-  .light-ray {
-    transition: opacity 0.5s ease-in-out;
-  }
-  
-  .doorOpen ~ .light-ray {
-    opacity: 1;
-  }
-   */
-
-
-  .doorSlightlyOpen {
-    transform: perspective(1200px) rotateY(-20deg);
-  }
-  
-  .doorOpen {
-    transform: perspective(1200px) rotateY(-105deg);
-  }
-  
-  .doorClosed {
-    transform: perspective(1200px) rotateY(0deg);
-  }
-  
-  .light-ray {
-    transition: opacity 0.5s ease-in-out;
-  }
-  
-  .glowing-error {
-    color: #ff6b6b;
-    text-shadow: 0 0 8px rgba(255, 107, 107, 0.7), 0 0 16px rgba(255, 107, 107, 0.7);
-  }
-  
-  .welcome-message {
-    color: #ffffff;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 24px rgba(255, 255, 255, 0.9);
-  }
-  
+ 
 
 
 

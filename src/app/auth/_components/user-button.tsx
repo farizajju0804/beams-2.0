@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection, User } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
@@ -80,6 +81,7 @@ export default function UserButton() {
         <User   
         isFocusable={true}
       name={`${user.firstName}`}
+      description={`Level 1 - Newbie`}
       
       // description={user.}
       avatarProps={{

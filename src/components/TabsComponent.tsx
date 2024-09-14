@@ -33,7 +33,8 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
       color="warning"
       className='mx-auto mb-4 text-grey-2'
       classNames={{
-        tabContent: "group-data-[selected=true]:text-black"
+        tabContent: "group-data-[selected=true]:text-black",
+        panel: "w-full"
       }}
       onSelectionChange={handleTabChange}
     >

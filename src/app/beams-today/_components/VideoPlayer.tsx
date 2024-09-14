@@ -66,7 +66,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   }, []);
 
   return (
-    <div className='lg:min-w-5xl lg:px-8 min-w-[85vw] w-full mx-auto'>
+    <div className='min-w-full w-full mx-auto'>
       <CldVideoPlayer
         id="my-video"
         width="1920"

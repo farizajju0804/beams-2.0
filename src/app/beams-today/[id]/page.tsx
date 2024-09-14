@@ -35,12 +35,12 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   const currentIndex = allBeamsToday.findIndex((topic: BeamsToday) => topic.id === id);
   
   // Define URLs for the previous and next topics, if they exist
-  const prevUrl = currentIndex > 0 ? `/beams-today/${allBeamsToday[currentIndex - 1].id}` : null;
-  const nextUrl = currentIndex < allBeamsToday.length - 1 ? `/beams-today/${allBeamsToday[currentIndex + 1].id}` : null;
+  const nextUrl = currentIndex > 0 ? `/beams-today/${allBeamsToday[currentIndex - 1].id}` : null;
+  const prevUrl = currentIndex < allBeamsToday.length - 1 ? `/beams-today/${allBeamsToday[currentIndex + 1].id}` : null;
 
   return (
-    <div className="max-w-5xl flex w-full flex-col mx-auto px-4 mt-4 overflow-x-hidden">
-      <div className="px-4">
+    <>
+    <div className="px-4 md:px-8">
         {/* Breadcrumbs navigation */}
         <Breadcrumbs
           pageClassName="text-text"
@@ -52,6 +52,8 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
           ]}
         />
       </div>
+    <div className="max-w-5xl flex w-full flex-col mx-auto px-4 mt-4 overflow-x-hidden">
+      
       
       {/* Render tabs and details of the Beams Today topic */}
       <BeamsTodayTabs beamsToday={beamsToday} />
@@ -72,6 +74,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
         nextUrl={nextUrl}
       />
     </div>
+    </>
   );
 };
 

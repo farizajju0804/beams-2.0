@@ -17,9 +17,12 @@ interface BeamsTodayPageProps {
 const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, topics,  categories }) => {
 
   return (
+    <>
+     <Header />
+   
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col items-center justify-center w-full bg-background gap-6">
       {/* Page Header */}
-      <Header />
+     
 
       {/* Topic of the Day Section */}
       <TopicOfTheDayContainer user={user} />
@@ -33,6 +36,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
 
       <BeamsTodayRecents />
     </div>
+    </>
   );
 };
 
