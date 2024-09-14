@@ -67,7 +67,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
         <RelatedSection topics={filteredRelatedTopics} categoryName={beamsToday.category.name} />
       )}
       
-      {/* Bottom navigation to previous and next topics */}
+    
       <BottomNavigation
         currentDate={beamsToday.date}
         prevUrl={prevUrl}

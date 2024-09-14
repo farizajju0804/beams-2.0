@@ -46,16 +46,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalConten
               {modalContent}
             </div>
           </ModalBody>
-          {/* <ModalFooter>
-            <Button 
-              color="danger" 
-              variant="light" 
-              onPress={onClose}
-              className="font-semibold"
-            >
-              Close
-            </Button>
-          </ModalFooter> */}
+          
         </ModalContent>
       </Modal>
     </>

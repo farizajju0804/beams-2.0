@@ -52,7 +52,7 @@ const TopicsPopoverContent: React.FC<{ topics: WatchedData[] }> = ({ topics }) =
       <div key={topic.id} className="flex w-full justify-between items-start bg-grey-1 p-4 rounded-lg">
         <div className='flex flex-col'>
         <h4 className="font-semibold text-text">{topic.title}</h4>
-        {/* <p className="text-sm text-gray-600">{topic.shortDesc}</p> */}
+     
         <p className="text-xs text-grey-2 mt-2"><FormattedDate date={topic.date.toISOString().split('T')[0]} /></p>
         </div>
         <Link href={`/beams-today/${topic.id}`} className="mt-4">
@@ -84,7 +84,7 @@ interface TimeBreakdownPopoverContentProps {
     
     return (
       <div className='h-[264px]'>
-        {/* <h3 className="text-lg font-semibold mb-2">Time by Format</h3> */}
+  
         <div className="h-64 w-full mb-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={timeData} margin={{ top: 10, right: 20, left: 20, bottom: 30 }}>
