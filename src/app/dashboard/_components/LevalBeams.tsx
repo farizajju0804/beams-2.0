@@ -41,11 +41,11 @@ interface RecentActivityProps {
 // LevelProgress component
 const LevelProgress: React.FC<LevelProgressProps> = ({ level, progress, total }) => (
   <div className="mb-4 w-full flex flex-col ">
-    <div className="flex mx-auto w-4/6 items-center justify-between mb-2">
+    <div className="flex mx-auto md:mx-0 w-4/6 items-center justify-between mb-2">
       <span className="text-lg font-semibold">Level - {level}</span>
       <span className="text-sm text-gray-500">{progress}/{total}</span>
     </div>
-    <div className="h-2 w-4/6 mx-auto bg-gray-200 rounded-full overflow-hidden">
+    <div className="h-2 w-4/6 md:mx-0 mx-auto bg-gray-200 rounded-full overflow-hidden">
       <motion.div
         className="h-full bg-brand"
         initial={{ width: 0 }}
