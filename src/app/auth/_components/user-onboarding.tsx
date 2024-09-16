@@ -42,7 +42,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
   useEffect(() => {
     const fetchLatestUserData = async () => {
       try {
-        const data = await getLatestUserData();
+        const data:any = await getLatestUserData();
         if (data) {
           form.reset({
             userType: data.userType || 'NON_STUDENT',
