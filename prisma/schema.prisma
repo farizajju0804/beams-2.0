@@ -171,6 +171,7 @@ model BeamsToday {
   title                 String // Title of the Beams Today content
   shortDesc             String // Short description of the content
   viewCount             Int                              @default(0) // Total number of views for this content
+  completionCount       Int                              @default(0) // Total number of completions for this content
   totalWatchTime        Int                              @default(0) // Total watch time across all formats
   videoViewCount        Int                              @default(0) // Number of views for video content
   audioViewCount        Int                              @default(0) // Number of views for audio content
@@ -199,6 +200,8 @@ model BeamsToday {
 model BeamsTodayWatchedContent {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId              String   @unique @db.ObjectId // Foreign key to the User model
+  viewedBeamsToday    String[] @default([]) // List of viewed Beams Today content
+  viewedFormats        Json     @default("{}") // JSON data to track viewed formats (video, audio, etc.)
   completedBeamsToday String[] @default([]) // List of completed Beams Today content
   completedFormats    Json     @default("{}") // JSON data to track completed formats (video, audio, etc.)
   updatedAt           DateTime @default(now()) // Timestamp of last update
@@ -309,7 +312,7 @@ model BeamsTodayFavorite {
 // Model for storing levels dynamically with name, point range, and caption
 model Level {
   id          String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  levelNumber Int // The level number (e.g., 1, 2, 3, ...)
+  levelNumber Int                     // The level number (e.g., 1, 2, 3, ...)
   minPoints   Int // Minimum points required to reach this level
   maxPoints   Int // Maximum points before moving to the next level
   name        String // Display name of the level (e.g., "Newbie", "Amateur")

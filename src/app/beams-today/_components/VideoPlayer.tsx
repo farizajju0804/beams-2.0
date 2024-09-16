@@ -1,7 +1,9 @@
 'use client';
-import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
+import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
+import { toast } from 'react-hot-toast'; // React Hot Toast for notifications
 
 interface VideoPlayerProps {
   id: string;
@@ -15,13 +17,14 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const videoRef = useRef<any>(null);
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
+  const [completionMarked, setCompletionMarked] = useState(false); // Flag to avoid multiple triggers
 
   // Expose the elapsed time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
 
-  // Track video play time to calculate elapsed time
+  // Track video play time to calculate elapsed time and handle 95% completion
   useEffect(() => {
     const videoElement = videoRef.current;
 
@@ -31,6 +34,21 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         const elapsedTime = currentTime - lastTimeRef.current;
         playTimeRef.current += elapsedTime;
         lastTimeRef.current = currentTime;
+
+        // Check if the user has watched 95% of the video and the completion hasn't been marked
+        if (!completionMarked && currentTime / videoElement.duration >= 0.15) {
+          setCompletionMarked(true); // Mark as completed to prevent multiple triggers
+
+          // Mark the topic as completed for the video format
+          markTopicAsCompleted(id, 'video').then(({ success }) => {
+            if (success) {
+              // Show a notification if it's the first time the topic has been completed
+              toast.success('🎉 You have completed the video and earned 100 beams!', {
+                duration: 4000,
+              });
+            }
+          });
+        }
       }
     };
 
@@ -41,7 +59,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
     };
 
     const handlePause = () => {
-      handleTimeUpdate();
+      handleTimeUpdate(); // Update time on pause
     };
 
     const handleSeeked = () => {
@@ -63,7 +81,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         videoElement.removeEventListener('seeked', handleSeeked);
       };
     }
-  }, []);
+  }, [id, completionMarked]);
 
   return (
     <div className='min-w-full w-full mx-auto'>

@@ -118,39 +118,66 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ data }) => {
 
 
 
-// RecentActivity component
 
+
+// Define interfaces for props
+interface LevelBeamsProps {
+  userLevel: any;
+  beams: number;
+  recentActivities: any[];
+  accumulatedPoints: { [key: string]: number }; // Accumulated points by source
+}
+
+// Map sources to display names
+const sourceMap: { [key: string]: string } = {
+  BEAMS_TODAY: 'Beams Today',
+  POLL: 'Poll',
+  SHARE: 'Share',
+};
+
+// Map sources to icons
+const iconMap: { [key: string]: Icon } = {
+  BEAMS_TODAY: TickCircle,
+  POLL: MessageQuestion,
+  SHARE: Share,
+};
 
 // Main Dashboard component
-const LevelBeams: React.FC = () => {
-  const pieChartData: ActivityData[] = [
-    { name: 'Beams Today', value: 500, color: '#FFC107' },
-    { name: 'Poll', value: 300, color: '#FF5722' },
-    { name: 'Share', value: 200, color: '#673AB7' },
-  ];
+const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivities, accumulatedPoints }) => {
+  // Generate pie chart data from accumulated points
+  const pieChartData = Object.keys(accumulatedPoints).map(source => ({
+    name: sourceMap[source] || source,
+    value: accumulatedPoints[source],
+    color: source === 'BEAMS_TODAY' ? '#FFC107' : source === 'POLL' ? '#FF5722' : '#673AB7',
+  }));
 
-  const recentActivities: Activity[] = [
-    { icon: TickCircle, text: 'Completed Topic', points: 50 },
-    { icon: MessageQuestion, text: 'Participated in Poll', points: 30 },
-    { icon: Share, text: 'Shared Topic', points: 10 },
-  ];
+  // Map recent activities
+  const recentActivityData = recentActivities.map(activity => ({
+    icon: iconMap[activity.source] || TickCircle,
+    text: sourceMap[activity.source] || activity.source,
+    points: activity.points,
+  }));
 
   return (
     <div className="w-full py-4 px-4 bg-background">
-        <Heading heading='My beams'/>
-        <div className='w-full grid grid-cols-1 md:grid-cols-2'>
-    <div className='w-full flex flex-col items-center md:items-start justify-center '>
-      <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">Newbie</div>
-      <LevelProgress level={1} progress={1000} total={2000} />
-      <ScoreDisplay score={1000} />
+      <Heading heading={`My Beams - ${userLevel.name}`} />
+      <div className='w-full grid grid-cols-1 md:grid-cols-2'>
+        <div className='w-full flex flex-col items-center md:items-start justify-center '>
+          <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">{userLevel.name}</div>
+          <LevelProgress level={userLevel.levelNumber} progress={beams} total={userLevel.maxPoints} />
+          <ScoreDisplay score={beams} />
+        </div>
+        
+        <div>
+          <ActivityPieChart data={pieChartData} />
+        </div>
       </div>
-      <div>
-      <ActivityPieChart data={pieChartData} />
-      </div>
-      </div>
-      <RecentActivity activities={recentActivities} />
+      {recentActivities.length > 0 && 
+      <RecentActivity activities={recentActivityData} />
+      }
     </div>
   );
 };
 
 export default LevelBeams;
+

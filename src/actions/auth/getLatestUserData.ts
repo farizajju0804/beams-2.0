@@ -42,11 +42,15 @@ export async function getLatestUserData() {
       }
     }
   });
-
+  const levelDefault = await db.level.findFirst({
+    where : {
+      levelNumber :  1
+    }
+  })
   return {
     ...user,
     beams: userBeamPoints?.beams || 0,  // Default to 0 if no points exist
-    level: userBeamPoints?.level?.levelNumber || 1,  // Default to level 1
-    levelName: userBeamPoints?.level?.name || 'Newbie'  // Default to 'Newbie'
+    level: userBeamPoints?.level?.levelNumber || levelDefault?.levelNumber,  // Default to level 1
+    levelName: userBeamPoints?.level?.name || levelDefault?.name  // Default to 'Newbie'
   };
 }

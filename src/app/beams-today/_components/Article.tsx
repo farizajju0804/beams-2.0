@@ -1,22 +1,24 @@
 'use client';
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { useTheme } from "next-themes";
+import '@react-pdf-viewer/core/lib/styles/index.css'; // Core styles for PDF viewer
+import { useTheme } from 'next-themes'; // Importing the theme hook for dark/light mode switching
+import toast from 'react-hot-toast'; // Using react-hot-toast for notifications
+import { markTopicAsCompleted } from '@/actions/beams-today/completedActions'; // Action to mark topic as completed
 
 interface ArticleProps {
   articleUrl: string | undefined;
+  beamsTodayId: string; // Added for marking completion
 }
 
 // Article component to display PDF articles
-const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
+const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsTodayId }, ref) => {
   const startTimeRef = useRef<number | null>(null);
   const elapsedTimeRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { theme } = useTheme();
+  const { theme } = useTheme(); // Access theme
   const [isMobile, setIsMobile] = useState(false);
+  const [completed, setCompleted] = useState(false); // Track if the article has been marked as complete
 
   // Expose the elapsed reading time for parent component via ref
   useImperativeHandle(ref, () => ({
@@ -35,34 +37,48 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   useEffect(() => {
     startTimeRef.current = Date.now();
 
-    intervalRef.current = setInterval(() => {
+    intervalRef.current = setInterval(async () => {
       if (startTimeRef.current) {
         const currentTime = Date.now();
         const elapsed = currentTime - startTimeRef.current;
         elapsedTimeRef.current += elapsed;
         startTimeRef.current = currentTime;
+
+        // If the user spends more than 60 seconds on the article, mark it as complete
+        const totalTimeSpent = Math.round(elapsedTimeRef.current / 1000);
+        if (totalTimeSpent >= 10 && !completed) {
+          setCompleted(true); // Mark as completed
+
+          try {
+            // Mark the topic as completed in the backend only once
+            await markTopicAsCompleted(beamsTodayId, 'text');
+
+            // Show a success toast notification
+            toast.success('You have completed reading the article!', {
+              position: 'top-right',
+              duration: 3000, // Auto close after 3 seconds
+            });
+          } catch (error) {
+            toast.error('Failed to mark article as completed');
+          }
+        }
       }
     }, 1000);
 
+    // Handle resizing to set `isMobile`
     const handleResize = () => {
       setIsMobile(window.innerWidth < 767);
     };
-
-    handleResize();
+    handleResize(); // Initial check
     window.addEventListener('resize', handleResize);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (startTimeRef.current) {
-        const elapsedTime = Date.now() - startTimeRef.current;
-        elapsedTimeRef.current += elapsedTime;
-      }
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [completed, beamsTodayId]);
 
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
+  // Return when there is no article URL
   if (!articleUrl) {
     return (
       <div className="mt-4 p-4 bg-grey-1 rounded-lg">
@@ -73,13 +89,13 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   }
 
   return (
-    <div className="my-4 rounded-lg w-[80vw]">
+    <div className="my-4 rounded-lg mx-auto w-[80vw]">
       <div style={{ height: '750px' }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer
-            theme={theme}
+            theme={theme} // Apply theme (light/dark)
             fileUrl={articleUrl}
-            defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1.0}
+            defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1.0} // Adjust scaling based on screen size
           />
         </Worker>
       </div>
@@ -87,5 +103,5 @@ const Article = forwardRef<any, ArticleProps>(({ articleUrl }, ref) => {
   );
 });
 
-Article.displayName = 'Article';
-export default Article;
+ArticleComponent.displayName = 'ArticleComponent';
+export default ArticleComponent;

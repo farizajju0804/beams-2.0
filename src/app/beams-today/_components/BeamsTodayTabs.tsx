@@ -4,7 +4,7 @@ import TabsComponent from "@/components/TabsComponent"; // Component to handle t
 import VideoPlayer from "./VideoPlayer"; // Video player component
 import ArticleComponent from "@/app/beams-today/_components/Article"; // Article component for displaying text format
 import { Book1, VideoPlay, Headphone } from 'iconsax-react'; // Icons for each tab (Video, Audio, Text)
-import { markTopicAsCompleted } from "@/actions/beams-today/completedActions"; // Action to mark topic as completed
+import { incrementViewCount, markTopicAsCompleted } from "@/actions/beams-today/completedActions"; // Action to mark topic as completed
 import AudioPlayer from "@/app/beams-today/_components/AudioPlayer"; // Audio player component
 import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime'; // Action to update watch time for analytics
 
@@ -57,7 +57,7 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
     }
 
     // Mark the topic as completed for the current format
-    await markTopicAsCompleted(beamsToday.id, format);
+    await incrementViewCount(beamsToday.id, format);
   };
 
   /**
@@ -75,13 +75,13 @@ const BeamsTodayTabs: React.FC<BeamsTodayTabsProps> = ({ beamsToday }) => {
       key: 'audio',
       title: 'Audio',
       icon: <Headphone size="24" />, // Headphone icon for audio
-      content: <AudioPlayer ref={audioPlayerRef} audioUrl={beamsToday?.audioUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
+      content: <AudioPlayer beamsTodayId={beamsToday.id} ref={audioPlayerRef} audioUrl={beamsToday?.audioUrl} thumbnailUrl={beamsToday?.thumbnailUrl} />,
     },
     {
       key: 'text',
       title: 'Text',
       icon: <Book1 size="24" />, // Book icon for text/article
-      content: <ArticleComponent ref={articleRef} articleUrl={beamsToday?.articleUrl} />,
+      content: <ArticleComponent beamsTodayId={beamsToday.id} ref={articleRef} articleUrl={beamsToday?.articleUrl} />,
     },
   ];
 

@@ -8,6 +8,7 @@ import { currentUser } from '@/libs/auth'
 import { getPollDataByUserId } from '@/actions/dashboard/pollData'
 import { getWatchedBeamsTodayContent } from '@/actions/dashboard/watchedContent'
 import LevelBeams from './_components/LevalBeams'
+import { getUserLevelAndHistory } from '@/actions/dashboard/getUserLevelAndRecentHistory'
 
 
 const page = async () => {
@@ -16,7 +17,8 @@ const page = async () => {
   const userAnalytics:any = await getUserAnalyticsById(user.id)
   const pollData:any = await getPollDataByUserId(user.id)
   const watchedData:any = await getWatchedBeamsTodayContent(user.id)
-  console.log(watchedData)
+  const { userLevel, beams, recentActivities, accumulatedPoints } = await getUserLevelAndHistory(user.id);
+  console.log(userLevel, beams, recentActivities, accumulatedPoints )
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
       <LearningOverview
@@ -24,7 +26,12 @@ const page = async () => {
             pollData={pollData}
             watchedData={watchedData}
           />
-          <LevelBeams/>
+           <LevelBeams
+        userLevel={userLevel}  // Pass user level and progress
+        beams={beams}  // Pass beams (points)
+        recentActivities={recentActivities}  // Pass recent activities
+        accumulatedPoints={accumulatedPoints} 
+      />
     </div>
   )
 }
