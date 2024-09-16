@@ -126,7 +126,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
               <p className="text-sm text-center mb-3 text-grey-2">
                 {message}
               </p>
-              <div className="mb-3">
+              <div className="mb-6">
                 <p className="text-center text-lg font-semibold mb-1 text-text">
                   You&apos;ve earned {newPoints - points} points!
                 </p>
@@ -156,7 +156,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                     transition={{ duration: 1, ease: "easeOut" }}
                   />
                 </div>
-                <p className="text-center mt-1 text-sm text-grey-2">
+                <p className="text-center mt-3 text-sm text-grey-2">
                   Total: {displayedPoints} / {levelUp ? nextLevel?.maxPoints : currentLevel?.maxPoints}
                 </p>
               </div>

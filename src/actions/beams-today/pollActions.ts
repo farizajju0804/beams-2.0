@@ -59,13 +59,13 @@ export const recordPollResponse = async (pollOptionId: string) => {
     });
 
     // Award 10 points to the user for poll participation.
-    await db.userBeamPoints.create({
-      data: {
-        userId: user.id,
-        points: 10,
-        source: 'POLL_PARTICIPATION', // Record the source of the points.
-      },
-    });
+    // await db.userBeamPoints.create({
+    //   data: {
+    //     userId: user.id,
+    //     points: 10,
+    //     source: 'POLL_PARTICIPATION', // Record the source of the points.
+    //   },
+    // });
 
     return response;
   } catch (error) {
