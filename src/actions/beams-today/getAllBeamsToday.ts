@@ -1,3 +1,5 @@
+
+"use server"
 import { db } from "@/libs/db"; // Import the Prisma database instance.
 
 /**

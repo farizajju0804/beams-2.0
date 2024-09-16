@@ -8,9 +8,10 @@ interface StatCardProps {
   imageSrc: string;
   modalContent: React.ReactNode;
   viewLabel: string;
+  showViewLabel : boolean;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalContent, viewLabel }) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalContent, viewLabel,showViewLabel }) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   return (
@@ -19,6 +20,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalConten
         <div className="flex flex-col items-start">
           <h4 className="text-sm md:text-lg font-medium text-text">{title}</h4>
           <p className="text-2xl md:text-4xl font-poppins my-3 font-bold bg-gradient-to-b from-brand to-yellow text-transparent bg-clip-text">{value}</p>
+          {showViewLabel && 
           <Button 
             size="sm" 
             className="text-xs md:text-sm bg-transparent text-text font-semibold  rounded-full underline transition-all p-0 duration-300"
@@ -26,6 +28,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalConten
           >
             {viewLabel}
           </Button>
+        }
         </div>
         <Image src={imageSrc} alt={title} width={100} height={100} className="" />
       </div>

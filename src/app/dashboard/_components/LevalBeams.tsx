@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell } from 'recharts';
 import RecentActivity from './RecentActivity';
@@ -77,7 +77,13 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ data }) => {
     const chartSize = 200; // Increased size
     const outerRadius = chartSize / 2 - 10; // Slightly smaller to ensure it's not cut off
     const innerRadius = outerRadius - 30; // Adjust for desired thickness
-  
+    const [isClient, setIsClient] = useState(false); 
+    useEffect(() => {
+      setIsClient(true); // Set to true only after the component mounts on the client-side
+    }, []);
+    if (!isClient) {
+      return null; // Return null during SSR to prevent hydration mismatch
+    }
     return (
       <div className="flex flex-col md:flex-row items-center gap-8 justify-center w-full max-w-2xl">
         <PieChart width={chartSize} height={chartSize}>

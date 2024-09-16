@@ -12,78 +12,80 @@ datasource db {
 // Enum for defining different user roles
 enum UserRole {
   ADMIN // Admin role with elevated privileges
-  USER  // Regular user role
+  USER // Regular user role
 }
 
 // Enum to specify different sources for beam points
 enum BeamPointsSource {
-  POLL_PARTICIPATION  // Points earned from participating in a poll
-  WATCHING_VIDEO      // Points earned from watching videos
-  COMPLETING_QUIZ     // Points earned from completing quizzes
-  OTHER               // Catch-all for other potential sources
+  POLL_PARTICIPATION // Points earned from participating in a poll
+  WATCHING_VIDEO // Points earned from watching videos
+  COMPLETING_QUIZ // Points earned from completing quizzes
+  OTHER // Catch-all for other potential sources
 }
 
 // Enum to define types of users
 enum UserType {
-  STUDENT      // Represents a student user
-  NON_STUDENT  // Represents a non-student user
+  STUDENT // Represents a student user
+  NON_STUDENT // Represents a non-student user
 }
 
 // User model definition for storing user data
 model User {
-  id                   String                @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  firstName            String?               // User's first name (optional)
-  lastName             String?               // User's last name (optional)
-  email                String?               @unique // User's email address (optional and unique)
-  emailVerified        DateTime?             // Timestamp of email verification (optional)
-  image                String?               // User profile image URL (optional)
-  password             String?               // User's hashed password (optional)
-  dob                  DateTime?             // Date of birth of the user (optional)
-  userType             UserType              @default(NON_STUDENT) // Type of user, default is NON_STUDENT
-  grade                String?               // Grade of the student (optional)
-  gender               String?               // Gender of the user (optional)
-  schoolName           String?               // Name of the user's school (optional)
-  interests            String[]              @default([]) // List of user interests (default is an empty array)
-  securityQuestion1    String?               // First security question (optional)
-  securityAnswer1      String?             // First security answer (optional)
-  securityQuestion2    String?               // Second security question (optional)
-  securityAnswer2      String?               // Second security answer (optional)
-  accounts             Account[]             // Relationship to the Account model (many-to-one)
-  role                 UserRole              @default(USER) // User's role, default is USER
-  isTwoFactorEnabled   Boolean               @default(false) // Whether two-factor authentication is enabled
-  twoFactorConfirmation TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
-  createdAt            DateTime              @default(now()) // Timestamp of user account creation
-  updatedAt            DateTime              @updatedAt // Timestamp of last update
-  userFormCompleted    Boolean               @default(false) // Whether the user completed the form
-  onBoardingCompleted  Boolean               @default(false) // Whether the user completed onboarding
-  lastLoginAt          DateTime?             // Timestamp of the last login (optional)
-  lastLoginIp          String?               // IP address of the last login (optional)
-  notes                BeamsTodayUserNote[]  // Relationship to BeamsTodayUserNote (many-to-one)
-  theatreNotes         BeamsTheatreUserNote[] // Relationship to BeamsTheatreUserNote (many-to-one)
-  beamsTodayFavorites  BeamsTodayFavorite[]  // Relationship to BeamsTodayFavorite (many-to-one)
-  beamPoints           UserBeamPoints[]      // Relationship to UserBeamPoints (many-to-one)
-  beamsTodayUserAnalytics BeamsTodayUserAnalytics[] // Relationship to BeamsTodayUserAnalytics (many-to-one)
-  beamsTheatreFavorites BeamsTheatreFavorite[] // Relationship to BeamsTheatreFavorite (many-to-one)
+  id                        String                      @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  firstName                 String? // User's first name (optional)
+  lastName                  String? // User's last name (optional)
+  email                     String?                     @unique // User's email address (optional and unique)
+  emailVerified             DateTime? // Timestamp of email verification (optional)
+  image                     String? // User profile image URL (optional)
+  password                  String? // User's hashed password (optional)
+  dob                       DateTime? // Date of birth of the user (optional)
+  userType                  UserType                    @default(NON_STUDENT) // Type of user, default is NON_STUDENT
+  grade                     String? // Grade of the student (optional)
+  gender                    String? // Gender of the user (optional)
+  schoolName                String? // Name of the user's school (optional)
+  interests                 String[]                    @default([]) // List of user interests (default is an empty array)
+  securityQuestion1         String? // First security question (optional)
+  securityAnswer1           String? // First security answer (optional)
+  securityQuestion2         String? // Second security question (optional)
+  securityAnswer2           String? // Second security answer (optional)
+  accounts                  Account[] // Relationship to the Account model (many-to-one)
+  role                      UserRole                    @default(USER) // User's role, default is USER
+  isTwoFactorEnabled        Boolean                     @default(false) // Whether two-factor authentication is enabled
+  twoFactorConfirmation     TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
+  createdAt                 DateTime                    @default(now()) // Timestamp of user account creation
+  updatedAt                 DateTime                    @updatedAt // Timestamp of last update
+  userFormCompleted         Boolean                     @default(false) // Whether the user completed the form
+  onBoardingCompleted       Boolean                     @default(false) // Whether the user completed onboarding
+  lastLoginAt               DateTime? // Timestamp of the last login (optional)
+  lastLoginIp               String? // IP address of the last login (optional)
+  notes                     BeamsTodayUserNote[] // Relationship to BeamsTodayUserNote (many-to-one)
+  theatreNotes              BeamsTheatreUserNote[] // Relationship to BeamsTheatreUserNote (many-to-one)
+  beamsTodayFavorites       BeamsTodayFavorite[] // Relationship to BeamsTodayFavorite (many-to-one)
+  beamPoints                UserBeamPoints[] // Relationship to UserBeamPoints (many-to-one)
+  beamsTodayUserAnalytics   BeamsTodayUserAnalytics[] // Relationship to BeamsTodayUserAnalytics (many-to-one)
+  beamsTheatreFavorites     BeamsTheatreFavorite[] // Relationship to BeamsTheatreFavorite (many-to-one)
   beamsTheatreUserAnalytics BeamsTheatreUserAnalytics[] // Relationship to BeamsTheatreUserAnalytics (many-to-one)
+  Leaderboard               Leaderboard[]
+  Achievement               Achievement[]
 }
 
 // Account model for storing external account login information
 model Account {
-  id                String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId            String     @db.ObjectId // Foreign key to User
-  type              String     // Account type (e.g., OAuth, email)
-  provider          String     // Provider of the account (e.g., Google, Facebook)
-  providerAccountId String     // Provider-specific account ID
-  refresh_token     String?    @db.String // Refresh token for the account (optional)
-  access_token      String?    @db.String // Access token for the account (optional)
-  expires_at        Int?       // Expiration timestamp for the access token (optional)
-  token_type        String?    // Token type (e.g., Bearer) (optional)
-  scope             String?    // Scopes granted by the provider (optional)
-  id_token          String?    @db.String // ID token for the account (optional)
-  session_state     String?    // Session state information (optional)
-  createdAt         DateTime   @default(now()) // Timestamp of account creation
-  updatedAt         DateTime   @updatedAt // Timestamp of last update
-  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId            String   @db.ObjectId // Foreign key to User
+  type              String // Account type (e.g., OAuth, email)
+  provider          String // Provider of the account (e.g., Google, Facebook)
+  providerAccountId String // Provider-specific account ID
+  refresh_token     String?  @db.String // Refresh token for the account (optional)
+  access_token      String?  @db.String // Access token for the account (optional)
+  expires_at        Int? // Expiration timestamp for the access token (optional)
+  token_type        String? // Token type (e.g., Bearer) (optional)
+  scope             String? // Scopes granted by the provider (optional)
+  id_token          String?  @db.String // ID token for the account (optional)
+  session_state     String? // Session state information (optional)
+  createdAt         DateTime @default(now()) // Timestamp of account creation
+  updatedAt         DateTime @updatedAt // Timestamp of last update
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
 
   @@unique([provider, providerAccountId]) // Ensures unique provider-account ID pair
   @@index([userId]) // Index for faster queries on userId
@@ -91,10 +93,10 @@ model Account {
 
 // Model for storing verification tokens used for email verification
 model VerificationToken {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  email     String     // Email address associated with the token
-  token     String     @unique // Unique verification token
-  expires   DateTime   // Expiration time for the token
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  email   String // Email address associated with the token
+  token   String   @unique // Unique verification token
+  expires DateTime // Expiration time for the token
 
   @@unique([email, token]) // Ensures unique combination of email and token
   @@index([email]) // Index for faster queries on email
@@ -102,10 +104,10 @@ model VerificationToken {
 
 // Model for storing password reset tokens
 model PasswordResetToken {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  email     String     // Email associated with the reset token
-  token     String     @unique // Unique password reset token
-  expires   DateTime   // Expiration time for the token
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  email   String // Email associated with the reset token
+  token   String   @unique // Unique password reset token
+  expires DateTime // Expiration time for the token
 
   @@unique([email, token]) // Ensures unique combination of email and token
   @@index([email]) // Index for faster queries on email
@@ -113,10 +115,10 @@ model PasswordResetToken {
 
 // Model for storing two-factor authentication tokens
 model TwoFactorToken {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  email     String     // Email associated with the two-factor token
-  token     String     @unique // Unique two-factor token
-  expires   DateTime   // Expiration time for the token
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  email   String // Email associated with the two-factor token
+  token   String   @unique // Unique two-factor token
+  expires DateTime // Expiration time for the token
 
   @@unique([email, token]) // Ensures unique combination of email and token
   @@index([email]) // Index for faster queries on email
@@ -124,125 +126,124 @@ model TwoFactorToken {
 
 // Model for confirming two-factor authentication setup
 model TwoFactorConfirmation {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId    String     @db.ObjectId // Foreign key to the User model
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  id     String @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId String @db.ObjectId // Foreign key to the User model
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
 
   @@unique([userId]) // Ensures a unique two-factor confirmation per user
 }
 
 // Model for pending verification requests (e.g., email verification)
 model PendingVerification {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  email     String     @unique // Email address to be verified
-  ip        String     // IP address of the verification request
-  createdAt DateTime   @default(now()) // Timestamp of verification creation
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  email     String   @unique // Email address to be verified
+  ip        String // IP address of the verification request
+  createdAt DateTime @default(now()) // Timestamp of verification creation
 }
 
 // FAQ model for storing frequently asked questions and answers
 model FAQ {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  question  String     // FAQ question
-  answer    String     // FAQ answer
-  category  String     // Category for classifying the FAQ
-  createdAt DateTime   @default(now()) // Timestamp of creation
-  updatedAt DateTime   @updatedAt // Timestamp of last update
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  question  String // FAQ question
+  answer    String // FAQ answer
+  category  String // Category for classifying the FAQ
+  createdAt DateTime @default(now()) // Timestamp of creation
+  updatedAt DateTime @updatedAt // Timestamp of last update
 }
 
 // Model for storing contact form responses from users
 model ContactFormResponse {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  firstName String     // First name of the person submitting the form
-  lastName  String     // Last name of the person submitting the form
-  email     String     // Email address of the person submitting the form
-  subject   String     // Subject of the message
-  message   String     // The actual message content
-  createdAt DateTime   @default(now()) // Timestamp of form submission
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  firstName String // First name of the person submitting the form
+  lastName  String // Last name of the person submitting the form
+  email     String // Email address of the person submitting the form
+  subject   String // Subject of the message
+  message   String // The actual message content
+  createdAt DateTime @default(now()) // Timestamp of form submission
 }
 
 //// Beams Today Section
 
 // Model for storing Beams Today content
 model BeamsToday {
-  id                    String                     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  date                  DateTime                   @unique // Date of the Beams Today content
-  title                 String                     // Title of the Beams Today content
-  shortDesc             String                     // Short description of the content
-  viewCount             Int                        @default(0) // Total number of views for this content
-  totalWatchTime        Int                        @default(0) // Total watch time across all formats
-  videoViewCount        Int                        @default(0) // Number of views for video content
-  audioViewCount        Int                        @default(0) // Number of views for audio content
-  textViewCount         Int                        @default(0) // Number of views for text content
-  totalVideoWatchTime   Int                        @default(0) // Total watch time for video content
-  totalAudioListenTime  Int                        @default(0) // Total listen time for audio content
-  totalTextSpentTime    Int                        @default(0) // Total time spent on text content
-  videoUrl              String?                    // URL for the video content (optional)
-  script                String?                    // Script associated with the content (optional)
-  thumbnailUrl          String?                    // Thumbnail URL for the content (optional)
-  articleUrl            String?                    // Article URL for the content (optional)
-  audioUrl              String?                    // Audio URL for the content (optional)
-  published             Boolean                    @default(false)
-  categoryId            String                     @db.ObjectId // Foreign key to the BeamsTodayCategory model
-  category              BeamsTodayCategory         @relation(fields: [categoryId], references: [id]) // Relationship to BeamsTodayCategory
-  poll                  BeamsTodayPoll?            // Optional relationship to BeamsTodayPoll
+  id                    String                           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  date                  DateTime                         @unique // Date of the Beams Today content
+  title                 String // Title of the Beams Today content
+  shortDesc             String // Short description of the content
+  viewCount             Int                              @default(0) // Total number of views for this content
+  totalWatchTime        Int                              @default(0) // Total watch time across all formats
+  videoViewCount        Int                              @default(0) // Number of views for video content
+  audioViewCount        Int                              @default(0) // Number of views for audio content
+  textViewCount         Int                              @default(0) // Number of views for text content
+  totalVideoWatchTime   Int                              @default(0) // Total watch time for video content
+  totalAudioListenTime  Int                              @default(0) // Total listen time for audio content
+  totalTextSpentTime    Int                              @default(0) // Total time spent on text content
+  videoUrl              String? // URL for the video content (optional)
+  script                String? // Script associated with the content (optional)
+  thumbnailUrl          String? // Thumbnail URL for the content (optional)
+  articleUrl            String? // Article URL for the content (optional)
+  audioUrl              String? // Audio URL for the content (optional)
+  published             Boolean                          @default(false)
+  categoryId            String                           @db.ObjectId // Foreign key to the BeamsTodayCategory model
+  category              BeamsTodayCategory               @relation(fields: [categoryId], references: [id]) // Relationship to BeamsTodayCategory
+  poll                  BeamsTodayPoll? // Optional relationship to BeamsTodayPoll
   exclusiveContents     BeamsTodayExclusiveContent[] // Relationship to exclusive content for Beams Today
   downloadableResources BeamsTodayDownloadableResource[] // Relationship to downloadable resources
-  userNotes             BeamsTodayUserNote[]       // Relationship to user notes
-  favourites            BeamsTodayFavorite[]       // Relationship to user favorites
+  userNotes             BeamsTodayUserNote[] // Relationship to user notes
+  favourites            BeamsTodayFavorite[] // Relationship to user favorites
 
   @@index([categoryId]) // Index for faster queries on categoryId
 }
 
 // Model for tracking user-completed Beams Today content
 model BeamsTodayWatchedContent {
-  id                  String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId              String     @unique @db.ObjectId // Foreign key to the User model
-  completedBeamsToday String[]   @default([]) // List of completed Beams Today content
-  completedFormats    Json       @default("{}") // JSON data to track completed formats (video, audio, etc.)
-  updatedAt           DateTime   @default(now()) // Timestamp of last update
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId              String   @unique @db.ObjectId // Foreign key to the User model
+  completedBeamsToday String[] @default([]) // List of completed Beams Today content
+  completedFormats    Json     @default("{}") // JSON data to track completed formats (video, audio, etc.)
+  updatedAt           DateTime @default(now()) // Timestamp of last update
 }
 
 // Model for categorizing Beams Today content
 model BeamsTodayCategory {
-  id                String         @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  name              String         // Name of the category
-  beamsTodayContent BeamsToday[]   // Relationship to BeamsToday content
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  name              String // Name of the category
+  beamsTodayContent BeamsToday[] // Relationship to BeamsToday content
 
   @@index([name]) // Index for faster queries on category name
 }
 
 // Model for creating polls associated with Beams Today content
 model BeamsTodayPoll {
-  id            String              @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  title         String              // Poll title
-  description   String              // Poll description
-  question      String              // Poll question
-  createdAt     DateTime            @default(now()) // Timestamp of poll creation
-  beamsTodayId  String              @unique @db.ObjectId // Foreign key to BeamsToday
-  beamsToday    BeamsToday          @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade) // Relationship to BeamsToday content
-  options       BeamsTodayPollOption[] // Relationship to poll options
-
+  id           String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  title        String // Poll title
+  description  String // Poll description
+  question     String // Poll question
+  createdAt    DateTime               @default(now()) // Timestamp of poll creation
+  beamsTodayId String                 @unique @db.ObjectId // Foreign key to BeamsToday
+  beamsToday   BeamsToday             @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade) // Relationship to BeamsToday content
+  options      BeamsTodayPollOption[] // Relationship to poll options
 }
 
 // Model for poll options associated with a poll
 model BeamsTodayPollOption {
-  id              String               @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  optionText      String               // Text for the poll option
-  pollId          String               @db.ObjectId // Foreign key to the poll
-  poll            BeamsTodayPoll       @relation(fields: [pollId], references: [id],onDelete: Cascade) // Relationship to the BeamsTodayPoll model
-  userResponses   BeamsTodayPollResponse[] // Relationship to user responses
-  votes           Int                 @default(0) // Count of votes for this option
+  id            String                   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  optionText    String // Text for the poll option
+  pollId        String                   @db.ObjectId // Foreign key to the poll
+  poll          BeamsTodayPoll           @relation(fields: [pollId], references: [id], onDelete: Cascade) // Relationship to the BeamsTodayPoll model
+  userResponses BeamsTodayPollResponse[] // Relationship to user responses
+  votes         Int                      @default(0) // Count of votes for this option
 
   @@index([pollId]) // Index for faster queries on pollId
 }
 
 // Model for storing responses to poll options
 model BeamsTodayPollResponse {
-  id            String                @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId        String                @db.ObjectId // Foreign key to the User model
-  pollOptionId  String                @db.ObjectId // Foreign key to the poll option
-  pollOption    BeamsTodayPollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade) // Relationship to the poll option
-  createdAt     DateTime              @default(now()) // Timestamp of the response
+  id           String               @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId       String               @db.ObjectId // Foreign key to the User model
+  pollOptionId String               @db.ObjectId // Foreign key to the poll option
+  pollOption   BeamsTodayPollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade) // Relationship to the poll option
+  createdAt    DateTime             @default(now()) // Timestamp of the response
 
   @@index([userId]) // Index for faster queries on userId
   @@index([pollOptionId]) // Index for faster queries on pollOptionId
@@ -250,39 +251,39 @@ model BeamsTodayPollResponse {
 
 // Model for exclusive content associated with Beams Today
 model BeamsTodayExclusiveContent {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  title           String     // Title of the exclusive content
-  contentUrl      String     // URL of the exclusive content
-  format          String     // Format of the content (e.g., video, audio)
-  date            DateTime   @default(now()) // Timestamp of content creation
-  beamsTodayId    String     @db.ObjectId // Foreign key to BeamsToday
-  beamsToday      BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  title        String // Title of the exclusive content
+  contentUrl   String // URL of the exclusive content
+  format       String // Format of the content (e.g., video, audio)
+  date         DateTime   @default(now()) // Timestamp of content creation
+  beamsTodayId String     @db.ObjectId // Foreign key to BeamsToday
+  beamsToday   BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
 
   @@index([beamsTodayId]) // Index for faster queries on beamsTodayId
 }
 
 // Model for downloadable resources associated with Beams Today
 model BeamsTodayDownloadableResource {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  title           String     // Title of the resource
-  resourceUrl     String     // URL of the resource
-  format          String     // Format of the resource (e.g., PDF, DOC)
-  date            DateTime   @default(now()) // Timestamp of resource creation
-  beamsTodayId    String     @db.ObjectId // Foreign key to BeamsToday
-  beamsToday      BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  title        String // Title of the resource
+  resourceUrl  String // URL of the resource
+  format       String // Format of the resource (e.g., PDF, DOC)
+  date         DateTime   @default(now()) // Timestamp of resource creation
+  beamsTodayId String     @db.ObjectId // Foreign key to BeamsToday
+  beamsToday   BeamsToday @relation(fields: [beamsTodayId], references: [id]) // Relationship to BeamsToday
 
   @@index([beamsTodayId]) // Index for faster queries on beamsTodayId
 }
 
 // Model for user notes on Beams Today content
 model BeamsTodayUserNote {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId          String     @db.ObjectId // Foreign key to the User model
-  user            User       @relation(fields: [userId], references: [id],onDelete: Cascade) // Relationship to the User model
-  note            String     // The note content
-  date            DateTime   @default(now()) // Timestamp of note creation
-  beamsTodayId    String     @db.ObjectId // Foreign key to BeamsToday
-  beamsToday      BeamsToday @relation(fields: [beamsTodayId], references: [id],onDelete: Cascade) // Relationship to BeamsToday
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId       String     @db.ObjectId // Foreign key to the User model
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  note         String // The note content
+  date         DateTime   @default(now()) // Timestamp of note creation
+  beamsTodayId String     @db.ObjectId // Foreign key to BeamsToday
+  beamsToday   BeamsToday @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade) // Relationship to BeamsToday
 
   @@index([userId]) // Index for faster queries on userId
   @@index([beamsTodayId]) // Index for faster queries on beamsTodayId
@@ -290,13 +291,13 @@ model BeamsTodayUserNote {
 
 // Model for tracking user favorites on Beams Today content
 model BeamsTodayFavorite {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId        String     @db.ObjectId // Foreign key to the User model
-  beamsTodayId  String     @db.ObjectId // Foreign key to BeamsToday
-  createdAt     DateTime   @default(now()) // Timestamp of when the content was favorited
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId       String   @db.ObjectId // Foreign key to the User model
+  beamsTodayId String   @db.ObjectId // Foreign key to BeamsToday
+  createdAt    DateTime @default(now()) // Timestamp of when the content was favorited
 
-  user          User       @relation(fields: [userId], references: [id],onDelete: Cascade) // Relationship to the User model
-  beamsToday    BeamsToday @relation(fields: [beamsTodayId], references: [id],onDelete: Cascade) // Relationship to BeamsToday
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  beamsToday BeamsToday @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade) // Relationship to BeamsToday
 
   @@unique([userId, beamsTodayId]) // Ensures each user can favorite a specific Beams Today item only once
   @@index([userId]) // Index for faster queries on userId
@@ -304,93 +305,153 @@ model BeamsTodayFavorite {
 }
 
 // Model for storing user points from Beams Today activities
+
+// Model for storing levels dynamically with name, point range, and caption
+model Level {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  levelNumber Int // The level number (e.g., 1, 2, 3, ...)
+  minPoints   Int // Minimum points required to reach this level
+  maxPoints   Int // Maximum points before moving to the next level
+  name        String // Display name of the level (e.g., "Newbie", "Amateur")
+  caption     String // Short description of the level
+  createdAt   DateTime?        @default(now()) // Timestamp when the level was created
+  updatedAt   DateTime?        @updatedAt // Timestamp when the level was last updated
+  beams       UserBeamPoints[] // Reverse relation to UserBeamPoints (bi-directional relation)
+
+  @@index([levelNumber]) // Index for faster queries based on level number
+}
+
 model UserBeamPoints {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId    String           @db.ObjectId       @unique // Foreign key to the User model
+  beams     Int              @default(0) // Total points accumulated by the user
+  levelId   String           @db.ObjectId // Foreign key to the Level model
+  level     Level            @relation(fields: [levelId], references: [id])
+  createdAt DateTime?        @default(now()) // Timestamp of when points were earned
+  updatedAt DateTime?        @updatedAt // Timestamp of last update
+  user      User             @relation(fields: [userId], references: [id]) // Relationship to the User model
+
+ // Index for faster queries on userId
+  @@index([levelId]) // Index for faster queries on levelId
+}
+
+
+model BeamPointsHistory {
   id            String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId        String           @db.ObjectId // Foreign key to the User model
-  points        Int              @default(0) // Total points accumulated by the user
+  points        Int              // Number of points earned
   source        BeamPointsSource // Source of the points (e.g., watching videos, completing quizzes)
+  description   String           // Description or reason for the points (e.g., "Watched 3 videos")
   createdAt     DateTime         @default(now()) // Timestamp of when points were earned
-  updatedAt     DateTime         @updatedAt // Timestamp of last update
-  user          User             @relation(fields: [userId], references: [id]) // Relationship to the User model
+
+  @@index([userId]) // Index for faster queries on userId
+}
+
+model Leaderboard {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  points    Int       @default(0) // Snapshot of the points at the time the leaderboard was generated
+  rank      Int? // Rank for the user
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime? @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([startDate, endDate])
+}
+
+model Achievement {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  name             String // Name of the achievement (e.g., "Bronze Achiever")
+  badgeImageUrl    String // URL of the badge image associated with this achievement
+  task             String // Task required to achieve this achievement
+  caption          String // Short description of the achievement
+  userId           String    @db.ObjectId // Foreign key to the User model
+  user             User      @relation(fields: [userId], references: [id]) // Relationship to the User model
+  completionStatus Boolean   @default(false) // Whether the achievement is completed
+  progress         Int       @default(0) // Progress towards completing the achievement
+  createdAt        DateTime? @default(now()) // Timestamp of when the achievement was created
+  updatedAt        DateTime? @updatedAt // Timestamp of last update
 
   @@index([userId]) // Index for faster queries on userId
 }
 
 // Model for storing analytics data about Beams Today usage
 model BeamsTodayUserAnalytics {
-  id                           String     @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId                       String     @unique @db.ObjectId // Foreign key to the User model
-  totalWatchTimeBeamsToday      Int        @default(0) // Total time spent watching Beams Today content
-  totalVideoWatchTime           Int        @default(0) // Total time spent watching video content
-  totalAudioListenTime          Int        @default(0) // Total time spent listening to audio content
-  totalTextSpentTime            Int        @default(0) // Total time spent reading text content
-  individualWatchTimesVideo     Json?      @default("{}") // JSON field to track individual video watch times
-  individualWatchTimesAudio     Json?      @default("{}") // JSON field to track individual audio listen times
-  individualWatchTimesText      Json?      @default("{}") // JSON field to track individual text reading times
-  user                          User       @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  id                        String @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId                    String @unique @db.ObjectId // Foreign key to the User model
+  totalWatchTimeBeamsToday  Int    @default(0) // Total time spent watching Beams Today content
+  totalVideoWatchTime       Int    @default(0) // Total time spent watching video content
+  totalAudioListenTime      Int    @default(0) // Total time spent listening to audio content
+  totalTextSpentTime        Int    @default(0) // Total time spent reading text content
+  individualWatchTimesVideo Json?  @default("{}") // JSON field to track individual video watch times
+  individualWatchTimesAudio Json?  @default("{}") // JSON field to track individual audio listen times
+  individualWatchTimesText  Json?  @default("{}") // JSON field to track individual text reading times
+  user                      User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
 }
 
 //// Beams Theatre Section
 
 // Model for storing Beams Theatre content
 model BeamsTheatre {
-  id             String                  @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  title          String                  // Title of the theatre content
-  description    String                  // Description of the theatre content
-  posterUrl      String                  // URL of the poster image
-  genreId        String                  @db.ObjectId // Foreign key to the genre
-  genre          BeamsTheatreGenre       @relation(fields: [genreId], references: [id]) // Relationship to BeamsTheatreGenre
-  viewType       BeamsTheatreViewType    @default(DEFAULT) // Type of content being shown (e.g., trending, now showing)
-  createdAt      DateTime                @default(now()) // Timestamp of creation
-  updatedAt      DateTime                @updatedAt // Timestamp of last update
-  totalViews     Int                     @default(0) // Total number of views
-  totalWatchTime Int                     @default(0) // Total watch time across all users
-  episodes       BeamsTheatreEpisode[]   // Relationship to BeamsTheatreEpisode
-  favorites      BeamsTheatreFavorite[]  // Relationship to BeamsTheatreFavorite
-  userNotes      BeamsTheatreUserNote[]  // Relationship to BeamsTheatreUserNote
+  id             String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  title          String // Title of the theatre content
+  description    String // Description of the theatre content
+  posterUrl      String // URL of the poster image
+  genreId        String                 @db.ObjectId // Foreign key to the genre
+  genre          BeamsTheatreGenre      @relation(fields: [genreId], references: [id]) // Relationship to BeamsTheatreGenre
+  viewType       BeamsTheatreViewType   @default(DEFAULT) // Type of content being shown (e.g., trending, now showing)
+  createdAt      DateTime               @default(now()) // Timestamp of creation
+  updatedAt      DateTime               @updatedAt // Timestamp of last update
+  totalViews     Int                    @default(0) // Total number of views
+  totalWatchTime Int                    @default(0) // Total watch time across all users
+  episodes       BeamsTheatreEpisode[] // Relationship to BeamsTheatreEpisode
+  favorites      BeamsTheatreFavorite[] // Relationship to BeamsTheatreFavorite
+  userNotes      BeamsTheatreUserNote[] // Relationship to BeamsTheatreUserNote
 }
 
 // Enum to define the view type for Beams Theatre content
 enum BeamsTheatreViewType {
-  NOW_SHOWING  // Currently being shown
-  TRENDING     // Trending content
-  DEFAULT      // Default view type
-  OTHER        // Any other view type
+  NOW_SHOWING // Currently being shown
+  TRENDING // Trending content
+  DEFAULT // Default view type
+  OTHER // Any other view type
 }
 
 // Model for categorizing Beams Theatre content by genre
 model BeamsTheatreGenre {
-  id           String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  name         String                 // Name of the genre
-  beamsTheatre BeamsTheatre[]         // Relationship to BeamsTheatre content
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  name         String // Name of the genre
+  beamsTheatre BeamsTheatre[] // Relationship to BeamsTheatre content
 }
 
 // Model for storing individual episodes within Beams Theatre content
 model BeamsTheatreEpisode {
-  id                  String                @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  title               String                // Title of the episode
-  description         String                // Description of the episode
-  url                 String                // URL to access the episode
-  thumbnailUrl        String                // URL for the thumbnail image
-  totalViews          Int                   @default(0) // Total views of the episode
-  totalWatchTime      Int                   @default(0) // Total watch time of the episode
-  durationInSeconds   Int                   // Duration of the episode in seconds
-  beamsTheatreId      String                @db.ObjectId // Foreign key to the BeamsTheatre model
-  beamsTheatre        BeamsTheatre          @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
-  season              String?               // Optional season number for episodic content
-  createdAt           DateTime              @default(now()) // Timestamp of episode creation
-  updatedAt           DateTime              @updatedAt // Timestamp of last update
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  title             String // Title of the episode
+  description       String // Description of the episode
+  url               String // URL to access the episode
+  thumbnailUrl      String // URL for the thumbnail image
+  totalViews        Int          @default(0) // Total views of the episode
+  totalWatchTime    Int          @default(0) // Total watch time of the episode
+  durationInSeconds Int // Duration of the episode in seconds
+  beamsTheatreId    String       @db.ObjectId // Foreign key to the BeamsTheatre model
+  beamsTheatre      BeamsTheatre @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
+  season            String? // Optional season number for episodic content
+  createdAt         DateTime     @default(now()) // Timestamp of episode creation
+  updatedAt         DateTime     @updatedAt // Timestamp of last update
 }
 
 // Model for tracking user favorites on Beams Theatre content
 model BeamsTheatreFavorite {
-  id             String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId         String                 @db.ObjectId // Foreign key to the User model
-  beamsTheatreId String                 @db.ObjectId // Foreign key to BeamsTheatre
-  createdAt      DateTime               @default(now()) // Timestamp of when the content was favorited
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId         String   @db.ObjectId // Foreign key to the User model
+  beamsTheatreId String   @db.ObjectId // Foreign key to BeamsTheatre
+  createdAt      DateTime @default(now()) // Timestamp of when the content was favorited
 
-  user           User                   @relation(fields: [userId], references: [id]) // Relationship to the User model
-  beamsTheatre   BeamsTheatre           @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
+  user         User         @relation(fields: [userId], references: [id]) // Relationship to the User model
+  beamsTheatre BeamsTheatre @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
 
   @@unique([userId, beamsTheatreId]) // Ensures each user can favorite a specific Beams Theatre item only once
   @@index([userId]) // Index for faster queries on userId
@@ -399,13 +460,13 @@ model BeamsTheatreFavorite {
 
 // Model for storing user notes on Beams Theatre content
 model BeamsTheatreUserNote {
-  id                String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId            String                 @db.ObjectId // Foreign key to the User model
-  user              User                   @relation(fields: [userId], references: [id]) // Relationship to the User model
-  note              String                 // Content of the note
-  date              DateTime               @default(now()) // Timestamp of note creation
-  beamsTheatreId    String                 @db.ObjectId // Foreign key to BeamsTheatre
-  beamsTheatre      BeamsTheatre           @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId         String       @db.ObjectId // Foreign key to the User model
+  user           User         @relation(fields: [userId], references: [id]) // Relationship to the User model
+  note           String // Content of the note
+  date           DateTime     @default(now()) // Timestamp of note creation
+  beamsTheatreId String       @db.ObjectId // Foreign key to BeamsTheatre
+  beamsTheatre   BeamsTheatre @relation(fields: [beamsTheatreId], references: [id]) // Relationship to BeamsTheatre
 
   @@index([userId]) // Index for faster queries on userId
   @@index([beamsTheatreId]) // Index for faster queries on beamsTheatreId
@@ -413,10 +474,10 @@ model BeamsTheatreUserNote {
 
 // Model for storing analytics data about Beams Theatre usage
 model BeamsTheatreUserAnalytics {
-  id                      String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId                  String                 @unique @db.ObjectId // Foreign key to the User model
-  totalWatchTime          Int                    @default(0) // Total watch time across all theatre content
-  totalSeriesWatchTime    Json?                  @default("{}") // JSON data to store total watch time per series
-  individualWatchTimes    Json?                  @default("{}") // JSON data to store watch times per individual video
-  user                    User                   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
+  id                   String @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId               String @unique @db.ObjectId // Foreign key to the User model
+  totalWatchTime       Int    @default(0) // Total watch time across all theatre content
+  totalSeriesWatchTime Json?  @default("{}") // JSON data to store total watch time per series
+  individualWatchTimes Json?  @default("{}") // JSON data to store watch times per individual video
+  user                 User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
 }

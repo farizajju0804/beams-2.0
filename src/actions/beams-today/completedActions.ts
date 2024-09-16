@@ -32,45 +32,26 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     // Get the formats completed for the current topic.
     const completedFormatsForBeamsToday = completedFormats[beamsTodayId] || [];
 
-    if (!watchedContent) {
-      // If no watched content entry exists for the user, create a new entry.
-      const newWatchedContent = {
-        userId,
-        completedBeamsToday: [beamsTodayId], // Add the topic ID to the completed topics.
-        completedFormats: { [beamsTodayId]: [format] }, // Mark the format as completed.
-        updatedAt: new Date()
-      };
+    let shouldIncrementViewCount = false;
+    let shouldIncrementFormatViewCount = false;
 
-      await db.beamsTodayWatchedContent.create({
-        data: newWatchedContent
-      });
+    // Check if the topic (beamsTodayId) has been completed by the user
+    if (!watchedContent || !watchedContent.completedBeamsToday.includes(beamsTodayId)) {
+      // If not completed, mark the topic as completed and increment the overall view count
+      shouldIncrementViewCount = true;
 
-      // Increment the view count for the content, including format-specific counts.
-      const updateData = {
-        viewCount: {
-          increment: 1
-        },
-        videoViewCount: 0,
-        audioViewCount: 0,
-        textViewCount: 0,
-        ...(format === 'video' && { videoViewCount: { increment: 1 } }),
-        ...(format === 'audio' && { audioViewCount: { increment: 1 } }),
-        ...(format === 'text' && { textViewCount: { increment: 1 } })
-      };
-
-      await db.beamsToday.update({
-        where: { id: beamsTodayId },
-        data: updateData
-      });
-
-    } else {
-      // If the user has watched content, check if the topic and format are already completed.
-      const { completedBeamsToday } = watchedContent;
-      const hasCompleted = completedBeamsToday.includes(beamsTodayId);
-      const hasCompletedFormat = completedFormatsForBeamsToday.includes(format);
-
-      if (!hasCompleted) {
-        // If the topic has not been completed yet, add it to the user's completed topics.
+      // Create a new entry for the user if watched content doesn't exist
+      if (!watchedContent) {
+        await db.beamsTodayWatchedContent.create({
+          data: {
+            userId,
+            completedBeamsToday: [beamsTodayId],
+            completedFormats: { [beamsTodayId]: [format] },
+            updatedAt: new Date()
+          }
+        });
+      } else {
+        // Update existing user data to mark the topic as completed
         await db.beamsTodayWatchedContent.update({
           where: { userId },
           data: {
@@ -79,57 +60,63 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
             },
             completedFormats: {
               ...completedFormats,
-              [beamsTodayId]: [format] // Mark the format as completed.
+              [beamsTodayId]: [format]
             },
             updatedAt: new Date()
           }
-        });
-
-        // Increment the view counts for the content and the format.
-        const updateData = {
-          viewCount: {
-            increment: 1
-          },
-          ...(format === 'video' && { videoViewCount: { increment: 1 } }),
-          ...(format === 'audio' && { audioViewCount: { increment: 1 } }),
-          ...(format === 'text' && { textViewCount: { increment: 1 } })
-        };
-
-        await db.beamsToday.update({
-          where: { id: beamsTodayId },
-          data: updateData
-        });
-      } else if (!hasCompletedFormat) {
-        // If the topic has been completed but not in the current format, update it.
-        await db.beamsTodayWatchedContent.update({
-          where: { userId },
-          data: {
-            completedFormats: {
-              ...completedFormats,
-              [beamsTodayId]: [...completedFormatsForBeamsToday, format] // Add the new format to the completed formats.
-            },
-            updatedAt: new Date()
-          }
-        });
-
-        // Increment the view count for the specific format.
-        const updateData = {
-          ...(format === 'video' && { videoViewCount: { increment: 1 } }),
-          ...(format === 'audio' && { audioViewCount: { increment: 1 } }),
-          ...(format === 'text' && { textViewCount: { increment: 1 } })
-        };
-
-        await db.beamsToday.update({
-          where: { id: beamsTodayId },
-          data: updateData
         });
       }
+    }
+
+    // Check if the specific format has not been completed for this topic
+    if (!completedFormatsForBeamsToday.includes(format)) {
+      shouldIncrementFormatViewCount = true;
+
+      // Update the watched content with the newly completed format
+      await db.beamsTodayWatchedContent.update({
+        where: { userId },
+        data: {
+          completedFormats: {
+            ...completedFormats,
+            [beamsTodayId]: [...completedFormatsForBeamsToday, format]
+          },
+          updatedAt: new Date()
+        }
+      });
+    }
+
+    // Build the data for updating view counts
+    const updateData: any = {};
+    
+    // Increment the general viewCount if the topic has not been marked as completed yet
+    if (shouldIncrementViewCount) {
+      updateData.viewCount = { increment: 1 };
+    }
+
+    // Increment the format-specific view count if the format was not completed
+    if (shouldIncrementFormatViewCount) {
+      if (format === 'video') {
+        updateData.videoViewCount = { increment: 1 };
+      } else if (format === 'audio') {
+        updateData.audioViewCount = { increment: 1 };
+      } else if (format === 'text') {
+        updateData.textViewCount = { increment: 1 };
+      }
+    }
+
+    // Update the view count in the beamsToday table if there are changes
+    if (Object.keys(updateData).length > 0) {
+      await db.beamsToday.update({
+        where: { id: beamsTodayId },
+        data: updateData
+      });
     }
   } catch (error) {
     console.error(`Error marking topic as completed:`, error);
     throw new Error(`Error marking topic as completed: ${(error as Error).message}`);
   }
 };
+
 
 /**
  * Fetches the list of completed topics for a specific user.
