@@ -2,6 +2,7 @@
 
 import { currentUser } from "@/libs/auth"; // Function to get the currently authenticated user.
 import { db } from "@/libs/db"; // Import the Prisma database instance.
+import { getBeamsTodayById } from "./getBeamsTodayById";
 
 /**
  * Marks a specific topic as completed by a user in a given format (video, audio, or text).
@@ -11,80 +12,121 @@ import { db } from "@/libs/db"; // Import the Prisma database instance.
  * @param format - The format of the completed content ('video', 'audio', or 'text'). Default is 'video'.
  * @throws Throws an error if the topic could not be marked as completed.
  */
+export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video' | 'audio' | 'text') => { 
+  const user = await currentUser();   
+  const userId = user?.id;    
+  if (!userId) throw new Error("User not authenticated.");    
 
-export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video' | 'audio' | 'text') => {
-  const user = await currentUser();
-  const userId = user?.id;
+  try {     
+    // Fetch the user's watched content, including completed topics and formats.     
+    const watchedContent = await db.beamsTodayWatchedContent.findUnique({       
+      where: { userId },       
+      select: { completedBeamsToday: true, completedFormats: true },     
+    });      
 
-  if (!userId) throw new Error("User not authenticated.");
+    let completedFormats: any = watchedContent?.completedFormats || {};     
+    let completedBeamsToday = watchedContent?.completedBeamsToday || [];      
 
-  try {
-    // Fetch the user's watched content, including completed topics and formats.
-    console.log(`Fetching watched content for userId: ${userId}`);
-    const watchedContent = await db.beamsTodayWatchedContent.findUnique({
-      where: { userId },
-      select: { completedBeamsToday: true, completedFormats: true }
-    });
-    console.log('Fetched watched content:', watchedContent);
+    // Ensure the format array for this beamsTodayId exists.     
+    if (!completedFormats[beamsTodayId]) {       
+      completedFormats[beamsTodayId] = [];     
+    }      
 
-    // Initialize the completedFormats object if no data exists.
-    let completedFormats:any = watchedContent?.completedFormats || {};
-    let completedBeamsToday = watchedContent?.completedBeamsToday || [];
-    console.log('Initial completedFormats:', completedFormats);
-    console.log('Initial completedBeamsToday:', completedBeamsToday);
+    // If the format is not yet completed, mark it as completed.     
+    if (!completedFormats[beamsTodayId].includes(format)) {       
+      completedFormats[beamsTodayId].push(format);     
+    }      
 
-    // Ensure the format array for this beamsTodayId exists.
-    if (!completedFormats[beamsTodayId]) {
-      console.log(`No completed formats found for beamsTodayId: ${beamsTodayId}, initializing new array.`);
-      completedFormats[beamsTodayId] = []; // Create the array if it doesn't exist
-    }
+    // Only mark topic as globally completed if it hasn’t been completed yet.     
+    let success = false;     
+    if (!completedBeamsToday.includes(beamsTodayId)) {       
+      completedBeamsToday.push(beamsTodayId);       
+      await db.beamsToday.update({         
+        where: { id: beamsTodayId },         
+        data: { completionCount: { increment: 1 } },       
+      });       
+      success = true;     
+    }      
 
-    // Check if the specific format has been completed.
-    const completedFormatsForTopic = completedFormats[beamsTodayId];
-    console.log(`Completed formats for topic ${beamsTodayId}:`, completedFormatsForTopic);
+    // Fetch or create user's beam points.     
+    let userBeamPoints:any = await db.userBeamPoints.findUnique({       
+      where: { userId },       
+      include: { level: true },     
+    });      
 
-    if (!completedFormatsForTopic.includes(format)) {
-      // Add the format to the completed formats for this topic
-      console.log(`Marking format '${format}' as completed for topic ${beamsTodayId}`);
-      completedFormatsForTopic.push(format);
-      completedFormats[beamsTodayId] = completedFormatsForTopic; // Ensure the update is saved back to the object
-    } else {
-      console.log(`Format '${format}' is already completed for topic ${beamsTodayId}`);
-    }
+    if (!userBeamPoints) {       
+      const initialLevel:any = await db.level.findFirst({         
+        where: { levelNumber: 1 },       
+      });        
 
-    // Check if the topic has already been marked as completed globally (pushed to completedBeamsToday)
-    let success = false;
-    if (!completedBeamsToday.includes(beamsTodayId)) {
-      // Mark the topic as completed and increment the completion count
-      console.log(`Marking topic ${beamsTodayId} as globally completed.`);
-      completedBeamsToday.push(beamsTodayId);
+      userBeamPoints = await db.userBeamPoints.create({         
+        data: {           
+          userId,           
+          beams: 100,           
+          levelId: initialLevel?.id,         
+        },         
+        include: { level: true },       
+      });     
+    } else {       
+      // Update user's beams points first
+      userBeamPoints = await db.userBeamPoints.update({         
+        where: { userId },         
+        data: { beams: { increment: 100 } },         
+        include: { level: true },       
+      });     
+    }      
 
-      console.log(`Incrementing completion count for beamsTodayId: ${beamsTodayId}`);
-      await db.beamsToday.update({
-        where: { id: beamsTodayId },
-        data: { completionCount: { increment: 1 } }
-      });
-      success = true; // Success flag for the first time completion
-    } else {
-      console.log(`Topic ${beamsTodayId} is already globally completed.`);
-    }
+    // Refresh user's beam points to get updated data     
+    userBeamPoints = await db.userBeamPoints.findUnique({       
+      where: { userId },       
+      include: { level: true },     
+    });      
 
-    // Update the user's watched content
-    console.log(`Updating user's watched content with completedFormats and completedBeamsToday.`);
-    await db.beamsTodayWatchedContent.update({
-      where: { userId },
-      data: { completedFormats, completedBeamsToday, updatedAt: new Date() }
-    });
+    // Check if level up is required after updating the points     
+    let levelUpFlag = false;     
+    let newLevel;     
+    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {       
+      const nextLevel = await db.level.findFirst({         
+        where: {           
+          levelNumber: { gt: userBeamPoints.level.levelNumber },         
+        },       
+      });        
 
-    console.log(`Successfully marked topic ${beamsTodayId} as completed for format '${format}'`);
-    return { success }; // Return success flag if it’s the first time the topic is marked as completed
-  } catch (error) {
-    console.error(`Error marking topic as completed:`, error);
-    throw new Error(`Error marking topic as completed: ${(error as Error).message}`);
-  }
+      if (nextLevel) {         
+        userBeamPoints = await db.userBeamPoints.update({           
+          where: { userId },           
+          data: {             
+            levelId: nextLevel.id,           
+          },           
+          include: { level: true },         
+        });         
+        levelUpFlag = true;         
+        newLevel = userBeamPoints.level;       
+      }     
+    }      
+
+    const beamsToday = await getBeamsTodayById(beamsTodayId);     
+    await db.beamPointsHistory.create({       
+      data: {         
+        userId,         
+        points: 100,         
+        source: 'BEAMS_TODAY',         
+        description: `Completed beams today of topic "${beamsToday.title}"`,       
+      },     
+    });      
+
+    await db.beamsTodayWatchedContent.update({       
+      where: { userId },       
+      data: { completedFormats, completedBeamsToday, updatedAt: new Date() },     
+    });     
+
+    console.log(userBeamPoints.level);     
+    return { success, levelUpFlag, currentLevel: userBeamPoints.level, newLevel }; // Return the current level and new level if updated   
+  } catch (error) {     
+    console.error("Error marking topic as completed:", error);     
+    throw new Error("Error marking topic as completed.");   
+  } 
 };
-
-
 
 /**
  * Increment the view count for a topic and format when a user opens a tab.

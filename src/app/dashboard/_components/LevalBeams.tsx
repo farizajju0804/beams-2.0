@@ -154,7 +154,7 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
   // Map recent activities
   const recentActivityData = recentActivities.map(activity => ({
     icon: iconMap[activity.source] || TickCircle,
-    text: sourceMap[activity.source] || activity.source,
+    text: activity.description,
     points: activity.points,
   }));
 

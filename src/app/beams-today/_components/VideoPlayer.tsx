@@ -1,9 +1,10 @@
-'use client';
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
-import { toast } from 'react-hot-toast'; // React Hot Toast for notifications
+import { Toaster,toast } from 'react-hot-toast';
+import RewardsModal from '@/components/Rewards';
+
 
 interface VideoPlayerProps {
   id: string;
@@ -11,20 +12,27 @@ interface VideoPlayerProps {
   thumbnailUrl: string;
 }
 
-// VideoPlayer component to play video using Cloudinary's CldVideoPlayer
+interface Level {
+  levelNumber: number;
+  maxPoints: number;
+}
+
 const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailUrl }, ref) => {
   const playerRef = useRef<any>(null);
-  const videoRef = useRef<any>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const lastTimeRef = useRef(0);
   const playTimeRef = useRef(0);
-  const [completionMarked, setCompletionMarked] = useState(false); // Flag to avoid multiple triggers
-
-  // Expose the elapsed time for parent component via ref
+  const [completionMarked, setCompletionMarked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [newPoints, setNewPoints] = useState(0);
+  const [currentLevel2, setCurrentLevel] = useState<any>();
+  const [levelUp, setLevelUp] = useState(false);
+  const [newLevel, setnewLevel] = useState<any>();
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
 
-  // Track video play time to calculate elapsed time and handle 95% completion
   useEffect(() => {
     const videoElement = videoRef.current;
 
@@ -34,20 +42,30 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         const elapsedTime = currentTime - lastTimeRef.current;
         playTimeRef.current += elapsedTime;
         lastTimeRef.current = currentTime;
+      }
+    };
 
-        // Check if the user has watched 95% of the video and the completion hasn't been marked
-        if (!completionMarked && currentTime / videoElement.duration >= 0.15) {
-          setCompletionMarked(true); // Mark as completed to prevent multiple triggers
-
-          // Mark the topic as completed for the video format
-          markTopicAsCompleted(id, 'video').then(({ success }) => {
-            if (success) {
-              // Show a notification if it's the first time the topic has been completed
-              toast.success('🎉 You have completed the video and earned 100 beams!', {
-                duration: 4000,
-              });
+    const handleEnded = async () => {
+      if (!completionMarked) {
+        setCompletionMarked(true);
+        try {
+          const { success, levelUpFlag, currentLevel, newLevel } = await markTopicAsCompleted(id, 'video');
+          if (success) {
+            // Update state for RewardsModal
+            setUserPoints(prevPoints => prevPoints + 100);
+            setNewPoints(prevPoints => prevPoints + 100);
+            setCurrentLevel(currentLevel);
+            setLevelUp(levelUpFlag);
+            if (levelUpFlag) {
+              setnewLevel(newLevel)
+              
             }
-          });
+            setIsModalOpen(true);
+          }
+        } catch (error) {
+          console.error("Error marking topic as completed:", error);
+          // You can still use toast for error messages if you prefer
+          toast.error('An error occurred while marking the topic as completed.');
         }
       }
     };
@@ -59,7 +77,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
     };
 
     const handlePause = () => {
-      handleTimeUpdate(); // Update time on pause
+      handleTimeUpdate();
     };
 
     const handleSeeked = () => {
@@ -70,12 +88,14 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
 
     if (videoElement) {
       videoElement.addEventListener('timeupdate', handleTimeUpdate);
+      videoElement.addEventListener('ended', handleEnded);
       videoElement.addEventListener('play', handlePlay);
       videoElement.addEventListener('pause', handlePause);
       videoElement.addEventListener('seeked', handleSeeked);
 
       return () => {
         videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+        videoElement.removeEventListener('ended', handleEnded);
         videoElement.removeEventListener('play', handlePlay);
         videoElement.removeEventListener('pause', handlePause);
         videoElement.removeEventListener('seeked', handleSeeked);
@@ -84,26 +104,39 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   }, [id, completionMarked]);
 
   return (
-    <div className='min-w-full w-full mx-auto'>
-      <CldVideoPlayer
-        id="my-video"
-        width="1920"
-        height="1080"
-        poster={thumbnailUrl}
-        fluid={true}
-        className='cld-fluid'
-        src={videoId}
-        colors={{
-          accent: '#F9D42E',
-          base: '#370075',
-          text: '#fffff'
-        }}
-        playbackRates={[0.5, 1, 1.5, 2]}
-        pictureInPictureToggle={true}
-        playerRef={playerRef}
-        videoRef={videoRef}
+    <>
+      <Toaster position="top-center" />
+      <div className="min-w-full w-full mx-auto">
+        <CldVideoPlayer
+          id="my-video"
+          width="1920"
+          height="1080"
+          poster={thumbnailUrl}
+          fluid={true}
+          className="cld-fluid"
+          src={videoId}
+          colors={{
+            accent: '#F9D42E',
+            base: '#370075',
+            text: '#ffffff'
+          }}
+          playbackRates={[0.5, 1, 1.5, 2]}
+          pictureInPictureToggle={true}
+          playerRef={playerRef}
+          videoRef={videoRef}
+        />
+      </div>
+      <RewardsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        points={userPoints - 100} 
+        newPoints={newPoints}
+        levelUp={levelUp}
+        currentLevel={currentLevel2}
+        nextLevel={newLevel}
+        caption={newLevel?.caption}
       />
-    </div>
+    </>
   );
 });
 

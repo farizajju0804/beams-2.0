@@ -16,12 +16,7 @@ enum UserRole {
 }
 
 // Enum to specify different sources for beam points
-enum BeamPointsSource {
-  POLL_PARTICIPATION // Points earned from participating in a poll
-  WATCHING_VIDEO // Points earned from watching videos
-  COMPLETING_QUIZ // Points earned from completing quizzes
-  OTHER // Catch-all for other potential sources
-}
+
 
 // Enum to define types of users
 enum UserType {
@@ -343,7 +338,7 @@ model BeamPointsHistory {
   id            String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId        String           @db.ObjectId // Foreign key to the User model
   points        Int              // Number of points earned
-  source        BeamPointsSource // Source of the points (e.g., watching videos, completing quizzes)
+  source        String // Source of the points (e.g., watching videos, completing quizzes)
   description   String           // Description or reason for the points (e.g., "Watched 3 videos")
   createdAt     DateTime         @default(now()) // Timestamp of when points were earned
 
