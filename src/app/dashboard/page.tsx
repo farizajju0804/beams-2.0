@@ -1,6 +1,4 @@
 
-import Sidebar from '@/components/Sidebar'
-import TopNav from '@/components/TopNav'
 import React from 'react'
 import LearningOverview from './_components/LearningOverview'
 import { getUserAnalyticsById } from '@/actions/dashboard/timeSpent'
@@ -9,7 +7,42 @@ import { getPollDataByUserId } from '@/actions/dashboard/pollData'
 import { getWatchedBeamsTodayContent } from '@/actions/dashboard/watchedContent'
 import LevelBeams from './_components/LevalBeams'
 import { getUserLevelAndHistory } from '@/actions/dashboard/getUserLevelAndRecentHistory'
+import Achievements from './_components/Achievements'
+import Leaderboard from './_components/Leaderboard'
 
+
+const users = [
+  {
+    id: "1",
+    name: "User 1",
+    score: 2430,
+    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690887/Beams%20today/thumbnails/wireless_charging_aqczlw.png",
+    rank: 1
+  },
+  {
+    id: "2",
+    name: "User 2",
+    score: 1847,
+    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690800/Beams%20today/thumbnails/ear_tbxkpk.png",
+    rank: 2
+  },
+  {
+    id: "3",
+    name: "User 3",
+    score: 1674,
+    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690681/Beams%20today/thumbnails/headphnr_cqiulp.png",
+    rank: 3
+  }
+];
+
+const user2 = 
+  {
+    id: "10",
+    name: "User 1",
+    score: 2430,
+    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690887/Beams%20today/thumbnails/wireless_charging_aqczlw.png",
+    rank: 13
+  }
 
 const page = async () => {
   const user:any = await currentUser()
@@ -32,6 +65,8 @@ const page = async () => {
         recentActivities={recentActivities}  // Pass recent activities
         accumulatedPoints={accumulatedPoints} 
       />
+      <Leaderboard currentUser={user2} users={users} />
+      <Achievements/>
     </div>
   )
 }

@@ -45,7 +45,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalConten
             <h2 className="text-2xl font-semibold text-text font-poppins">{title}</h2>
           </ModalHeader>
           <ModalBody className='px-4 py-0'>
-            <div className="p-4 max-h-[80vh] overflow-y-auto">
+            <div className="max-h-[80vh] overflow-y-auto">
               {modalContent}
             </div>
           </ModalBody>

@@ -46,11 +46,13 @@ interface LearningOverviewProps {
 const TopicsPopoverContent: React.FC<{ topics: WatchedData[] }> = ({ topics }) => (
   <div className="space-y-4">
     {topics.map((topic) => (
-      <div key={topic.id} className="flex w-full justify-between items-start bg-grey-1 p-4 rounded-lg">
+      <div key={topic.id} className="flex flex-col w-full justify-between items-start bg-grey-1 p-4 rounded-lg">
         <div className='flex flex-col'>
           <h4 className="font-semibold text-text">{topic.title}</h4>
-          <p className="text-xs text-grey-2 mt-2"><FormattedDate date={topic.date.toISOString().split('T')[0]} /></p>
+    
         </div>
+        <div className='w-full items-center flex justify-between'>
+        <p className="text-xs text-grey-2 mt-2"><FormattedDate date={topic.date.toISOString().split('T')[0]} /></p>
         <Link href={`/beams-today/${topic.id}`} className="mt-4">
           <Button 
             size="sm" 
@@ -59,6 +61,7 @@ const TopicsPopoverContent: React.FC<{ topics: WatchedData[] }> = ({ topics }) =
             Beam Again
           </Button>
         </Link>
+        </div>
       </div>
     ))}
   </div>
@@ -93,7 +96,7 @@ const PollsPopoverContent: React.FC<{ polls: PollData[] }> = ({ polls }) => (
       <p>No polls available.</p>
     ) : (
       polls.map((poll) => (
-        <div key={poll.id} className="mb-6">
+        <div key={poll.id} className="p-4 mb-6">
           <h3 className="text-lg font-semibold mb-2">{poll.question}</h3>
           <ul className="list-disc pl-5">
             {poll.options.map((option, index) => (

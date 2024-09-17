@@ -83,7 +83,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
   return (
     <div className="w-full shadow-lg rounded-3xl p-4 mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Recent Activity</h2>
+        <h2 className="text-lg font-poppins font-semibold">Recent Activity</h2>
         <button
           className="text-sm text-blue-500 flex items-center"
           onClick={handleToggleShowAll}
@@ -131,10 +131,10 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
           ) : (
             <div key={index} className="flex w-full items-center justify-between">
               <div className="flex flex-1 mr-2 items-center">
-                <div className=" bg-yellow text-purple rounded-full flex items-center justify-center mr-2">
+                <div className="text-secondary-2  rounded-full flex items-center justify-center mr-2">
                   <activity.icon variant="Bold" />
                 </div>
-                <span className='text-sm md:text-base'>{activity.text}</span>
+                <span className='text-sm w-5/6 md:text-base'>{activity.text}</span>
               </div>
               <span className="w-fit text-sm font-semibold text-green-500">+{activity.points}</span>
             </div>

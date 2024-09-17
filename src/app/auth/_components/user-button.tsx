@@ -116,6 +116,9 @@ export default function UserButton() {
           <DropdownItem key="beams-today" onClick={() => handleNavigation("/beams-today")}>
             Beams Today
           </DropdownItem>
+          <DropdownItem key="beams-today" onClick={() => handleNavigation("/dashboard")}>
+            Dashboard
+          </DropdownItem>
           </DropdownSection>
           <DropdownSection title="Account" showDivider> 
           <DropdownItem key="library" onClick={() => handleNavigation("/beams-today/library")}>

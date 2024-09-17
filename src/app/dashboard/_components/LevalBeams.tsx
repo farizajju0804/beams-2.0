@@ -105,9 +105,9 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ data }) => {
             ))}
           </Pie>
         </PieChart>
-        <div className="flex flex-col space-y-4 ml-8">
+        <div className="flex flex-col space-y-4 md:ml-8">
           {data.map((item) => (
-            <div key={item.name} className="flex items-center">
+            <div key={item.name} className="flex justify-center md:justify-start items-center">
               <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: item.color }} />
               <span className="text-sm text-gray-600 mr-2">{item.name}</span>
               <span className="text-sm font-semibold">{item.value}</span>

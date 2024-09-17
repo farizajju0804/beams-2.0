@@ -59,7 +59,7 @@ textarea {
 
 
 .shadow-defined{
-  box-shadow: 0px 2px 10px 0px rgba(var(--shadow));
+  box-shadow: 0px 6px 10px 0px rgba(var(--shadow));
 }
 
 
