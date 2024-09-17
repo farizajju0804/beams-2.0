@@ -148,7 +148,7 @@ const motivationalMessages: string[] = [
                   {message}
                 </p>
                 <div className="mb-6">
-                  <p className="text-center text-lg font-semibold mb-1 text-text">
+                  <p className="text-center text-lg font-semibold mb-2 text-text">
                     You&apos;ve earned {newPoints - points} points!
                   </p>
                   {levelUp && (
