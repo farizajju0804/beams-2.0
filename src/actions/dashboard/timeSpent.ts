@@ -1,15 +1,16 @@
 'use server'
 
+import { currentUser } from "@/libs/auth";
 import { db } from "@/libs/db";
 
 
 
-export const getUserAnalyticsById = async (id:string) => {
-
+export const getUserAnalyticsById = async () => {
+  const user = await currentUser()
   try {
     const userAnalytics = await db.beamsTodayUserAnalytics.findUnique({
     where : {
-        userId: id
+        userId: user?.id
     }
     });
     return userAnalytics;

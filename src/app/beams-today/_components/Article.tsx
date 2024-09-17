@@ -51,7 +51,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         startTimeRef.current = currentTime;
 
         const totalTimeSpent = Math.round(elapsedTimeRef.current / 1000);
-        if (totalTimeSpent >= 10 && !completed) { // After 60 seconds
+        if (totalTimeSpent >= 60 && !completed) { // After 60 seconds
           setCompleted(true);
 
           try {

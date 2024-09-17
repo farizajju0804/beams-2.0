@@ -47,10 +47,10 @@ const user2 =
 const page = async () => {
   const user:any = await currentUser()
   console.log("user",user)
-  const userAnalytics:any = await getUserAnalyticsById(user.id)
-  const pollData:any = await getPollDataByUserId(user.id)
-  const watchedData:any = await getWatchedBeamsTodayContent(user.id)
-  const { userLevel, beams, recentActivities, accumulatedPoints } = await getUserLevelAndHistory(user.id);
+  const userAnalytics:any = await getUserAnalyticsById()
+  const pollData:any = await getPollDataByUserId(user?.id)
+  const watchedData:any = await getWatchedBeamsTodayContent(user?.id)
+  const { userLevel, beams, recentActivities, accumulatedPoints } = await getUserLevelAndHistory(user?.id);
   console.log(userLevel, beams, recentActivities, accumulatedPoints )
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
