@@ -45,7 +45,7 @@ const LevelProgress: React.FC<LevelProgressProps> = ({ level, progress, total })
   <div className="mb-4 w-full flex flex-col ">
     <div className="flex mx-auto md:mx-0 w-4/6 items-center justify-between mb-2">
       <span className="text-lg font-semibold">Level - {level}</span>
-      <span className="text-sm text-gray-500">{progress}/{total}</span>
+      <span className="text-sm text-grey-2">{progress}/{total}</span>
     </div>
     <div className="h-2 w-4/6 md:mx-0 mx-auto bg-gray-200 rounded-full overflow-hidden">
       <motion.div
@@ -109,7 +109,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ data }) => {
           {data.map((item) => (
             <div key={item.name} className="flex justify-center md:justify-start items-center">
               <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: item.color }} />
-              <span className="text-sm text-gray-600 mr-2">{item.name}</span>
+              <span className="text-sm text-grey-2 mr-2">{item.name}</span>
               <span className="text-sm font-semibold">{item.value}</span>
             </div>
           ))}
