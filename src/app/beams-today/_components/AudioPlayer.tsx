@@ -1,5 +1,3 @@
-'use client';
-import Image from 'next/image';
 import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
@@ -7,6 +5,7 @@ import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import { toast } from 'react-hot-toast'; // React Hot Toast
 import { VolumeHigh, VolumeMute, Play, Pause, Forward, Backward } from 'iconsax-react';
 import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
+import Image from 'next/image';
 
 interface AudioPlayerProps {
   beamsTodayId: string;
@@ -14,10 +13,9 @@ interface AudioPlayerProps {
   thumbnailUrl: string;
 }
 
-// AudioPlayer component to play audio with custom controls
 const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl, thumbnailUrl }, ref) => {
-  const lastTimeRef = useRef(0);
-  const playTimeRef = useRef(0);
+  const lastTimeRef = useRef(0); // Store the last play time in seconds
+  const playTimeRef = useRef(0); // Total accumulated playtime in seconds
   const audioElementRef = useRef<HTMLAudioElement | null>(null); // Reference to audio element
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionMarked, setCompletionMarked] = useState(false); // Flag to avoid marking completion multiple times
@@ -38,24 +36,24 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
   const handlePlay = () => {
     setIsPlaying(true);
-    lastTimeRef.current = new Date().getTime() / 1000;
+    lastTimeRef.current = new Date().getTime() / 1000; // Track start time in seconds
     console.log('Playing audio');
   };
 
   const handlePause = () => {
     setIsPlaying(false);
     const currentTime = new Date().getTime() / 1000;
-    playTimeRef.current += currentTime - lastTimeRef.current;
-    console.log('Paused audio, playTime:', playTimeRef.current);
+    playTimeRef.current += currentTime - lastTimeRef.current; // Calculate playtime in seconds
+    console.log('Paused audio, playTime (seconds):', playTimeRef.current);
   };
 
   const handleSeeked = () => {
     if (isPlaying) {
       const currentTime = new Date().getTime() / 1000;
-      playTimeRef.current += currentTime - lastTimeRef.current;
-      console.log('Seeked audio, playTime:', playTimeRef.current);
+      playTimeRef.current += currentTime - lastTimeRef.current; // Adjust playtime on seek in seconds
+      console.log('Seeked audio, playTime (seconds):', playTimeRef.current);
     }
-    lastTimeRef.current = new Date().getTime() / 1000;
+    lastTimeRef.current = new Date().getTime() / 1000; // Update last time reference
   };
 
   // Track listening progress
@@ -67,7 +65,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
       const totalDuration = audioElementRef.current.duration || 0;
       const listenedPercentage = (playTimeRef.current / totalDuration) * 100;
-      console.log(`Listened Percentage: ${listenedPercentage.toFixed(2)}%, Duration: ${totalDuration}, PlayTime: ${playTimeRef.current}`);
+      console.log(`Listened Percentage: ${listenedPercentage.toFixed(2)}%, Duration: ${totalDuration}, PlayTime (seconds): ${playTimeRef.current}`);
     }
   };
 
@@ -88,7 +86,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
             setNewLevel(newLevel);
           }
           setIsModalOpen(true); // Open the RewardsModal
-        
         }
       } catch (error) {
         console.error('Error marking topic as completed:', error);

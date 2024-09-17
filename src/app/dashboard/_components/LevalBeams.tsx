@@ -31,6 +31,8 @@ interface Activity {
     icon: Icon;
     text: string;
     points: number;
+    createdAt : Date;
+    source : string;
 }
 
 
@@ -131,14 +133,14 @@ interface LevelBeamsProps {
 // Map sources to display names
 const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
-  POLL: 'Poll',
+  POLL_PARTICIPATION: 'Poll',
   SHARE: 'Share',
 };
 
 // Map sources to icons
 const iconMap: { [key: string]: Icon } = {
   BEAMS_TODAY: TickCircle,
-  POLL: MessageQuestion,
+  POLL_PARTICIPATION: MessageQuestion,
   SHARE: Share,
 };
 
@@ -152,15 +154,17 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
   }));
 
   // Map recent activities
-  const recentActivityData = recentActivities.map(activity => ({
+  const recentActivityData: Activity[] = recentActivities.map(activity => ({
     icon: iconMap[activity.source] || TickCircle,
     text: activity.description,
     points: activity.points,
+    createdAt: new Date(activity.createdAt), // Assuming `activity.createdAt` is provided as a timestamp
+    source: sourceMap[activity.source] || activity.source,
   }));
 
   return (
     <div className="w-full py-4 px-4 bg-background">
-      <Heading heading={`My Beams - ${userLevel.name}`} />
+      <Heading heading={`My Beams`} />
       <div className='w-full grid grid-cols-1 md:grid-cols-2'>
         <div className='w-full flex flex-col items-center md:items-start justify-center '>
           <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">{userLevel.name}</div>
