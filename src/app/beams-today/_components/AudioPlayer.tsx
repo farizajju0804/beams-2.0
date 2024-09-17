@@ -6,6 +6,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import { toast } from 'react-hot-toast'; // React Hot Toast
 import { VolumeHigh, VolumeMute, Play, Pause, Forward, Backward } from 'iconsax-react';
+import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
 
 interface AudioPlayerProps {
   beamsTodayId: string;
@@ -21,12 +22,20 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
   const [isPlaying, setIsPlaying] = useState(false);
   const [completionMarked, setCompletionMarked] = useState(false); // Flag to avoid marking completion multiple times
 
+  // New states for RewardsModal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [newPoints, setNewPoints] = useState(0);
+  const [currentLevel, setCurrentLevel] = useState<any>();
+  const [levelUp, setLevelUp] = useState(false);
+  const [currentPoints, setCurrentPoints] = useState<any>();
+  const [newLevel, setNewLevel] = useState<any>();
+
   // Expose the elapsed play time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current,
   }));
 
-  // Track play time and handle completion at 95%
   const handlePlay = () => {
     setIsPlaying(true);
     lastTimeRef.current = new Date().getTime() / 1000;
@@ -49,7 +58,8 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
     lastTimeRef.current = new Date().getTime() / 1000;
   };
 
-  const handleListen = async () => {
+  // Track listening progress
+  const handleListen = () => {
     if (isPlaying && audioElementRef.current) {
       const currentTime = new Date().getTime() / 1000;
       playTimeRef.current += currentTime - lastTimeRef.current;
@@ -57,24 +67,32 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
       const totalDuration = audioElementRef.current.duration || 0;
       const listenedPercentage = (playTimeRef.current / totalDuration) * 100;
-      console.log(`Listened Percentage: ${listenedPercentage}%, Duration: ${totalDuration}, PlayTime: ${playTimeRef.current}`);
+      console.log(`Listened Percentage: ${listenedPercentage.toFixed(2)}%, Duration: ${totalDuration}, PlayTime: ${playTimeRef.current}`);
+    }
+  };
 
-      if (listenedPercentage >= 95 && !completionMarked) {
-        setCompletionMarked(true); // Avoid multiple triggers
-        console.log("Marking topic as completed");
+  // Mark topic as completed when the audio ends
+  const handleEnded = async () => {
+    if (!completionMarked) {
+      setCompletionMarked(true); // Avoid multiple triggers
 
-        try {
-          const { success } = await markTopicAsCompleted(beamsTodayId, 'audio');
-          if (success) {
-            toast.success('🎧 Topic completed! You have gained 100 beams!', {
-              position: 'top-right',
-              duration: 4000,
-              icon: '🎉',
-            });
+      try {
+        const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'audio');
+        if (success) {
+          setUserPoints(prevPoints => prevPoints + 100);
+          setNewPoints(prevPoints => prevPoints + 100);
+          setCurrentLevel(currentLevel);
+          setCurrentPoints(currentPoints);
+          if (levelUpFlag) {
+            setLevelUp(levelUpFlag);
+            setNewLevel(newLevel);
           }
-        } catch (error) {
-          console.error('Error marking topic as completed:', error);
+          setIsModalOpen(true); // Open the RewardsModal
+        
         }
+      } catch (error) {
+        console.error('Error marking topic as completed:', error);
+        toast.error('Failed to mark topic as completed.');
       }
     }
   };
@@ -113,7 +131,20 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
         onPause={handlePause}
         onSeeked={handleSeeked}
         onListen={handleListen}
-        listenInterval={1} // Set interval for `onListen` event
+        onEnded={handleEnded} // Call markTopicAsCompleted when the audio ends
+        listenInterval={1000} // Listen event every second
+      />
+
+      <RewardsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        points={userPoints - 100}
+        newPoints={newPoints}
+        levelUp={levelUp}
+        currentLevel={currentLevel}
+        nextLevel={newLevel}
+        caption={newLevel?.caption}
+        currentPoints={currentPoints}
       />
     </div>
   );

@@ -32,46 +32,117 @@ export const getPoll = async (beamsTodayId: string) => {
  * @returns The created poll response.
  * @throws Throws an error if the user is not authenticated or if the database operation fails.
  */
-export const recordPollResponse = async (pollOptionId: string) => {
-  const user = await currentUser(); // Retrieve the current user.
 
+export const recordPollResponse = async (pollOptionId: string) => {
+  const user = await currentUser();
   if (!user || !user.id) {
     throw new Error('User not authenticated or missing user ID');
   }
 
   try {
-    // Record the user's response to the poll.
+    // Find the poll option and its related poll
+    const pollOption = await db.beamsTodayPollOption.findUnique({
+      where: { id: pollOptionId },
+      include: {
+        poll: {
+          include: {
+            beamsToday: true // Include the related Beams Today content
+          }
+        }
+      }
+    });
+
+    if (!pollOption || !pollOption.poll || !pollOption.poll.beamsToday) {
+      throw new Error('Poll or Beams Today content not found');
+    }
+
+    const beamsTodayTitle = pollOption.poll.beamsToday.title; // Get the Beams Today title
+
+    // Record the user's response to the poll
     const response = await db.beamsTodayPollResponse.create({
       data: {
-        userId: user.id, // Associate the response with the current user's ID.
-        pollOptionId, // Associate the response with the selected poll option.
+        userId: user.id as string,
+        pollOptionId,
       },
     });
 
-    // Increment the votes for the selected poll option.
+    // Increment the votes for the selected poll option
     await db.beamsTodayPollOption.update({
       where: { id: pollOptionId },
       data: {
         votes: {
-          increment: 1, // Increment the vote count.
+          increment: 1,
         },
       },
     });
 
-    // Award 10 points to the user for poll participation.
-    // await db.userBeamPoints.create({
-    //   data: {
-    //     userId: user.id,
-    //     points: 10,
-    //     source: 'POLL_PARTICIPATION', // Record the source of the points.
-    //   },
-    // });
+    // Fetch current user beam points
+    let userBeamPoints: any = await db.userBeamPoints.findUnique({
+      where: { userId: user.id },
+      include: { level: true },
+    });
 
-    return response;
+    if (!userBeamPoints) {
+      // If user doesn't have beam points, create initial entry
+      const initialLevel = await db.level.findFirst({
+        where: { levelNumber: 1 },
+      });
+      userBeamPoints = await db.userBeamPoints.create({
+        data: {
+          userId: user.id as string,
+          beams: 50,
+          levelId: initialLevel!.id,
+        },
+        include: { level: true },
+      });
+    } else {
+      // Update user's beam points
+      userBeamPoints = await db.userBeamPoints.update({
+        where: { userId: user.id },
+        data: { beams: { increment: 50 } },
+        include: { level: true },
+      });
+    }
+
+    // Check for level up
+    let leveledUp = false;
+    let newLevel;
+    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {
+      newLevel = await db.level.findFirst({
+        where: { levelNumber: { gt: userBeamPoints.level.levelNumber } },
+      });
+      if (newLevel) {
+        userBeamPoints = await db.userBeamPoints.update({
+          where: { userId: user.id },
+          data: { levelId: newLevel.id },
+          include: { level: true },
+        });
+        leveledUp = true;
+      }
+    }
+
+    // Record in beam points history with the Beams Today title in the description
+    await db.beamPointsHistory.create({
+      data: {
+        userId: user.id as string,
+        points: 50,
+        source: 'POLL_PARTICIPATION',
+        description: `Participated in a poll of "${beamsTodayTitle}"`, // Include Beams Today title
+      },
+    });
+
+    return {
+      response,
+      pointsAwarded: 50,
+      newTotalPoints: userBeamPoints.beams,
+      leveledUp,
+      newLevel: userBeamPoints.level,
+    };
   } catch (error) {
     throw new Error(`Error recording poll response: ${(error as Error).message}`);
   }
 };
+
 
 /**
  * Fetches the user's response to a specific poll.

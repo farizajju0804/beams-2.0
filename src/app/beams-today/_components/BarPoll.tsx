@@ -1,114 +1,128 @@
-'use client'; // Ensures the component is rendered on the client side in a Next.js environment.
-
+'use client'; 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion"; // For animations during interactions.
-import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/pollActions"; // API calls for recording and retrieving poll responses.
-import { Chip } from "@nextui-org/react"; // UI component from NextUI for displaying chips.
-import { useCurrentUser } from "@/hooks/use-current-user"; // Custom hook to retrieve current user information.
-import { TickCircle } from 'iconsax-react'; // Icon to display when a user has selected an option.
-import { useTheme } from "next-themes"; // Hook to access the current theme (light/dark).
+import { motion } from "framer-motion"; 
+import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/pollActions"; 
+import { Chip } from "@nextui-org/react"; 
+import { useCurrentUser } from "@/hooks/use-current-user"; 
+import { TickCircle } from 'iconsax-react'; 
+import { useTheme } from "next-themes"; 
+import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
 
-// Type definition for vote options.
+// Type definitions for the options and poll structure
 type VoteType = {
-  id: string; // Unique identifier for the poll option.
-  title: string; // The option's text.
-  votes: number; // Number of votes for this option.
-  color: string; // Background color used for the option.
-  textcolor: string; // Text color used for the option.
+  id: string;
+  title: string;
+  votes: number;
+  color: string;
+  textcolor: string;
 };
 
-// Type definition for each option in the poll.
 interface PollOption {
-  id: string; // Unique identifier for the poll option.
-  optionText: string; // The displayed text for the poll option.
-  votes: number; // The number of votes for the poll option.
+  id: string;
+  optionText: string;
+  votes: number;
 }
 
-// Type definition for the poll structure.
 interface Poll {
-  id: string; // Unique identifier for the poll.
-  title: string; // Title of the poll.
-  description: string; // Description of the poll.
-  question: string; // The poll's question that users vote on.
-  options: PollOption[]; // The available options for the poll.
+  id: string;
+  title: string;
+  description: string;
+  question: string;
+  options: PollOption[];
 }
 
-// Type definition for the props passed to the BarPoll component.
 interface PollComponentProps {
-  poll: Poll; // The poll data object passed to the component.
+  poll: Poll;
 }
 
-// BarPoll component definition.
+// BarPoll component
 const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
-  // Color options for the poll bars.
   const colors = ["bg-[#F9D42E]", "bg-[#620097]", "bg-[#f96f2e]", "bg-[#370075]"];
   const textcolors = ["text-black", "text-white", "text-white", "text-white"];
 
-  // State to manage the votes for each option.
   const [votes, setVotes] = useState<VoteType[]>(
     poll.options.map((option, index) => ({
       id: option.id,
       title: option.optionText,
       votes: option.votes,
-      color: colors[index % colors.length], // Assign unique background colors for each option.
-      textcolor: textcolors[index % textcolors.length] // Assign unique text colors for each option.
+      color: colors[index % colors.length],
+      textcolor: textcolors[index % textcolors.length]
     }))
   );
 
-  const [hasVoted, setHasVoted] = useState<boolean>(false); // State to track if the user has already voted.
-  const [showResults, setShowResults] = useState<boolean>(false); // State to show the poll results.
-  const [userResponse, setUserResponse] = useState<string | null>(null); // State to track the user's selected option.
-  const { theme }: any = useTheme(); // Retrieve the current theme (light/dark).
-  const lightBg = '/images/beams-today/poll-bg.png'; // Background image for light theme.
-  const darkBg = '/images/beams-today/poll-bg-dark.png'; // Background image for dark theme.
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
+  const [userResponse, setUserResponse] = useState<string | null>(null);
+  const { theme }: any = useTheme();
+  const lightBg = '/images/beams-today/poll-bg.png';
+  const darkBg = '/images/beams-today/poll-bg-dark.png';
 
-  // Effect to check if the user has already voted on the poll.
+  // New states for RewardsModal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [newPoints, setNewPoints] = useState(0);
+  const [currentPoints, setCurrentPoints] = useState(0);
+  const [currentLevel, setCurrentLevel] = useState<any>();
+  const [levelUp, setLevelUp] = useState(false);
+  const [newLevel, setNewLevel] = useState<any>();
+
   useEffect(() => {
     const checkUserResponse = async () => {
       try {
-        const response = await getUserPollResponse(poll.id); // Retrieve the user's previous response.
+        const response = await getUserPollResponse(poll.id);
         if (response) {
-          setHasVoted(true); // Set hasVoted to true if the user has already voted.
-          setShowResults(true); // Show the poll results if the user has voted.
-          setUserResponse(response.pollOptionId); // Track the user's selected option.
+          setHasVoted(true);
+          setShowResults(true);
+          setUserResponse(response.pollOptionId);
         }
       } catch (error) {
-        console.error("Error checking user response:", error); // Log errors if any.
+        console.error("Error checking user response:", error);
       }
     };
 
-    checkUserResponse(); // Call the function on component mount.
-  }, [poll.id]); // Dependency on poll.id to refetch if poll changes.
+    checkUserResponse();
+  }, [poll.id]);
 
-  // Function to increment the vote count for an option.
+  // Handle voting and trigger RewardsModal on success
   const handleIncrementVote = async (vote: VoteType) => {
     try {
-      await recordPollResponse(vote.id); // Record the user's vote via API.
-      const newVote = { ...vote, votes: vote.votes + 1 }; // Increment the vote count locally.
-      setVotes((pv) => pv.map((v) => (v.id === newVote.id ? newVote : v))); // Update the state with the new vote count.
-      setHasVoted(true); // Set hasVoted to true after the user has voted.
-      setShowResults(true); // Show the results after voting.
-      setUserResponse(vote.id); // Track the user's selected option.
+      const { pointsAwarded, leveledUp, newLevel: nextLevel, newTotalPoints } = await recordPollResponse(vote.id);
+      const newVote = { ...vote, votes: vote.votes + 1 };
+      setVotes((pv) => pv.map((v) => (v.id === newVote.id ? newVote : v)));
+      setHasVoted(true);
+      setShowResults(true);
+      setUserResponse(vote.id);
+
+      // Update RewardsModal data
+      setUserPoints(prevPoints => prevPoints + pointsAwarded);
+      setNewPoints(prevPoints => prevPoints + 100);
+      setCurrentPoints(newTotalPoints);
+      setCurrentLevel(nextLevel);
+      if (leveledUp) {
+        setLevelUp(true);
+        setNewLevel(nextLevel);
+      }
+      setIsModalOpen(true); // Open the RewardsModal
     } catch (error) {
-      console.error("Error recording vote:", error); // Log any errors during the voting process.
+      console.error("Error recording vote:", error);
     }
   };
 
-  const optionLabels = ["A", "B", "C", "D"]; // Option labels for the poll options.
-  const user: any = useCurrentUser(); // Retrieve current user information.
+  const optionLabels = ["A", "B", "C", "D"];
+  const user: any = useCurrentUser();
 
   return (
     <section
       className="bg-brand/10 p-6 mb-10 lg:mb-12 rounded-3xl"
       style={{
-        transformOrigin: "top center", // Origin point for animations.
-        backgroundImage: `url(${theme === "dark" ? darkBg : lightBg})`, // Dynamically change background image based on the theme.
-        backgroundSize: "cover", // Ensure the background image covers the section.
-        backgroundPosition: "center", // Center the background image.
+        transformOrigin: "top center",
+        backgroundImage: `url(${theme === "dark" ? darkBg : lightBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       {showResults ? (
-        <Results votes={votes} poll={poll} optionLabels={optionLabels} userResponse={userResponse} /> // Show the results if the user has voted.
+        <Results votes={votes} poll={poll} optionLabels={optionLabels} userResponse={userResponse} />
       ) : (
         <Question
           name={user?.name}
@@ -119,11 +133,24 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
           optionLabels={optionLabels}
         />
       )}
+
+      {/* Rewards Modal */}
+      <RewardsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        points={userPoints}
+        newPoints={newPoints}
+        levelUp={levelUp}
+        currentLevel={currentLevel}
+        nextLevel={newLevel}
+        caption={newLevel?.caption}
+        currentPoints={currentPoints}
+      />
     </section>
   );
 };
 
-// Component to display the poll question and voting options.
+// Question Component
 const Question = ({
   poll,
   name,
@@ -139,7 +166,7 @@ const Question = ({
   hasVoted: boolean;
   optionLabels: string[];
 }) => {
-  const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0); // Calculate the total votes across all options.
+  const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0);
 
   return (
     <>
@@ -149,22 +176,22 @@ const Question = ({
       <div className="mb-6 mt-2 w-full flex-col-reverse justify-between flex md:flex-row items-start md:items-center gap-4">
         <div>
           <h3 className="text-xl md:text-2xl text-left font-medium text-text w-full ">
-            {poll.question} {/* Display the poll question */}
+            {poll.question}
           </h3>
         </div>
-        <Chip className="text-background bg-text">{totalVotes} Votes</Chip> {/* Display total vote count */}
+        <Chip className="text-background bg-text">{totalVotes} Votes</Chip>
       </div>
       <div className="flex flex-col w-full lg:w-4/6 mt-4 gap-8">
         {votes.map((vote, index) => (
           <motion.button
-            whileHover={{ scale: 1.05 }} // Animation on hover.
-            whileTap={{ scale: 0.95 }} // Animation on tap.
-            onClick={() => handleIncrementVote(vote)} // Increment vote on button click.
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleIncrementVote(vote)}
             key={vote.id}
             className={`flex text-left px-4 items-start text-sm py-3 lg:text-base justify-start  w-full lg:w-4/6 rounded-lg ${vote.color}  ${vote.textcolor} font-medium`}
-            disabled={hasVoted} // Disable the button if the user has already voted.
+            disabled={hasVoted}
           >
-            <span className="mr-2 text-left">{optionLabels[index]}.</span> {vote.title} {/* Display option label and text */}
+            <span className="mr-2 text-left">{optionLabels[index]}.</span> {vote.title}
           </motion.button>
         ))}
       </div>
@@ -172,7 +199,7 @@ const Question = ({
   );
 };
 
-// Component to display the poll results after the user has voted.
+// Results Component
 const Results = ({
   votes,
   poll,
@@ -184,7 +211,7 @@ const Results = ({
   optionLabels: string[];
   userResponse: string | null;
 }) => {
-  const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0); // Calculate the total votes.
+  const totalVotes = votes.reduce((acc, cv) => (acc += cv.votes), 0);
 
   return (
     <>
@@ -193,28 +220,35 @@ const Results = ({
       <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       <div className="mb-6 w-full flex flex-col-reverse md:flex-row items-start md:items-center gap-4">
         <h3 className="text-xl md:text-3xl text-left font-medium text-text w-full md:w-5/6">
-          {poll.question} {/* Display the poll question */}
+          {poll.question}
         </h3>
-        <Chip className="text-background bg-text">{totalVotes} Votes</Chip> {/* Display total vote count */}
+        <Chip className="text-background bg-text">{totalVotes} Votes</Chip>
       </div>
       <div className="col-span-1 grid gap-8">
-        {votes.map((vote, index) => {
+      {votes.map((vote, index) => {
           const width = vote.votes
-            ? ((vote.votes / totalVotes) * 100).toFixed(2) // Calculate the percentage of votes.
+            ? ((vote.votes / totalVotes) * 100).toFixed(2) // Calculate the percentage of votes
             : 0;
-          const userVoteClass = vote.id === userResponse ? 'flex items-center' : ''; // Highlight user's vote.
+          const userVoteClass = vote.id === userResponse ? 'flex items-center' : ''; // Highlight the user's selected vote
+
           return (
             <div key={vote.id} className="w-full lg:w-4/6">
               <div className={`flex items-center mb-1 ${userVoteClass}`}>
-                <span className="text-sm md:text-lg font-medium text-grey-2">{optionLabels[index]}. {vote.title}</span>
-                {vote.id === userResponse && <TickCircle size="24" color="#34D399" className="ml-2" />} {/* Show tick icon if user selected this option */}
-                <span className="ml-2 text-xs md:text-base text-grey-2/70">{vote.votes} votes</span>
+                <span className="text-sm md:text-lg font-medium text-grey-2">
+                  {optionLabels[index]}. {vote.title} {/* Display the option label and title */}
+                </span>
+                {vote.id === userResponse && (
+                  <TickCircle size="24" color="#34D399" className="ml-2" /> // Show tick if this is the user's vote
+                )}
+                <span className="ml-2 text-xs md:text-base text-grey-2/70">
+                  {vote.votes} votes {/* Display the vote count */}
+                </span>
               </div>
               <div className="relative h-8 rounded-full bg-gray-200">
                 <motion.span
-                  animate={{ width: `${width}%` }} // Animate the bar width to represent the vote percentage.
-                  className={`absolute top-0 left-0 h-full rounded-full ${vote.color}`} // Style the vote bar.
-                  transition={{ type: "spring" }} // Use spring animation for smooth transitions.
+                  animate={{ width: `${width}%` }} // Animate the width of the vote bar
+                  className={`absolute top-0 left-0 h-full rounded-full ${vote.color}`} // Style the vote bar
+                  transition={{ type: "spring" }} // Spring animation for smooth transitions
                 />
               </div>
             </div>
@@ -225,4 +259,4 @@ const Results = ({
   );
 };
 
-export default BarPoll; // Export the BarPoll component for use in other parts of the application.
+export default BarPoll;

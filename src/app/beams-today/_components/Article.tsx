@@ -1,26 +1,33 @@
 'use client';
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css'; // Core styles for PDF viewer
-import { useTheme } from 'next-themes'; // Importing the theme hook for dark/light mode switching
-import toast from 'react-hot-toast'; // Using react-hot-toast for notifications
-import { markTopicAsCompleted } from '@/actions/beams-today/completedActions'; // Action to mark topic as completed
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import { useTheme } from 'next-themes';
+import toast from 'react-hot-toast';
+import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
+import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
 
 interface ArticleProps {
   articleUrl: string | undefined;
-  beamsTodayId: string; // Added for marking completion
+  beamsTodayId: string;
 }
 
-// Article component to display PDF articles
 const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsTodayId }, ref) => {
   const startTimeRef = useRef<number | null>(null);
   const elapsedTimeRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { theme } = useTheme(); // Access theme
-  const [isMobile, setIsMobile] = useState(false);
-  const [completed, setCompleted] = useState(false); // Track if the article has been marked as complete
+  const { theme } = useTheme();
+  const [completed, setCompleted] = useState(false);
 
-  // Expose the elapsed reading time for parent component via ref
+  // New states for RewardsModal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [newPoints, setNewPoints] = useState(0);
+  const [currentLevel, setCurrentLevel] = useState<any>();
+  const [levelUp, setLevelUp] = useState(false);
+  const [currentPoints, setCurrentPoints] = useState<any>();
+  const [newLevel, setNewLevel] = useState<any>();
+
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => {
       if (startTimeRef.current) {
@@ -33,7 +40,6 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
     }
   }));
 
-  // Track reading time of the PDF
   useEffect(() => {
     startTimeRef.current = Date.now();
 
@@ -44,20 +50,23 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         elapsedTimeRef.current += elapsed;
         startTimeRef.current = currentTime;
 
-        // If the user spends more than 60 seconds on the article, mark it as complete
         const totalTimeSpent = Math.round(elapsedTimeRef.current / 1000);
-        if (totalTimeSpent >= 10 && !completed) {
-          setCompleted(true); // Mark as completed
+        if (totalTimeSpent >= 10 && !completed) { // After 60 seconds
+          setCompleted(true);
 
           try {
-            // Mark the topic as completed in the backend only once
-            await markTopicAsCompleted(beamsTodayId, 'text');
-
-            // Show a success toast notification
-            toast.success('You have completed reading the article!', {
-              position: 'top-right',
-              duration: 3000, // Auto close after 3 seconds
-            });
+            const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
+            if (success) {
+              setUserPoints(prevPoints => prevPoints + 100);
+              setNewPoints(prevPoints => prevPoints + 100);
+              setCurrentLevel(currentLevel);
+              setCurrentPoints(currentPoints);
+              if (levelUpFlag) {
+                setLevelUp(levelUpFlag);
+                setNewLevel(newLevel);
+              }
+              setIsModalOpen(true); // Open the RewardsModal
+            }
           } catch (error) {
             toast.error('Failed to mark article as completed');
           }
@@ -65,40 +74,37 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
       }
     }, 1000);
 
-    // Handle resizing to set `isMobile`
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 767);
-    };
-    handleResize(); // Initial check
-    window.addEventListener('resize', handleResize);
-
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      window.removeEventListener('resize', handleResize);
     };
   }, [completed, beamsTodayId]);
 
-  // Return when there is no article URL
   if (!articleUrl) {
-    return (
-      <div className="mt-4 p-4 bg-grey-1 rounded-lg">
-        <h2 className="text-2xl font-bold my-2">Article</h2>
-        <p className="text-lg text-gray-800">No article available</p>
-      </div>
-    );
+    return <div>No article available</div>;
   }
 
   return (
-    <div className="my-4 rounded-lg mx-auto w-[80vw]">
+    <div>
       <div style={{ height: '750px' }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer
-            theme={theme} // Apply theme (light/dark)
+            theme={theme}
             fileUrl={articleUrl}
-            defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1.0} // Adjust scaling based on screen size
+            defaultScale={SpecialZoomLevel.PageFit}
           />
         </Worker>
       </div>
+      <RewardsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        points={userPoints - 100}
+        newPoints={newPoints}
+        levelUp={levelUp}
+        currentLevel={currentLevel}
+        nextLevel={newLevel}
+        caption={newLevel?.caption}
+        currentPoints={currentPoints}
+      />
     </div>
   );
 });

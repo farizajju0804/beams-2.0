@@ -2,9 +2,8 @@ import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } f
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
-import { Toaster,toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import RewardsModal from '@/components/Rewards';
-
 
 interface VideoPlayerProps {
   id: string;
@@ -28,7 +27,9 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const [newPoints, setNewPoints] = useState(0);
   const [currentLevel2, setCurrentLevel] = useState<any>();
   const [levelUp, setLevelUp] = useState(false);
+  const [currentPoints, setCurrentPoints] = useState<any>();
   const [newLevel, setnewLevel] = useState<any>();
+
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
@@ -49,22 +50,24 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       if (!completionMarked) {
         setCompletionMarked(true);
         try {
-          const { success, levelUpFlag, currentLevel, newLevel } = await markTopicAsCompleted(id, 'video');
+          console.log('Marking topic as completed for video ID:', videoId);
+          const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(id, 'video');
+
+
           if (success) {
-            // Update state for RewardsModal
             setUserPoints(prevPoints => prevPoints + 100);
             setNewPoints(prevPoints => prevPoints + 100);
             setCurrentLevel(currentLevel);
-            setLevelUp(levelUpFlag);
+            setCurrentPoints(currentPoints)
             if (levelUpFlag) {
-              setnewLevel(newLevel)
-              
+              setLevelUp(levelUpFlag);
+              setnewLevel(newLevel);
+              console.log('Level Up! Current Level:', currentLevel, 'New Level:', newLevel);
             }
             setIsModalOpen(true);
           }
         } catch (error) {
           console.error("Error marking topic as completed:", error);
-          // You can still use toast for error messages if you prefer
           toast.error('An error occurred while marking the topic as completed.');
         }
       }
@@ -73,16 +76,19 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
     const handlePlay = () => {
       if (videoElement) {
         lastTimeRef.current = videoElement.currentTime;
+        console.log('Video playing, current time:', lastTimeRef.current);
       }
     };
 
     const handlePause = () => {
       handleTimeUpdate();
+      console.log('Video paused, total playtime so far:', playTimeRef.current);
     };
 
     const handleSeeked = () => {
       if (videoElement) {
         lastTimeRef.current = videoElement.currentTime;
+        console.log('Video seeked, new current time:', lastTimeRef.current);
       }
     };
 
@@ -135,6 +141,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         currentLevel={currentLevel2}
         nextLevel={newLevel}
         caption={newLevel?.caption}
+        currentPoints={currentPoints}
       />
     </>
   );

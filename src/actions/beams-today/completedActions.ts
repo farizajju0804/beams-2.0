@@ -19,13 +19,24 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
 
   try {     
     // Fetch the user's watched content, including completed topics and formats.     
-    const watchedContent = await db.beamsTodayWatchedContent.findUnique({       
+    let watchedContent = await db.beamsTodayWatchedContent.findUnique({       
       where: { userId },       
       select: { completedBeamsToday: true, completedFormats: true },     
     });      
 
-    let completedFormats: any = watchedContent?.completedFormats || {};     
-    let completedBeamsToday = watchedContent?.completedBeamsToday || [];      
+    // If watchedContent doesn't exist, create it
+    if (!watchedContent) {
+      watchedContent = await db.beamsTodayWatchedContent.create({
+        data: {
+          userId,
+          completedBeamsToday: [],
+          completedFormats: {},
+        },
+      });
+    }
+
+    let completedFormats: any = watchedContent.completedFormats || {};     
+    let completedBeamsToday = watchedContent.completedBeamsToday || [];      
 
     // Ensure the format array for this beamsTodayId exists.     
     if (!completedFormats[beamsTodayId]) {       
@@ -37,55 +48,53 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       completedFormats[beamsTodayId].push(format);     
     }      
 
-    // Only mark topic as globally completed if it hasn’t been completed yet.     
-    let success = false;     
-    if (!completedBeamsToday.includes(beamsTodayId)) {       
+    // Check if this is the first time completing this BeamsToday
+    const isFirstCompletion = !completedBeamsToday.includes(beamsTodayId);
+
+    let success = false;
+    let pointsAdded = 0;
+    if (isFirstCompletion) {       
       completedBeamsToday.push(beamsTodayId);       
       await db.beamsToday.update({         
         where: { id: beamsTodayId },         
         data: { completionCount: { increment: 1 } },       
       });       
-      success = true;     
+      success = true;
+      pointsAdded = 100; // Only add points on first completion
     }      
 
-    // Fetch or create user's beam points.     
-    let userBeamPoints:any = await db.userBeamPoints.findUnique({       
+    // Fetch user's beam points.     
+    let userBeamPoints: any = await db.userBeamPoints.findUnique({       
       where: { userId },       
       include: { level: true },     
     });      
 
     if (!userBeamPoints) {       
-      const initialLevel:any = await db.level.findFirst({         
+      const initialLevel: any = await db.level.findFirst({         
         where: { levelNumber: 1 },       
       });        
 
       userBeamPoints = await db.userBeamPoints.create({         
         data: {           
           userId,           
-          beams: 100,           
+          beams: pointsAdded, // Initialize with points if it's first completion           
           levelId: initialLevel?.id,         
         },         
         include: { level: true },       
       });     
-    } else {       
-      // Update user's beams points first
+    } else if (pointsAdded > 0) {       
+      // Only update points if it's the first completion
       userBeamPoints = await db.userBeamPoints.update({         
         where: { userId },         
-        data: { beams: { increment: 100 } },         
+        data: { beams: { increment: pointsAdded } },         
         include: { level: true },       
       });     
     }      
 
-    // Refresh user's beam points to get updated data     
-    userBeamPoints = await db.userBeamPoints.findUnique({       
-      where: { userId },       
-      include: { level: true },     
-    });      
-
     // Check if level up is required after updating the points     
     let levelUpFlag = false;     
     let newLevel;     
-    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {       
+    if (userBeamPoints && userBeamPoints.beams >= userBeamPoints.level.maxPoints) {       
       const nextLevel = await db.level.findFirst({         
         where: {           
           levelNumber: { gt: userBeamPoints.level.levelNumber },         
@@ -105,23 +114,33 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       }     
     }      
 
-    const beamsToday = await getBeamsTodayById(beamsTodayId);     
-    await db.beamPointsHistory.create({       
-      data: {         
-        userId,         
-        points: 100,         
-        source: 'BEAMS_TODAY',         
-        description: `Completed beams today of topic "${beamsToday.title}"`,       
-      },     
-    });      
+    if (pointsAdded > 0) {
+      const beamsToday = await getBeamsTodayById(beamsTodayId);     
+      await db.beamPointsHistory.create({       
+        data: {         
+          userId,         
+          points: pointsAdded,         
+          source: 'BEAMS_TODAY',         
+          description: `Completed beams today of topic "${beamsToday.title}"`,       
+        },     
+      });      
+    }
 
     await db.beamsTodayWatchedContent.update({       
       where: { userId },       
       data: { completedFormats, completedBeamsToday, updatedAt: new Date() },     
     });     
 
-    console.log(userBeamPoints.level);     
-    return { success, levelUpFlag, currentLevel: userBeamPoints.level, newLevel }; // Return the current level and new level if updated   
+    console.log('User Beam Points:', userBeamPoints);     
+    return { 
+      success, 
+      levelUpFlag, 
+      currentLevel: userBeamPoints?.level, 
+      currentPoints: userBeamPoints?.beams, 
+      newLevel,
+      isFirstCompletion, // Add this to indicate if it's the first completion
+      pointsAdded // Add this to show how many points were added
+    };
   } catch (error) {     
     console.error("Error marking topic as completed:", error);     
     throw new Error("Error marking topic as completed.");   
