@@ -349,7 +349,7 @@ model Leaderboard {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   userId    String    @db.ObjectId
   points    Int       @default(0) // Snapshot of the points at the time the leaderboard was generated
-  rank      Int? // Rank for the user
+  rank      Int // Rank for the user
   startDate DateTime
   endDate   DateTime
   createdAt DateTime? @default(now())
