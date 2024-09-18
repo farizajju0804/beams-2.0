@@ -2,8 +2,8 @@
 
 import { PrismaClient } from '@prisma/client'; // Import the PrismaClient.
 import { currentUser } from "@/libs/auth"; // Function to get the currently authenticated user.
+import { db } from '@/libs/db';
 
-const db = new PrismaClient(); // Initialize a new PrismaClient instance.
 
 /**
  * Fetches the poll associated with a specific BeamsToday topic.
@@ -33,112 +33,66 @@ export const getPoll = async (beamsTodayId: string) => {
  * @throws Throws an error if the user is not authenticated or if the database operation fails.
  */
 
+import { startOfWeek, endOfWeek } from 'date-fns';
+import { updateUserPoints } from '../points/updateUserPoints';
+import { recordPointsHistory } from '../points/recordPointsHistory';
+import { updateLeaderboardEntry } from '../points/updateLeaderboardEntry';
+
 export const recordPollResponse = async (pollOptionId: string) => {
   const user = await currentUser();
   if (!user || !user.id) {
+    console.error('User not authenticated or missing user ID');
     throw new Error('User not authenticated or missing user ID');
   }
 
+  console.log(`User ID: ${user.id} is attempting to record a poll response...`);
+
   try {
-    // Find the poll option and its related poll
+    console.log(`Fetching poll option with ID: ${pollOptionId}`);
     const pollOption = await db.beamsTodayPollOption.findUnique({
       where: { id: pollOptionId },
-      include: {
-        poll: {
-          include: {
-            beamsToday: true // Include the related Beams Today content
-          }
-        }
-      }
+      include: { poll: { include: { beamsToday: true } } },
     });
 
     if (!pollOption || !pollOption.poll || !pollOption.poll.beamsToday) {
+      console.error('Poll or Beams Today content not found');
       throw new Error('Poll or Beams Today content not found');
     }
 
-    const beamsTodayTitle = pollOption.poll.beamsToday.title; // Get the Beams Today title
+    const beamsTodayTitle = pollOption.poll.beamsToday.title;
+    console.log(`Poll found: "${beamsTodayTitle}"`);
 
-    // Record the user's response to the poll
-    const response = await db.beamsTodayPollResponse.create({
-      data: {
-        userId: user.id as string,
-        pollOptionId,
-      },
+    console.log(`Recording response for user: ${user.id}`);
+    await db.beamsTodayPollResponse.create({
+      data: { userId: user.id as string, pollOptionId },
     });
 
-    // Increment the votes for the selected poll option
+    console.log(`Incrementing votes for poll option ID: ${pollOptionId}`);
     await db.beamsTodayPollOption.update({
       where: { id: pollOptionId },
-      data: {
-        votes: {
-          increment: 1,
-        },
-      },
+      data: { votes: { increment: 1 } },
     });
 
-    // Fetch current user beam points
-    let userBeamPoints: any = await db.userBeamPoints.findUnique({
-      where: { userId: user.id },
-      include: { level: true },
-    });
+    console.log(`Updating user points for user ID: ${user.id}`);
+    const { userBeamPoints, leveledUp, newLevel } = await updateUserPoints(user.id, 50);
+    console.log(`User points updated. New total: ${userBeamPoints.beams}`);
 
-    if (!userBeamPoints) {
-      // If user doesn't have beam points, create initial entry
-      const initialLevel = await db.level.findFirst({
-        where: { levelNumber: 1 },
-      });
-      userBeamPoints = await db.userBeamPoints.create({
-        data: {
-          userId: user.id as string,
-          beams: 50,
-          levelId: initialLevel!.id,
-        },
-        include: { level: true },
-      });
-    } else {
-      // Update user's beam points
-      userBeamPoints = await db.userBeamPoints.update({
-        where: { userId: user.id },
-        data: { beams: { increment: 50 } },
-        include: { level: true },
-      });
-    }
+    console.log(`Recording points history for user ID: ${user.id}`);
+    await recordPointsHistory(user.id, 50, 'POLL_PARTICIPATION', `Participated in a poll of "${beamsTodayTitle}"`);
 
-    // Check for level up
-    let leveledUp = false;
-    let newLevel;
-    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {
-      newLevel = await db.level.findFirst({
-        where: { levelNumber: { gt: userBeamPoints.level.levelNumber } },
-      });
-      if (newLevel) {
-        userBeamPoints = await db.userBeamPoints.update({
-          where: { userId: user.id },
-          data: { levelId: newLevel.id },
-          include: { level: true },
-        });
-        leveledUp = true;
-      }
-    }
+    // Update or create leaderboard entry
+    console.log(`Updating leaderboard entry for user ID: ${user.id} with points: 50`);
+    await updateLeaderboardEntry(user.id, 50);
 
-    // Record in beam points history with the Beams Today title in the description
-    await db.beamPointsHistory.create({
-      data: {
-        userId: user.id as string,
-        points: 50,
-        source: 'POLL_PARTICIPATION',
-        description: `Participated in a poll of "${beamsTodayTitle}"`, // Include Beams Today title
-      },
-    });
-
+    console.log(`Poll response recorded successfully for user ID: ${user.id}`);
     return {
-      response,
       pointsAwarded: 50,
       newTotalPoints: userBeamPoints.beams,
       leveledUp,
-      newLevel: userBeamPoints.level,
+      newLevel,
     };
   } catch (error) {
+    console.error(`Error recording poll response: ${(error as Error).message}`);
     throw new Error(`Error recording poll response: ${(error as Error).message}`);
   }
 };

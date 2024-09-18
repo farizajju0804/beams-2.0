@@ -75,14 +75,14 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
       setCompletionMarked(true); // Avoid multiple triggers
 
       try {
-        const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'audio');
+        const { success, leveledUp, currentLevel, newLevel, currentPoints, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'audio');
         if (success) {
           setUserPoints(prevPoints => prevPoints + 100);
           setNewPoints(prevPoints => prevPoints + 100);
           setCurrentLevel(currentLevel);
           setCurrentPoints(currentPoints);
-          if (levelUpFlag) {
-            setLevelUp(levelUpFlag);
+          if (leveledUp) {
+            setLevelUp(leveledUp);
             setNewLevel(newLevel);
           }
           setIsModalOpen(true); // Open the RewardsModal

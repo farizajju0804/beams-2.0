@@ -144,7 +144,7 @@ const motivationalMessages: string[] = [
                   width={100}
                   height={100}
                 />
-                <p className="text-sm text-center mb-3 text-grey-2">
+                <p className="text-sm text-center mb-3 text-grey-2 italic font-medium">
                   {message}
                 </p>
                 <div className="mb-6">
@@ -164,7 +164,7 @@ const motivationalMessages: string[] = [
                     <p className="text-sm text-grey-2">
                       You&apos;ve reached level {nextLevel?.levelNumber}!
                     </p>
-                    <p className="text-sm text-grey-2 my-2">
+                    <p className="text-sm text-grey-2 my-2 italic font-medium">
                       {caption}
                     </p>
                   </motion.div>

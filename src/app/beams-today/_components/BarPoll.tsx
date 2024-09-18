@@ -102,7 +102,9 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
         setLevelUp(true);
         setNewLevel(nextLevel);
       }
-      setIsModalOpen(true); // Open the RewardsModal
+      setTimeout(() => {
+        setIsModalOpen(true); // Open the RewardsModal after the delay
+      }, 1000); // Adjust the duration as needed
     } catch (error) {
       console.error("Error recording vote:", error);
     }
@@ -244,7 +246,7 @@ const Results = ({
                   {vote.votes} votes {/* Display the vote count */}
                 </span>
               </div>
-              <div className="relative h-8 rounded-full bg-gray-200">
+              <div className="relative h-8 rounded-full bg-[#aaaaaa]">
                 <motion.span
                   animate={{ width: `${width}%` }} // Animate the width of the vote bar
                   className={`absolute top-0 left-0 h-full rounded-full ${vote.color}`} // Style the vote bar

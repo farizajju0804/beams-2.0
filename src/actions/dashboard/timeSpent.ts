@@ -5,12 +5,12 @@ import { db } from "@/libs/db";
 
 
 
-export const getUserAnalyticsById = async () => {
-  const user = await currentUser()
+export const getUserAnalyticsById = async (userId:string) => {
+
   try {
     const userAnalytics = await db.beamsTodayUserAnalytics.findUnique({
     where : {
-        userId: user?.id
+        userId: userId
     }
     });
     return userAnalytics;

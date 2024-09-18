@@ -44,7 +44,7 @@ interface LearningOverviewProps {
 }
 
 const TopicsPopoverContent: React.FC<{ topics: WatchedData[] }> = ({ topics }) => (
-  <div className="space-y-4">
+  <div className="flex flex-col gap-6 my-4">
     {topics.map((topic) => (
       <div key={topic.id} className="flex flex-col w-full justify-between items-start bg-grey-1 p-4 rounded-lg">
         <div className='flex flex-col'>

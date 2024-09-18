@@ -1,74 +1,43 @@
+import React from 'react';
+import LearningOverview from './_components/LearningOverview';
+import { getUserAnalyticsById } from '@/actions/dashboard/timeSpent';
+import { currentUser } from '@/libs/auth';
+import { getPollDataByUserId } from '@/actions/dashboard/pollData';
+import { getWatchedBeamsTodayContent } from '@/actions/dashboard/watchedContent';
 
-import React from 'react'
-import LearningOverview from './_components/LearningOverview'
-import { getUserAnalyticsById } from '@/actions/dashboard/timeSpent'
-import { currentUser } from '@/libs/auth'
-import { getPollDataByUserId } from '@/actions/dashboard/pollData'
-import { getWatchedBeamsTodayContent } from '@/actions/dashboard/watchedContent'
-import LevelBeams from './_components/LevalBeams'
-import { getUserLevelAndHistory } from '@/actions/dashboard/getUserLevelAndRecentHistory'
-import Achievements from './_components/Achievements'
-import Leaderboard from './_components/Leaderboard'
+import { getUserLevelAndHistory } from '@/actions/dashboard/getUserLevelAndRecentHistory';
+import Achievements from './_components/Achievements';
+import Leaderboard from './_components/Leaderboard';
 
-
-const users = [
-  {
-    id: "1",
-    name: "User 1",
-    score: 2430,
-    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690887/Beams%20today/thumbnails/wireless_charging_aqczlw.png",
-    rank: 1
-  },
-  {
-    id: "2",
-    name: "User 2",
-    score: 1847,
-    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690800/Beams%20today/thumbnails/ear_tbxkpk.png",
-    rank: 2
-  },
-  {
-    id: "3",
-    name: "User 3",
-    score: 1674,
-    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690681/Beams%20today/thumbnails/headphnr_cqiulp.png",
-    rank: 3
-  }
-];
-
-const user2 = 
-  {
-    id: "10",
-    name: "User 1",
-    score: 2430,
-    avatarUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1720690887/Beams%20today/thumbnails/wireless_charging_aqczlw.png",
-    rank: 13
-  }
+import LevelBeams from './_components/LevalBeams';
+import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 
 const page = async () => {
-  const user:any = await currentUser()
-  console.log("user",user)
-  const userAnalytics:any = await getUserAnalyticsById()
-  const pollData:any = await getPollDataByUserId(user?.id)
-  const watchedData:any = await getWatchedBeamsTodayContent(user?.id)
+  const user: any = await currentUser();
+
+  const userAnalytics: any = await getUserAnalyticsById(user?.id);
+  const pollData: any = await getPollDataByUserId(user?.id);
+  const watchedData: any = await getWatchedBeamsTodayContent(user?.id);
   const { userLevel, beams, recentActivities, accumulatedPoints } = await getUserLevelAndHistory(user?.id);
-  console.log(userLevel, beams, recentActivities, accumulatedPoints )
+  const { entries: leaderboardEntries, userPosition,userPoints, message, startDate, endDate } = await getLeaderboardData(user?.id);
+
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
       <LearningOverview
-            userAnalytics={userAnalytics}
-            pollData={pollData}
-            watchedData={watchedData}
-          />
-           <LevelBeams
-        userLevel={userLevel}  // Pass user level and progress
-        beams={beams}  // Pass beams (points)
-        recentActivities={recentActivities}  // Pass recent activities
-        accumulatedPoints={accumulatedPoints} 
+        userAnalytics={userAnalytics}
+        pollData={pollData}
+        watchedData={watchedData}
       />
-      <Leaderboard currentUser={user2} users={users} />
-      <Achievements/>
+      <LevelBeams
+        userLevel={userLevel}
+        beams={beams}
+        recentActivities={recentActivities}
+        accumulatedPoints={accumulatedPoints}
+      />
+      <Leaderboard startDate={startDate} endDate={endDate}  users={leaderboardEntries} userPosition={userPosition}  userPoints={userPoints} message={message} />
+      <Achievements />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

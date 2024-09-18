@@ -21,14 +21,14 @@ interface UserStatusProps {
     };
   
     const bgColor = rank <= 3 ? "bg-yellow" : (rank <= 10 ? "bg-yellow/80" : "bg-grey-1");
-    const textColor = rank <= 10 ? "text-text" : "text-grey-2";
+    const textColor = rank <= 10 ? "text-black" : "text-grey-2";
   
     return (
-        <div className="px-4 w-full flex flex-col gap-6 mt-16 items-center justify-center">
+        <div className="px-4 w-full flex flex-col gap-6 mt-4 items-center justify-center">
       <div className={`${bgColor} w-full md:w-2/6 p-4 rounded-3xl flex items-center justify-between shadow-lg mx-auto text-lg ${textColor}`}>
       <div className="flex items-center gap-4">
         <span className="w-8 h-8 bg-text text-background flex items-center justify-center rounded-full">{rank}</span>
-        <span className="text-text font-semibold text-lg">You</span>
+        <span className="font-semibold text-lg">You</span>
         </div>
         <span className="font-semibold font-poppins">{score}</span>
       </div>

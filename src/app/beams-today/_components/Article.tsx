@@ -51,18 +51,18 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         startTimeRef.current = currentTime;
 
         const totalTimeSpent = Math.round(elapsedTimeRef.current / 1000);
-        if (totalTimeSpent >= 60 && !completed) { // After 60 seconds
+        if (totalTimeSpent >= 10 && !completed) { // After 60 seconds
           setCompleted(true);
 
           try {
-            const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
+            const { success, leveledUp, currentLevel,  currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
             if (success) {
               setUserPoints(prevPoints => prevPoints + 100);
               setNewPoints(prevPoints => prevPoints + 100);
               setCurrentLevel(currentLevel);
               setCurrentPoints(currentPoints);
-              if (levelUpFlag) {
-                setLevelUp(levelUpFlag);
+              if (leveledUp) {
+                setLevelUp(leveledUp);
                 setNewLevel(newLevel);
               }
               setIsModalOpen(true); // Open the RewardsModal

@@ -51,7 +51,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         setCompletionMarked(true);
         try {
           console.log('Marking topic as completed for video ID:', videoId);
-          const { success, levelUpFlag, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(id, 'video');
+          const { success, leveledUp, currentLevel, currentPoints, newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
 
 
           if (success) {
@@ -59,8 +59,8 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
             setNewPoints(prevPoints => prevPoints + 100);
             setCurrentLevel(currentLevel);
             setCurrentPoints(currentPoints)
-            if (levelUpFlag) {
-              setLevelUp(levelUpFlag);
+            if (leveledUp) {
+              setLevelUp(leveledUp);
               setnewLevel(newLevel);
               console.log('Level Up! Current Level:', currentLevel, 'New Level:', newLevel);
             }

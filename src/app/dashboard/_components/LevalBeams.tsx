@@ -163,7 +163,7 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
   }));
 
   return (
-    <div className="w-full py-4 px-4 bg-background">
+    <div className="w-full bg-background">
       <Heading heading={`My Beams`} />
       <div className='w-full grid grid-cols-1 md:grid-cols-2'>
         <div className='w-full flex flex-col items-center md:items-start justify-center '>
@@ -171,10 +171,11 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
           <LevelProgress level={userLevel.levelNumber} progress={beams} total={userLevel.maxPoints} />
           <ScoreDisplay score={beams} />
         </div>
-        
+        {beams > 0 && 
         <div>
           <ActivityPieChart data={pieChartData} />
         </div>
+        }
       </div>
       {recentActivities.length > 0 && 
       <RecentActivity activities={recentActivityData} />
