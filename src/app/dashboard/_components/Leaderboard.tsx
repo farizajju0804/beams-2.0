@@ -85,7 +85,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
   const [hasNewWeekData, setHasNewWeekData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  useEffect(() => {
+    console.log("lastWeekUsers state updated:", lastWeekUsers);
+    console.log("lastWeekMessage state updated:", lastWeekMessage);
+  }, [lastWeekUsers, lastWeekMessage]);
   useEffect(() => {
     const checkAndUpdateData = async () => {
       setIsLoading(true);
@@ -198,16 +201,19 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
 
   const openResultsModal = async () => {
     setIsLoading(true);
+    setLastWeekMessage(null); // Reset the message at the start
+  
     try {
-      if (lastWeekUsers.length === 0) {
-        const data = await getTop3EntriesForMostRecentWeek(userType);
-        if (data && data.length > 0) {
-          setLastWeekUsers(data);
-          setLastWeekMessage(null);
-        } else {
-          console.log('No data available for last week');
-          setLastWeekMessage("No data available for last week's top performers.");
-        }
+      console.log("Fetching last week's data...");
+      const data = await getTop3EntriesForMostRecentWeek(userType);
+      console.log("Received data:", data);
+  
+      if (data && Array.isArray(data) && data.length > 0) {
+        console.log("Setting lastWeekUsers with data:", data);
+        setLastWeekUsers(data);
+      } else {
+        console.log("No valid data received for last week");
+        setLastWeekMessage("No data available for last week's top performers.");
       }
     } catch (error) {
       console.error('Error fetching last week data:', error);
@@ -217,7 +223,10 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
     }
   
     // Open the modal regardless of whether we have data or not
+    console.log("Opening modal. lastWeekUsers:", lastWeekUsers);
     setShowModal(true);
+  
+    // Only trigger confetti if we have valid data
     if (lastWeekUsers.length > 0) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
@@ -306,19 +315,21 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
       </div>
      
       <CustomModal isOpen={showModal} onClose={() => setShowModal(false)} message={lastWeekMessage}>
-  {lastWeekUsers.length > 0 ? (
+  {isLoading ? (
+    <p>Loading last week's data...</p>
+  ) : lastWeekUsers.length > 0 ? (
     <>
       <p className="mb-4">Congratulations to our top performers!</p>
       {lastWeekUsers.slice(0, 3).map((user: any, index) => (
         <div key={user?.id} className="flex items-center mb-6">
           <Avatar src={user?.user?.image} showFallback isBordered alt='profile' size="lg" className="mr-4" />
-          <span className="font-bold">{index + 1}. {user?.user?.firstName} {user?.user?.lastName}</span>
+          <span className="font-bold">{index + 1}. {user?.user?.firstName || 'Unknown'} {user?.user?.lastName || ''}</span>
           <span className="ml-2">{user.points} points</span>
         </div>
       ))}
     </>
   ) : (
-    <p>No data available for last week&apos;s top performers.</p>
+    <p>{lastWeekMessage || "No data available for last week's top performers."}</p>
   )}
 </CustomModal>
     </div>
