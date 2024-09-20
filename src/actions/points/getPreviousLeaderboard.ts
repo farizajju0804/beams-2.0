@@ -18,10 +18,10 @@ export interface User {
     user: User | null; // Ensure user is always present
   }
 
-  export const getTop3EntriesForMostRecentWeek = async (start:string, userType: UserType): Promise<LeaderboardEntry[]> => {
+  export const getTop3EntriesForMostRecentWeek = async ( userType: UserType,start?:string,): Promise<LeaderboardEntry[]> => {
     // Step 1: Find the most recent end date for completed weeks
-  const now2 =  start ? new Date(start) : new Date()
-  const now =   new Date()
+  const now =  start ? new Date(start) : new Date()
+  // const now =   new Date()
     
     const mostRecentEndDateResult = await db.leaderboard.findFirst({
       where: {

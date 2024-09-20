@@ -13,14 +13,9 @@ import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLea
 
 interface LeaderboardProps {
   userId: string;
-  users: LeaderboardEntry[];
-  userPosition?: number;
-  userPoints?: number;
-  message?: string | null;
-  startDate?: string;
-  endDate?: string;
+  initialData: any;
   userType: UserType;
-  previous?: any; // This should hold last week users
+  previous?: any;
 }
 
 const getHeight = (position: number) => {
@@ -69,102 +64,124 @@ const CustomModal = ({ isOpen, onClose, children }: any) => {
     </div>
   );
 };
-
-const Leaderboard: React.FC<LeaderboardProps> = ({ userId, users, userPosition, userPoints, message, startDate, endDate, userType, previous }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ 
+  userId, 
+  initialData,
+  userType, 
+  previous 
+}) => {
   const [timeRemaining, setTimeRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isTimerActive, setIsTimerActive] = useState(true);
+  const [isTimerActive, setIsTimerActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [currentUsers, setCurrentUsers] = useState<LeaderboardEntry[]>(users);
+  const [currentUsers, setCurrentUsers] = useState<LeaderboardEntry[]>(initialData.entries);
   const [isPastCutoff, setIsPastCutoff] = useState(false);
-  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous || []); // Initialize with previous prop
+  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous || []);
   const [userWatchedTimerEnd, setUserWatchedTimerEnd] = useState(false);
-  const [updatedUserPosition, setUpdatedUserPosition] = useState<number | undefined>(userPosition);
-  const [updatedUserPoints, setUpdatedUserPoints] = useState<number | undefined>(userPoints);
+  const [updatedUserPosition, setUpdatedUserPosition] = useState<number | undefined>(initialData.userPosition);
+  const [updatedUserPoints, setUpdatedUserPoints] = useState<number | undefined>(initialData.userPoints);
+  const [currentEndDate, setCurrentEndDate] = useState<string | undefined>(initialData.endDate);
+  const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
+  const [hasNewWeekData, setHasNewWeekData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!startDate || !endDate) {
-      return;
-    }
-    const endDateLocale = new Date(endDate).toLocaleString(); 
-    console.log("end",endDateLocale) 
-    const endDateLocal = new Date(endDateLocale).getTime();
-  
-    const now2 = new Date().toLocaleString();
-    const now =new Date(now2).getTime();
-    console.log("now",now2)
-    if (now > endDateLocal) {
-      setIsPastCutoff(true);
-      setIsTimerActive(false);
-      fetchLastWeekData();
-      return;
-    }
-
-    const timerInterval = setInterval(() => {
-      const currentTime = new Date().getTime();
-      const distance = endDateLocal - currentTime;
-
-      if (distance < 0) {
-        clearInterval(timerInterval);
-        handleTimerEnd();
+    const checkAndUpdateData = async () => {
+      setIsLoading(true);
+      if (!currentEndDate) {
+        setIsLoading(false);
         return;
       }
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const endDateLocal = new Date(currentEndDate).getTime();
+      const now = new Date().getTime();
 
-      setTimeRemaining({ days, hours, minutes, seconds });
-    }, 1000);
+      if (now > endDateLocal) {
+        // We're past the cutoff time, fetch new data
+        await handleTimerEnd(false);
+      } else {
+        // We're still in the current week, update the timer immediately
+        updateTimer();
+        setIsTimerActive(true);
+        setUserWatchedTimerEnd(true);
+      }
+      setIsLoading(false);
+    };
+
+    checkAndUpdateData();
+  }, [currentEndDate]);
+
+  useEffect(() => {
+    let timerInterval: NodeJS.Timeout;
+
+    if (isTimerActive) {
+      timerInterval = setInterval(updateTimer, 1000);
+    }
 
     return () => clearInterval(timerInterval);
-  }, [endDate, startDate, userType]);
+  }, [isTimerActive, currentEndDate]);
 
-  const handleTimerEnd = async () => {
+  const updateTimer = () => {
+    if (!currentEndDate) {
+      return;
+    }
+
+    const endDateLocal = new Date(currentEndDate).getTime();
+    const now = new Date().getTime();
+    const distance = endDateLocal - now;
+
+    if (distance < 0) {
+      setIsTimerActive(false);
+      handleTimerEnd(true);
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    setTimeRemaining({ days, hours, minutes, seconds });
+  };
+
+  const handleTimerEnd = async (shouldShowModal: boolean) => {
     setIsTimerActive(false);
     setIsPastCutoff(true);
-    setUserWatchedTimerEnd(true);
-    if (startDate && endDate) {
-      await recalculateLeaderboardRanks(new Date(startDate), new Date(endDate), userType);
+   
+    if (initialData.startDate && currentEndDate) {
+      await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
     }
-    await fetchLastWeekData(); // Call again to refresh last week data
-    openResultsModal();
-
-    // Fetch next week's leaderboard data using the endDate received
-    const nextWeekData = await getLeaderboardData('', userId, userType);
-    setCurrentUsers(nextWeekData.entries);
     
-    // Update user position and points after the timer ends
-    const updatedUser = nextWeekData.entries.find(user => user.id === userId);
-    if (updatedUser) {
-      setUpdatedUserPosition(updatedUser.rank);
-      setUpdatedUserPoints(updatedUser.points);
-    }
-
-    resetTimer(nextWeekData.endDate);
-    setIsTimerActive(true);
-  };
-
-  const resetTimer = (nextEndDate?: string) => {
-    if (nextEndDate) {
-      const endDateLocale = new Date(nextEndDate).toLocaleString();  
-      const endDateLocal = new Date(endDateLocale).getTime();
-      const now = new Date().getTime();
-      const distance = endDateLocal - now;
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      setTimeRemaining({ days, hours, minutes, seconds });
-      setIsTimerActive(true);
-    }
-  };
-
-  const fetchLastWeekData = async () => {
-    const lastWeekData = await getTop3EntriesForMostRecentWeek('', userType);
+    // Fetch last week's data
+    const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
+    console.log('lastweekdata',lastWeekData)
     setLastWeekUsers(lastWeekData);
+
+    // Fetch next week's leaderboard data
+    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z');
+    
+    if (nextWeekData.entries && nextWeekData.entries.length > 0) {
+      setCurrentUsers(nextWeekData.entries);
+      setUpdatedUserPosition(nextWeekData.userPosition);
+      setUpdatedUserPoints(nextWeekData.userPoints);
+      setLeaderboardMessage(null);
+
+      // Reset timer for next week
+      if (nextWeekData.endDate) {
+        setCurrentEndDate(nextWeekData.endDate);
+        setIsTimerActive(true);
+        setIsPastCutoff(false);
+      }
+    } else {
+      setCurrentUsers([]);
+      setUpdatedUserPosition(undefined);
+      setUpdatedUserPoints(undefined);
+      setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
+    }
+   
+    if (shouldShowModal && userWatchedTimerEnd) {
+      openResultsModal();
+    }
+    setHasNewWeekData(true);
   };
 
   const openResultsModal = () => {
@@ -172,32 +189,32 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, users, userPosition, 
     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
   const [firstPlace, secondPlace, thirdPlace] = sortedUsers;
-
   return (
     <div>
       <Heading heading={"Leaderboard"} />
-      {message && <p className="text-text text-center">{message}</p>}
+      {leaderboardMessage && <p className="text-text text-center">{leaderboardMessage}</p>}
       
-        <div>
-          <div className='px-4 w-full mx-auto'>
-            <div className='flex flex-col items-center justify-center'>
-            {users.length >=3 && ( 
+      <div>
+        <div className='px-4 w-full mx-auto'>
+          <div className='flex flex-col items-center justify-center'>
+            {currentUsers.length >= 3 && ( 
               <div className="flex max-w-2xl justify-center items-end w-full gap-2 md:gap-4">
-                
-                {[secondPlace, firstPlace, thirdPlace].map((user: any) => (
+                {[secondPlace, firstPlace, thirdPlace].map((user: LeaderboardEntry) => (
                   <div key={user?.id} className="flex flex-col items-center">
-                    <Avatar src={user?.user?.image} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
+                    <Avatar src={user?.user?.image || undefined} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
                     <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 rounded-t-lg py-6 px-2 md:px-4 flex flex-col items-center justify-between transition-all duration-300 ease-in-out`}>
                       <Image src={getBadgeImage(user?.rank)} alt={`Rank ${user?.rank} badge`} width={60} height={80} />
                       
                       <div className='flex flex-col items-center'>
-                      
                         <div className="text-center font-bold text-sm md:text-xl mb-1 md:mb-2 text-wrap w-full">
                           {user?.user?.name}
                         </div>
-                        
                         <div className="text-center text-xs md:text-lg">{user?.points}</div>
                       </div>
                       <div className="bg-black text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-lg md:text-2xl font-bold">
@@ -207,49 +224,49 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ userId, users, userPosition, 
                   </div>
                 ))}
               </div>
-              )}
-              {updatedUserPosition !== undefined && updatedUserPoints !== undefined && (
-                <UserStatus rank={updatedUserPosition} score={updatedUserPoints} />
-              )}
-              {users.length >=3 && isTimerActive && (
-                <div className='w-full max-w-xl '>
-                  <p className='my-4 mx-auto text-center'>Leaderboard will be reset in</p>
-                  <div className="w-full max-w-xl flex justify-around p-4 border border-gray-300 rounded-lg bg-white shadow-lg">
-                    <div className="flex flex-col items-center">
-                      <div className="text-2xl font-bold">{timeRemaining.days}</div>
-                      <div className="text-sm">Days</div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="text-2xl font-bold">{timeRemaining.hours}</div>
-                      <div className="text-sm">Hours</div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="text-2xl font-bold">{timeRemaining.minutes}</div>
-                      <div className="text-sm">Minutes</div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="text-2xl font-bold">{timeRemaining.seconds}</div>
-                      <div className="text-sm">Seconds</div>
-                    </div>
+            )}
+            {updatedUserPosition !== undefined && updatedUserPoints !== undefined && (
+              <UserStatus rank={updatedUserPosition} score={updatedUserPoints} />
+            )}
+            {currentUsers.length >= 3 && isTimerActive && (
+              <div className='w-full max-w-xl'>
+                <p className='my-4 mx-auto text-center'>Leaderboard will be reset in</p>
+                <div className="w-full max-w-xl flex justify-around p-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+                  <div className="flex flex-col items-center">
+                    <div className="text-2xl font-bold">{timeRemaining.days}</div>
+                    <div className="text-sm">Days</div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-2xl font-bold">{timeRemaining.hours}</div>
+                    <div className="text-sm">Hours</div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-2xl font-bold">{timeRemaining.minutes}</div>
+                    <div className="text-sm">Minutes</div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-2xl font-bold">{timeRemaining.seconds}</div>
+                    <div className="text-sm">Seconds</div>
                   </div>
                 </div>
-              )} 
-              { lastWeekUsers.length >= 3 ? (
-                <div className="mt-4 text-center">
-                  <button 
-                    onClick={openResultsModal} 
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                  >
-                    View Last Week Results
-                  </button>
-                  <p className="mt-4 text-lg font-semibold text-center">
-                    Leaderboard for this week has ended. Check the results!
-                  </p>
-                </div>
-              ) : null}
-            </div>
+              </div>
+            )} 
+            {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
+  <div className="mt-4 text-center">
+    <button 
+      onClick={openResultsModal} 
+      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+    >
+      View Last Week Results
+    </button>
+    <p className="mt-4 text-lg font-semibold text-center">
+      {hasNewWeekData ? "New week has started. Check last week's results!" : "Leaderboard for this week has ended. Check the results!"}
+    </p>
+  </div>
+) : null}
           </div>
         </div>
+      </div>
      
       <CustomModal isOpen={showModal} onClose={() => setShowModal(false)}>
         <p className="mb-4">Congratulations to our top performers!</p>

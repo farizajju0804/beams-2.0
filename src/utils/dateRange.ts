@@ -3,8 +3,8 @@
  * @param {number} targetDay - The target day (0 = Sunday, 1 = Monday, ..., 5 = Friday, 6 = Saturday).
  * @returns {Object} An object containing startDate and endDate.
  */
-export function getPreviousAndNextDates(targetDay:number) {
-    const now = new Date(); // Current server date
+export function getPreviousAndNextDates(targetDay: number, start?: string) {
+    const now = start ? new Date(start) : new Date(); // Example date
     const currentDay = now.getUTCDay(); // Current day of the week
     let startDate, endDate;
 
@@ -19,24 +19,24 @@ export function getPreviousAndNextDates(targetDay:number) {
         // Check if the current time is after 6 PM
         if (now.getUTCHours() >= 18) {
             console.log("Current time is after 6 PM.");
-            // Set start date to today at 18:00
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0);
+            // Set start date to today at 18:00 UTC
+            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 18, 0, 0));
             console.log("Start Date set to:", startDate.toISOString());
 
-            // Set end date to next occurrence of the target day (next week)
+            // Set end date to next occurrence of the target day (next week) at 17:59:59.999 UTC
             endDate = new Date(startDate);
             endDate.setUTCDate(endDate.getUTCDate() + 7);
-            endDate.setUTCHours(17, 59, 59, 999);
+            endDate.setUTCHours(12,10, 59, 999); // Ensure it's set to 17:59:59.999
             console.log("End Date set to next week:", endDate.toISOString());
         } else {
             console.log("Current time is before 6 PM.");
-            // Set start date to previous week at 18:00
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 18, 0, 0);
+            // Set start date to previous week at 18:00 UTC
+            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7, 18, 0, 0));
             console.log("Start Date set to previous week:", startDate.toISOString());
 
-            // Set end date to today at 17:59:59.999
-            endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 59, 59, 999);
-            console.log("End Date set to today", endDate.toISOString());
+            // Set end date to today at 17:59:59.999 UTC
+            endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 10, 59, 999));
+            console.log("End Date set to today:", endDate.toISOString());
         }
     } else {
         console.log("Today is not the target day.");
@@ -47,21 +47,20 @@ export function getPreviousAndNextDates(targetDay:number) {
 
         console.log("Previous Target Date calculated as:", previousTargetDate.toISOString());
 
-        // Set start date to previous target day at 18:00
-        startDate = new Date(previousTargetDate.getFullYear(), previousTargetDate.getMonth(), previousTargetDate.getDate(), 18, 0, 0);
+        // Set start date to previous target day at 18:00 UTC
+        startDate = new Date(Date.UTC(previousTargetDate.getUTCFullYear(), previousTargetDate.getUTCMonth(), previousTargetDate.getUTCDate(), 18, 0, 0));
         console.log("Start Date set to previous target day:", startDate.toISOString());
         
-        // Set end date to the next occurrence of the target day (next week)
+        // Set end date to the next occurrence of the target day (next week) at 17:59:59.999 UTC
         endDate = new Date(startDate);
         endDate.setUTCDate(endDate.getUTCDate() + 7);
-        endDate.setUTCHours(17, 59, 59, 999);
+        endDate.setUTCHours(12,10, 59, 999); // Ensure it's set to 17:59:59.999
         console.log("End Date set to next occurrence:", endDate.toISOString());
     }
 
-    // Convert to UTC
-    const startDateUTC = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000);
-    const endDateUTC = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
+    // // Convert to UTC
+    // const startDateUTC = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000);
+    // const endDateUTC = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
 
-    return { startDate: startDateUTC, endDate: endDateUTC };
+    return { startDate: startDate, endDate: endDate };
 }
-

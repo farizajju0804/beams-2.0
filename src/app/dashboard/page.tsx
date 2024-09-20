@@ -4,26 +4,34 @@ import { getUserAnalyticsById } from '@/actions/dashboard/timeSpent';
 import { currentUser } from '@/libs/auth';
 import { getPollDataByUserId } from '@/actions/dashboard/pollData';
 import { getWatchedBeamsTodayContent } from '@/actions/dashboard/watchedContent';
-
 import { getUserLevelAndHistory } from '@/actions/dashboard/getUserLevelAndRecentHistory';
 import Achievements from './_components/Achievements';
 import Leaderboard from './_components/Leaderboard';
 
-import LevelBeams from './_components/LevalBeams';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { endOfWeek, startOfWeek } from 'date-fns';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
+import LevelBeams from './_components/LevalBeams';
 
-const page = async () => {
+const DashboardPage = async () => {
   const user: any = await currentUser();
-  const currentDate = ''
-  const userAnalytics: any = await getUserAnalyticsById(user?.id);
-  const pollData: any = await getPollDataByUserId(user?.id);
-  const watchedData: any = await getWatchedBeamsTodayContent(user?.id);
-  const { userLevel, beams, recentActivities, accumulatedPoints } = await getUserLevelAndHistory(user?.id);
-  const { entries: leaderboardEntries, userPosition,userPoints, message, startDate, endDate } = await getLeaderboardData(currentDate ,user?.id, user?.userType);
-  const previous = await getTop3EntriesForMostRecentWeek(currentDate,user?.userType)
- console.log(previous)
+
+  const [
+    userAnalytics,
+    pollData,
+    watchedData,
+    { userLevel, beams, recentActivities, accumulatedPoints },
+    leaderboardData,
+    previousWeekTop3
+  ]:any = await Promise.all([
+    getUserAnalyticsById(user?.id),
+    getPollDataByUserId(user?.id),
+    getWatchedBeamsTodayContent(user?.id),
+    getUserLevelAndHistory(user?.id),
+    getLeaderboardData(user?.id, user?.userType),
+    getTop3EntriesForMostRecentWeek(user?.userType)
+  ]);
+
+
 
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
@@ -38,10 +46,15 @@ const page = async () => {
         recentActivities={recentActivities}
         accumulatedPoints={accumulatedPoints}
       />
-      <Leaderboard previous={previous} startDate={startDate} endDate={endDate} userId={user?.id} users={leaderboardEntries} userPosition={userPosition} userType={user?.userType}  userPoints={userPoints} message={message} />
+      <Leaderboard
+        userId={user?.id}
+        initialData={leaderboardData}
+        userType={user?.userType}
+        previous={previousWeekTop3}
+      />
       <Achievements />
     </div>
   );
-}
+};
 
-export default page;
+export default DashboardPage;

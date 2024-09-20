@@ -29,7 +29,7 @@ export interface LeaderboardData {
   endDate?: string;   // Change to string
 }
 
-export const getLeaderboardData = async (start:string, userId: string, userType: UserType): Promise<LeaderboardData> => {
+export const getLeaderboardData = async ( userId: string, userType: UserType,start?:string): Promise<LeaderboardData> => {
    
   // const now2 =  start ? new Date(start) : new Date()
   const now = new Date(); // Current server date
@@ -42,7 +42,7 @@ export const getLeaderboardData = async (start:string, userId: string, userType:
  
 
   // endDate.setHours(17, 59, 59, 999);
-  const {startDate , endDate } = getPreviousAndNextDates(5)
+  const {startDate , endDate } = getPreviousAndNextDates(5,start)
   console.log("start", startDate)
   console.log("end", endDate)
 
@@ -72,7 +72,7 @@ export const getLeaderboardData = async (start:string, userId: string, userType:
 
   if (leaderboardEntries.length < 3) {
     console.log("Not enough leaderboard entries available.");
-    return { entries: [], message: "Not enough data available for the current week's leaderboard." };
+    return { entries: [], message: "Not enough data available for the current week's leaderboard. It will be updated here soon." };
   }
 
   const userEntry = leaderboardEntries.find(entry => entry.userId === userId);
