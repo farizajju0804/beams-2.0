@@ -26,7 +26,7 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
             // Set end date to next occurrence of the target day (next week) at 17:59:59.999 UTC
             endDate = new Date(startDate);
             endDate.setUTCDate(endDate.getUTCDate() + 7);
-            endDate.setUTCHours(16,12, 59, 999); // Ensure it's set to 17:59:59.999
+            endDate.setUTCHours(16,17, 59, 999); // Ensure it's set to 17:59:59.999
             console.log("End Date set to next week:", endDate.toISOString());
         } else {
             console.log("Current time is before 6 PM.");
@@ -35,7 +35,7 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
             console.log("Start Date set to previous week:", startDate.toISOString());
 
             // Set end date to today at 17:59:59.999 UTC
-            endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 16, 12, 59, 999));
+            endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 16, 17, 59, 999));
             console.log("End Date set to today:", endDate.toISOString());
         }
     } else {
@@ -54,7 +54,7 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
         // Set end date to the next occurrence of the target day (next week) at 17:59:59.999 UTC
         endDate = new Date(startDate);
         endDate.setUTCDate(endDate.getUTCDate() + 7);
-        endDate.setUTCHours(16,12, 59, 999); // Ensure it's set to 17:59:59.999
+        endDate.setUTCHours(16,17, 59, 999); // Ensure it's set to 17:59:59.999
         console.log("End Date set to next occurrence:", endDate.toISOString());
     }
 
