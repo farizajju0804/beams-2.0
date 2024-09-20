@@ -201,37 +201,36 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
 
   const openResultsModal = async () => {
     setIsLoading(true);
-    setLastWeekMessage(null); // Reset the message at the start
+    setLastWeekMessage(null);
   
     try {
-      console.log("Fetching last week's data...");
+      console.log("Fetching last week's data for userType:", userType);
       const data = await getTop3EntriesForMostRecentWeek(userType);
-      console.log("Received data:", data);
+      console.log("Received data:", JSON.stringify(data, null, 2));
   
       if (data && Array.isArray(data) && data.length > 0) {
-        console.log("Setting lastWeekUsers with data:", data);
+        console.log("Setting lastWeekUsers with data");
         setLastWeekUsers(data);
+        setLastWeekMessage(null);
       } else {
         console.log("No valid data received for last week");
-        setLastWeekMessage("No data available for last week's top performers.");
+        setLastWeekUsers([]);
+        setLastWeekMessage("No top performers data available for last week.");
       }
     } catch (error) {
       console.error('Error fetching last week data:', error);
+      setLastWeekUsers([]);
       setLastWeekMessage("An error occurred while fetching last week's data. Please try again.");
     } finally {
       setIsLoading(false);
     }
   
-    // Open the modal regardless of whether we have data or not
-    console.log("Opening modal. lastWeekUsers:", lastWeekUsers);
     setShowModal(true);
   
-    // Only trigger confetti if we have valid data
     if (lastWeekUsers.length > 0) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
   };
-
  
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
@@ -316,14 +315,14 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
      
       <CustomModal isOpen={showModal} onClose={() => setShowModal(false)} message={lastWeekMessage}>
   {isLoading ? (
-    <p>Loading last week data...</p>
+    <p>Loading last week's data...</p>
   ) : lastWeekUsers.length > 0 ? (
     <>
       <p className="mb-4">Congratulations to our top performers!</p>
-      {lastWeekUsers.slice(0, 3).map((user: any, index) => (
-        <div key={user?.id} className="flex items-center mb-6">
-          <Avatar src={user?.user?.image} showFallback isBordered alt='profile' size="lg" className="mr-4" />
-          <span className="font-bold">{index + 1}. {user?.user?.firstName || 'Unknown'} {user?.user?.lastName || ''}</span>
+      {lastWeekUsers.map((user: LeaderboardEntry) => (
+        <div key={user.id} className="flex items-center mb-6">
+          <Avatar src={user.user?.image || undefined} showFallback isBordered alt='profile' size="lg" className="mr-4" />
+          <span className="font-bold">{user.rank}. {user.user?.firstName || 'Unknown'} {user.user?.lastName || ''}</span>
           <span className="ml-2">{user.points} points</span>
         </div>
       ))}
