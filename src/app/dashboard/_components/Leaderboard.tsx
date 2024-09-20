@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { Avatar, Button, Spinner } from '@nextui-org/react';
+import { Avatar, Spinner } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 
 interface LeaderboardProps {
@@ -147,13 +147,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     setIsLoading(true);
     setIsTimerActive(false);
     setIsPastCutoff(true);
-    
-    
+   
     if (initialData.startDate && currentEndDate) {
       await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
     }
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     // Fetch last week's data
+    await new Promise(resolve => setTimeout(resolve, 1000));
     await fetchLastWeekData();
 
     // Fetch next week's leaderboard data
@@ -204,7 +204,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     if (lastWeekUsers.length === 0) {
       setIsLoading(true);
       try {
-        const data = await getTop3EntriesForMostRecentWeek(userType); // Await the data fetching
+        const data = await getTop3EntriesForMostRecentWeek(userType);
         if (data && data.length > 0) {
           setLastWeekUsers(data);
         }
@@ -214,14 +214,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         setIsLoading(false);
       }
     }
-    
-    // Only open the modal if there are users available
-    if (lastWeekUsers.length > 0) {
-      setShowModal(true);
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    }
+    setShowModal(true);
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
-  
 
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
@@ -289,12 +284,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
             )} 
             {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
   <div className="mt-4 text-center">
-    <Button
+    <button 
       onClick={openResultsModal} 
-      className="bg-brand text-white font-bold py-2 px-4 text-lg rounded"
+      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
     >
       View Last Week Results
-    </Button>
+    </button>
     <p className="mt-4 text-lg font-semibold text-center">
       {hasNewWeekData ? "New week has started. Check last week's results!" : "Leaderboard for this week has ended. Check the results!"}
     </p>
