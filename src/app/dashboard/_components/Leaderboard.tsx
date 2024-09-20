@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { Avatar } from '@nextui-org/react';
+import { Avatar, Spinner } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 
 interface LeaderboardProps {
@@ -144,42 +144,53 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   };
 
   const handleTimerEnd = async (shouldShowModal: boolean) => {
+    setIsLoading(true);
     setIsTimerActive(false);
     setIsPastCutoff(true);
-   
-    if (initialData.startDate && currentEndDate) {
-      await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
-    }
-    
-    // Fetch last week's data
-    await fetchLastWeekData();
 
-    // Fetch next week's leaderboard data
-    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z');
-    
-    if (nextWeekData.entries && nextWeekData.entries.length > 0) {
-      setCurrentUsers(nextWeekData.entries);
-      setUpdatedUserPosition(nextWeekData.userPosition);
-      setUpdatedUserPoints(nextWeekData.userPoints);
-      setLeaderboardMessage(null);
+    try {
+      const [_, nextWeekData, lastWeekData] = await Promise.all([
+        initialData.startDate && currentEndDate
+          ? recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType)
+          : Promise.resolve(),
+        getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z'),
+        getTop3EntriesForMostRecentWeek(userType)
+      ]);
 
-      // Reset timer for next week
-      if (nextWeekData.endDate) {
-        setCurrentEndDate(nextWeekData.endDate);
-        setIsTimerActive(true);
-        setIsPastCutoff(false);
+      if (nextWeekData.entries && nextWeekData.entries.length > 0) {
+        setCurrentUsers(nextWeekData.entries);
+        setUpdatedUserPosition(nextWeekData.userPosition);
+        setUpdatedUserPoints(nextWeekData.userPoints);
+        setLeaderboardMessage(null);
+
+        if (nextWeekData.endDate) {
+          setCurrentEndDate(nextWeekData.endDate);
+          setIsTimerActive(true);
+          setIsPastCutoff(false);
+        }
+      } else {
+        setCurrentUsers([]);
+        setUpdatedUserPosition(undefined);
+        setUpdatedUserPoints(undefined);
+        setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
       }
-    } else {
-      setCurrentUsers([]);
-      setUpdatedUserPosition(undefined);
-      setUpdatedUserPoints(undefined);
-      setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
+
+      if (lastWeekData && lastWeekData.length > 0) {
+        setLastWeekUsers(lastWeekData);
+      }
+
+      setHasNewWeekData(true);
+
+      if (shouldShowModal && userWatchedTimerEnd) {
+        setShowModal(true);
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+    } catch (error) {
+      console.error('Error updating leaderboard:', error);
+      setLeaderboardMessage("An error occurred while updating the leaderboard. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
-   
-    if (shouldShowModal && userWatchedTimerEnd) {
-      openResultsModal();
-    }
-    setHasNewWeekData(true);
   };
 
   const fetchLastWeekData = async () => {
@@ -199,32 +210,34 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     }
   };
   const openResultsModal = async () => {
-    setIsLoading(true);
-    let data = await fetchLastWeekData();
-    if (data.length === 0) {
-      // If no data, try fetching again (in case there was a temporary issue)
-      data = await fetchLastWeekData();
+    if (lastWeekUsers.length === 0) {
+      setIsLoading(true);
+      try {
+        const data = await getTop3EntriesForMostRecentWeek(userType);
+        if (data && data.length > 0) {
+          setLastWeekUsers(data);
+        }
+      } catch (error) {
+        console.error('Error fetching last week data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false);
-    
-    if (data.length > 0) {
-      setShowModal(true);
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    } else {
-      // Handle the case where there's no data even after retrying
-      console.log("No data available for last week's results");
-      // You might want to show a message to the user here
-    }
+    setShowModal(true);
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+ 
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
   const [firstPlace, secondPlace, thirdPlace] = sortedUsers;
   return (
-    <div>
+    <div className="relative">
+    {isLoading && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+        <Spinner size="lg" color="primary" />
+      </div>
+    )}
       <Heading heading={"Leaderboard"} />
       {leaderboardMessage && <p className="text-text text-center">{leaderboardMessage}</p>}
       
