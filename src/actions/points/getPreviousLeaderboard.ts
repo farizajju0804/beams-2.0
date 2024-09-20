@@ -24,9 +24,9 @@ export const getTop3EntriesForMostRecentWeek = async (
 ): Promise<LeaderboardEntry[]> => {
   try {
     const baseDate = start ? new Date(start) : new Date();
-    const now = new Date(baseDate.getTime() + 2000); // Add 2 seconds (2000 milliseconds)
+    const now = new Date(baseDate.getTime() + 60 * 1000); // Add 2 seconds (2000 milliseconds)
     console.log("Base time:", baseDate.toISOString());
-    console.log("Adjusted time (now + 2 seconds):", now.toISOString());
+    console.log("Adjusted time:", now.toISOString());
     console.log("User Type:", userType);
 
     // Find the most recent end date for completed weeks
@@ -79,7 +79,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
+    // console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
 
     
 
