@@ -1,4 +1,5 @@
 'use server';
+
 import { db } from '@/libs/db';
 import { UserType } from '@prisma/client';
 
@@ -22,11 +23,14 @@ export const getTop3EntriesForMostRecentWeek = async (
   start?: string,
 ): Promise<LeaderboardEntry[]> => {
   try {
-    const now = start ? new Date(start) : new Date();
-    console.log("Current time:", now.toISOString());
+    const baseDate = start ? new Date(start) : new Date();
+    const now = new Date(baseDate.getTime() + 2000); // Add 2 seconds (2000 milliseconds)
+    console.log("Base time:", baseDate.toISOString());
+    console.log("Adjusted time (now + 2 seconds):", now.toISOString());
     console.log("User Type:", userType);
 
     // Find the most recent end date for completed weeks
+    console.log("Querying for most recent end date...");
     const mostRecentEndDateResult = await db.leaderboard.findFirst({
       where: {
         endDate: {
@@ -42,7 +46,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    // console.log("Most recent end date result:", mostRecentEndDateResult);
+    console.log("Most recent end date result:", JSON.stringify(mostRecentEndDateResult, null, 2));
 
     if (!mostRecentEndDateResult) {
       console.log("No completed weeks found");
@@ -50,9 +54,10 @@ export const getTop3EntriesForMostRecentWeek = async (
     }
 
     const mostRecentEndDate = mostRecentEndDateResult.endDate;
-    // console.log("Most recent end date:", mostRecentEndDate.toISOString());
+    console.log("Most recent end date:", mostRecentEndDate.toISOString());
 
     // Fetch the top 3 entries for that end date
+    console.log("Querying for top 3 entries...");
     const top3Entries = await db.leaderboard.findMany({
       where: {
         endDate: mostRecentEndDate,
@@ -74,12 +79,14 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    // console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
+    console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
 
-    // Return the entries as they are, since they already match the LeaderboardEntry interface
+    
+
     return top3Entries;
   } catch (error) {
-    console.error("Error in getTop3EntriesForMostRecentWeek:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    console.error("Error in getTop3EntriesForMostRecentWeek:");
+    console.error(error);
+    throw error; 
   }
 };

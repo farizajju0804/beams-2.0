@@ -152,8 +152,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
     }
     
-    // Fetch last week's data
-    await new Promise(resolve => setTimeout(resolve, 1000));
+ 
     await fetchLastWeekData();
 
     // Fetch next week's leaderboard data
