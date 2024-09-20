@@ -147,11 +147,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     setIsLoading(true);
     setIsTimerActive(false);
     setIsPastCutoff(true);
-   
+    
+    
     if (initialData.startDate && currentEndDate) {
       await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
     }
-    
+    await new Promise(resolve => setTimeout(resolve, 1000));
     // Fetch last week's data
     await fetchLastWeekData();
 
@@ -203,7 +204,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     if (lastWeekUsers.length === 0) {
       setIsLoading(true);
       try {
-        const data = await fetchLastWeekData(); // Await the data fetching
+        const data = await getTop3EntriesForMostRecentWeek(userType); // Await the data fetching
         if (data && data.length > 0) {
           setLastWeekUsers(data);
         }
