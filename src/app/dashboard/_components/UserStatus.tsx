@@ -24,7 +24,10 @@ interface UserStatusProps {
     const textColor = rank <= 10 ? "text-black" : "text-grey-2";
   
     return (
+       <>
+         {(rank && score) ? (
         <div className="px-4 w-full flex flex-col gap-6 mt-4 items-center justify-center">
+          
       <div className={`${bgColor} w-full md:w-2/6 p-4 rounded-3xl flex items-center justify-between shadow-lg mx-auto text-lg ${textColor}`}>
       <div className="flex items-center gap-4">
         <span className="w-8 h-8 bg-text text-background flex items-center justify-center rounded-full">{rank}</span>
@@ -34,6 +37,8 @@ interface UserStatusProps {
       </div>
         <p className="mx-auto font-medium text-center text-base md:text-lg">{getMessageForRank(rank)}</p>
     </div>
+     ) : <p className="w-full mt-4 text-center mx-auto">Start acclaiming beams to position yourself in the leaderboard</p>}
+    </>
     );
   };
   

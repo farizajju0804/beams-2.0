@@ -152,9 +152,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     }
     
     // Fetch last week's data
-    const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
-    console.log('lastweekdata',lastWeekData)
-    setLastWeekUsers(lastWeekData);
+    await fetchLastWeekData();
 
     // Fetch next week's leaderboard data
     const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z');
@@ -184,7 +182,23 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     setHasNewWeekData(true);
   };
 
-  const openResultsModal = () => {
+  const fetchLastWeekData = async () => {
+    try {
+      const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
+      console.log('lastweekdata', lastWeekData);
+      if (lastWeekData && lastWeekData.length > 2) {
+        setLastWeekUsers(lastWeekData);
+      } else {
+        console.log('No data available for last week');
+      }
+    } catch (error) {
+      console.error('Error fetching last week data:', error);
+    }
+  };
+  const openResultsModal = async () => {
+    if (lastWeekUsers.length === 0) {
+      await fetchLastWeekData();
+    } 
     setShowModal(true);
     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };

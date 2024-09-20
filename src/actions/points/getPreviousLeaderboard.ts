@@ -18,32 +18,38 @@ export interface User {
     user: User | null; // Ensure user is always present
   }
 
-  export const getTop3EntriesForMostRecentWeek = async ( userType: UserType,start?:string,): Promise<LeaderboardEntry[]> => {
-    // Step 1: Find the most recent end date for completed weeks
-  const now =  start ? new Date(start) : new Date()
-  // const now =   new Date()
-    
+  export const getTop3EntriesForMostRecentWeek = async (
+    userType: UserType,
+    start?: string,
+  ): Promise<LeaderboardEntry[]> => {
+    const now = start ? new Date(start) : new Date();
+    console.log("Current time:", now.toISOString());
+  
+    // Find the most recent end date for completed weeks
     const mostRecentEndDateResult = await db.leaderboard.findFirst({
       where: {
         endDate: {
-          lt: now,
+          lte: now, // Changed from lt to lte
         },
         userType,
       },
       orderBy: {
-        endDate: 'desc', // Get the most recent end date
+        endDate: 'desc',
       },
       select: {
-        endDate: true, // Only select the end date
+        endDate: true,
       },
     });
   
+    console.log("Most recent end date result:", mostRecentEndDateResult);
+  
     if (!mostRecentEndDateResult) {
-      return []; // No completed weeks found
+      console.log("No completed weeks found");
+      return [];
     }
   
     const mostRecentEndDate = mostRecentEndDateResult.endDate;
-  
+    console.log("Most recent end date:", mostRecentEndDate.toISOString());
     // Step 2: Fetch the top 3 entries for that end date
     const top3Entries = await db.leaderboard.findMany({
       where: {
