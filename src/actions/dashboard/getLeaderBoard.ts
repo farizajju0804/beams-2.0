@@ -1,9 +1,12 @@
 'use server';
 import { db } from '@/libs/db';
+import { getPreviousAndNextDates } from '@/utils/dateRange';
+import { UserType } from '@prisma/client';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
 export interface User {
   id: string;
+  image: string | null;
   firstName: string | null;
   lastName: string | null;
   name: string; // Derived from firstName and lastName
@@ -26,20 +29,31 @@ export interface LeaderboardData {
   endDate?: string;   // Change to string
 }
 
-export const getLeaderboardData = async (userId: string): Promise<LeaderboardData> => {
-  const now = new Date();
-  const startDate = startOfWeek(now, { weekStartsOn: 1 });
-  const endDate = endOfWeek(now, { weekStartsOn: 1 });
+export const getLeaderboardData = async (start:string, userId: string, userType: UserType): Promise<LeaderboardData> => {
+   
+  // const now2 =  start ? new Date(start) : new Date()
+  const now = new Date(); // Current server date
+  // const startDate = startOfWeek(now, { weekStartsOn: 5 });
+  // const endDate = endOfWeek(now, { weekStartsOn: 6 });
 
-  const startDateUTC = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000);
-  const endDateUTC = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
+  // console.log(now)
 
-  console.log(`Fetching leaderboard entries from ${startDateUTC.toISOString()} to ${endDateUTC.toISOString()}`);
+  // startDate.setHours(18, 0, 0, 0); 
+ 
 
+  // endDate.setHours(17, 59, 59, 999);
+  const {startDate , endDate } = getPreviousAndNextDates(5)
+  console.log("start", startDate)
+  console.log("end", endDate)
+
+  console.log(`Fetching leaderboard entries from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+
+  // Fetch leaderboard entries based on user type passed as an argument
   const leaderboardEntries = await db.leaderboard.findMany({
     where: {
-      startDate: startDateUTC,
-      endDate: endDateUTC,
+      startDate: startDate,
+      endDate: endDate,
+      userType, // Use the passed userType argument
     },
     orderBy: {
       points: 'desc',
@@ -50,6 +64,7 @@ export const getLeaderboardData = async (userId: string): Promise<LeaderboardDat
           id: true,
           firstName: true,
           lastName: true,
+          image: true,
         },
       },
     },
@@ -57,7 +72,7 @@ export const getLeaderboardData = async (userId: string): Promise<LeaderboardDat
 
   if (leaderboardEntries.length < 3) {
     console.log("Not enough leaderboard entries available.");
-    return { entries: [], message: "Not enough data available for the leaderboard." };
+    return { entries: [], message: "Not enough data available for the current week's leaderboard." };
   }
 
   const userEntry = leaderboardEntries.find(entry => entry.userId === userId);
@@ -77,21 +92,19 @@ export const getLeaderboardData = async (userId: string): Promise<LeaderboardDat
       id: entry.user.id,
       firstName: entry.user.firstName,
       lastName: entry.user.lastName,
+      image: entry.user.image,
       name: `${entry.user.firstName || ''} ${entry.user.lastName || ''}`.trim(), // Full name for display
     } : null,
   }));
 
   const userPoints = userEntry ? userEntry.points : 0; // Get the current user's points
 
-  console.log("User position:", userPosition);
-  console.log("User points:", userPoints);
-
   return {
     entries: entriesWithNames,
     userPosition,
     userPoints, // Include userPoints in the return
     message: null,
-    startDate: startDateUTC.toISOString(), // Return as ISO string
-    endDate: endDateUTC.toISOString(),  
+    startDate: startDate.toISOString(), // Return as ISO string
+    endDate: endDate.toISOString(),  
   };
 };

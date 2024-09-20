@@ -11,6 +11,7 @@ import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
 import { getUserByEmail, getUserById2 } from "./actions/auth/getUserByEmail";
+import { UserType } from "@prisma/client";
 
 // Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
@@ -74,6 +75,7 @@ export const {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
+        session.user.userType = token.userType as UserType;
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
@@ -100,6 +102,7 @@ export const {
           token.isOAuth = !!existingAccount; // Check if the user has an OAuth account
           token.firstName = existingUser.firstName;
           token.lastName = existingUser.lastName;
+          token.userType = existingUser.userType;
           token.email = existingUser.email;
           token.role = existingUser.role;
           token.image = existingUser.image;

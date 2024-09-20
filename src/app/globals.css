@@ -18,6 +18,11 @@
 
 
 }
+
+*{
+  padding: 0;
+  margin: 0;
+}
 :root{
   --plyr-color-main: #f96f2e;
   --primary : #f96f2e;

@@ -1,39 +1,27 @@
 "use server";
 import { db } from '@/libs/db';
-import { startOfWeek, endOfWeek } from 'date-fns';
+import { getPreviousAndNextDates } from '@/utils/dateRange';
+import { UserType } from '@prisma/client';
 
-export const updateLeaderboardEntry = async (userId: string, points: number) => {
-  // Calculate current week start and end dates
-  const now = new Date(); // Current server date
-  const startDate = startOfWeek(now, { weekStartsOn: 1 });
-  const endDate = endOfWeek(now, { weekStartsOn: 1 });
+export const updateLeaderboardEntry = async (userId: string, points: number, userType: UserType) => {
+  const { startDate, endDate } = getPreviousAndNextDates(5);
 
-  // Adjust to start of the day for startDate
-  startDate.setHours(0, 0, 0, 0); // Set to midnight in local time
-
-  // Adjust to end of the day for endDate
-  endDate.setHours(23, 59, 59, 999); // Set to the last millisecond of the day in local time
-
-  // Convert to UTC for storing in the database
-  const startDateUTC = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000);
-  const endDateUTC = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
-
-  console.log(`Start Date (ISO): ${startDateUTC.toISOString()}`);
-  console.log(`End Date (ISO): ${endDateUTC.toISOString()}`);
+  console.log(`Start Date (ISO): ${startDate.toISOString()}`);
+  console.log(`End Date (ISO): ${endDate.toISOString()}`);
 
   // Fetch existing leaderboard entry for the user
   const leaderboardEntry = await db.leaderboard.findFirst({
     where: {
       userId,
-      startDate: startDateUTC,
-      endDate: endDateUTC,
+      startDate: startDate,
+      endDate: endDate,
     },
   });
 
   if (leaderboardEntry) {
     // Update points for existing entry
     await db.leaderboard.update({
-      where: { id: leaderboardEntry.id }, // Use the id of the found entry
+      where: { id: leaderboardEntry.id },
       data: {
         points: { increment: points },
       },
@@ -42,8 +30,9 @@ export const updateLeaderboardEntry = async (userId: string, points: number) => 
     // Create a new leaderboard entry
     const currentEntries = await db.leaderboard.findMany({
       where: {
-        startDate: startDateUTC,
-        endDate: endDateUTC,
+        startDate: startDate,
+        endDate: endDate,
+        userType,
       },
     });
 
@@ -53,26 +42,29 @@ export const updateLeaderboardEntry = async (userId: string, points: number) => 
       data: {
         userId,
         points,
-        startDate: startDateUTC,
-        endDate: endDateUTC,
-        rank, // Include the calculated rank
+        startDate: startDate,
+        endDate: endDate,
+        rank,
+        userType,
       },
     });
   }
 
   // Recalculate ranks after updating
-  await recalculateLeaderboardRanks(startDateUTC, endDateUTC);
+  await recalculateLeaderboardRanks(startDate, endDate, userType);
 };
 
-const recalculateLeaderboardRanks = async (startDate: Date, endDate: Date) => {
+export const recalculateLeaderboardRanks = async (startDate: Date, endDate: Date, userType: UserType) => {
   const leaderboardEntries = await db.leaderboard.findMany({
     where: {
       startDate,
       endDate,
+      userType,
     },
-    orderBy: {
-      points: 'desc',
-    },
+    orderBy: [
+      { points: 'desc' }, // First order by points descending
+      { createdAt: 'asc' }, // Then order by createdAt ascending (earliest first)
+    ],
   });
 
   await Promise.all(

@@ -74,7 +74,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     await recordPointsHistory(userId, pointsAdded, 'BEAMS_TODAY', `Completed beams today of topic "${beamsToday.title}"`);
 
     // Update leaderboard entry
-    await updateLeaderboardEntry(userId, pointsAdded);
+    await updateLeaderboardEntry(userId, pointsAdded, user.userType);
 
     // Update watched content
     await db.beamsTodayWatchedContent.update({

@@ -354,10 +354,15 @@ model Leaderboard {
   endDate   DateTime
   createdAt DateTime? @default(now())
   user      User      @relation(fields: [userId], references: [id])
+  
+  userType  UserType  // "STUDENT" or "NON_STUDENT"
 
-  @@index([userId])
-  @@index([startDate, endDate])
+  @@index([userId]) // Index for quick user lookups
+  @@index([userType, startDate, endDate]) // Composite index for efficient queries based on user type and date range
+  @@index([userId, startDate, endDate]) // Composite index for efficient queries based on userId and date range
 }
+
+
 
 model Achievement {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId

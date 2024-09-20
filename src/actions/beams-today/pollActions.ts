@@ -82,7 +82,7 @@ export const recordPollResponse = async (pollOptionId: string) => {
 
     // Update or create leaderboard entry
     console.log(`Updating leaderboard entry for user ID: ${user.id} with points: 50`);
-    await updateLeaderboardEntry(user.id, 50);
+    await updateLeaderboardEntry(user.id,50,user.userType);
 
     console.log(`Poll response recorded successfully for user ID: ${user.id}`);
     return {
