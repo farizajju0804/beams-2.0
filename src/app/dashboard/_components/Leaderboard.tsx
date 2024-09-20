@@ -234,18 +234,18 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         <div className='px-4 w-full mx-auto'>
           <div className='flex flex-col items-center justify-center'>
             {currentUsers.length >= 3 && ( 
-              <div className="flex max-w-2xl justify-center items-end w-full gap-2 md:gap-4">
+              <div className="flex max-w-2xl mb-4 justify-center items-end w-full gap-2 md:gap-4">
                 {[secondPlace, firstPlace, thirdPlace].map((user: LeaderboardEntry) => (
                   <div key={user?.id} className="flex flex-col items-center">
                     <Avatar src={user?.user?.image || undefined} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
                     <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 rounded-t-lg py-6 px-2 md:px-4 flex flex-col items-center justify-between transition-all duration-300 ease-in-out`}>
-                      <Image src={getBadgeImage(user?.rank)} alt={`Rank ${user?.rank} badge`} width={60} height={80} />
+                      <Image src={getBadgeImage(user?.rank)} alt={`Rank ${user?.rank} badge`} width={40} height={60} />
                       
                       <div className='flex flex-col items-center'>
-                        <div className="text-center font-bold text-sm md:text-xl mb-1 md:mb-2 text-wrap w-full">
+                        <div className="text-center text-black font-bold text-sm md:text-xl mb-1 md:mb-2 text-wrap w-full">
                           {user?.user?.name}
                         </div>
-                        <div className="text-center text-xs md:text-lg">{user?.points}</div>
+                        <div className="text-center text-black text-xs md:text-lg">{user?.points}</div>
                       </div>
                       <div className="bg-black text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-lg md:text-2xl font-bold">
                         {user?.rank}
@@ -255,13 +255,18 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 ))}
               </div>
             )}
-            {updatedUserPosition !== undefined && updatedUserPoints !== undefined && (
+            {(updatedUserPosition && updatedUserPoints ) ? (
               <UserStatus rank={updatedUserPosition} score={updatedUserPoints} />
-            )}
+            )
+              : (
+        <p className="w-full mt-4 text-center mx-auto">Start acclaiming beams to position yourself in the leaderboard</p>
+
+              )
+          }
             {currentUsers.length >= 3 && isTimerActive && (
               <div className='w-full max-w-xl'>
                 <p className='my-4 mx-auto text-center'>Leaderboard will be reset in</p>
-                <div className="w-full max-w-xl flex justify-around p-4 border border-gray-300 rounded-lg bg-white shadow-lg">
+                <div className="w-full max-w-xl flex justify-around p-4 border border-gray-300 rounded-lg bg-background shadow-lg">
                   <div className="flex flex-col items-center">
                     <div className="text-2xl font-bold">{timeRemaining.days}</div>
                     <div className="text-sm">Days</div>
@@ -285,7 +290,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   <div className="mt-4 text-center">
     <button 
       onClick={openResultsModal} 
-      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+      className="bg-brand text-white font-bold py-2 px-4 rounded"
     >
       View Last Week Results
     </button>
