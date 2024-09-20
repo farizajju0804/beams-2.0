@@ -203,7 +203,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     if (lastWeekUsers.length === 0) {
       setIsLoading(true);
       try {
-        const data = await getTop3EntriesForMostRecentWeek(userType);
+        const data = await fetchLastWeekData(); // Await the data fetching
         if (data && data.length > 0) {
           setLastWeekUsers(data);
         }
@@ -213,9 +213,14 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         setIsLoading(false);
       }
     }
-    setShowModal(true);
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    
+    // Only open the modal if there are users available
+    if (lastWeekUsers.length > 0) {
+      setShowModal(true);
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
   };
+  
 
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
