@@ -186,21 +186,35 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     try {
       const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
       console.log('lastweekdata', lastWeekData);
-      if (lastWeekData && lastWeekData.length > 2) {
+      if (lastWeekData && lastWeekData.length > 0) {
         setLastWeekUsers(lastWeekData);
+        return lastWeekData;
       } else {
         console.log('No data available for last week');
+        return [];
       }
     } catch (error) {
       console.error('Error fetching last week data:', error);
+      return [];
     }
   };
   const openResultsModal = async () => {
-    if (lastWeekUsers.length === 0) {
-      await fetchLastWeekData();
-    } 
-    setShowModal(true);
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    setIsLoading(true);
+    let data = await fetchLastWeekData();
+    if (data.length === 0) {
+      // If no data, try fetching again (in case there was a temporary issue)
+      data = await fetchLastWeekData();
+    }
+    setIsLoading(false);
+    
+    if (data.length > 0) {
+      setShowModal(true);
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    } else {
+      // Handle the case where there's no data even after retrying
+      console.log("No data available for last week's results");
+      // You might want to show a message to the user here
+    }
   };
 
   if (isLoading) {

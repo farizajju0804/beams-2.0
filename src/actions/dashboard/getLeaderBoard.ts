@@ -72,7 +72,7 @@ export const getLeaderboardData = async ( userId: string, userType: UserType,sta
 
   if (leaderboardEntries.length < 3) {
     console.log("Not enough leaderboard entries available.");
-    return { entries: [], message: "Not enough data available for the current week's leaderboard. It will be updated here soon." };
+    return { entries: [], message: "Current week's leaderboard will be updated here soon." };
   }
 
   const userEntry = leaderboardEntries.find(entry => entry.userId === userId);
