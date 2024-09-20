@@ -42,7 +42,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    console.log("Most recent end date result:", mostRecentEndDateResult);
+    // console.log("Most recent end date result:", mostRecentEndDateResult);
 
     if (!mostRecentEndDateResult) {
       console.log("No completed weeks found");
@@ -50,7 +50,7 @@ export const getTop3EntriesForMostRecentWeek = async (
     }
 
     const mostRecentEndDate = mostRecentEndDateResult.endDate;
-    console.log("Most recent end date:", mostRecentEndDate.toISOString());
+    // console.log("Most recent end date:", mostRecentEndDate.toISOString());
 
     // Fetch the top 3 entries for that end date
     const top3Entries = await db.leaderboard.findMany({
@@ -74,7 +74,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
+    // console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
 
     // Return the entries as they are, since they already match the LeaderboardEntry interface
     return top3Entries;

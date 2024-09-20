@@ -45,7 +45,7 @@ const getBadgeImage = (position: number) => {
   }
 };
 
-const CustomModal = ({ isOpen, onClose, children, message }: any) => {
+const CustomModal = ({ isOpen, onClose, children }: any) => {
   if (!isOpen) return null;
 
   return (
@@ -59,12 +59,11 @@ const CustomModal = ({ isOpen, onClose, children, message }: any) => {
             </svg>
           </button>
         </div>
-        {message ? <p className="text-center text-red-500 mb-4">{message}</p> : null}
         {children}
       </div>
     </div>
   );
-}
+};
 const Leaderboard: React.FC<LeaderboardProps> = ({ 
   userId, 
   initialData,
@@ -82,13 +81,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [updatedUserPoints, setUpdatedUserPoints] = useState<number | undefined>(initialData.userPoints);
   const [currentEndDate, setCurrentEndDate] = useState<string | undefined>(initialData.endDate);
   const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
-const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
   const [hasNewWeekData, setHasNewWeekData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    console.log("lastWeekUsers state updated:", lastWeekUsers);
-    console.log("lastWeekMessage state updated:", lastWeekMessage);
-  }, [lastWeekUsers, lastWeekMessage]);
+
   useEffect(() => {
     const checkAndUpdateData = async () => {
       setIsLoading(true);
@@ -152,86 +147,76 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
     setIsLoading(true);
     setIsTimerActive(false);
     setIsPastCutoff(true);
-
-    try {
-      const [_, nextWeekData, lastWeekData] = await Promise.all([
-        initialData.startDate && currentEndDate
-          ? recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType)
-          : Promise.resolve(),
-        getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z'),
-        getTop3EntriesForMostRecentWeek(userType)
-      ]);
-
-      if (nextWeekData.entries && nextWeekData.entries.length > 0) {
-        setCurrentUsers(nextWeekData.entries);
-        setUpdatedUserPosition(nextWeekData.userPosition);
-        setUpdatedUserPoints(nextWeekData.userPoints);
-        setLeaderboardMessage(null);
-
-        if (nextWeekData.endDate) {
-          setCurrentEndDate(nextWeekData.endDate);
-          setIsTimerActive(true);
-          setIsPastCutoff(false);
-        }
-      } else {
-        setCurrentUsers([]);
-        setUpdatedUserPosition(undefined);
-        setUpdatedUserPoints(undefined);
-        setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
-      }
-
-      if (lastWeekData && lastWeekData.length > 0) {
-        setLastWeekUsers(lastWeekData);
-      }
-
-      setHasNewWeekData(true);
-
-      if (shouldShowModal && userWatchedTimerEnd) {
-        setShowModal(true);
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      }
-    } catch (error) {
-      console.error('Error updating leaderboard:', error);
-      setLeaderboardMessage("An error occurred while updating the leaderboard. Please try again later.");
-    } finally {
-      setIsLoading(false);
+   
+    if (initialData.startDate && currentEndDate) {
+      await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(currentEndDate), userType);
     }
+    
+    // Fetch last week's data
+    await fetchLastWeekData();
+
+    // Fetch next week's leaderboard data
+    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z');
+    
+    if (nextWeekData.entries && nextWeekData.entries.length > 0) {
+      setCurrentUsers(nextWeekData.entries);
+      setUpdatedUserPosition(nextWeekData.userPosition);
+      setUpdatedUserPoints(nextWeekData.userPoints);
+      setLeaderboardMessage(null);
+
+      // Reset timer for next week
+      if (nextWeekData.endDate) {
+        setCurrentEndDate(nextWeekData.endDate);
+        setIsTimerActive(true);
+        setIsPastCutoff(false);
+      }
+    } else {
+      setCurrentUsers([]);
+      setUpdatedUserPosition(undefined);
+      setUpdatedUserPoints(undefined);
+      setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
+    }
+   
+    if (shouldShowModal && userWatchedTimerEnd) {
+      openResultsModal();
+    }
+    setHasNewWeekData(true);
   };
 
-
-  const openResultsModal = async () => {
-    setIsLoading(true);
-    setLastWeekMessage(null);
-  
+  const fetchLastWeekData = async () => {
     try {
-      console.log("Fetching last week's data for userType:", userType);
-      const data = await getTop3EntriesForMostRecentWeek(userType);
-      console.log("Received data:", JSON.stringify(data, null, 2));
-  
-      if (data && Array.isArray(data) && data.length > 0) {
-        console.log("Setting lastWeekUsers with data");
-        setLastWeekUsers(data);
-        setLastWeekMessage(null);
+      const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
+      console.log('lastweekdata', lastWeekData);
+      if (lastWeekData && lastWeekData.length > 0) {
+        setLastWeekUsers(lastWeekData);
+        return lastWeekData;
       } else {
-        console.log("No valid data received for last week");
-        setLastWeekUsers([]);
-        setLastWeekMessage("No top performers data available for last week.");
+        console.log('No data available for last week');
+        return [];
       }
     } catch (error) {
       console.error('Error fetching last week data:', error);
-      setLastWeekUsers([]);
-      setLastWeekMessage("An error occurred while fetching last week's data. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  
-    setShowModal(true);
-  
-    if (lastWeekUsers.length > 0) {
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      return [];
     }
   };
- 
+  const openResultsModal = async () => {
+    if (lastWeekUsers.length === 0) {
+      setIsLoading(true);
+      try {
+        const data = await getTop3EntriesForMostRecentWeek(userType);
+        if (data && data.length > 0) {
+          setLastWeekUsers(data);
+        }
+      } catch (error) {
+        console.error('Error fetching last week data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    setShowModal(true);
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
   const [firstPlace, secondPlace, thirdPlace] = sortedUsers;
@@ -298,9 +283,9 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
             )} 
             {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
   <div className="mt-4 text-center">
-    <Button 
+    <Button
       onClick={openResultsModal} 
-      className="bg-primary text-white text-lg font-bold py-2 px-4 rounded"
+      className="bg-brand text-white font-bold py-2 px-4 text-lg rounded"
     >
       View Last Week Results
     </Button>
@@ -313,24 +298,16 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
         </div>
       </div>
      
-      <CustomModal isOpen={showModal} onClose={() => setShowModal(false)} message={lastWeekMessage}>
-  {isLoading ? (
-    <p>Loading last weeks data...</p>
-  ) : lastWeekUsers.length > 0 ? (
-    <>
-      <p className="mb-4">Congratulations to our top performers!</p>
-      {lastWeekUsers.map((user: LeaderboardEntry) => (
-        <div key={user.id} className="flex items-center mb-6">
-          <Avatar src={user.user?.image || undefined} showFallback isBordered alt='profile' size="lg" className="mr-4" />
-          <span className="font-bold">{user.rank}. {user.user?.firstName || 'Unknown'} {user.user?.lastName || ''}</span>
-          <span className="ml-2">{user.points} points</span>
-        </div>
-      ))}
-    </>
-  ) : (
-    <p>{lastWeekMessage || "No data available for last week's top performers."}</p>
-  )}
-</CustomModal>
+      <CustomModal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <p className="mb-4">Congratulations to our top performers!</p>
+        {lastWeekUsers.slice(0, 3).map((user: any, index) => (
+          <div key={user?.id} className="flex items-center mb-6">
+            <Avatar src={user?.user?.image} showFallback isBordered alt='profile' size="lg" className="mr-4" />
+            <span className="font-bold">{index + 1}. {user?.user?.firstName} {user?.user?.lastName}</span>
+            <span className="ml-2">{user.points} points</span>
+          </div>
+        ))}
+      </CustomModal>
     </div>
   );
 };
