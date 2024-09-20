@@ -30,7 +30,7 @@ export const getTop3EntriesForMostRecentWeek = async (
     const mostRecentEndDateResult = await db.leaderboard.findFirst({
       where: {
         endDate: {
-          lte: now,
+          lt: now,
         },
         userType,
       },

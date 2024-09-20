@@ -315,7 +315,7 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
      
       <CustomModal isOpen={showModal} onClose={() => setShowModal(false)} message={lastWeekMessage}>
   {isLoading ? (
-    <p>Loading last week's data...</p>
+    <p>Loading last weeks data...</p>
   ) : lastWeekUsers.length > 0 ? (
     <>
       <p className="mb-4">Congratulations to our top performers!</p>
