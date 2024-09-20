@@ -318,7 +318,7 @@ const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
       ))}
     </>
   ) : (
-    <p>No data available for last week's top performers.</p>
+    <p>No data available for last week&apos;s top performers.</p>
   )}
 </CustomModal>
     </div>
