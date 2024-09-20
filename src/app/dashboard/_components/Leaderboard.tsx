@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { Avatar, Spinner } from '@nextui-org/react';
+import { Avatar, Button, Spinner } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 
 interface LeaderboardProps {
@@ -45,25 +45,26 @@ const getBadgeImage = (position: number) => {
   }
 };
 
-const CustomModal = ({ isOpen, onClose, children }: any) => {
+const CustomModal = ({ isOpen, onClose, children, message }: any) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-background p-8 rounded-lg max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Last Week&apos;s Top 3!</h2>
+          <h2 className="text-2xl font-bold">Last Week's Top 3!</h2>
           <button onClick={onClose} className="text-text">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
+        {message ? <p className="text-center text-red-500 mb-4">{message}</p> : null}
         {children}
       </div>
     </div>
   );
-};
+}
 const Leaderboard: React.FC<LeaderboardProps> = ({ 
   userId, 
   initialData,
@@ -81,6 +82,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [updatedUserPoints, setUpdatedUserPoints] = useState<number | undefined>(initialData.userPoints);
   const [currentEndDate, setCurrentEndDate] = useState<string | undefined>(initialData.endDate);
   const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
+const [lastWeekMessage, setLastWeekMessage] = useState<string | null>(null);
   const [hasNewWeekData, setHasNewWeekData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -193,38 +195,32 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     }
   };
 
-  const fetchLastWeekData = async () => {
-    try {
-      const lastWeekData = await getTop3EntriesForMostRecentWeek(userType);
-      console.log('lastweekdata', lastWeekData);
-      if (lastWeekData && lastWeekData.length > 0) {
-        setLastWeekUsers(lastWeekData);
-        return lastWeekData;
-      } else {
-        console.log('No data available for last week');
-        return [];
-      }
-    } catch (error) {
-      console.error('Error fetching last week data:', error);
-      return [];
-    }
-  };
+
   const openResultsModal = async () => {
-    if (lastWeekUsers.length === 0) {
-      setIsLoading(true);
-      try {
+    setIsLoading(true);
+    try {
+      if (lastWeekUsers.length === 0) {
         const data = await getTop3EntriesForMostRecentWeek(userType);
         if (data && data.length > 0) {
           setLastWeekUsers(data);
+          setLastWeekMessage(null);
+        } else {
+          console.log('No data available for last week');
+          setLastWeekMessage("No data available for last week's top performers.");
         }
-      } catch (error) {
-        console.error('Error fetching last week data:', error);
-      } finally {
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error('Error fetching last week data:', error);
+      setLastWeekMessage("An error occurred while fetching last week's data. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
+  
+    // Open the modal regardless of whether we have data or not
     setShowModal(true);
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    if (lastWeekUsers.length > 0) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
   };
 
  
@@ -294,12 +290,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
             )} 
             {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
   <div className="mt-4 text-center">
-    <button 
+    <Button 
       onClick={openResultsModal} 
-      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+      className="bg-primary text-white text-lg font-bold py-2 px-4 rounded"
     >
       View Last Week Results
-    </button>
+    </Button>
     <p className="mt-4 text-lg font-semibold text-center">
       {hasNewWeekData ? "New week has started. Check last week's results!" : "Leaderboard for this week has ended. Check the results!"}
     </p>
@@ -309,16 +305,22 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
       </div>
      
-      <CustomModal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <p className="mb-4">Congratulations to our top performers!</p>
-        {lastWeekUsers.slice(0, 3).map((user: any, index) => (
-          <div key={user?.id} className="flex items-center mb-6">
-            <Avatar src={user?.user?.image} showFallback isBordered alt='profile' size="lg" className="mr-4" />
-            <span className="font-bold">{index + 1}. {user?.user?.firstName} {user?.user?.lastName}</span>
-            <span className="ml-2">{user.points} points</span>
-          </div>
-        ))}
-      </CustomModal>
+      <CustomModal isOpen={showModal} onClose={() => setShowModal(false)} message={lastWeekMessage}>
+  {lastWeekUsers.length > 0 ? (
+    <>
+      <p className="mb-4">Congratulations to our top performers!</p>
+      {lastWeekUsers.slice(0, 3).map((user: any, index) => (
+        <div key={user?.id} className="flex items-center mb-6">
+          <Avatar src={user?.user?.image} showFallback isBordered alt='profile' size="lg" className="mr-4" />
+          <span className="font-bold">{index + 1}. {user?.user?.firstName} {user?.user?.lastName}</span>
+          <span className="ml-2">{user.points} points</span>
+        </div>
+      ))}
+    </>
+  ) : (
+    <p>No data available for last week's top performers.</p>
+  )}
+</CustomModal>
     </div>
   );
 };
