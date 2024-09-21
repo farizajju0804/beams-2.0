@@ -156,7 +156,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     await fetchLastWeekData();
 
     // Fetch next week's leaderboard data
-    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-21T18:00:00.413Z');
+    const nextWeekData = await getLeaderboardData(userId, userType);
     
     if (nextWeekData.entries && nextWeekData.entries.length > 0) {
       setCurrentUsers(nextWeekData.entries);
@@ -258,7 +258,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 <span>{user?.user?.name}</span>
               </div>
             </TableCell>
-            <TableCell>{user?.points}</TableCell>
+            <TableCell className='flex items-center j'>{user?.points}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -301,7 +301,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       </div>
     )}
       <Heading heading={"Leaderboard"} />
-      {leaderboardMessage && <p className="text-text text-center">{leaderboardMessage}</p>}
+      {leaderboardMessage && <p className="px-2 text-text text-center">{leaderboardMessage}</p>}
       
       <div>
         <div className='px-4 w-full mx-auto'>
