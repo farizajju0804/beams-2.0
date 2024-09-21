@@ -1,11 +1,12 @@
-'use client';
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { Viewer, SpecialZoomLevel, Worker } from '@react-pdf-viewer/core';
+import { pageNavigationPlugin} from '@react-pdf-viewer/page-navigation';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/page-navigation/lib/styles/index.css';
 import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
-import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
+import RewardsModal from '@/components/Rewards';
 
 interface ArticleProps {
   articleUrl: string | undefined;
@@ -13,13 +14,10 @@ interface ArticleProps {
 }
 
 const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsTodayId }, ref) => {
-  const startTimeRef = useRef<number | null>(null);
-  const elapsedTimeRef = useRef<number>(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  console.log('ArticleComponent rendered');
+
   const { theme } = useTheme();
   const [completed, setCompleted] = useState(false);
-
-  // New states for RewardsModal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
   const [newPoints, setNewPoints] = useState(0);
@@ -27,70 +25,83 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const [levelUp, setLevelUp] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   useImperativeHandle(ref, () => ({
-    getElapsedTime: () => {
-      if (startTimeRef.current) {
-        const currentTime = Date.now();
-        const elapsed = currentTime - startTimeRef.current;
-        elapsedTimeRef.current += elapsed;
-        startTimeRef.current = currentTime;
-      }
-      return Math.round(elapsedTimeRef.current / 1000);
-    }
+    getElapsedTime: () => 0
   }));
 
-  useEffect(() => {
-    startTimeRef.current = Date.now();
+  const pageNavigationPluginInstance = pageNavigationPlugin();
 
-    intervalRef.current = setInterval(async () => {
-      if (startTimeRef.current) {
-        const currentTime = Date.now();
-        const elapsed = currentTime - startTimeRef.current;
-        elapsedTimeRef.current += elapsed;
-        startTimeRef.current = currentTime;
+  const handleDocumentLoad = (e: any) => {
+    console.log('Document loaded', e);
+    setTotalPages(e.doc.numPages);
+    console.log(`Number of pages: ${e.doc.numPages}`);
+  };
 
-        const totalTimeSpent = Math.round(elapsedTimeRef.current / 1000);
-        if (totalTimeSpent >= 10 && !completed) { // After 60 seconds
-          setCompleted(true);
+  const handlePageChange = (e: any) => {
+    console.log('Page changed', e);
+    setCurrentPage(e.currentPage);
+    
+    // Mark as scrolled if the user has gone past the first page
+    if (e.currentPage > 1 && !hasScrolled) {
+      setHasScrolled(true);
+    }
+    
+    // Check if we've reached the last page and user has scrolled
+    if (e.currentPage === totalPages-1 && hasScrolled && !completed) {
+      console.log('Reached last page after scrolling, marking as completed');
+      setCompleted(true);
+      markCompleted();
+    }
+  };
 
-          try {
-            const { success, leveledUp, currentLevel,  currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
-            if (success) {
-              setUserPoints(prevPoints => prevPoints + 100);
-              setNewPoints(prevPoints => prevPoints + 100);
-              setCurrentLevel(currentLevel);
-              setCurrentPoints(currentPoints);
-              if (leveledUp) {
-                setLevelUp(leveledUp);
-                setNewLevel(newLevel);
-              }
-              setIsModalOpen(true); // Open the RewardsModal
-            }
-          } catch (error) {
-            toast.error('Failed to mark article as completed');
-          }
+  const markCompleted = async () => {
+    console.log('Marking as completed');
+    try {
+      const { success, leveledUp, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
+      console.log('markTopicAsCompleted response:', { success, leveledUp, currentLevel, currentPoints, newLevel });
+      if (success) {
+        setUserPoints(prevPoints => prevPoints + 100);
+        setNewPoints(prevPoints => prevPoints + 100);
+        setCurrentLevel(currentLevel);
+        setCurrentPoints(currentPoints);
+        if (leveledUp) {
+          setLevelUp(leveledUp);
+          setNewLevel(newLevel);
         }
+        setIsModalOpen(true);
+        console.log('Modal opened');
       }
-    }, 1000);
+    } catch (error) {
+      console.error('Error marking as completed:', error);
+      toast.error('Failed to mark article as completed');
+    }
+  };
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [completed, beamsTodayId]);
+  useEffect(() => {
+    console.log('useEffect running, completed:', completed);
+  }, [completed]);
 
   if (!articleUrl) {
+    console.log('No article URL provided');
     return <div>No article available</div>;
   }
 
   return (
     <div>
-      <div style={{ height: '750px' }}>
+      <div style={{ border: '1px solid rgba(0, 0, 0, 0.3)', height: '750px' }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
           <Viewer
             theme={theme}
             fileUrl={articleUrl}
             defaultScale={SpecialZoomLevel.PageFit}
+            onDocumentLoad={handleDocumentLoad}
+            plugins={[pageNavigationPluginInstance]}
+            // pageScrollMode={PageScrollMode.Vertical}
+            onPageChange={handlePageChange}
           />
         </Worker>
       </div>

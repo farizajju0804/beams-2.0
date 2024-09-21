@@ -1,6 +1,6 @@
 'use client'
-import React, { ReactNode } from 'react';
-import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { Tabs, Tab } from '@nextui-org/react';
 
 interface TabConfig {
   key: string;
@@ -14,9 +14,25 @@ interface TabsComponentProps {
   onTabChange: (tabKey: string) => void;
 }
 
-const isMobile = window.innerWidth < 767;
-
 const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Function to check window width
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Event listener to handle window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup on unmount
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleTabChange = (key: React.Key) => {
     if (typeof key === 'string') {
       onTabChange(key);
@@ -48,13 +64,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ tabs, onTabChange }) => {
             </div>
           }
         >
-            {/* <div className='w-[85vw] lg:w-[90vw] border-none'> */}
-            
-              {tab.content}
-              
-          
-          {/* </div> */}
-        
+          {tab.content}
         </Tab>
       ))}
     </Tabs>

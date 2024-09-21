@@ -42,7 +42,7 @@ export const getLeaderboardData = async ( userId: string, userType: UserType,sta
  
 
   // endDate.setHours(17, 59, 59, 999);
-  const {startDate , endDate } = getPreviousAndNextDates(5,start)
+  const {startDate , endDate } = getPreviousAndNextDates(6,start)
   console.log("start", startDate)
   console.log("end", endDate)
 

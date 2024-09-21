@@ -4,6 +4,7 @@ import 'next-cloudinary/dist/cld-video-player.css';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import { Toaster, toast } from 'react-hot-toast';
 import RewardsModal from '@/components/Rewards';
+import { Spinner } from '@nextui-org/react';
 
 interface VideoPlayerProps {
   id: string;
@@ -29,10 +30,36 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const [levelUp, setLevelUp] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<any>();
   const [newLevel, setnewLevel] = useState<any>();
-
+  const [isLoading, setIsLoading] = useState(true);
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
+  const handleEnded = async () => {
+    if (!completionMarked) {
+      setCompletionMarked(true);
+      try {
+        console.log('Marking topic as completed for video ID:', videoId);
+        const { success, leveledUp, currentLevel, currentPoints, newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
+
+
+        if (success) {
+          setUserPoints(prevPoints => prevPoints + 100);
+          setNewPoints(prevPoints => prevPoints + 100);
+          setCurrentLevel(currentLevel);
+          setCurrentPoints(currentPoints)
+          if (leveledUp) {
+            setLevelUp(leveledUp);
+            setnewLevel(newLevel);
+            console.log('Level Up! Current Level:', currentLevel, 'New Level:', newLevel);
+          }
+          setIsModalOpen(true);
+        }
+      } catch (error) {
+        console.error("Error marking topic as completed:", error);
+        toast.error('An error occurred while marking the topic as completed.');
+      }
+    }
+  };
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -46,33 +73,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       }
     };
 
-    const handleEnded = async () => {
-      if (!completionMarked) {
-        setCompletionMarked(true);
-        try {
-          console.log('Marking topic as completed for video ID:', videoId);
-          const { success, leveledUp, currentLevel, currentPoints, newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
-
-
-          if (success) {
-            setUserPoints(prevPoints => prevPoints + 100);
-            setNewPoints(prevPoints => prevPoints + 100);
-            setCurrentLevel(currentLevel);
-            setCurrentPoints(currentPoints)
-            if (leveledUp) {
-              setLevelUp(leveledUp);
-              setnewLevel(newLevel);
-              console.log('Level Up! Current Level:', currentLevel, 'New Level:', newLevel);
-            }
-            setIsModalOpen(true);
-          }
-        } catch (error) {
-          console.error("Error marking topic as completed:", error);
-          toast.error('An error occurred while marking the topic as completed.');
-        }
-      }
-    };
-
+   
     const handlePlay = () => {
       if (videoElement) {
         lastTimeRef.current = videoElement.currentTime;
@@ -84,7 +85,9 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       handleTimeUpdate();
       console.log('Video paused, total playtime so far:', playTimeRef.current);
     };
-
+    const handleLoadedData = () => {
+      setIsLoading(false);
+    };
     const handleSeeked = () => {
       if (videoElement) {
         lastTimeRef.current = videoElement.currentTime;
@@ -98,13 +101,14 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       videoElement.addEventListener('play', handlePlay);
       videoElement.addEventListener('pause', handlePause);
       videoElement.addEventListener('seeked', handleSeeked);
-
+      videoElement.addEventListener('loadeddata', handleLoadedData);
       return () => {
         videoElement.removeEventListener('timeupdate', handleTimeUpdate);
         videoElement.removeEventListener('ended', handleEnded);
         videoElement.removeEventListener('play', handlePlay);
         videoElement.removeEventListener('pause', handlePause);
         videoElement.removeEventListener('seeked', handleSeeked);
+        videoElement.removeEventListener('loadeddata', handleLoadedData);
       };
     }
   }, [id, completionMarked]);
@@ -112,11 +116,18 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   return (
     <>
       <Toaster position="top-center" />
-      <div className="min-w-full w-full mx-auto">
+      <div className="min-w-full w-full mx-auto relative">
+      {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+                   <Spinner size="lg" color="primary" />
+          </div>
+        )}
         <CldVideoPlayer
           id="my-video"
           width="1920"
           height="1080"
+          autoPlay={false}
+          preload="metadata"
           poster={thumbnailUrl}
           fluid={true}
           className="cld-fluid"

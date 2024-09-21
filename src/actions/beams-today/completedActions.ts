@@ -15,22 +15,29 @@ import { updateUserPoints } from "../points/updateUserPoints";
  * @param format - The format of the completed content ('video', 'audio', or 'text'). Default is 'video'.
  * @throws Throws an error if the topic could not be marked as completed.
  */
+
+
 export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video' | 'audio' | 'text') => {
+  console.log(`[markTopicAsCompleted] Starting for beamsTodayId: ${beamsTodayId}, format: ${format}`);
+
   const user = await currentUser();
   const userId = user?.id;
-  if (!userId) throw new Error("User not authenticated.");
+  if (!userId) {
+    console.error('[markTopicAsCompleted] User not authenticated');
+    throw new Error("User not authenticated.");
+  }
 
-  console.log(`User ID: ${userId} is attempting to mark topic as completed...`);
+  console.log(`[markTopicAsCompleted] User ID: ${userId} is attempting to mark topic as completed...`);
 
   try {
-    // Fetch the user's watched content, including completed topics and formats.
+    console.log(`[markTopicAsCompleted] Fetching watched content for user ${userId}`);
     let watchedContent = await db.beamsTodayWatchedContent.findUnique({
       where: { userId },
       select: { completedBeamsToday: true, completedFormats: true },
     });
 
-    // If watchedContent doesn't exist, create it
     if (!watchedContent) {
+      console.log(`[markTopicAsCompleted] No watched content found for user ${userId}. Creating new entry.`);
       watchedContent = await db.beamsTodayWatchedContent.create({
         data: {
           userId,
@@ -43,61 +50,75 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     let completedFormats: any = watchedContent.completedFormats || {};
     let completedBeamsToday = watchedContent.completedBeamsToday || [];
 
-    // Ensure the format array for this beamsTodayId exists.
+    console.log(`[markTopicAsCompleted] Current completedFormats:`, completedFormats);
+    console.log(`[markTopicAsCompleted] Current completedBeamsToday:`, completedBeamsToday);
+
     if (!completedFormats[beamsTodayId]) {
+      console.log(`[markTopicAsCompleted] Initializing completedFormats for beamsTodayId: ${beamsTodayId}`);
       completedFormats[beamsTodayId] = [];
     }
 
-    // If the format is not yet completed, mark it as completed.
     if (!completedFormats[beamsTodayId].includes(format)) {
+      console.log(`[markTopicAsCompleted] Marking format ${format} as completed for beamsTodayId: ${beamsTodayId}`);
       completedFormats[beamsTodayId].push(format);
     }
 
-    // Check if this is the first time completing this BeamsToday
     const isFirstCompletion = !completedBeamsToday.includes(beamsTodayId);
+    console.log(`[markTopicAsCompleted] Is this the first completion? ${isFirstCompletion}`);
+
     let pointsAdded = 0;
+    let userBeamPoints = null;
+    let leveledUp = false;
+    let newLevel = null;
 
     if (isFirstCompletion) {
+      console.log(`[markTopicAsCompleted] Processing first-time completion for beamsTodayId: ${beamsTodayId}`);
+      
       completedBeamsToday.push(beamsTodayId);
+      
+      console.log(`[markTopicAsCompleted] Updating completion count for beamsTodayId: ${beamsTodayId}`);
       await db.beamsToday.update({
         where: { id: beamsTodayId },
         data: { completionCount: { increment: 1 } },
       });
-      pointsAdded = 100; // Only add points on first completion
+      
+      pointsAdded = 100;
+      console.log(`[markTopicAsCompleted] Points added: ${pointsAdded}`);
+
+      console.log(`[markTopicAsCompleted] Updating user points`);
+      ({ userBeamPoints, leveledUp, newLevel } = await updateUserPoints(userId, pointsAdded));
+      console.log(`[markTopicAsCompleted] User points updated. New points:`, userBeamPoints);
+      console.log(`[markTopicAsCompleted] Level up?`, leveledUp);
+      console.log(`[markTopicAsCompleted] New level:`, newLevel);
+
+      console.log(`[markTopicAsCompleted] Recording points history`);
+      const beamsToday = await getBeamsTodayById(beamsTodayId);
+      await recordPointsHistory(userId, pointsAdded, 'BEAMS_TODAY', `Completed beams today, "${beamsToday.title}"`);
+
+      console.log(`[markTopicAsCompleted] Updating leaderboard entry`);
+      await updateLeaderboardEntry(userId, pointsAdded, user.userType);
     }
 
-    // Update user points and check for level up
-    const { userBeamPoints, leveledUp, newLevel } = await updateUserPoints(userId, pointsAdded);
-
-    // Record points history
-    const beamsToday = await getBeamsTodayById(beamsTodayId);
-    await recordPointsHistory(userId, pointsAdded, 'BEAMS_TODAY', `Completed beams today of topic "${beamsToday.title}"`);
-
-    // Update leaderboard entry
-    await updateLeaderboardEntry(userId, pointsAdded, user.userType);
-
-    // Update watched content
+    console.log(`[markTopicAsCompleted] Updating watched content`);
     await db.beamsTodayWatchedContent.update({
       where: { userId },
       data: { completedFormats, completedBeamsToday, updatedAt: new Date() },
     });
 
-    console.log('User Beam Points:', userBeamPoints);
+    console.log(`[markTopicAsCompleted] Operation completed successfully`);
     return {
       success: isFirstCompletion,
       leveledUp,
       currentLevel: userBeamPoints?.level,
       currentPoints: userBeamPoints?.beams,
       newLevel,
-      pointsAdded // Show how many points were added
+      pointsAdded
     };
   } catch (error) {
-    console.error("Error marking topic as completed:", error);
+    console.error("[markTopicAsCompleted] Error marking topic as completed:", error);
     throw new Error("Error marking topic as completed.");
   }
 };
-
-
 /**
  * Increment the view count for a topic and format when a user opens a tab.
  * This ensures the overall view count for a topic only increments once per user.

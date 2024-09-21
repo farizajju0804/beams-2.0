@@ -4,7 +4,7 @@ import { getPreviousAndNextDates } from '@/utils/dateRange';
 import { UserType } from '@prisma/client';
 
 export const updateLeaderboardEntry = async (userId: string, points: number, userType: UserType) => {
-  const { startDate, endDate } = getPreviousAndNextDates(5);
+  const { startDate, endDate } = getPreviousAndNextDates(6);
 
   console.log(`Start Date (ISO): ${startDate.toISOString()}`);
   console.log(`End Date (ISO): ${endDate.toISOString()}`);
@@ -36,7 +36,7 @@ export const updateLeaderboardEntry = async (userId: string, points: number, use
       },
     });
 
-    const rank = currentEntries.length + 1; // Set rank as one more than the current number of entries
+    const rank = currentEntries.length + 1;
 
     await db.leaderboard.create({
       data: {
