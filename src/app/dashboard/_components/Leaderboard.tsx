@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import UserStatus from './UserStatus';
 import Heading from './Heading';
 import { LeaderboardEntry } from '@/actions/dashboard/getLeaderBoard';
@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { Avatar, Spinner } from '@nextui-org/react';
+import { Avatar, Spinner, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 
 interface LeaderboardProps {
@@ -83,7 +83,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
   const [hasNewWeekData, setHasNewWeekData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const lastWeekSectionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const checkAndUpdateData = async () => {
       setIsLoading(true);
@@ -156,7 +156,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     await fetchLastWeekData();
 
     // Fetch next week's leaderboard data
-    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-20T18:00:00.413Z');
+    const nextWeekData = await getLeaderboardData(userId, userType, '2024-09-21T18:00:00.413Z');
     
     if (nextWeekData.entries && nextWeekData.entries.length > 0) {
       setCurrentUsers(nextWeekData.entries);
@@ -217,6 +217,79 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
+  useEffect(() => {
+    if (lastWeekUsers.length > 0 && lastWeekSectionRef.current) {
+      const interval = setInterval(() => {
+        const rect = lastWeekSectionRef.current?.getBoundingClientRect();
+        if (rect) {
+          confetti({
+            particleCount: 50,
+            spread: 70,
+            origin: { 
+              y: (rect.top + rect.height / 2) / window.innerHeight,
+              x: 0.5
+            },
+            zIndex: 1000,
+          });
+        }
+      }, 3000);
+  
+      return () => clearInterval(interval);
+    }
+  }, [lastWeekUsers]);
+  const renderCurrentWeekTable = (users: LeaderboardEntry[]) => (
+    <Table aria-label="Current Week Leaderboard" className="max-w-2xl mx-auto">
+      <TableHeader>
+        <TableColumn>Rank</TableColumn>
+        <TableColumn>Name</TableColumn>
+        <TableColumn>Beams</TableColumn>
+      </TableHeader>
+      <TableBody>
+        {users.slice(0, 3).map((user: LeaderboardEntry) => (
+          <TableRow key={user?.id}>
+            <TableCell>
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold">
+                {user?.rank}
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center">
+                <Avatar src={user?.user?.image || undefined} showFallback alt='profile' className="mr-2" />
+                <span>{user?.user?.name}</span>
+              </div>
+            </TableCell>
+            <TableCell>{user?.points}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+
+  const renderLastWeekWinners = (users: LeaderboardEntry[]) => (
+    <div ref={lastWeekSectionRef} className="relative">
+      <h2 className="text-2xl font-bold text-center mb-4">Last Weeks Winners</h2>
+      <div className="flex max-w-2xl mb-4 justify-center items-end w-full gap-2 md:gap-4">
+        {[users[1], users[0], users[2]].map((user: LeaderboardEntry) => (
+          <div key={user?.id} className="flex flex-col items-center">
+            <Avatar src={user?.user?.image || undefined} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
+            <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 rounded-t-lg py-6 px-2 md:px-4 flex flex-col items-center justify-between transition-all duration-300 ease-in-out`}>
+              <Image src={getBadgeImage(user?.rank)} alt={`Rank ${user?.rank} badge`} width={40} height={60} />
+              
+              <div className='flex flex-col items-center'>
+                <div className="text-center text-black font-bold text-sm md:text-xl mb-1 md:mb-2 text-wrap w-full">
+                  {user?.user?.firstName} {user?.user?.lastName}
+                </div>
+                <div className="text-center text-black text-xs md:text-lg">{user?.points}</div>
+              </div>
+              <div className="bg-black text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-lg md:text-2xl font-bold">
+                {user?.rank}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   const sortedUsers = [...currentUsers].sort((a, b) => a.rank - b.rank).slice(0, 3);
   const [firstPlace, secondPlace, thirdPlace] = sortedUsers;
@@ -232,8 +305,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       
       <div>
         <div className='px-4 w-full mx-auto'>
-          <div className='flex flex-col items-center justify-center'>
-            {currentUsers.length >= 3 && ( 
+          <div className='w-full flex flex-col items-center justify-center'>
+            {/* {currentUsers.length >= 3 && ( 
               <div className="flex max-w-2xl mb-4 justify-center items-end w-full gap-2 md:gap-4">
                 {[secondPlace, firstPlace, thirdPlace].map((user: LeaderboardEntry) => (
                   <div key={user?.id} className="flex flex-col items-center">
@@ -253,6 +326,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     </div>
                   </div>
                 ))}
+             
+              </div>
+            )} */}
+               {currentUsers.length >= 3 && (
+              <div className="w-full mb-8">
+                <h2 className="text-2xl font-bold text-center mb-4">Current Week Top 3</h2>
+                {renderCurrentWeekTable(currentUsers)}
               </div>
             )}
             {(updatedUserPosition && updatedUserPoints ) ? (
@@ -286,7 +366,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 </div>
               </div>
             )} 
-            {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
+            {/* {(lastWeekUsers.length >= 3 && isPastCutoff) || hasNewWeekData ? (
   <div className="mt-4 text-center">
     <button 
       onClick={openResultsModal} 
@@ -298,7 +378,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       {hasNewWeekData ? "New week has started. Check last week's results!" : "Leaderboard for this week has ended. Check the results!"}
     </p>
   </div>
-) : null}
+) : null} */}
+ {lastWeekUsers.length >= 3 && isPastCutoff || hasNewWeekData ?(
+              <>
+                <hr className="w-full my-8 border-t border-gray-300" />
+                {renderLastWeekWinners(lastWeekUsers)}
+              </>
+            ):null}
           </div>
         </div>
       </div>

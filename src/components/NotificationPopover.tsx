@@ -29,7 +29,7 @@
         const shownNotifications = await fetchShownNotifications(user.id);
         const newNotifications = await fetchNewNotifications(user.id);
         const allNotifications = [...newNotifications, ...shownNotifications];
-        console.log('Fetched notifications:', { shown: shownNotifications, new: newNotifications });
+
         if (newNotifications.length > 0) {
           playNotificationSound();
           startBlinking();
