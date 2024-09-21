@@ -3,6 +3,7 @@
 import { db } from "@/libs/db";
 import { Prisma } from "@prisma/client";
 import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput } from "@/types/beamsToday";
+import { generateNotificationForAllUsers } from "@/actions/notifications/notifications";
 
 export const getBeamsTodayEntries = async (): Promise<any[]> => {
   try {
@@ -191,6 +192,14 @@ export const toggleBeamsTodayPublish = async (id: string, publishState: boolean)
       where: { id },
       data: { published: publishState },
     });
+
+    if (publishState) {
+      await generateNotificationForAllUsers(
+        'CONTENT_UPDATE',
+        'New Beams Today content is available',
+        `/beams-today/${id}`
+      );
+    }
   } catch (error) {
     throw new Error(`Error toggling beamsToday publish state: ${(error as Error).message}`);
   }

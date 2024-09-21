@@ -15,8 +15,14 @@ enum UserRole {
   USER // Regular user role
 }
 
-// Enum to specify different sources for beam points
-
+enum NotificationType {
+  SYSTEM
+  ACHIEVEMENT
+  CONTENT_UPDATE
+  REMINDER
+  SOCIAL
+  // Add more types as needed
+}
 
 // Enum to define types of users
 enum UserType {
@@ -51,6 +57,7 @@ model User {
   updatedAt                 DateTime                    @updatedAt // Timestamp of last update
   userFormCompleted         Boolean                     @default(false) // Whether the user completed the form
   onBoardingCompleted       Boolean                     @default(false) // Whether the user completed onboarding
+  notificationPreference    Boolean                    @default(false)
   lastLoginAt               DateTime? // Timestamp of the last login (optional)
   lastLoginIp               String? // IP address of the last login (optional)
   notes                     BeamsTodayUserNote[] // Relationship to BeamsTodayUserNote (many-to-one)
@@ -62,6 +69,8 @@ model User {
   beamsTheatreUserAnalytics BeamsTheatreUserAnalytics[] // Relationship to BeamsTheatreUserAnalytics (many-to-one)
   Leaderboard               Leaderboard[]
   Achievement               Achievement[]
+  notifications          Notification[]
+  
 }
 
 // Account model for storing external account login information
@@ -135,6 +144,32 @@ model PendingVerification {
   ip        String // IP address of the verification request
   createdAt DateTime @default(now()) // Timestamp of verification creation
 }
+
+model Notification {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String           @db.ObjectId
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  content     String
+  isShown     Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  metadata    Json?            // For storing additional data specific to each notification type
+  actionUrl   String?          // Optional URL or deep link for the notification action
+
+  @@index([userId])
+  @@index([type])
+  @@index([isShown])
+}
+
+
+// model NotificationPreference {
+//   id       String @id @default(auto()) @map("_id") @db.ObjectId
+//   userId   String @unique @db.ObjectId
+//   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   settings Json   // Store user preferences for each notification type
+// }
+
 
 // FAQ model for storing frequently asked questions and answers
 model FAQ {
