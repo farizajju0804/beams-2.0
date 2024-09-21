@@ -118,7 +118,7 @@ textarea {
   --color-accent : 255, 255, 255;
   --color-yellow : 249, 212, 46;
   --color-purple :  55, 0, 117;
-  --shadow: 53, 53, 53, 0.12;
+  --shadow: 255, 255, 255, 0.01;
 }
 
 .black-text{

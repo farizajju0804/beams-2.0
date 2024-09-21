@@ -140,7 +140,7 @@ const sourceMap: { [key: string]: string } = {
 // Map sources to icons
 const iconMap: { [key: string]: Icon } = {
   BEAMS_TODAY: TickCircle,
-  POLL_PARTICIPATION: MessageQuestion,
+  POLL_PARTICIPATION: TickCircle,
   SHARE: Share,
 };
 

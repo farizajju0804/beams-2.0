@@ -141,7 +141,7 @@ const LearningOverview: React.FC<LearningOverviewProps> = ({ userAnalytics, watc
 
   return (
     <div className='flex w-full flex-col items-start'>
-      <Heading heading='My learning Overview' />
+      <Heading heading='My learning' />
       <div className="px-6 md:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full md:mt-2">
         <StatCard
           title="Topics Mastered"

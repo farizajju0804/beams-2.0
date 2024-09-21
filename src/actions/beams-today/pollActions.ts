@@ -78,7 +78,7 @@ export const recordPollResponse = async (pollOptionId: string) => {
     console.log(`User points updated. New total: ${userBeamPoints.beams}`);
 
     console.log(`Recording points history for user ID: ${user.id}`);
-    await recordPointsHistory(user.id, 50, 'POLL_PARTICIPATION', `Participated poll, "${beamsTodayTitle}"`);
+    await recordPointsHistory(user.id, 50, 'POLL_PARTICIPATION', `Participated in poll, "${beamsTodayTitle}"`);
 
     // Update or create leaderboard entry
     console.log(`Updating leaderboard entry for user ID: ${user.id} with points: 50`);

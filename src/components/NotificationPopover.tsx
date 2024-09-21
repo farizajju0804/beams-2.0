@@ -1,7 +1,7 @@
   'use client'
 
   import React, { useState, useEffect, useRef, useCallback } from 'react';
-  import { Notification, TickCircle, CloseCircle, Clock, Message } from 'iconsax-react';
+  import { Notification, TickCircle, CloseCircle, Clock, Message, Book1 } from 'iconsax-react';
   import { Popover, PopoverTrigger, PopoverContent, Badge, Button, Switch, Divider } from "@nextui-org/react";
   import { motion, AnimatePresence } from "framer-motion";
   import { NotificationIcon } from './NotificationIcon';
@@ -124,7 +124,7 @@
     const getIcon = (type: NotificationType) => {
       switch(type) {
         case 'ACHIEVEMENT': return <TickCircle variant="Bold" size={20} className="text-green-500" />;
-        case 'CONTENT_UPDATE': return <Notification variant="Bold" size={20} className="text-blue-500" />;
+        case 'CONTENT_UPDATE': return <Book1 variant="Bold" size={20} className="text-primary" />;
         case 'REMINDER': return <Clock variant="Bold" size={20} className="text-yellow-500" />;
         case 'SOCIAL': return <Message variant="Bold" size={20} className="text-purple-500" />;
       }
@@ -135,8 +135,8 @@
     };
 
     const handleViewNotification = async (id: string, actionUrl: string) => {
-
-        router.push(actionUrl);
+      setIsOpen(false); 
+      router.push(actionUrl);
     
     };
     const unreadCount = notifications.length;
