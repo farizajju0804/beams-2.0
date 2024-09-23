@@ -54,7 +54,7 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
         // Set end date to the next occurrence of the target day (next week) at 17:59:59.999 UTC
         endDate = new Date(startDate);
         endDate.setUTCDate(endDate.getUTCDate() + 7);
-        endDate.setUTCHours(17,59, 59, 999); // Ensure it's set to 17:59:59.999
+        endDate.setUTCHours(17,59,59, 999); // Ensure it's set to 17:59:59.999
         console.log("End Date set to next occurrence:", endDate.toISOString());
     }
 

@@ -119,6 +119,34 @@ export const generateNotificationForAllUsers = async (
   };
 
 
+  export const fetchAllNotifications = async (userId: string) => {
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+  
+    try {
+      // Fetch all notifications
+      const notifications = await db.notification.findMany({
+        where: { userId: userId },
+        orderBy: { createdAt: 'desc' },
+      });
+  
+      // Update isShown for new notifications
+      const updatedNotifications = await db.$transaction(
+        notifications.map((notification) =>
+          db.notification.update({
+            where: { id: notification.id },
+            data: { isShown: true },
+          })
+        )
+      );
+  
+      return updatedNotifications;
+    } catch (error) {
+      console.error('Error fetching and updating notifications:', error);
+      throw new Error(`Failed to fetch and update notifications: ${(error as Error).message}`);
+    }
+  };
   export const getUserNotificationPreference = async (userId: string) => {
     if (!userId) {
       throw new Error('User not authenticated');

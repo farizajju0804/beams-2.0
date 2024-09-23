@@ -29,8 +29,7 @@ export const getUserLevelAndHistory = async (userId:string) => {
         points: true,
         description: true,
         createdAt: true,
-      },
-      take: 12
+      }
     });
 
     // Accumulate points based on source

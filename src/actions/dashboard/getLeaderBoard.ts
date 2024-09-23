@@ -3,7 +3,8 @@ import { db } from '@/libs/db';
 import { getPreviousAndNextDates } from '@/utils/dateRange';
 import { UserType } from '@prisma/client';
 import { startOfWeek, endOfWeek } from 'date-fns';
-
+import { differenceInSeconds } from 'date-fns';
+import { generateNotificationForAllUsers } from '../notifications/notifications';
 export interface User {
   id: string;
   image: string | null;
@@ -27,25 +28,20 @@ export interface LeaderboardData {
   message?: string | null;
   startDate?: string; // Change to string
   endDate?: string;   // Change to string
+  remainingSeconds? : number;
 }
 
 export const getLeaderboardData = async ( userId: string, userType: UserType,start?:string): Promise<LeaderboardData> => {
-   
-  // const now2 =  start ? new Date(start) : new Date()
-  const now = new Date(); // Current server date
-  // const startDate = startOfWeek(now, { weekStartsOn: 5 });
-  // const endDate = endOfWeek(now, { weekStartsOn: 6 });
 
-  // console.log(now)
-
-  // startDate.setHours(18, 0, 0, 0); 
- 
-
-  // endDate.setHours(17, 59, 59, 999);
   const {startDate , endDate } = getPreviousAndNextDates(6,start)
   console.log("start", startDate)
   console.log("end", endDate)
+  const now = new Date();
 
+  // // Check if it's time to announce the leaderboard
+  // if (now >= endDate) {
+  //   await announceLeaderboard(userType, startDate, endDate);
+  // }
   console.log(`Fetching leaderboard entries from ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
   // Fetch leaderboard entries based on user type passed as an argument
@@ -99,6 +95,8 @@ export const getLeaderboardData = async ( userId: string, userType: UserType,sta
 
   const userPoints = userEntry ? userEntry.points : 0; // Get the current user's points
 
+  const remainingSeconds = Math.max(differenceInSeconds(endDate, now), 0);
+
   return {
     entries: entriesWithNames,
     userPosition,
@@ -106,5 +104,39 @@ export const getLeaderboardData = async ( userId: string, userType: UserType,sta
     message: null,
     startDate: startDate.toISOString(), // Return as ISO string
     endDate: endDate.toISOString(),  
-  };
+    remainingSeconds: remainingSeconds
+  }
 };
+
+
+export async function announceLeaderboard(userType: UserType, startDate: Date, endDate: Date) {
+  // Check if announcement has already been made
+  const existingAnnouncement = await db.leaderboardAnnouncement.findFirst({
+    where: {
+      userType,
+      startDate,
+      endDate,
+    },
+  });
+
+  if (existingAnnouncement) {
+    return; 
+  }
+
+
+
+    await generateNotificationForAllUsers(
+      'REMINDER',
+      `This week's leaderboard has been announced!`,
+      '/dashboard'
+    );
+
+    // Record that the announcement has been made
+    await db.leaderboardAnnouncement.create({
+      data: {
+        userType,
+        startDate,
+        endDate,
+      },
+    });
+  }

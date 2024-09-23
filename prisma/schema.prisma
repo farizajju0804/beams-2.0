@@ -398,7 +398,15 @@ model Leaderboard {
 }
 
 
+model LeaderboardAnnouncement {
+   id               String    @id @default(auto()) @map("_id") @db.ObjectId 
+  userType  UserType
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
 
+  @@unique([userType, startDate, endDate])
+}
 model Achievement {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   name             String // Name of the achievement (e.g., "Bronze Achiever")
