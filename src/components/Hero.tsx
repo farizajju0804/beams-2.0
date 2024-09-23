@@ -78,7 +78,7 @@ const HeroSection: React.FC = () => {
           </Button>
         </CoolMode>
       </motion.div>
-      <DailyProgress/>
+     
     </section>
   );
 };
