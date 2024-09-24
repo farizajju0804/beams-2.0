@@ -57,7 +57,7 @@ export const getTop3EntriesForMostRecentWeek = async (
     console.log("Most recent end date:", mostRecentEndDate.toISOString());
 
     // Fetch the top 3 entries for that end date
-    console.log("Querying for top 3 entries...");
+    console.log("Querying for entries...");
     const top3Entries = await db.leaderboard.findMany({
       where: {
         endDate: mostRecentEndDate,
@@ -66,7 +66,6 @@ export const getTop3EntriesForMostRecentWeek = async (
       orderBy: {
         rank: 'asc', // Order by existing rank
       },
-      take: 3,
       include: {
         user: {
           select: {
@@ -79,7 +78,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    // console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
+    console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
 
     
 

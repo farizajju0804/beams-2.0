@@ -72,6 +72,7 @@ export const {
       }
       if (session.user) {
         // Attach other user-related data to the session
+
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;

@@ -14,7 +14,7 @@ import LevelBeams from './_components/LevalBeams';
 
 const DashboardPage = async () => {
   const user: any = await currentUser();
-
+  console.log("session",user)
   const [
     userAnalytics,
     pollData,

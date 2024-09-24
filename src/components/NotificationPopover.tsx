@@ -127,7 +127,7 @@ const NotificationPopover: React.FC = () => {
               <NotificationIcon size={24} className="text-brand" />
             </Badge>
           ) : (
-            <NotificationIcon size={24} className="text-brand" />
+            <NotificationIcon size={24} className="text-[#a2a2a2]" />
           )}
         </Button>
       </PopoverTrigger>

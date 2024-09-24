@@ -1,15 +1,23 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import UserStatus from './UserStatus';
-import Heading from './Heading';
-import { announceLeaderboard, LeaderboardEntry } from '@/actions/dashboard/getLeaderBoard';
-import Image from 'next/image';
+import { announceLeaderboard, getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
-import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
-import { Avatar, Spinner, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
+import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
+import { CountdownTimer } from './CountdownTimer';
+import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar } from "react-icons/ai";
+import './style.css'
+import LowerRanksCards from './LowerRanksCard';
+import Image from 'next/image';
+
+interface LeaderboardProps {
+  userId: string;
+  initialData: any;
+  userType: UserType;
+}
 
 interface LeaderboardProps {
   userId: string;
@@ -20,89 +28,123 @@ interface LeaderboardProps {
 
 const getHeight = (position: number) => {
   switch (position) {
-    case 1: return 'h-72 md:h-96';
-    case 2: return 'h-64 md:h-80';
-    case 3: return 'h-56 md:h-72';
+    case 1: return 'h-72 leaderboard-1 md:h-96';
+    case 2: return 'h-64 leaderboard-2 md:h-80';
+    case 3: return 'h-56 leaderboard-3 md:h-72';
     default: return 'h-48';
+  }
+};
+
+const getClass = (position: number) => {
+  switch (position) {
+    case 1: return 'perspective-div-1';
+    case 2: return 'perspective-div-2';
+    case 3: return 'perspective-div-3';
+    default: return 'right-0';
   }
 };
 
 const getColor = (position: number) => {
   switch (position) {
-    case 1: return 'bg-yellow';
-    case 2: return 'bg-gray-300';
-    case 3: return 'bg-orange-300';
-    default: return 'bg-blue-200';
+    case 1: return 'bg-secondary-2 text-background';
+    case 2: return 'bg-secondary-2 text-background';
+    case 3: return 'bg-secondary-2 text-background';
+    default: return 'bg-secondary-2 text-background';
   }
 };
 
-const getBadgeImage = (position: number) => {
+const getSize = (position: number) => {
   switch (position) {
-    case 1: return 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/silver-3d_ba5jkn.webp';
-    case 2: return 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/silver-3d_ba5jkn.webp';
-    case 3: return 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/bronze-3d_jephy6.webp';
-    default: return 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/silver-3d_ba5jkn.webp';
+    case 1: return 'text-[80px]';
+    case 2: return 'text-[60px]';
+    case 3: return 'text-5xl';
+    default: return 'text-4l';
   }
 };
+
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ 
   userId, 
   initialData,
-  userType, 
-  previous 
+  userType,
+  previous
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(initialData.remainingSeconds);
-  const [isTimerActive, setIsTimerActive] = useState(timeRemaining > 0);
-  const [currentUsers, setCurrentUsers] = useState<LeaderboardEntry[]>(initialData.entries);
-  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous || []);
-  const [updatedUserPosition, setUpdatedUserPosition] = useState<number | undefined>(initialData.userPosition);
-  const [updatedUserPoints, setUpdatedUserPoints] = useState<number | undefined>(initialData.userPoints);
-  const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
+  const [isTimerActive, setIsTimerActive] = useState(true);
+  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous);
+  const [userPosition, setUserPosition] = useState<number | undefined>(initialData.userPosition);
+  const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
+  // const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
   const [isLoading, setIsLoading] = useState(false);
+  const [startDate, setStartDate] = useState(initialData.startDate);
+  const [endDate, setEndDate] = useState(initialData.endDate);
   const lastWeekSectionRef = useRef<HTMLDivElement>(null);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    // Client-side parsed dates
+    const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
+    const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
+  
+    useEffect(() => {
+      // Ensure dates are only parsed client-side after hydration
+      if (startDate && endDate) {
+        setFormattedStartDate(new Date(startDate).toLocaleDateString());
+        setFormattedEndDate(new Date(endDate).toLocaleDateString());
+      }
+    }, [startDate, endDate])
+
+  const playConfetti = useCallback(() => {
+    if (lastWeekSectionRef.current) {
+      const rect = lastWeekSectionRef.current.getBoundingClientRect();
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { 
+          y: (rect.top + rect.height / 2) / window.innerHeight,
+          x: 0.5
+        },
+        zIndex: 1000,
+      });
+    }
+  }, []);
 
   const handleTimerEnd = useCallback(async () => {
     setIsLoading(true);
     setIsTimerActive(false);
 
-    if (initialData.startDate && initialData.endDate) {
-      await recalculateLeaderboardRanks(new Date(initialData.startDate), new Date(initialData.endDate), userType);
+    if (startDate && endDate) {
+      await recalculateLeaderboardRanks(new Date(startDate), new Date(endDate), userType);
     }
 
     try {
-      // First, fetch the data needed for immediate UI update
-      const [lastWeekData, nextWeekData] = await Promise.all([
+      const [lastWeekData, nextWeekData]:any = await Promise.all([
         getTop3EntriesForMostRecentWeek(userType),
-        getLeaderboardData(userId, userType, '2024-09-23T18:00:00.413Z')
+        // getLeaderboardData(userId, userType,'2024-09-24T18:00:00.413Z')
+        getLeaderboardData(userId, userType)
+
       ]);
 
       setLastWeekUsers(lastWeekData);
 
-      if (nextWeekData.entries && nextWeekData.entries.length > 0) {
-        setCurrentUsers(nextWeekData.entries);
-        setUpdatedUserPosition(nextWeekData.userPosition);
-        setUpdatedUserPoints(nextWeekData.userPoints);
-        setLeaderboardMessage(null);
-        setTimeRemaining(nextWeekData.remainingSeconds);
-        setIsTimerActive(true);
-      } else {
-        setCurrentUsers([]);
-        setUpdatedUserPosition(undefined);
-        setUpdatedUserPoints(undefined);
-        setLeaderboardMessage(nextWeekData.message || "No data available for the next week yet.");
-      }
+      setUserPosition(nextWeekData.userPosition);
+      setUserPoints(nextWeekData.userPoints);
+      // setLeaderboardMessage(nextWeekData.message);
+      setTimeRemaining(nextWeekData.remainingSeconds);
+      setStartDate(nextWeekData.startDate);
+      setEndDate(nextWeekData.endDate);
+      setIsTimerActive(true);
 
-      // After updating the UI, run the heavy operation asynchronously
-      announceLeaderboard(userType, new Date(initialData.startDate), new Date(initialData.endDate))
-        .catch(error => console.error('Error announcing leaderboard:', error));
+      // announceLeaderboard(userType, new Date(startDate), new Date(endDate))
+      //   .catch(error => console.error('Error announcing leaderboard:', error));
+
+      playConfetti(); // Play confetti when timer ends and new data is loaded
 
     } catch (error) {
       console.error('Error updating leaderboard:', error);
-      setLeaderboardMessage("An error occurred while updating the leaderboard.");
+      // setLeaderboardMessage("An error occurred while updating the leaderboard.");
     } finally {
       setIsLoading(false);
     }
-  }, [userId, userType, initialData.startDate, initialData.endDate]);
+  }, [userId, userType, startDate, endDate, playConfetti]);
 
   useEffect(() => {
     let timerInterval: NodeJS.Timeout;
@@ -124,81 +166,122 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   }, [isTimerActive, handleTimerEnd]);
 
   useEffect(() => {
-    if (lastWeekUsers.length > 0 && lastWeekSectionRef.current) {
-      const rect = lastWeekSectionRef.current.getBoundingClientRect();
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { 
-          y: (rect.top + rect.height / 2) / window.innerHeight,
-          x: 0.5
-        },
-        zIndex: 1000,
-      });
+    if (lastWeekUsers.length >= 3) {
+   
+      playConfetti();
     }
   }, [lastWeekUsers]);
 
-  const renderCurrentWeekTable = useCallback((users: LeaderboardEntry[]) => (
-    <Table aria-label="Current Week Leaderboard" className="max-w-2xl mx-auto">
-      <TableHeader>
-        <TableColumn>Rank</TableColumn>
-        <TableColumn>Name</TableColumn>
-        <TableColumn>Beams</TableColumn>
-      </TableHeader>
-      <TableBody>
-        {users.slice(0, 3).map((user: LeaderboardEntry) => (
-          <TableRow key={user?.id}>
-            <TableCell>
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold">
-                {user?.rank}
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center">
-                <Avatar src={user?.user?.image || undefined} showFallback alt='profile' className="mr-2" />
-                <span>{user?.user?.name}</span>
-              </div>
-            </TableCell>
-            <TableCell className='flex items-center'>{user?.points}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  ), []);
-
-  const renderLastWeekWinners = useCallback((users: LeaderboardEntry[]) => (
-    <div ref={lastWeekSectionRef} className="relative">
-      <h2 className="text-2xl font-bold text-center mb-4">Last Week&apos;s Winners</h2>
-      <div className="flex max-w-2xl mb-4 justify-center items-end w-full gap-2 md:gap-4">
-        {[users[1], users[0], users[2]].map((user: LeaderboardEntry) => (
-          <div key={user?.id} className="flex flex-col items-center">
+  const renderLastWeekWinners = useCallback((users: any) => (
+    <div ref={lastWeekSectionRef} className="">
+     <div className='flex w-full items-center justify-center gap-4 mb-12'>
+      <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
+      </div>
+      <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
+        {[users[1], users[0], users[2]].map((user: any) => (
+          <div key={user?.id} className="flex relative flex-col items-center">
+             {user.rank === 1 && (
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-12 h-12 absolute top-[-30px]" />
+              )}
             <Avatar src={user?.user?.image || undefined} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
-            <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 rounded-t-lg py-6 px-2 md:px-4 flex flex-col items-center justify-between transition-all duration-300 ease-in-out`}>
-              <Image src={getBadgeImage(user?.rank)} alt={`Rank ${user?.rank} badge`} width={40} height={60} />
-              <div className='flex flex-col items-center'>
-                <div className="text-center text-black font-bold text-sm md:text-xl mb-1 md:mb-2 text-wrap w-full">
-                  {user?.user?.firstName} {user?.user?.lastName}
-                </div>
-                <div className="text-center text-black text-xs md:text-lg">{user?.points}</div>
-              </div>
-              <div className="bg-black text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-lg md:text-2xl font-bold">
+            <div className="text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6">
+              {user?.user?.firstName} {user?.user?.lastName}
+            </div>
+            <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
+            <div 
+   className={`perspective-div ${getClass(user?.rank)}`}
+  
+  ></div>
+             
+              <div className={`${getSize(user?.rank)}  rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
                 {user?.rank}
+                <div className="text-center font-normal text-grey-1 text-xs md:text-lg">{user?.points} Beams</div>
               </div>
             </div>
           </div>
         ))}
       </div>
+      {users.length > 3 && <LowerRanksCards users={users} />}
     </div>
   ), []);
+  
+  const RuleItem = ({ icon, title, description }:any) => (
+    <div className="flex items-start space-x-3">
+      <div className="flex-shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-semibold">{title}</h3>
+        <p className="text-sm opacity-80">{description}</p>
+      </div>
+    </div>
+  );
+  const renderOverlay = () => {
+    
+    return (
+      <Modal 
+      size='2xl'
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        backdrop="blur"
+        className="bg-background"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <h2 className="text-2xl font-bold text-text">Leaderboard Rules</h2>
+              </ModalHeader>
+              <ModalBody className="text-text">
+                <div className="space-y-4">
+                  <RuleItem 
+                    icon={<AiFillClockCircle className="text-yellow-300" size={24} />}
+                    title="Weekly Competition"
+                    description="Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM."
+                  />
+                  <RuleItem 
+                    icon={<AiFillStar className="text-yellow-300" size={24} />}
+                    title="Point Accumulation"
+                    description="Only beams accumulated during the competition period will count."
+                  />
+                  <RuleItem 
+                    icon={<AiFillTrophy className="text-yellow-300" size={24} />}
+                    title="Tiebreakers"
+                    description="In case of ties, the user who accumulated the beams first will be ranked higher."
+                  />
+                  <RuleItem 
+                    icon={<AiFillStar className="text-yellow-300" size={24} />}
+                    title="Leaderboard Display"
+                    description="The top 10 users will be featured on the leaderboard each week."
+                  />
+                  <RuleItem 
+                    icon={<AiFillTrophy className="text-yellow-300" size={24} />}
+                    title="Special Recognition"
+                    description="The top 3 users will earn special badges!"
+                  />
+                </div>
+             
+               
+              </ModalBody>
+              <ModalFooter>
+                   <Button 
+                  color="warning" 
+                  variant="shadow"
+                  onPress={onClose}
+                  className="mt-4 w-full"
+                >
+                  Got it!
+                </Button>
+                </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    );
+  };
 
-  const formatTime = useCallback((seconds: number) => {
-    const days = Math.floor(seconds / (24 * 3600));
-    const hours = Math.floor((seconds % (24 * 3600)) / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return { days, hours, minutes, seconds: remainingSeconds };
-  }, []);
-
+  
   return (
     <div className="relative">
       {isLoading && (
@@ -206,34 +289,30 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <Spinner size="lg" color="primary" />
         </div>
       )}
-      <Heading heading="Leaderboard" />
-      {leaderboardMessage && <p className="px-2 text-text text-center">{leaderboardMessage}</p>}
+      <div className='w-full flex justify-between pl-6 lg:pl-0 pr-6'>
+        <div className="flex flex-col items-start">
+          <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Leaderboard</h1>
+          <div className="border-b-2 border-brand mb-3 w-[60px]" ></div>
+        </div>
+        <Button isIconOnly className='bg-transparent text-[#888888] cursor-pointer' onPress={onOpen}>
+          <AiFillQuestionCircle size={24} />
+        </Button>
+        {renderOverlay()} 
+      </div>
+      {/* {leaderboardMessage && <p className="px-2 text-text text-center">{leaderboardMessage}</p>} */}
       
       <div className='px-4 w-full mx-auto'>
         <div className='w-full flex flex-col items-center justify-center'>
-          {currentUsers.length >= 3 && (
-            <div className="w-full mb-8">
-              <h2 className="text-2xl font-bold text-center mb-4">Current Week Top 3</h2>
-              {renderCurrentWeekTable(currentUsers)}
+          {isTimerActive && (
+            <div className='w-full max-w-xl'>
+              <p className='my-4 mx-auto text-[#888888] font-medium text-center'>{`Leaders for this week ( ${formattedStartDate} to ${formattedEndDate}) will be announced in`}</p>
+              <CountdownTimer timeRemaining={timeRemaining} />
             </div>
           )}
-          {(updatedUserPosition && updatedUserPoints) ? (
-            <UserStatus rank={updatedUserPosition} score={updatedUserPoints} />
+          {(userPosition && userPoints) ? (
+            <UserStatus rank={userPosition} score={userPoints} />
           ) : (
             <p className="w-full mt-4 text-center mx-auto">Start acclaiming beams to position yourself in the leaderboard</p>
-          )}
-          {currentUsers.length >= 3 && isTimerActive && (
-            <div className='w-full max-w-xl'>
-              <p className='my-4 mx-auto text-center'>Leaderboard will be reset in</p>
-              <div className="w-full max-w-xl flex justify-around p-4 border border-gray-300 rounded-lg bg-background shadow-lg">
-                {Object.entries(formatTime(timeRemaining)).map(([unit, value]) => (
-                  <div key={unit} className="flex flex-col items-center">
-                    <div className="text-2xl font-bold">{value}</div>
-                    <div className="text-sm">{unit.charAt(0).toUpperCase() + unit.slice(1)}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
           )}
           {lastWeekUsers.length >= 3 && (
             <>
