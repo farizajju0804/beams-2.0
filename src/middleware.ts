@@ -13,7 +13,9 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the route is an authentication route (e.g., login, register)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // Check if the route is a public route
-
+  if (nextUrl.pathname.startsWith('/api/leaderboard')) {
+    return; // Allow the cron job to run without redirecting
+  }
   // Allow API authentication routes to bypass authentication checks
   if (isApiAuthRoute) {
     return;
