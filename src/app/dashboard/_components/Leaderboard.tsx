@@ -74,6 +74,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous.entries);
   const [userPosition, setUserPosition] = useState<number | undefined>(initialData.userPosition);
   const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
+  const [lastWeekUserPosition, setLastWeekUserPosition] = useState<number | undefined>(previous.userPosition);
+  const [lastWeekUserPoints, setlastWeekUserPoints] = useState<number | undefined>(previous.userPoints);
   // const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
   const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(initialData.startDate);
@@ -92,6 +94,20 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       }
     }, [startDate, endDate])
 
+
+    useEffect(() => {
+      // Highlight the user's position if found
+      if (lastWeekUserPosition) {
+        setLastWeekUsers((users) =>
+          users.map((user) => {
+            if (user.userId === userId) {
+              return { ...user, isYou: true }; // Mark as "You"
+            }
+            return user;
+          })
+        );
+      }
+    }, [userId, lastWeekUserPosition]);
   const playConfetti = useCallback(() => {
     if (lastWeekSectionRef.current) {
       const rect = lastWeekSectionRef.current.getBoundingClientRect();
@@ -117,7 +133,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType),
+        getTop3EntriesForMostRecentWeek(userType,userId),
         // getLeaderboardData(userId, userType,'2024-09-24T18:00:00.413Z')
         getLeaderboardData(userId, userType)
 
@@ -133,8 +149,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       setEndDate(nextWeekData.endDate);
       setIsTimerActive(true);
 
-      // announceLeaderboard(userType, new Date(startDate), new Date(endDate))
-      //   .catch(error => console.error('Error announcing leaderboard:', error));
+ 
 
       playConfetti(); // Play confetti when timer ends and new data is loaded
 
@@ -173,28 +188,23 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   }, [lastWeekUsers]);
 
   const renderLastWeekWinners = useCallback((users: any) => (
-    <div ref={lastWeekSectionRef} className="">
-     <div className='flex w-full items-center justify-center gap-4 mb-12'>
-      <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
-      
+    <div ref={lastWeekSectionRef}>
+      <div className='flex w-full items-center justify-center gap-4 mb-12'>
+        <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
       </div>
       <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
-        {[users[1], users[0], users[2]].map((user: any) => (
-          <div key={user?.id} className="flex relative flex-col items-center">
-             {user.rank === 1 && (
-                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-12 h-12 absolute top-[-30px]" />
-              )}
-            <Avatar src={user?.user?.image || undefined} showFallback isBordered alt='profile' className="w-12 h-12 md:w-20 md:h-20 mb-4" />
-            <div className="text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6">
-              {user?.user?.firstName} {user?.user?.lastName}
+        {[users[1], users[0], users[2]].map((user: any, index: number) => (
+          <div key={user?.id} className={`flex relative flex-col items-center`}>
+            {user.rank === 1 && (
+              <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-12 h-12 absolute top-[-30px]" />
+            )}
+            <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-4" />
+            <div className={`text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6 ${user.isYou ? 'text-text' : ''}`}>
+              {user.isYou ? 'You' : `${user?.user?.firstName} ${user?.user?.lastName}`}
             </div>
-            <div className={`${getHeight(user?.rank)} ${getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
-            <div 
-   className={`perspective-div ${getClass(user?.rank)}`}
-  
-  ></div>
-             
-              <div className={`${getSize(user?.rank)}  rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
+            <div className={`${getHeight(user?.rank)} ${user.isYou ? 'bg-brand' : getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
+              <div className={`perspective-div ${getClass(user?.rank)}`}></div>
+              <div className={`${getSize(user?.rank)} text-background rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
                 {user?.rank}
                 <div className="text-center font-normal text-grey-1 text-xs md:text-lg">{user?.points} Beams</div>
               </div>
@@ -202,10 +212,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
         ))}
       </div>
-      {users.length > 3 && <LowerRanksCards users={users} />}
+      {users.length > 3 && <LowerRanksCards userPosition={lastWeekUserPosition}  users={users} />}
     </div>
   ), []);
-  
   const RuleItem = ({ icon, title, description }:any) => (
     <div className="flex items-start space-x-3">
       <div className="flex-shrink-0">
@@ -217,6 +226,17 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       </div>
     </div>
   );
+  const renderUserPosition = useCallback(() => {
+    if (userPosition && userPosition > 10 ) {
+      return (
+        <div className="w-full max-w-md mx-auto mt-8 p-4 bg-highlight rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold">You are ranked #{lastWeekUserPosition}!</h2>
+          <p className="text-lg">Keep going! You&apos;ve earned {lastWeekUserPoints} Beams this week.</p>
+        </div>
+      );
+    }
+    return null;
+  }, [lastWeekUserPosition, lastWeekUserPoints]);
   const renderOverlay = () => {
     
     return (
@@ -299,9 +319,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <AiFillQuestionCircle size={24} />
         </Button>
         {renderOverlay()} 
-      </div>
-      {/* {leaderboardMessage && <p className="px-2 text-text text-center">{leaderboardMessage}</p>} */}
-      
+      </div>      
       <div className='px-4 w-full mx-auto'>
         <div className='w-full flex flex-col items-center justify-center'>
           {isTimerActive && (
@@ -321,6 +339,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               {renderLastWeekWinners(lastWeekUsers)}
             </>
           )}
+           {renderUserPosition()}
         </div>
       </div>
     </div>

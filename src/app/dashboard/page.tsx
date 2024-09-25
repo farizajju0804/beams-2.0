@@ -28,7 +28,7 @@ const DashboardPage = async () => {
     getWatchedBeamsTodayContent(user?.id),
     getUserLevelAndHistory(user?.id),
     getLeaderboardData(user?.id, user?.userType),
-    getTop3EntriesForMostRecentWeek(user?.userType)
+    getTop3EntriesForMostRecentWeek(user?.userType,user?.id)
   ]);
 
 console.log("previous",previousWeekTop3)
