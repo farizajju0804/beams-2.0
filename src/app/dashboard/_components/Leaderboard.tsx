@@ -176,6 +176,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     <div ref={lastWeekSectionRef} className="">
      <div className='flex w-full items-center justify-center gap-4 mb-12'>
       <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
+      
       </div>
       <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
         {[users[1], users[0], users[2]].map((user: any) => (

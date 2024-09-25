@@ -18,20 +18,22 @@ export interface LeaderboardEntry {
   user: User | null;
 }
 
+export interface LeaderboardResult {
+  entries: LeaderboardEntry[];
+  startDate: Date;
+  endDate: Date;
+}
+
 export const getTop3EntriesForMostRecentWeek = async (
   userType: UserType,
   start?: string,
-): Promise<LeaderboardEntry[]> => {
+): Promise<LeaderboardResult> => {
   try {
     const baseDate = start ? new Date(start) : new Date();
-    const now = new Date(baseDate.getTime() + 60 * 1000); // Add 2 seconds (2000 milliseconds)
-    console.log("Base time:", baseDate.toISOString());
-    console.log("Adjusted time:", now.toISOString());
-    console.log("User Type:", userType);
+    const now = new Date(baseDate.getTime() + 60 * 1000);
 
     // Find the most recent end date for completed weeks
-    console.log("Querying for most recent end date...");
-    const mostRecentEndDateResult = await db.leaderboard.findFirst({
+    const mostRecentWeek = await db.leaderboard.findFirst({
       where: {
         endDate: {
           lt: now,
@@ -42,30 +44,26 @@ export const getTop3EntriesForMostRecentWeek = async (
         endDate: 'desc',
       },
       select: {
+        startDate: true,
         endDate: true,
       },
     });
 
-    console.log("Most recent end date result:", JSON.stringify(mostRecentEndDateResult, null, 2));
-
-    if (!mostRecentEndDateResult) {
+    if (!mostRecentWeek) {
       console.log("No completed weeks found");
-      return [];
+      return { entries: [], startDate: new Date(), endDate: new Date() };
     }
 
-    const mostRecentEndDate = mostRecentEndDateResult.endDate;
-    console.log("Most recent end date:", mostRecentEndDate.toISOString());
-
     // Fetch the top 3 entries for that end date
-    console.log("Querying for entries...");
     const top3Entries = await db.leaderboard.findMany({
       where: {
-        endDate: mostRecentEndDate,
+        endDate: mostRecentWeek.endDate,
         userType,
       },
       orderBy: {
-        rank: 'asc', // Order by existing rank
+        rank: 'asc',
       },
+      take: 3,
       include: {
         user: {
           select: {
@@ -78,14 +76,13 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
-    console.log("Top 3 entries:", JSON.stringify(top3Entries, null, 2));
-
-    
-
-    return top3Entries;
+    return {
+      entries: top3Entries,
+      startDate: mostRecentWeek.startDate,
+      endDate: mostRecentWeek.endDate,
+    };
   } catch (error) {
-    console.error("Error in getTop3EntriesForMostRecentWeek:");
-    console.error(error);
-    throw error; 
+    console.error("Error in getTop3EntriesForMostRecentWeek:", error);
+    throw error;
   }
 };
