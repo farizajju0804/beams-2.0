@@ -31,7 +31,7 @@ const DashboardPage = async () => {
     getTop3EntriesForMostRecentWeek(user?.userType)
   ]);
 
-
+console.log("previous",previousWeekTop3)
 
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>

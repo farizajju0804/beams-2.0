@@ -63,7 +63,7 @@ export const getTop3EntriesForMostRecentWeek = async (
       orderBy: {
         rank: 'asc',
       },
-      take: 3,
+      take: 10,
       include: {
         user: {
           select: {
@@ -76,6 +76,8 @@ export const getTop3EntriesForMostRecentWeek = async (
       },
     });
 
+
+    console.log(top3Entries)
     return {
       entries: top3Entries,
       startDate: mostRecentWeek.startDate,

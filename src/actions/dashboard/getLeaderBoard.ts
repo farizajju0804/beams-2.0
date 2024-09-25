@@ -44,18 +44,10 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
   };
 };
 
-export async function announceLeaderboard(userType: UserType, startDate: Date, endDate: Date) {
-  const existingAnnouncement = await db.leaderboardAnnouncement.findFirst({
-    where: {
-      userType,
-      startDate,
-      endDate,
-    },
-  });
+export async function announceLeaderboard() {
 
-  if (existingAnnouncement) {
-    return;
-  }
+
+
 
   await generateNotificationForAllUsers(
     'REMINDER',
@@ -63,11 +55,5 @@ export async function announceLeaderboard(userType: UserType, startDate: Date, e
     '/dashboard'
   );
 
-  await db.leaderboardAnnouncement.create({
-    data: {
-      userType,
-      startDate,
-      endDate,
-    },
-  });
+
 }

@@ -16,7 +16,7 @@ const UserStatus: React.FC<UserStatusProps> = ({ rank = 0, score = 0 }) => {
       case 8: return "Eighth place! Stay focused, the top 5 is not far off!";
       case 9: return "Ninth place! You're close to the upper ranks, keep going!";
       case 10: return "Top 10! Strong position, aim to move up further!";
-      default: return `You're in ${rank}th place. Stay determined, the top is just ahead!`;
+      default: return `You're in ${rank}th place. Stay determined, you can reach ahead!`;
     }
   };
   

@@ -71,7 +71,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(initialData.remainingSeconds);
   const [isTimerActive, setIsTimerActive] = useState(true);
-  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous);
+  const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous.entries);
   const [userPosition, setUserPosition] = useState<number | undefined>(initialData.userPosition);
   const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
   // const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
@@ -83,7 +83,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     // Client-side parsed dates
     const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
     const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
-  
+   console.log(lastWeekUsers)
     useEffect(() => {
       // Ensure dates are only parsed client-side after hydration
       if (startDate && endDate) {
