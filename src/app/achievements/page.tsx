@@ -1,12 +1,66 @@
-import Sidebar from '@/components/Sidebar'
-import TopNav from '@/components/TopNav'
+
 import React from 'react'
 
-const page = () => {
+import {  currentUser } from '@/libs/auth'
+import { getAllLevels, getUserBeams } from '@/actions/points/getAllLevels'
+import AchievementsModal from './_components/AchievementsModal'
+import AchievementCard from './_components/AchievementCard'
+
+const page = async() => {
+  const user:any = await currentUser();
+  const levels = await getAllLevels();
+
+  const beams = await getUserBeams(user?.id);
+
   return (
-    <div className='flex flex-col'>
-        
-     
+    <div className='flex flex-col w-full'>
+        <AchievementsModal/>
+        <div className='pb-6 grid gap-12 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 '>
+        <AchievementCard
+  badgeName="Week Warrior"
+  badgeImageUrl="/path/to/badge.png"
+  completedCount={0}
+  totalCount={5}
+  color="#4CAF50"
+  beamsToGain={100}
+  actionText="logged in"
+  taskDefinition="Login every day for a consecutive week."
+  userFirstName="John"
+  actionUrl="/path/to/action"
+  personalizedMessage="The Week Warrior!"
+  currentBeams={500}
+/>
+
+<AchievementCard
+  badgeName="Week Warrior"
+  badgeImageUrl="/path/to/badge.png"
+  completedCount={4}
+  totalCount={5}
+  color="#4CAF50"
+  beamsToGain={100}
+  actionText="logged in"
+  taskDefinition="Login every day for a consecutive week."
+  userFirstName="John"
+  actionUrl="/path/to/action"
+  personalizedMessage="The Week Warrior!"
+  currentBeams={500}
+/>
+<AchievementCard
+  badgeName="Week Warrior"
+  badgeImageUrl="/path/to/badge.png"
+  completedCount={5}
+  totalCount={5}
+  color="#435cff"
+  beamsToGain={100}
+  actionText="logged in"
+  taskDefinition="Login every day for a consecutive week."
+  userFirstName="John"
+  actionUrl="/path/to/action"
+  personalizedMessage="The Week Warrior!"
+  currentBeams={500}
+/>
+
+        </div>
 
     </div>
   )
