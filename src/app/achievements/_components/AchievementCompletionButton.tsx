@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalContent, ModalBody, useDisclosure, Chip } from '@nextui-org/react';
 import Image from 'next/image';
-import { FaShare } from 'react-icons/fa';
 import confetti from 'canvas-confetti';
+import { IoShareSocial } from 'react-icons/io5';
 
 interface AchievementCompletionButtonProps {
   badgeName: string;
@@ -143,10 +143,10 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
               </Chip>
               <p className="text-sm mb-4">Total Beams: {currentBeams + beamsToGain}</p>
               <Button 
-                color="primary"
-                endContent={<FaShare size={18} />}
+                variant='bordered'
+                endContent={<IoShareSocial size={18} />}
                 size="sm"
-                className='font-medium text-white'
+                className='font-medium text-text'
                 onClick={handleShare}
               >
                 Share

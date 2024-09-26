@@ -293,7 +293,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   color="warning" 
                   variant="shadow"
                   onPress={onClose}
-                  className="mt-4 w-full font-semibold text-lg"
+                  className="mt-4 w-fulltext-black font-semibold text-lg"
                 >
                   Got it!
                 </Button>

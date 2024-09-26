@@ -68,8 +68,8 @@ model User {
   beamsTheatreFavorites     BeamsTheatreFavorite[] // Relationship to BeamsTheatreFavorite (many-to-one)
   beamsTheatreUserAnalytics BeamsTheatreUserAnalytics[] // Relationship to BeamsTheatreUserAnalytics (many-to-one)
   Leaderboard               Leaderboard[]
-  Achievement               Achievement[]
   notifications          Notification[]
+  userAchievements UserAchievement[]
   
 }
 
@@ -411,21 +411,38 @@ model LeaderboardAnnouncement {
   @@unique([userType, startDate, endDate])
 }
 model Achievement {
-  id               String    @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  name             String // Name of the achievement (e.g., "Bronze Achiever")
-  badgeImageUrl    String // URL of the badge image associated with this achievement
-  task             String // Task required to achieve this achievement
-  caption          String // Short description of the achievement
-  userId           String    @db.ObjectId // Foreign key to the User model
-  user             User      @relation(fields: [userId], references: [id]) // Relationship to the User model
-  completionStatus Boolean   @default(false) // Whether the achievement is completed
-  progress         Int       @default(0) // Progress towards completing the achievement
-  createdAt        DateTime? @default(now()) // Timestamp of when the achievement was created
-  updatedAt        DateTime? @updatedAt // Timestamp of last update
-
-  @@index([userId]) // Index for faster queries on userId
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  name          String           @unique
+  badgeImageUrl String
+  task          String
+  color         String
+  actionText    String
+  totalCount    Int
+  beamsToGain   Int              
+  personalizedMessage  String
+  actionUrl     String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  userAchievements UserAchievement[]
 }
 
+// UserAchievement model to track user progress on achievements
+model UserAchievement {
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String     @db.ObjectId
+  achievementId    String     @db.ObjectId
+  completionStatus Boolean    @default(false)
+  progress         Int        @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
+}
 // Model for storing analytics data about Beams Today usage
 model BeamsTodayUserAnalytics {
   id                        String @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId

@@ -51,11 +51,11 @@ const LevelsModal = () => {
                     title="Unlock Achievements"
                     description="Achieve special badges and milestones as you reach certain levels. These will be a mark of your hard work and dedication!"
                   />
-                  <RuleItem 
+                  {/* <RuleItem 
                     icon={<AiFillTrophy className="text-yellow" size={24} />}
                     title="Reach Level Milestones"
                     description="Hit specific beam goals to level up. Each level requires a certain number of beams."
-                  />
+                  /> */}
                   {/* <RuleItem 
                     icon={<AiFillBulb className="text-purple" size={24} />}
                     title="Exclusive Level Rewards"
@@ -73,7 +73,7 @@ const LevelsModal = () => {
                   color="warning" 
                   variant="shadow"
                   onPress={onClose}
-                  className="mt-4 w-full font-lg font-semibold"
+                  className="mt-4 w-full text-black font-lg font-semibold"
                 >
                   I&apos;m Ready to Level Up!
                 </Button>

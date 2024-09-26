@@ -65,7 +65,7 @@ const AchievementsModal = () => {
                   color="warning" 
                   variant="shadow"
                   onPress={onClose}
-                  className="mt-4 w-full font-lg font-semibold"
+                  className="mt-4 w-full text-black font-lg font-semibold"
                 >
                   Let&apos;s Unlock Some Badges!
                 </Button>

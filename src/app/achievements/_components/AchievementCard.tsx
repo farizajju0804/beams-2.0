@@ -7,6 +7,7 @@ import AchievementCompletionButton from './AchievementCompletionButton';
 interface AchievementCardProps {
   badgeName: string;
   badgeImageUrl: string;
+  isCompleted : boolean;
   completedCount: number;
   totalCount: number;
   color: string;
@@ -24,6 +25,7 @@ const FALLBACK_BADGE_IMAGE = 'https://res.cloudinary.com/drlyyxqh9/image/upload/
 export default function AchievementCard({
   badgeName,
   badgeImageUrl,
+  isCompleted,
   completedCount,
   totalCount,
   color,
@@ -35,7 +37,7 @@ export default function AchievementCard({
   personalizedMessage,
   currentBeams
 }: AchievementCardProps) {
-  const isCompleted = completedCount === totalCount;
+//   const isCompleted = isCompleted || completedCount === totalCount;
   const noProgress = completedCount === 0;
   const cardColor = noProgress ? '#a2a2a2' : color;
 
@@ -50,11 +52,11 @@ export default function AchievementCard({
             <rect width="100%" height="100%" fill="url(#pattern)" />
           </svg>
         </div>
-        <Chip 
-          size='sm'
-          className="absolute top-5 right-3 shadow-defined bg-background text-grey-2">
+        <div
+          
+          className="absolute top-5 right-3 rounded-full p-1 text-xs md:text-sm shadow-defined bg-background text-grey-2">
           {`${beamsToGain} Beams`}
-        </Chip>
+        </div>
       </div>
       <div className="relative px-6 pb-6">
         <div className="flex items-end -mt-12 mb-4">
@@ -71,11 +73,11 @@ export default function AchievementCard({
             <h2 className="text-lg md:text-xl font-poppins font-semibold">{badgeName}</h2>
           </div>
         </div>
-        <p className="text-grey-2 text-xs md:text-sm mt-4 mb-4">
+        <p className="text-grey-2 text-xs md:text-sm mt-4 mb-6">
           {taskDefinition}
         </p>
-        <div className="mb-4">
-          <div className="flex justify-between text-xs md:text-sm text-grey-2 mb-3">
+        <div className="mb-6">
+          <div className="flex justify-between font-semibold text-xs md:text-sm text-grey-2 mb-3">
             <span>
               {completedCount}/{totalCount} <span>{actionText}</span>
             </span>
