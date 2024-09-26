@@ -189,31 +189,37 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     }
   }, [lastWeekUsers]);
 
-  const renderLastWeekWinners = useCallback((users: any) => (
-    <div ref={lastWeekSectionRef}>
-      <div className='flex w-full items-center justify-center gap-4 mb-12'>
-        <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
-      </div>
-      <div className="flex max-w-2xl mb-4 justify-center gap-0 items-end w-full">
-        {[users[1], users[0], users[2]].map((user: any, index: number) => (
-          <div key={user?.id} className={`flex relative flex-col items-center overflow-hidden p-0`}>
-            {user.rank === 1 && (
-              <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-12 h-12 absolute top-[-30px]" />
-            )}
-            <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-4" />
-            <div className={`flex-shrink text-center text-text font-bold text-sm md:text-lg mb-6  max-w-[80%] ${user.isYou ? 'text-text' : ''}`}>
-              {`${user?.user?.firstName} ${user?.user?.lastName}`}
-            </div>
-            <div className={`${getHeight(user?.rank)} ${user.isYou ? 'bg-brand' : getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
-              <div className={`perspective-div ${getClass(user?.rank)}`}></div>
-              <div className={`${getSize(user?.rank)} text-background rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
-                {user?.rank}
-                <div className="text-center font-normal text-grey-1 text-xs md:text-lg">{user?.points} Beams</div>
+    const renderLastWeekWinners = useCallback((users: any) => (
+      <div ref={lastWeekSectionRef}>
+        <div className='flex w-full items-center justify-center gap-4 mb-[80px]'>
+          <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
+        </div>
+        <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
+          {[users[1], users[0], users[2]].map((user: any, index: number) => (
+            <div key={user?.id} className={`flex relative flex-col items-center`}>
+              {user.rank === 1 && (
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364907/achievements/1st_qsmjrv.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+              )}
+                {user.rank === 2 && (
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364908/achievements/2nd_kvqu9w.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+              )}
+                {user.rank === 3 && (
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364908/achievements/3rd_hpykn1.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+              )}
+              <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-4" />
+              <div className={`text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6 ${user.isYou ? 'text-text' : ''}`}>
+                {`${user?.user?.firstName} ${user?.user?.lastName}`}
+              </div>
+              <div className={`${getHeight(user?.rank)} ${user.isYou ? 'bg-brand' : getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
+                <div className={`perspective-div ${getClass(user?.rank)}`}></div>
+                <div className={`${getSize(user?.rank)} text-background rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
+                  {user?.rank}
+                  <div className="text-center font-normal text-grey-1 text-xs md:text-lg">{user?.points} Beams</div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
       {users.length > 3 && <LowerRanksTable userPosition={lastWeekUserPosition}  users={users} />}
     </div>
   ), []);
@@ -293,7 +299,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   color="warning" 
                   variant="shadow"
                   onPress={onClose}
-                  className="mt-4 w-fulltext-black font-semibold text-lg"
+                  className="mt-4 w-full text-black font-semibold text-lg"
                 >
                   Got it!
                 </Button>
