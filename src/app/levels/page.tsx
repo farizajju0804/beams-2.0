@@ -5,6 +5,7 @@ import Heading from '../dashboard/_components/Heading'
 import UserLevelIndicator from './_components/UserLevelIndicator'
 import {  currentUser } from '@/libs/auth'
 import { getAllLevels, getUserBeams } from '@/actions/points/getAllLevels'
+import LevelsModal from './_components/LevelsModal'
 
 const page = async() => {
   const user:any = await currentUser();
@@ -14,10 +15,7 @@ const page = async() => {
 
   return (
     <div className='flex flex-col w-full'>
-      <div className='md:pl-6'>
-        <Heading heading='Levels'/>
-       
-        </div>
+        <LevelsModal/>
         <UserLevelIndicator levels={levels} beams={beams.beams}/>
 
     </div>

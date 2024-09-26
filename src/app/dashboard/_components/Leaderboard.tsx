@@ -10,8 +10,9 @@ import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLea
 import { CountdownTimer } from './CountdownTimer';
 import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar } from "react-icons/ai";
 import './style.css'
-import LowerRanksCards from './LowerRanksCard';
+
 import Image from 'next/image';
+import LowerRanksTable from './LowerRanksCard';
 
 interface LeaderboardProps {
   userId: string;
@@ -75,7 +76,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [userPosition, setUserPosition] = useState<number | undefined>(initialData.userPosition);
   const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
   const [lastWeekUserPosition, setLastWeekUserPosition] = useState<number | undefined>(previous.userPosition);
-  const [lastWeekUserPoints, setlastWeekUserPoints] = useState<number | undefined>(previous.userPoints);
+  const [lastWeekUserPoints, setLastWeekUserPoints] = useState<number | undefined>(previous.userPoints);
   // const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
   const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(initialData.startDate);
@@ -85,7 +86,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     // Client-side parsed dates
     const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
     const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
-   console.log(lastWeekUsers)
+   
     useEffect(() => {
       // Ensure dates are only parsed client-side after hydration
       if (startDate && endDate) {
@@ -94,18 +95,17 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       }
     }, [startDate, endDate])
 
-
+    const markIsYou = (users: any[], userId: string) => {
+      return users.map((user) => {
+        if (user.userId === userId) {
+          return { ...user, isYou: true };
+        }
+        return user;
+      });
+    };
     useEffect(() => {
-      // Highlight the user's position if found
       if (lastWeekUserPosition) {
-        setLastWeekUsers((users) =>
-          users.map((user) => {
-            if (user.userId === userId) {
-              return { ...user, isYou: true }; // Mark as "You"
-            }
-            return user;
-          })
-        );
+        setLastWeekUsers((users) => markIsYou(users, userId));
       }
     }, [userId, lastWeekUserPosition]);
   const playConfetti = useCallback(() => {
@@ -134,12 +134,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
         getTop3EntriesForMostRecentWeek(userType,userId),
-        // getLeaderboardData(userId, userType,'2024-09-24T18:00:00.413Z')
-        getLeaderboardData(userId, userType)
+        getLeaderboardData(userId, userType,'2024-09-26T18:00:00.413Z')
+        // getLeaderboardData(userId, userType)
 
       ]);
 
-      setLastWeekUsers(lastWeekData);
+      setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
 
       setUserPosition(nextWeekData.userPosition);
       setUserPoints(nextWeekData.userPoints);
@@ -147,6 +147,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       setTimeRemaining(nextWeekData.remainingSeconds);
       setStartDate(nextWeekData.startDate);
       setEndDate(nextWeekData.endDate);
+      setLastWeekUserPosition(lastWeekData.userPosition);  // Update last week's user position
+      setLastWeekUserPoints(lastWeekData.userPoints); 
       setIsTimerActive(true);
 
  
@@ -192,15 +194,15 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       <div className='flex w-full items-center justify-center gap-4 mb-12'>
         <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
       </div>
-      <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
+      <div className="flex max-w-2xl mb-4 justify-center gap-0 items-end w-full">
         {[users[1], users[0], users[2]].map((user: any, index: number) => (
-          <div key={user?.id} className={`flex relative flex-col items-center`}>
+          <div key={user?.id} className={`flex relative flex-col items-center overflow-hidden p-0`}>
             {user.rank === 1 && (
               <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-12 h-12 absolute top-[-30px]" />
             )}
             <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-4" />
-            <div className={`text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6 ${user.isYou ? 'text-text' : ''}`}>
-              {user.isYou ? 'You' : `${user?.user?.firstName} ${user?.user?.lastName}`}
+            <div className={`flex-shrink text-center text-text font-bold text-sm md:text-lg mb-6  max-w-[80%] ${user.isYou ? 'text-text' : ''}`}>
+              {`${user?.user?.firstName} ${user?.user?.lastName}`}
             </div>
             <div className={`${getHeight(user?.rank)} ${user.isYou ? 'bg-brand' : getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
               <div className={`perspective-div ${getClass(user?.rank)}`}></div>
@@ -212,7 +214,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           </div>
         ))}
       </div>
-      {users.length > 3 && <LowerRanksCards userPosition={lastWeekUserPosition}  users={users} />}
+      {users.length > 3 && <LowerRanksTable userPosition={lastWeekUserPosition}  users={users} />}
     </div>
   ), []);
   const RuleItem = ({ icon, title, description }:any) => (
@@ -229,7 +231,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const renderUserPosition = useCallback(() => {
     if (userPosition && userPosition > 10 ) {
       return (
-        <div className="w-full max-w-md mx-auto mt-8 p-4 bg-highlight rounded-lg shadow-lg">
+        <div className="w-full max-w-md mx-auto mt-8 p-4 bg-yellow rounded-lg shadow-defined">
           <h2 className="text-xl font-bold">You are ranked #{lastWeekUserPosition}!</h2>
           <p className="text-lg">Keep going! You&apos;ve earned {lastWeekUserPoints} Beams this week.</p>
         </div>

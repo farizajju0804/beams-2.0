@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { TickCircle, Clock, Message, Book1 } from 'iconsax-react';
+import { AiFillTrophy, AiFillBook, AiFillClockCircle, AiFillMessage } from 'react-icons/ai';
 import { Popover, PopoverTrigger, PopoverContent, Badge, Button, Divider } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationIcon } from './NotificationIcon';
@@ -8,8 +8,6 @@ import { deleteNotification, fetchAllNotifications, fetchNewNotifications } from
 import { NotificationType } from '@prisma/client';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useRouter } from 'next/navigation';
-
-
 
 const NotificationPopover: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -40,7 +38,6 @@ const NotificationPopover: React.FC = () => {
       const newNotifications = await fetchNewNotifications(user.id);
       if (newNotifications.length > 0) {
         setNotifications(prev => [...newNotifications, ...prev]);
-        playNotificationSound();
         startBlinking();
       }
     } catch (error) {
@@ -74,28 +71,27 @@ const NotificationPopover: React.FC = () => {
     }, 5000);
   };
 
-  const playNotificationSound = () => {
-    const audio = new Audio('https://res.cloudinary.com/drlyyxqh9/video/upload/v1726920353/Beams%20today/Message_Notification_iouwdw.mp3');
-    audio.play();
-  };
-
-  const handleNotificationClick = async(id:string,actionUrl: string) => {
-    await deleteNotification(id, user?.id)
+  const handleNotificationClick = async (id:string, actionUrl: string) => {
+    await deleteNotification(id, user?.id);
     setIsOpen(false);
     router.push(actionUrl);
   };
 
   const getIcon = (type: NotificationType) => {
     switch(type) {
-      case 'ACHIEVEMENT': return <TickCircle variant="Bold" size={20} className="text-primary" />;
-      case 'CONTENT_UPDATE': return <Book1 variant="Bold" size={20} className="text-primary" />;
-      case 'REMINDER': return <Clock variant="Bold" size={20} className="text-primary" />;
-      case 'SOCIAL': return <Message variant="Bold" size={20} className="text-primary" />;
+      case 'ACHIEVEMENT':
+        return <AiFillTrophy className="text-brand" size={24} />;  // Trophy icon for achievements
+      case 'CONTENT_UPDATE':
+        return <AiFillBook className="text-green-500" size={24} />;     // Book icon for content updates
+      case 'REMINDER':
+        return <AiFillClockCircle className="text-blue-500" size={24} />; // Clock icon for reminders
+      case 'SOCIAL':
+        return <AiFillMessage className="text-pink-500" size={24} />;   // Message icon for social notifications
     }
   };
 
   const formatNotificationTime = (date: Date) => {
-    return format(new Date(date), 'MMM d, yyyy h:mm a');
+    return format(new Date(date), 'MMM d, yyyy');
   };
 
   const unreadCount = notifications.length;
@@ -111,7 +107,7 @@ const NotificationPopover: React.FC = () => {
   };
 
   return (
-    <Popover isOpen={isOpen} onOpenChange={handlePopoverOpen}>
+    <Popover backdrop='opaque' isOpen={isOpen} onOpenChange={handlePopoverOpen}>
       <PopoverTrigger>
         <Button
           isIconOnly
@@ -131,60 +127,41 @@ const NotificationPopover: React.FC = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <motion.div 
+      <PopoverContent className='shadow-defined'>
+        <div 
           className="w-80 px-1 py-2"
-          initial={false}
-          animate={{ height: 'auto' }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
         >
           <h3 className="text-lg font-poppins font-semibold mb-2">Notifications</h3>
-          <AnimatePresence initial={false}>
+    
             {isLoading ? (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-grey-2 text-center py-4"
-              >
+              <p className="text-grey-2 text-center py-4">
                 Loading notifications...
-              </motion.p>
+              </p>
             ) : notifications.length === 0 ? (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-grey-2 text-center py-4"
-              >
+              <p className="text-grey-2 text-center py-4">
                 No notifications
-              </motion.p>
+              </p>
             ) : (
               notifications.map((notif, index) => (
-                <motion.div
-                  key={notif.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  layout
-                >
+                <div key={notif.id}>
                   <div 
                     className="flex items-start space-x-3 p-2 rounded-lg bg-background cursor-pointer hover:bg-grey-1"
-                    onClick={() => handleNotificationClick(notif.id,notif.actionUrl)}
+                    onClick={() => handleNotificationClick(notif.id, notif.actionUrl)}
                   >
                     <div className="flex-shrink-0 mt-1">
                       {getIcon(notif.type)}
                     </div>
                     <div className="flex-grow">
                       <p className="text-sm text-text font-medium">{notif.content}</p>
-                      <p className="text-xs text-grey-2 mt-1">{formatNotificationTime(notif.createdAt)}</p>
+                      <p className="text-xs text-grey-2 mt-2">{formatNotificationTime(notif.createdAt)}</p>
                     </div>
                   </div>
                   {index < notifications.length - 1 && <Divider className="my-2" />}
-                </motion.div>
+                </div>
               ))
             )}
-          </AnimatePresence>
-        </motion.div>
+       
+        </div>
       </PopoverContent>
     </Popover>
   );

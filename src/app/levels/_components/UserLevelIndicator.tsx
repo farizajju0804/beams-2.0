@@ -53,7 +53,7 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 md:gap-4">
                 <div
-                  className="w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center"
+                  className="w-8 h-8 md:w-12 md:h-12 rounded-full hidden md:flex items-center justify-center"
                   style={{
                     backgroundColor: beams >= config.minPoints ? config.bgColor : "#e5e5e5",
                     boxShadow: `0px 4px 0px 0px rgba(0, 0, 0, 0.20), 0px 4px 0px 0px ${beams >= config.minPoints ? config.shadowColor : "#e5e5e5"}`,
@@ -61,7 +61,7 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                 >
                   <Icon size={16} className={`${beams >= config.minPoints ? "text-white" : "text-black"}`} />
                 </div>
-                <div className="flex flex-col items-start">
+                <div className="flex items-center gap-4 ">
                   <p className="text-xs md:text-sm text-grey-2">Level {config.levelNumber}</p>
                   <p className="text-sm md:text-lg font-medium font-poppins text-text">{config.name}</p>
                 </div>
@@ -73,8 +73,17 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                 </div>
               </div>
             </div>
-            <div className="max-w-full flex items-center justify-center gap-8 relative">
-              <div className="flex gap-3 md:gap-4 shadow-defined bg-background rounded-3xl p-4">
+            <div className="max-w-full flex items-center justify-center gap-4 relative">
+            <div
+                  className="w-fit p-3 md:w-12 md:h-12 rounded-full md:hidden flex items-center justify-center"
+                  style={{
+                    backgroundColor: beams >= config.minPoints ? config.bgColor : "#e5e5e5",
+                    boxShadow: `0px 4px 0px 0px rgba(0, 0, 0, 0.20), 0px 4px 0px 0px ${beams >= config.minPoints ? config.shadowColor : "#e5e5e5"}`,
+                  }}
+                >
+                  <Icon size={16} className={`${beams >= config.minPoints ? "text-white" : "text-black"}`} />
+                </div>
+              <div className="flex gap-3 md:gap-4 md:shadow-defined md:bg-background md:rounded-3xl md:p-4">
                 {[...Array(10)].map((_, i) => (
                   <Icon key={i} size={iconSize} style={{ color: i < filledIcons ? config.bgColor : "#e5e5e5" }} />
                 ))}
