@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalContent, ModalBody, useDisclosure, Chip } from '@nextui-org/react';
 import Image from 'next/image';
 import { FaShare } from 'react-icons/fa';
-
+import confetti from 'canvas-confetti';
 
 interface AchievementCompletionButtonProps {
   badgeName: string;
@@ -41,6 +41,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
   isCompleted
 }) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * INSPIRING_MESSAGES.length);
@@ -57,12 +58,55 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
     // You can use the Web Share API if supported, or open a new window with social media share links
   };
 
+  const triggerConfetti = () => {
+    const defaults = {
+      spread: 360,
+      ticks: 50,
+      gravity: 0,
+      decay: 0.94,
+      startVelocity: 10,
+      colors: [color],
+    };
+
+    const shoot = () => {
+      confetti({
+        ...defaults,
+        particleCount: 20,
+        scalar: 1.2,
+        shapes: ["star"],
+      });
+
+      confetti({
+        ...defaults,
+        particleCount: 10,
+        scalar: 0.75,
+        shapes: ["circle"],
+      });
+    };
+
+    setTimeout(shoot, 0);
+    setTimeout(shoot, 100);
+    setTimeout(shoot, 300);
+  };
+
+  useEffect(() => {
+    if (isOpen && showConfetti) {
+      triggerConfetti();
+      setShowConfetti(false);
+    }
+  }, [isOpen, showConfetti]);
+
+  const handleOpenModal = () => {
+    setShowConfetti(true);
+    onOpen();
+  };
+
   return (
     <>
       <Button
         className="flex-grow font-medium font-poppins"
         isDisabled={!isCompleted}
-        onClick={onOpen}
+        onClick={handleOpenModal}
         style={{
           backgroundColor: isCompleted ? color : undefined,
           color: isCompleted ? 'white' : undefined
@@ -74,7 +118,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
       <Modal 
         isOpen={isOpen} 
         onClose={onClose}
-        size="sm"
+        size="md"
         placement="center"
       >
         <ModalContent>
@@ -83,16 +127,17 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
               <Image
                 src={badgeImageUrl}
                 alt={`${badgeName} Badge`}
-                width={120}
-                height={120}
+                width={200}
+                height={200}
                 className="mb-4"
               />
               <h2 className="text-lg font-bold mb-2">{userFirstName}! The {badgeName}!</h2>
-              <p className="text-sm  mb-4">{inspiringMessage}</p>
+              <p className="text-sm mb-4">{inspiringMessage}</p>
               <Chip 
-               style={{ backgroundColor: color }} 
-              variant='shadow' size="sm" className={`mb-2  text-white `}
-              
+                style={{ backgroundColor: color }} 
+                variant='shadow' 
+                size="sm" 
+                className="mb-2 text-white"
               >
                 +{beamsToGain} Beams
               </Chip>

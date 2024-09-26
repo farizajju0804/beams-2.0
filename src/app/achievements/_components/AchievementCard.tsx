@@ -19,7 +19,7 @@ interface AchievementCardProps {
   currentBeams: number;
 }
 
-const FALLBACK_BADGE_IMAGE = '/path/to/common-fallback-badge.png';
+const FALLBACK_BADGE_IMAGE = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1727358975/achievements/badges/fallback-badge_ejxqbd.webp';
 
 export default function AchievementCard({
   badgeName,
@@ -62,8 +62,8 @@ export default function AchievementCard({
             <Image
               src={noProgress ? FALLBACK_BADGE_IMAGE : badgeImageUrl}
               alt={`${badgeName} Badge`}
-              width={80}
-              height={80}
+              width={100}
+              height={100}
               className="rounded-full"
             />
           </div>

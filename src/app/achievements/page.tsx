@@ -8,9 +8,7 @@ import AchievementCard from './_components/AchievementCard'
 
 const page = async() => {
   const user:any = await currentUser();
-  const levels = await getAllLevels();
 
-  const beams = await getUserBeams(user?.id);
 
   return (
     <div className='flex flex-col w-full'>
@@ -33,7 +31,7 @@ const page = async() => {
 
 <AchievementCard
   badgeName="Week Warrior"
-  badgeImageUrl="/path/to/badge.png"
+  badgeImageUrl="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727358628/achievements/badges/week-warrior_on888b.webp"
   completedCount={4}
   totalCount={5}
   color="#4CAF50"
@@ -47,7 +45,7 @@ const page = async() => {
 />
 <AchievementCard
   badgeName="Week Warrior"
-  badgeImageUrl="/path/to/badge.png"
+  badgeImageUrl="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727358628/achievements/badges/week-warrior_on888b.webp"
   completedCount={5}
   totalCount={5}
   color="#435cff"
