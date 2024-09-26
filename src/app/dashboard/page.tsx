@@ -27,7 +27,7 @@ const DashboardPage = async () => {
     getPollDataByUserId(user?.id),
     getWatchedBeamsTodayContent(user?.id),
     getUserLevelAndHistory(user?.id),
-    getLeaderboardData(user?.id, user?.userType,'2024-09-26T18:00:00.413Z'),
+    getLeaderboardData(user?.id, user?.userType),
     getTop3EntriesForMostRecentWeek(user?.userType,user?.id)
   ]);
 

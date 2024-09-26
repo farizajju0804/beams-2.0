@@ -8,7 +8,7 @@ import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardE
 import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
-import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar } from "react-icons/ai";
+import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar, AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
 import './style.css'
 
 import Image from 'next/image';
@@ -257,33 +257,34 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 <h2 className="text-2xl font-bold text-text">Leaderboard Rules</h2>
               </ModalHeader>
               <ModalBody className="text-text">
-                <div className="space-y-4">
-                  <RuleItem 
-                    icon={<AiFillClockCircle className="text-yellow-300" size={24} />}
-                    title="Weekly Competition"
-                    description="Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM."
-                  />
-                  <RuleItem 
-                    icon={<AiFillStar className="text-yellow-300" size={24} />}
-                    title="Point Accumulation"
-                    description="Only beams accumulated during the competition period will count."
-                  />
-                  <RuleItem 
-                    icon={<AiFillTrophy className="text-yellow-300" size={24} />}
-                    title="Tiebreakers"
-                    description="In case of ties, the user who accumulated the beams first will be ranked higher."
-                  />
-                  <RuleItem 
-                    icon={<AiFillStar className="text-yellow-300" size={24} />}
-                    title="Leaderboard Display"
-                    description="The top 10 users will be featured on the leaderboard each week."
-                  />
-                  <RuleItem 
-                    icon={<AiFillTrophy className="text-yellow-300" size={24} />}
-                    title="Special Recognition"
-                    description="The top 3 users will earn special badges!"
-                  />
-                </div>
+              <div className="space-y-4">
+            <RuleItem 
+              icon={<AiFillClockCircle className="text-blue-500" size={24} />}
+              title="Weekly Competition"
+              description="Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM."
+            />
+            <RuleItem 
+              icon={<AiFillFire className="text-red-500" size={24} />}
+              title="Point Accumulation"
+              description="Only beams accumulated during the competition period will count."
+            />
+            <RuleItem 
+              icon={<AiFillThunderbolt className="text-green-500" size={24} />}
+              title="Tiebreakers"
+              description="In case of ties, the user who accumulated the beams first will be ranked higher."
+            />
+            <RuleItem 
+              icon={<AiFillCrown className="text-yellow" size={24} />}
+              title="Leaderboard Display"
+              description="The top 10 users will be featured on the leaderboard each week."
+            />
+            <RuleItem 
+              icon={<AiFillGift className="text-pink-500" size={24} />}
+              title="Special Recognition"
+              description="The top 3 users will earn special badges!"
+            />
+          </div>
+               
              
                
               </ModalBody>
@@ -292,7 +293,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                   color="warning" 
                   variant="shadow"
                   onPress={onClose}
-                  className="mt-4 w-full"
+                  className="mt-4 w-full font-semibold text-lg"
                 >
                   Got it!
                 </Button>
