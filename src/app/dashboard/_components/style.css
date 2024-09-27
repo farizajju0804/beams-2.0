@@ -1,48 +1,18 @@
-.leaderboard-position {
+/* .leaderboard-position {
     position: relative;
     overflow: visible; /* Changed to visible if hidden cuts off the skewed div */
 
-  }
   
-  .perspective-div {
-    position: absolute;
 
-    left: 0;
-   
 
-    background: #a2a2a2; /* Adjust color and transparency for depth */
- 
-    z-index: -2; /* Ensure it's above the content but below the top elements if needed */
-  }
-
-  .perspective-div-3 {
-    transform: skew(356deg) skew(8deg);
-    top: -15px;
-    height: 20px;
-    right: 0;
-  }
-  .perspective-div-2 {
-    transform: skew(356deg) skew(1deg);
-    top: -15px;
-    height: 20px;
-    right: 0;
-  }
-  .perspective-div-1 {
-    right: 0px;
-    
-    top: -15px;
-    height: 20px;
-   }
-
-  /* Additional shadow for depth */
-  .leaderboard-position::after {
+  /* .leaderboard-position::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    box-shadow: 0 8px 10px rgba(0,0,0,0.3); /* Stronger shadow for more depth */
+    box-shadow: 0 8px 10px rgba(0,0,0,0.3); 
     z-index: 1;
   }
-  
+   */

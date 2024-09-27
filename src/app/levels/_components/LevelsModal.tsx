@@ -2,6 +2,7 @@
 import React from 'react'
 import { AiFillFire, AiFillRocket, AiFillTrophy, AiFillFlag, AiFillBulb, AiFillHeart, AiFillQuestionCircle } from 'react-icons/ai'
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
+import { FaFlag } from 'react-icons/fa'
 
 const LevelsModal = () => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -47,7 +48,7 @@ const LevelsModal = () => {
                     description="Earn beams by engaging in content, and participating in poll. The more active you are, the faster you level up!"
                   />
                   <RuleItem 
-                    icon={<AiFillFlag className="text-green-500" size={24} />}
+                    icon={<FaFlag className="text-green-500" size={24} />}
                     title="Unlock Achievements"
                     description="Achieve special badges and milestones as you reach certain levels. These will be a mark of your hard work and dedication!"
                   />

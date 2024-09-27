@@ -47,10 +47,10 @@ const getClass = (position: number) => {
 
 const getColor = (position: number) => {
   switch (position) {
-    case 1: return 'bg-secondary-2 text-background';
-    case 2: return 'bg-secondary-2 text-background';
-    case 3: return 'bg-secondary-2 text-background';
-    default: return 'bg-secondary-2 text-background';
+    case 1: return 'bg-brand text-white';
+    case 2: return 'bg-yellow text-white';
+    case 3: return 'bg-purple text-white';
+    default: return 'bg-purple text-white';
   }
 };
 
@@ -191,30 +191,36 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
     const renderLastWeekWinners = useCallback((users: any) => (
       <div ref={lastWeekSectionRef}>
-        <div className='flex w-full items-center justify-center gap-4 mb-[80px]'>
+        <div className='flex w-full items-center justify-center gap-4 mb-[60px]  md:mb-[80px]'>
           <h1 className='font-poppins text-lg md:text-2xl font-semibold'>Last Week&apos;s Winners</h1>
         </div>
         <div className="flex max-w-2xl mb-4 justify-center items-end w-full">
           {[users[1], users[0], users[2]].map((user: any, index: number) => (
-            <div key={user?.id} className={`flex relative flex-col items-center`}>
+            <div key={user?.id} className={`flex relative flex-col items-center w-1/3`}>
               {user.rank === 1 && (
-                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364907/achievements/1st_qsmjrv.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-30px] md:top-[-40px]" />
               )}
                 {user.rank === 2 && (
-                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364908/achievements/2nd_kvqu9w.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-30px] md:top-[-40px]" />
               )}
                 {user.rank === 3 && (
-                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727364908/achievements/3rd_hpykn1.webp" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-35px] md:top-[-55px]" />
+                <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-30px] md:top-[-40px]" />
               )}
-              <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-4" />
-              <div className={`text-center text-text font-bold text-sm md:text-lg mb-6 text-wrap w-5/6 ${user.isYou ? 'text-text' : ''}`}>
-                {`${user?.user?.firstName} ${user?.user?.lastName}`}
+              <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-3" />
+              <div className={`text-center text-text text-sm md:text-lg mb-3 text-wrap w-full ${user.isYou ? 'font-bold' : 'font-medium'}`}>
+                {`${user?.user?.firstName} ${user?.user?.lastName} ${user.isYou ? '(You)' : ''}`}
               </div>
-              <div className={`${getHeight(user?.rank)} ${user.isYou ? 'bg-brand' : getColor(user?.rank)} md:w-40 w-24 py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}>
+              <div className="text-center  rounded-full font-normal text-[#9c9c9c] mb-4 text-xs md:text-sm">{user?.points} Beams</div>
+
+              <div className={`${getHeight(user?.rank)}  ${getColor(user?.rank)} w-full py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}
+              style={{
+                boxShadow: '0 8px 10px rgba(0,0,0,0.3)',
+                zIndex: 1
+              }}
+              >
                 <div className={`perspective-div ${getClass(user?.rank)}`}></div>
-                <div className={`${getSize(user?.rank)} text-background rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
+                <div className={`${getSize(user?.rank)}  rounded-full text-5xl font-poppins flex flex-col items-center justify-center gap-4 font-bold`}>
                   {user?.rank}
-                  <div className="text-center font-normal text-grey-1 text-xs md:text-lg">{user?.points} Beams</div>
                 </div>
               </div>
             </div>

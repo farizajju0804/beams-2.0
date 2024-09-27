@@ -102,7 +102,7 @@ export const generateLeaderboardNotifications = async () => {
         // Custom message for top 10
         let message;
         if (rank <= 10) {
-          message = `🎉 Great job, ${userName}! You’re ranked #${rank} on the leaderboard!`;
+          message = `Great job, ${userName}! You’re ranked #${rank} on the leaderboard!🎉 `;
           console.log(`Generated custom message for rank ${rank}: ${message}`);
         } else {
           // Default message for others

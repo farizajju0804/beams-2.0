@@ -38,7 +38,7 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
               alt="profile"
               className="w-8 h-8 mr-2 flex-shrink-0"
             />
-            <span className='text-wrap flex-grow font-medium text-sm md:text-base'>{`${user.user?.firstName} ${user.user?.lastName}`}</span>
+            <span className='text-wrap flex-grow font-medium text-sm md:text-base'>{`${user.user?.firstName} ${user.user?.lastName} ${user.rank === userPosition ? '(You)' : ''}`}</span>
           </div>
         );
       case "points":

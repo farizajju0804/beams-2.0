@@ -80,13 +80,13 @@ const NotificationPopover: React.FC = () => {
   const getIcon = (type: NotificationType) => {
     switch(type) {
       case 'ACHIEVEMENT':
-        return <AiFillTrophy className="text-brand" size={24} />;  // Trophy icon for achievements
+        return <AiFillTrophy className="text-brand" size={28} />;  // Trophy icon for achievements
       case 'CONTENT_UPDATE':
-        return <AiFillBook className="text-green-500" size={24} />;     // Book icon for content updates
+        return <AiFillBook className="text-green-500" size={28} />;     // Book icon for content updates
       case 'REMINDER':
-        return <AiFillClockCircle className="text-blue-500" size={24} />; // Clock icon for reminders
+        return <AiFillClockCircle className="text-blue-500" size={28} />; // Clock icon for reminders
       case 'SOCIAL':
-        return <AiFillMessage className="text-pink-500" size={24} />;   // Message icon for social notifications
+        return <AiFillMessage className="text-pink-500" size={28} />;   // Message icon for social notifications
     }
   };
 
@@ -131,8 +131,8 @@ const NotificationPopover: React.FC = () => {
         <div 
           className="w-80 px-1 py-2"
         >
-          <h3 className="text-lg font-poppins font-semibold mb-2">Notifications</h3>
-    
+          <h3 className="text-lg font-poppins font-medium mb-2">Notifications</h3>
+          <Divider className="my-2" />
             {isLoading ? (
               <p className="text-grey-2 text-center py-4">
                 Loading notifications...
@@ -153,7 +153,7 @@ const NotificationPopover: React.FC = () => {
                     </div>
                     <div className="flex-grow">
                       <p className="text-sm text-text font-medium">{notif.content}</p>
-                      <p className="text-xs text-grey-2 mt-2">{formatNotificationTime(notif.createdAt)}</p>
+                      <p className="text-xs text-[#a2a2a2] mt-1">{formatNotificationTime(notif.createdAt)}</p>
                     </div>
                   </div>
                   {index < notifications.length - 1 && <Divider className="my-2" />}
