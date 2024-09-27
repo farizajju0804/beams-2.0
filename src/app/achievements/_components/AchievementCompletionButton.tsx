@@ -5,6 +5,7 @@ import { Button, Modal, ModalContent, ModalBody, useDisclosure, Chip } from '@ne
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
 import { IoShareSocial } from 'react-icons/io5';
+import { ArrowRight2 } from 'iconsax-react';
 
 interface AchievementCompletionButtonProps {
   badgeName: string;
@@ -104,8 +105,9 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
   return (
     <>
       <Button
-        className="flex-grow font-medium font-poppins"
+        className="flex-wrap flex h-auto py-2 items-center justify-between  font-medium font-poppins"
         isDisabled={!isCompleted}
+        endContent={ <ArrowRight2 size={20} />}
         onClick={handleOpenModal}
         style={{
           backgroundColor: isCompleted ? color : undefined,
