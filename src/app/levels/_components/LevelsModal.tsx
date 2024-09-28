@@ -28,6 +28,9 @@ const LevelsModal = () => {
         scrollBehavior="inside"
         backdrop="blur"
         className="bg-background"
+        classNames={{
+          wrapper : 'z-[110]'
+        }}
       >
         <ModalContent>
           {(onClose) => (
