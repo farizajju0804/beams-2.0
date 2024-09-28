@@ -131,15 +131,15 @@ const NotificationPopover: React.FC = () => {
         <div 
           className="w-80 px-1 py-2"
         >
-          <h3 className="text-lg font-poppins font-medium mb-2">Notifications</h3>
-          <Divider className="my-2" />
+          <h3 className="text-lg font-poppins font-medium">Notifications</h3>
+          <div  className=" w-full h-[1px] rounded-full  my-1 border-[0.5] bg-grey-1" ></div>
             {isLoading ? (
               <p className="text-grey-2 text-center py-4">
                 Loading notifications...
               </p>
             ) : notifications.length === 0 ? (
               <p className="text-grey-2 text-center py-4">
-                No notifications
+                Looks like your notifications are on a coffee break ☕!
               </p>
             ) : (
               notifications.map((notif, index) => (
@@ -156,7 +156,8 @@ const NotificationPopover: React.FC = () => {
                       <p className="text-xs text-[#a2a2a2] mt-1">{formatNotificationTime(notif.createdAt)}</p>
                     </div>
                   </div>
-                  {index < notifications.length - 1 && <Divider className="my-2" />}
+                  {index < notifications.length - 1 &&           <div  className=" w-full h-[1px] rounded-full  my-2 border-[0.5] bg-grey-1" ></div>
+                  }
                 </div>
               ))
             )}

@@ -43,7 +43,7 @@ const AchievementsPage = async () => {
           );
         })}
 
-{/* <AchievementCard
+<AchievementCard
   badgeName="Week Warrior"
   isCompleted={false}
   badgeImageUrl="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727358628/achievements/badges/week-warrior_on888b.webp"
@@ -72,7 +72,7 @@ const AchievementsPage = async () => {
   actionUrl="/path/to/action"
   personalizedMessage="The Week Warrior!"
   currentBeams={500}
-/> */}
+/>
       </div>
     </div>
   );

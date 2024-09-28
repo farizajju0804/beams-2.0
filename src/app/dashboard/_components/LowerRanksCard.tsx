@@ -22,11 +22,9 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
       case "rank":
         return (
           <div
-            className={`flex justify-center items-center w-8 h-8 rounded-full ${
-              user.rank === userPosition ? "bg-secondary-2" : "bg-text"
-            }`}
+            className={`flex justify-center items-center `}
           >
-            <span className="text-sm text-background font-bold">{user.rank}</span>
+            <span className="text-sm text-text font-bold">{user.rank}</span>
           </div>
         );
       case "user":
@@ -42,7 +40,7 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
           </div>
         );
       case "points":
-        return <span className='text-wrap text-xs md:text-sm'>{user.points}</span>;
+        return <span className='text-wrap mx-auto font-medium text-text text-sm'>{user.points}</span>;
       default:
         return cellValue;
     }
@@ -51,10 +49,14 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
   return (
     <Table
       aria-label="Lower Ranks Table"
-      className="max-w-2xl mx-auto mt-8"
+      className="max-w-2xl mx-auto px-0 mt-10"
       selectionMode="none"
+      classNames={{
+        wrapper : "p-0",
+        th : 'rounded-0'
+      }}
     >
-      <TableHeader columns={columns}>
+      <TableHeader  columns={columns}>
         {(column) => (
           <TableColumn 
             key={column.key}
@@ -71,7 +73,7 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
             className={`my-2 ${user.rank === userPosition ? "font-bold  font-poppins" : ""}`}
           >
             {(columnKey) => (
-              <TableCell className={`py-4 ${columnKey === "points" ? "text-right" : ""}`}>
+              <TableCell className={`py-4 ${columnKey === "points" ? "text-center" : ""}`}>
                 <span className={user.rank === userPosition ? "text-secondary-2" : ""}>
                   {renderCell(user, columnKey)}
                 </span>

@@ -92,7 +92,7 @@ const LevelsModal = () => {
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Levels</h1>
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div>
       </div>
-      <Button isIconOnly className='bg-transparent text-[#888888] cursor-pointer' onPress={onOpen}>
+      <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}>
         <AiFillQuestionCircle size={24} />
       </Button>
       {renderOverlay()} 

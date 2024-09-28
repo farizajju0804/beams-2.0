@@ -75,7 +75,7 @@ export default function Component({
             <span>
               {completedCount}/{totalCount} <span>{actionText}</span>
             </span>
-            <div className={` rounded-full p-1  text-xs  shadow-defined ${noProgress ? 'bg-text text-background' : 'bg-background text-text' }`} >
+            <div className={` rounded-full p-1  text-xs  shadow-defined  'bg-background text-text' `} >
            {`${beamsToGain} Beams`} 
 
         </div>

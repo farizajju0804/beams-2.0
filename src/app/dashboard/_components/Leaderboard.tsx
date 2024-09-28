@@ -29,9 +29,9 @@ interface LeaderboardProps {
 
 const getHeight = (position: number) => {
   switch (position) {
-    case 1: return 'h-72 leaderboard-1 md:h-96';
-    case 2: return 'h-64 leaderboard-2 md:h-80';
-    case 3: return 'h-56 leaderboard-3 md:h-72';
+    case 1: return 'h-80 leaderboard-1 ';
+    case 2: return 'h-64 leaderboard-2 ';
+    case 3: return 'h-56 leaderboard-3';
     default: return 'h-48';
   }
 };
@@ -56,9 +56,9 @@ const getColor = (position: number) => {
 
 const getSize = (position: number) => {
   switch (position) {
-    case 1: return 'text-[80px]';
-    case 2: return 'text-[60px]';
-    case 3: return 'text-5xl';
+    case 1: return 'text-[70px]';
+    case 2: return 'text-[70px]';
+    case 3: return 'text-[70px]';
     default: return 'text-4l';
   }
 };
@@ -210,7 +210,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               <div className={`text-center text-text text-sm md:text-lg mb-3 text-wrap w-full ${user.isYou ? 'font-bold' : 'font-medium'}`}>
                 {`${user?.user?.firstName} ${user?.user?.lastName} ${user.isYou ? '(You)' : ''}`}
               </div>
-              <div className="text-center  rounded-full font-normal text-[#9c9c9c] mb-4 text-xs md:text-sm">{user?.points} Beams</div>
+              <div className="text-center  font-medium p-1 bg-text text-background text-xs md:text-sm">{user?.points} Beams</div>
 
               <div className={`${getHeight(user?.rank)}  ${getColor(user?.rank)} w-full py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}
               style={{
