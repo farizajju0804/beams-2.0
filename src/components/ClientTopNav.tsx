@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react'
-import UserButton from '@/app/auth/_components/user-button'
+import UserButton from '@/app/dashboard/_components/user-button'
 import NotificationPopover from './NotificationPopover'
 
 

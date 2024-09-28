@@ -4,6 +4,7 @@ import { SessionProviders } from "../SessionProviders";
 
 import PublicFooter from "@/components/PublicFooter";
 import Nav from "@/components/Navbar";
+import BottomNav from "@/components/BottomNav";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function Layout({
    
       <div className={`relative bg-background ${quicksand.className}`}>
          <Nav/>
+         <BottomNav /> 
         {children}
           <PublicFooter/>
       </div>

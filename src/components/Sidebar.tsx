@@ -1,17 +1,17 @@
 'use client'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Chart, Cup, BookSquare, Rank, Home, ArrowLeft2, ArrowRight2 } from 'iconsax-react';
+import { Chart, Cup, BookSquare, Rank,  ArrowLeft2, ArrowRight2, Microscope } from 'iconsax-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const menuItems = [
-  { name: 'Beams Today', icon: Home, path: '/beams-today' },
+  { name: 'Beams Today', icon: Microscope, path: '/beams-today' },
   { name: 'Dashboard', icon: Chart, path: '/dashboard' },
   { name: 'Leaderboard', icon: Rank, path: '/leaderboard' },
   { name: 'Achievements', icon: Cup, path: '/achievements' },
-  { name: 'My Library', icon: BookSquare, path: '/beams-today/library' },
+  { name: 'My Library', icon: BookSquare, path: '/beams-today/my-library' },
 ];
 
 const Sidebar = () => {

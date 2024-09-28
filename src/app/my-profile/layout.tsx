@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import Nav from "@/components/Navbar";
 import PublicFooter from "@/components/PublicFooter";
+import BottomNav from "@/components/BottomNav";
 
 
 const quicksand = Quicksand({ subsets: ["latin"] });
@@ -18,6 +19,8 @@ export default function Layout({
   return (
          <div className="relative w-full max-w-full overflow-x-hidden">
         <Nav />
+        <BottomNav /> 
+
         {children}
         <PublicFooter/>
         </div>

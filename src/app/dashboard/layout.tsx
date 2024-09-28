@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import TopNav from "@/components/TopNav";
 import PublicFooter from "@/components/PublicFooter";
 import { SessionProviders } from "../SessionProviders";
+import BottomNav from '@/components/BottomNav';
 
 export default function Layout({
   children,
@@ -14,6 +15,7 @@ export default function Layout({
       <div className="relative w-full h-screen overflow-hidden flex">
         <div className="h-full">
           <Sidebar />
+          <BottomNav /> 
         </div>
         <div className="flex flex-col flex-grow overflow-auto">
           <TopNav />
