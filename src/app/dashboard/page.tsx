@@ -20,18 +20,18 @@ const DashboardPage = async () => {
     pollData,
     watchedData,
     { userLevel, beams, recentActivities, accumulatedPoints },
-    leaderboardData,
-    previousWeekTop3
+    // leaderboardData,
+    // previousWeekTop3
   ]:any = await Promise.all([
     getUserAnalyticsById(user?.id),
     getPollDataByUserId(user?.id),
     getWatchedBeamsTodayContent(user?.id),
     getUserLevelAndHistory(user?.id),
-    getLeaderboardData(user?.id, user?.userType),
-    getTop3EntriesForMostRecentWeek(user?.userType,user?.id)
+    // getLeaderboardData(user?.id, user?.userType),
+    // getTop3EntriesForMostRecentWeek(user?.userType,user?.id)
   ]);
 
-console.log("previous",previousWeekTop3)
+// console.log("previous",previousWeekTop3)
 
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
@@ -46,12 +46,12 @@ console.log("previous",previousWeekTop3)
         recentActivities={recentActivities}
         accumulatedPoints={accumulatedPoints}
       />
-      <Leaderboard
+      {/* <Leaderboard
         userId={user?.id}
         initialData={leaderboardData}
         userType={user?.userType}
         previous={previousWeekTop3}
-      />
+      /> */}
       {/* <Achievements /> */}
     </div>
   );

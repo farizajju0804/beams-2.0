@@ -261,6 +261,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         scrollBehavior="inside"
         backdrop="blur"
         className="bg-background"
+        classNames={{
+          wrapper : 'z-[110]'
+        }}
       >
         <ModalContent>
           {(onClose) => (
