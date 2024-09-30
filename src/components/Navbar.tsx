@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
 import Image from "next/image";
-import UserButton from "../app/dashboard/_components/user-button";
+import UserButton from "./user-button";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { useTheme } from "next-themes";
 

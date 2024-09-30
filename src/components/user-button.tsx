@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 import { signOut, useSession } from "next-auth/react";
-import { ThemeSwitcher } from "../../../components/ThemeSwitcher";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ArrowDown2 } from "iconsax-react";
 import { signOutUser } from "@/actions/auth/signout";
 

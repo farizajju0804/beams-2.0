@@ -2,8 +2,9 @@
 'use client'
 
 import React from 'react'
-import UserButton from '@/app/dashboard/_components/user-button'
+
 import NotificationPopover from './NotificationPopover'
+import UserButton from './user-button'
 
 
 const ClientTopNav = () => {

@@ -7,7 +7,7 @@ import { currentUser } from "@/libs/auth";
 export default async function Home() {
   const user = await currentUser();
   return (
-    <div className="w-full flex flex-col justify-center items-center bg-white">
+    <div className="w-full flex flex-col justify-center items-center">
         {user ? <Nav/> : <PublicNav/>}
         <Hero />
         <PublicFooter/>

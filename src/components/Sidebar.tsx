@@ -7,12 +7,12 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const menuItems = [
-  { name: 'Beams Today', icon: Microscope, path: '/beams-today' },
-  { name: 'Dashboard', icon: Chart, path: '/dashboard' },
-  { name: 'Leaderboard', icon: Rank, path: '/leaderboard' },
-  { name: 'Achievements', icon: Cup, path: '/achievements' },
-  { name: 'My Library', icon: BookSquare, path: '/beams-today/my-library' },
-];
+  { icon: Microscope, label: "Beams Today", path: "/beams-today" },
+  { icon: Chart, label: "Dashboard", path: "/dashboard" },
+  { icon: BookSquare, label: "My Library", path: "/my-library" },
+  { icon: Cup, label: "Levolution", path: "/levolution" },
+  { icon: Rank, label: "Leaderboard", path: "/leaderboard" },
+]
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -96,7 +96,7 @@ const Sidebar = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                       >
-                        {item.name}
+                        {item.label}
                       </motion.span>
                     )}
                   </AnimatePresence>
