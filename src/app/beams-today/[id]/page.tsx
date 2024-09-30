@@ -46,7 +46,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
           pageClassName="text-text"
           linkClassName="text-grey-2"
           items={[
-            { href: "/", name: "Home" },
+            // { href: "/", name: "Home" },
             { name: "Beams Today", href: "/beams-today" },
             { name: beamsToday.title }
           ]}

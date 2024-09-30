@@ -67,6 +67,9 @@ textarea {
   box-shadow: 0px 6px 10px 0px rgba(var(--shadow));
 }
 
+.shadow-defined-top{
+  box-shadow: 0px -6px 6px 0px rgba(var(--shadow));
+}
 
 .sidebar {
   width: 5rem; /* collapsed width */
@@ -127,6 +130,12 @@ textarea {
 .black-text-1{
   color : #181818 !important;
 }
+
+
+
+
+
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
@@ -185,17 +194,7 @@ input:-webkit-autofill:active{
     scrollbar-width: none;  /* Firefox */
   }
 
-  /* .video-js{
-  width: 100% !important;
-  height: auto !important;
-  max-width: 1020px;
-  margin: 0;
-  padding: 0;
-}
 
-.vjs-default-skin{
-  border-radius: 24px !important;
-}  */
 
 .video-js.vjs-ended .vjs-poster {
   display: block;

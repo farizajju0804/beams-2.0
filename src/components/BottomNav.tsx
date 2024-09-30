@@ -1,21 +1,25 @@
-'use client'
+"use client"
 
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Chart, Cup, BookSquare, Rank,  Microscope } from "iconsax-react"
+import { Chart, BookSquare, Rank, Microscope } from "iconsax-react"
+import RedirectMessage from "./Redirection" 
 
 const navItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: BookSquare, label: "My Library", path: "/my-library" },
+  { icon: Rank, label: "Levolution", path: "/levolution" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },
+
 ]
 
 export default function BottomNav() {
   const router = useRouter()
   const pathname = usePathname()
   const [selected, setSelected] = useState(0)
+  const [redirecting, setRedirecting] = useState(false)
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(item => item.path === pathname)
@@ -26,11 +30,16 @@ export default function BottomNav() {
 
   const handleNavigation = (index: number) => {
     setSelected(index)
+    setRedirecting(true)
+
+    // Push to the selected route
     router.push(navItems[index].path)
   }
 
   return (
-    <div className="md:hidden block bg-background shadow-defined z-[100] fixed bottom-0 left-0 right-0">
+    <div className="md:hidden block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
+      {redirecting && <RedirectMessage />} {/* Show redirect message instantly */}
+
       <motion.div
         className="bg-background rounded-2xl shadow-lg"
         initial={{ y: 100, opacity: 0 }}
@@ -46,6 +55,7 @@ export default function BottomNav() {
               key={item.label}
               className="flex flex-col items-center justify-center w-fit h-12 relative"
               onClick={() => handleNavigation(index)}
+              disabled={redirecting} // Disable navigation buttons while redirecting
             >
               <AnimatePresence>
                 {selected === index && (
@@ -68,12 +78,12 @@ export default function BottomNav() {
               >
                 <item.icon
                   size={14}
-                  variant={"Bold" }
+                  variant={"Bold"}
                   color={selected === index ? "#f96f2e" : "#94A3B8"}
                 />
               </motion.div>
               <motion.span
-                className="text-[10px] mt-1 font-medium"
+                className="text-[8px] mt-1 font-medium"
                 animate={{
                   color: selected === index ? "#f96f2e" : "#94A3B8",
                 }}

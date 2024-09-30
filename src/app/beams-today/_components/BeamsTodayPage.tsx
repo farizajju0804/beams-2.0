@@ -18,7 +18,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
 
   return (
     <>
-     <Header />
+     {/* <Header /> */}
    
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col items-center justify-center w-full bg-background gap-6">
       {/* Page Header */}

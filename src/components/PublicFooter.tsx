@@ -7,11 +7,12 @@ import { Button } from '@nextui-org/react';
 
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 
 const PublicFooter: React.FC = () => {
   const router = useRouter();
-
+  const user =  useCurrentUser();
   return (
     <>
       <footer
@@ -60,7 +61,7 @@ const PublicFooter: React.FC = () => {
 
           <div className="pt-4 flex flex-col md:flex-row justify-between items-center fade-in">
           <div className='my-4 md:my-0'>
-              <Link href="/">
+              <Link href={ user ? '/beams-today' : '/'}>
                 <Image
                   src="/images/logo.png"
                   alt="Beams Logo"

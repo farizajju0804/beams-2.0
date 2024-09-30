@@ -5,7 +5,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 const Header = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
-     <div className="w-full pl-6 md:pl-8">
+     {/* <div className="w-full pl-6 md:pl-8">
       <Breadcrumbs
         pageClassName="text-text"
         linkClassName="text-grey-2"
@@ -14,7 +14,7 @@ const Header = () => {
           { name: "Beams Today" },
         ]}
       />
-      </div>
+      </div> */}
    
     {/* <div className="w-full">
      

@@ -40,7 +40,7 @@ const FavoritesTab: React.FC<FavoritesTabProps> = ({ favorites }) => {
   return (
     <>
 
-      <div className="mt-4 min-h-[50vh] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4 min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {favorites.length === 0 ? (
           <p className="col-span-full">No favorites found.</p> // Display message if no favorites
         ) : (

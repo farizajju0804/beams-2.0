@@ -47,7 +47,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
     <>
   
 
-      <div className="mt-4 min-h-[50vh]">
+      <div className="mt-4 min-h-[80vh]">
         {notes.length === 0 ? (
           <p>No notes found.</p> // Show message if no notes are available
         ) : (

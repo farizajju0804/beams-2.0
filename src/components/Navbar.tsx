@@ -27,7 +27,7 @@ export default function Nav() {
     }}>
       <NavbarContent className="max-w-none w-full">
         <NavbarBrand>
-          <Link href="/">
+          <Link href="/beams-today">
             {/* <Image 
               src={theme === 'dark' ? darkLogo : lightLogo} 
               alt="logo"  
