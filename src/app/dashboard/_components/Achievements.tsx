@@ -24,13 +24,13 @@ const Achievements = async () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-6">
-          <p className="text-grey-2 text-sm">No achievements yet! Keep going, you&apos;re almost there! 🚀</p>
+        <div className="text-center py-4">
+          <p className="text-grey-2 px-4 text-sm">No achievements yet! Keep going, you&apos;re almost there!</p>
         </div>
       )}
 
       <Link
-        href='/levolution'
+        href='/levolution/#achievements'
         className='mt-6 w-full text-brand underline font-medium text-center mx-auto text-sm'
       >
         View Achievements progress here

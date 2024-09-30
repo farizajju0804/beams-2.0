@@ -349,7 +349,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           {(userPosition && userPoints) ? (
             <UserStatus rank={userPosition} score={userPoints} />
           ) : (
-            <p className="w-full mt-4 text-center mx-auto">Start acclaiming beams to position yourself in the leaderboard</p>
+            <p className="w-full mt-4 text-center mx-auto">Your current position will be shown here as you start gaining beams.</p>
           )}
           {lastWeekUsers.length >= 3 && (
             <>

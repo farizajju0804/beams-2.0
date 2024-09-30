@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 import RecentActivity from './RecentActivity';
 import { Icon, MessageQuestion, Share, TickCircle } from 'iconsax-react';
 import Heading from './Heading';
+import Link from 'next/link';
 
 // Define interfaces for props
 interface LevelProgressProps {
@@ -170,6 +171,12 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
           <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">{userLevel.name}</div>
           <LevelProgress level={userLevel.levelNumber} progress={beams} total={userLevel.maxPoints} />
           <ScoreDisplay score={beams} />
+          <Link
+        href='/levolution'
+        className='my-3 w-full text-brand underline font-medium text-center mx-auto text-sm'
+      >
+        View Levels progress here
+      </Link>
         </div>
         {beams > 0 && 
         <div>
