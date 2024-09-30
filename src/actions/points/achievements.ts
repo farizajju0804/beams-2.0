@@ -28,3 +28,23 @@ export const getUserAchievements = async (userId: string): Promise<UserAchieveme
     throw new Error("Failed to fetch user achievements");
   }
 };
+
+
+
+export const getCompletedAchievements = async (userId: string): Promise<UserAchievement[]> => {
+  try {
+    const userAchievements = await db.userAchievement.findMany({
+      where: {
+        userId: userId,
+        completionStatus : true
+      },
+      include: {
+        achievement: true,
+      },
+    });
+    return userAchievements;
+  } catch (error) {
+    console.error("Error fetching user achievements:", error);
+    throw new Error("Failed to fetch user achievements");
+  }
+};

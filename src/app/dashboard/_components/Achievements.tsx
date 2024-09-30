@@ -1,47 +1,42 @@
-import React from 'react'
-import Heading from './Heading'
+import React from 'react';
+import Heading from './Heading';
 import AchievementCard from './AchievementCard';
+import Link from 'next/link';
+import { getCompletedAchievements } from '@/actions/points/achievements';
+import { currentUser } from '@/libs/auth';
 
-const achievements = [{
-    id: "1",
-    name: "Bronze Achiever",
-    badgeImageUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/bronze-3d_jephy6.webp",
-    task: "Reach Level 10",
-    caption: "You're just getting started!",
-    points: 300,
-    completionStatus: false,
-    progress: 0,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: "2",
-    name: "Silver Achiever",
-    badgeImageUrl: "https://res.cloudinary.com/drlyyxqh9/image/upload/v1726574962/achievements/silver-3d_ba5jkn.webp",
-    task: "Reach Level 20",
-    caption: "You're just getting started!",
-    points: 300,
-    completionStatus: false,
-    progress: 0,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-]
-const Achievements = () => {
+const Achievements = async () => {
+  const user: any = await currentUser();
+  const achievements = await getCompletedAchievements(user?.id);
+  
   return (
-    <div className='w-full flex-col'>
-       
+    <div className='w-full flex flex-col'>
+      <Heading heading="Achievements" />
 
-      <Heading heading="Achievements"/>
-      <div className="md:px-0 px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {achievements.map((achievement:any,id:any) => 
-        <AchievementCard key={id} achievement={achievement} />
-        )}
+      {achievements.length > 0 ? (
+        <div className="md:px-0 px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {achievements.map((achievement: any, id: any) => (
+            <AchievementCard
+              key={id}
+              achievement={achievement.achievement}
+              receivedOn={achievement.updatedAt.toLocaleDateString()}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-6">
+          <p className="text-grey-2 text-sm">No achievements yet! Keep going, you&apos;re almost there! 🚀</p>
+        </div>
+      )}
+
+      <Link
+        href='/levolution'
+        className='mt-6 w-full text-brand underline font-medium text-center mx-auto text-sm'
+      >
+        View Achievements progress here
+      </Link>
     </div>
-    <p className='mt-6 text-brand underline font-medium text-center mx-auto text-sm'>View Achievements progress here</p>
+  );
+};
 
-    </div>
-  )
-}
-
-export default Achievements
+export default Achievements;

@@ -165,7 +165,7 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
   return (
     <div className="w-full bg-background">
       <Heading heading={`My Beams`} />
-      <div className='px-6 w-full grid grid-cols-1 md:grid-cols-2'>
+      <div className='px-6 md:px-0 w-full grid grid-cols-1 md:grid-cols-2'>
         <div className='w-full flex flex-col items-center md:items-start justify-center '>
           <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">{userLevel.name}</div>
           <LevelProgress level={userLevel.levelNumber} progress={beams} total={userLevel.maxPoints} />
