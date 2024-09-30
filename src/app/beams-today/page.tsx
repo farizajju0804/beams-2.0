@@ -32,7 +32,6 @@ export default async function Page() {
       completedTopics={completedTopics}
       user={user}
       topics={topics}
-      // newTopics={newTopics}
       categories={categories}
     />
   );

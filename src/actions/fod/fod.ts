@@ -17,37 +17,93 @@ export const getFactOfTheDay = async (clientDate: string) => {
 
   try {
     // Attempt to retrieve the video with a matching date from the 'beamsToday' table.
-    let video = await db.beamsToday.findUnique({
+    let fact = await db.factOfTheday.findUnique({
       where: { 
         date: today,
-        published: true, // Only fetch if the topic is published
-       }, // Find a video that matches the provided date (in UTC).
-      include: {
-        category: true, // Include the related category in the result.
+       }
+    });
+
+    return fact; 
+  } catch (error) {
+    // Throw an error with a descriptive message if something goes wrong during the query.
+    throw new Error(`Error fetching video: ${(error as Error).message}`);
+  }
+};
+
+
+/**
+ * Marks the fact as completed for a given user.
+ * 
+ * @param userId - The ID of the user who completed the fact.
+ * @param factId - The ID of the fact the user completed.
+ * @returns A confirmation message or throws an error.
+ */
+export const markFactAsCompleted = async (userId: string, factId: string) => {
+  try {
+    // Check if the user has already completed the fact
+    const existingCompletion = await db.factCompletion.findUnique({
+      where: {
+        factId_userId: {
+          factId,
+          userId,
+        },
       },
     });
 
-    // If no video is found for the given date, fetch the latest available topic.
-    if (!video) {
-      video = await db.beamsToday.findFirst({
+    if (!existingCompletion) {
+      // If not already completed, create a new entry in the factCompletion table
+      await db.factCompletion.create({
+        data: {
+          factId,
+          userId,
+          completed: true,
+          completedAt: new Date(),
+        },
+      });
+    } else {
+      // Update the existing entry to mark as completed
+      await db.factCompletion.update({
         where: {
-          date : {
-            lt : today
+          factId_userId: {
+            factId,
+            userId,
           },
-          published: true, // Only fetch published topics
         },
-        orderBy: {
-          date: 'desc', // Order by date in descending order to get the latest topic.
-        },
-        include: {
-          category: true, // Include the related category in the result.
+        data: {
+          completed: true,
+          completedAt: new Date(),
         },
       });
     }
 
-    return video; // Return the found video, or null if no video is found.
+    return { message: "Fact marked as completed." };
   } catch (error) {
-    // Throw an error with a descriptive message if something goes wrong during the query.
-    throw new Error(`Error fetching video: ${(error as Error).message}`);
+    throw new Error(`Error marking fact as completed: ${(error as Error).message}`);
+  }
+};
+
+
+
+/**
+ * Fetches whether the user has completed the fact of the day.
+ * 
+ * @param userId - The ID of the user.
+ * @param factId - The ID of the fact.
+ * @returns Boolean indicating whether the fact is completed.
+ */
+export const getFactCompletionStatus = async (userId: string, factId: string) => {
+  try {
+    const completion = await db.factCompletion.findUnique({
+      where: {
+        factId_userId: {
+          factId,
+          userId,
+        },
+      },
+    });
+
+    return completion?.completed || false;
+  } catch (error) {
+    throw new Error(`Error fetching completion status: ${(error as Error).message}`);
   }
 };

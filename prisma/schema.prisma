@@ -70,6 +70,7 @@ model User {
   Leaderboard               Leaderboard[]
   notifications          Notification[]
   userAchievements UserAchievement[]
+  factCompletions FactCompletion[]
   
 }
 
@@ -197,8 +198,23 @@ model FactOfTheday {
   date                  DateTime                         @unique // Date of the Beams Today content
   finalImage            String // Title of the Beams Today content
   scratchImage          String // Title of the Beams Today content
+ completions FactCompletion[]
 
 }
+
+model FactCompletion {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  factId      String     @db.ObjectId // Foreign key to FactOfTheday
+  userId      String     @db.ObjectId // Foreign key to User
+  completed   Boolean    @default(false) // Whether the fact is completed
+  completedAt DateTime?  // Optional timestamp of when the fact was completed
+
+  fact        FactOfTheday @relation(fields: [factId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   @@unique([factId, userId])
+}
+
 //// Beams Today Section
 
 // Model for storing Beams Today content
