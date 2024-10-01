@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell } from 'recharts';
 import RecentActivity from './RecentActivity';
-import { Icon, MessageQuestion, Share, TickCircle } from 'iconsax-react';
+import { Cup, Icon, MessageQuestion, Share, TickCircle } from 'iconsax-react';
 import Heading from './Heading';
 import Link from 'next/link';
+import { FaTrophy } from 'react-icons/fa';
 
 // Define interfaces for props
 interface LevelProgressProps {
@@ -143,6 +144,7 @@ const iconMap: { [key: string]: Icon } = {
   BEAMS_TODAY: TickCircle,
   POLL_PARTICIPATION: TickCircle,
   SHARE: Share,
+  ACHIEVEMENT : Cup
 };
 
 // Main Dashboard component

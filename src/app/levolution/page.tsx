@@ -1,22 +1,25 @@
-import Sidebar from '@/components/Sidebar'
-import TopNav from '@/components/TopNav'
+
 import React from 'react'
-import Heading from '../dashboard/_components/Heading'
+
 import UserLevelIndicator from './_components/UserLevelIndicator'
 import {  currentUser } from '@/libs/auth'
-import { getAllLevels, getUserBeams } from '@/actions/points/getAllLevels'
+import { getAllLevels, getUserLevelAndBeams } from '@/actions/points/getAllLevels'
 import LevelsModal from './_components/LevelsModal'
 import { Divider } from '@nextui-org/react'
 import { Achievement, UserAchievement } from '@prisma/client'
 import { getAllAchievements, getUserAchievements } from '@/actions/points/achievements'
+import AchievementsModal from './_components/AchievementsModal'
+import AchievementCard from './_components/AchievementCard'
 
-import AchievementsModal from '../achievements/_components/AchievementsModal'
-import AchievementCard from '../achievements/_components/AchievementCard'
+
+
 
 const page = async() => {
   const user:any = await currentUser();
   const levels = await getAllLevels();
-  const beams = await getUserBeams(user?.id);
+  const data = await getUserLevelAndBeams(user?.id);
+  const beams = data.beams
+  const level = data.level
   const allAchievements:Achievement[] = await getAllAchievements();
   const userAchievements:UserAchievement[] = await getUserAchievements(user.id);
 
@@ -24,7 +27,7 @@ const page = async() => {
     <div className='flex flex-col w-full'>
         <LevelsModal/>
         <UserLevelIndicator levels={levels} 
-        beams={beams.beams} 
+        beams={beams} 
         />
         <Divider className='my-4'/>
         <section id='achievements'>
@@ -37,6 +40,9 @@ const page = async() => {
           return (
             <AchievementCard
               key={achievement.id}
+              userType={user?.userType}
+              userId={user?.id}
+              id={achievement.id}
               isCompleted={completed}
               badgeName={achievement.name}
               badgeImageUrl={achievement.badgeImageUrl}
@@ -49,8 +55,8 @@ const page = async() => {
               userFirstName={user.firstName}
               actionUrl={achievement.actionUrl || "/achievements"}
               personalizedMessage={achievement.personalizedMessage}
-              currentBeams={beams.beams} 
-              
+              currentBeams={beams}
+              currentLevel={level}
             />
           );
         })}

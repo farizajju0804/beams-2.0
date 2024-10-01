@@ -13,19 +13,24 @@ export const getAllLevels = async (): Promise<any[]> => {
 };
 
 
-export const getUserBeams = async (userId:string): Promise<any> => {
+export const getUserLevelAndBeams = async (userId:string): Promise<any> => {
     try {
       const beams = await db.userBeamPoints.findUnique({
         where : {
             userId :  userId
         },
-        select :{
-            beams: true
+        include : {
+           level : true
         }
+        
       });
       return beams;
     } catch (error) {
       throw new Error(`Error fetching beamsToday entries: ${(error as Error).message}`);
     }
   };
+  
+
+
+
   
