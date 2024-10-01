@@ -190,7 +190,7 @@ export function BeamsTodayRecents() {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="flex flex-col w-full">
+      <div className="flex py-6 flex-col w-full">
       {/* Heading */}
       <div className="pl-6 lg:pl-0 w-full flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Now Trending</h1>

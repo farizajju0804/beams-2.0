@@ -23,7 +23,9 @@ const page = async() => {
   return (
     <div className='flex flex-col w-full'>
         <LevelsModal/>
-        <UserLevelIndicator levels={levels} beams={beams.beams}/>
+        <UserLevelIndicator levels={levels} 
+        beams={beams.beams} 
+        />
         <Divider className='my-4'/>
         <section id='achievements'>
         <AchievementsModal />
@@ -48,6 +50,7 @@ const page = async() => {
               actionUrl={achievement.actionUrl || "/achievements"}
               personalizedMessage={achievement.personalizedMessage}
               currentBeams={beams.beams} 
+              
             />
           );
         })}

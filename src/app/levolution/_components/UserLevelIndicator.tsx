@@ -1,15 +1,9 @@
 import React from "react";
-import { FaStar, FaCrown, FaMedal, FaChartLine, FaTrophy } from "react-icons/fa";
 import { InfoCircle } from "iconsax-react";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
-
-const iconMap = {
-  FaStar,
-  FaCrown,
-  FaMedal,
-  FaChartLine,
-  FaTrophy
-};
+import * as FaIcons from "react-icons/fa";
+import * as MdIcons from "react-icons/md";
+import * as GiIcons from "react-icons/gi";
 
 interface LevelConfig {
   id: string;
@@ -28,11 +22,29 @@ interface UserLevelIndicatorProps {
   levels: LevelConfig[];
 }
 
+const iconLibraries:any = {
+  fa: FaIcons,
+  md: MdIcons,
+  gi: GiIcons,
+  // Add other libraries as needed
+};
+
+const DynamicIcon = ({ icon, ...props }:any) => {
+  const [library, iconName]:any = icon.split('/');
+  const IconComponent = iconLibraries[library]?.[iconName];
+
+  if (!IconComponent) {
+    console.error(`Icon not found: ${icon}`);
+    return <div style={{ width: props.size, height: props.size }}></div>;
+  }
+
+  return <IconComponent {...props} />;
+};
+
 export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndicatorProps) {
   return (
     <div className="w-full flex flex-col gap-10 px-6 mb-6 bg-background">
       {levels.map((config, idx) => {
-        const Icon = iconMap[config.icon as keyof typeof iconMap];
         const isWithinLevelRange = beams >= config.minPoints && beams <= config.maxPoints;
         const isAboveLevel = beams > config.maxPoints;
         let progress = 0;
@@ -44,12 +56,8 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
         }
 
         const filledIcons = Math.ceil(progress / 10);
-        const showPointer = isWithinLevelRange;
-
         const iconSize = 16;
         const iconGap = 12;
-        const arrowLeftPosition = (filledIcons - 0.5) * (iconSize + iconGap);
-
         const isLevelCompleted = beams >= config.minPoints;
 
         return (
@@ -82,7 +90,12 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
             <div className="max-w-full w-full flex items-center justify-between md:justify-start gap-2 md:gap-4 relative">
               <div className="flex gap-2 md:gap-4 shadow-defined bg-background rounded-3xl p-3">
                 {[...Array(10)].map((_, i) => (
-                  <Icon key={i} size={iconSize} style={{ color: i < filledIcons ? config.bgColor : "#e5e5e5" }} />
+                  <DynamicIcon 
+                    key={i} 
+                    icon={config.icon} 
+                    size={iconSize} 
+                    style={{ color: i < filledIcons ? config.bgColor : "#e5e5e5" }} 
+                  />
                 ))}
               </div>
               <div className="hidden w-12 h-10 md:flex items-center justify-center">

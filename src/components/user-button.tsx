@@ -121,9 +121,9 @@ export default function UserButton() {
           </DropdownItem> */}
           </DropdownSection>
           <DropdownSection title="Account" showDivider> 
-          <DropdownItem key="library" onClick={() => handleNavigation("/my-library")}>
+          {/* <DropdownItem key="library" onClick={() => handleNavigation("/my-library")}>
             My Library
-          </DropdownItem>
+          </DropdownItem> */}
           <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
             My Profile
           </DropdownItem>

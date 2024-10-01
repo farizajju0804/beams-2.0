@@ -78,7 +78,7 @@ export default function BottomNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 flex items-center justify-center bg-background  z-[200]"
+            className="fixed inset-0 flex items-center justify-center bg-background  z-[100]"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -94,7 +94,7 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      <div className="md:hidden block bg-background shadow-defined-top z-[200] fixed bottom-0 left-0 right-0">
+      <div className="md:hidden block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
         <motion.div
           className="bg-background rounded-2xl shadow-lg"
           initial={{ y: 100, opacity: 0 }}

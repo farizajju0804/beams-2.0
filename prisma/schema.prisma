@@ -371,7 +371,6 @@ model Level {
   name        String // Display name of the level (e.g., "Newbie", "Amateur")
   caption     String // Short description of the level
   icon        String
-  shadowColor String
   bgColor     String
   createdAt   DateTime?        @default(now()) // Timestamp when the level was created
   updatedAt   DateTime?        @updatedAt // Timestamp when the level was last updated

@@ -50,7 +50,6 @@
         <Input name="name" label="Name" defaultValue={level?.name} />
         <Input name="caption" label="Caption" defaultValue={level?.caption} />
         <Input name="icon" label="Icon" defaultValue={level?.icon} />
-        <Input name="shadowColor" label="Shadow Color" defaultValue={level?.shadowColor} />
         <Input name="bgColor" label="Background Color" defaultValue={level?.bgColor} />
         </div>
         <div className='my-4 flex gap-4'>
