@@ -9,7 +9,7 @@ interface ScratchCardProps {
   onReveal: () => void;
 }
 
-const SCRATCH_THRESHOLD = 0.8
+const SCRATCH_THRESHOLD = 0.4
 
 const useScratchCard = (scratchImage: string, finalImage: string, threshold: number, onReveal: () => void) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -42,14 +42,47 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
     setIsRevealed(true)
     setScratchPercentage(1)
     onReveal()
-    
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    })
+    handleClick()
   }, [onReveal])
 
+
+  const handleClick = () => {
+    const scalar = 2;
+    const unicorn = confetti.shapeFromText({ text: "👌", scalar });
+ 
+    const defaults = {
+      spread: 360,
+      ticks: 50,
+      gravity: 0,
+      decay: 0.96,
+      startVelocity: 10,
+      shapes: [unicorn],
+      scalar,
+    };
+ 
+    const shoot = () => {
+      confetti({
+        ...defaults,
+        particleCount: 10,
+      });
+ 
+      confetti({
+        ...defaults,
+        particleCount: 5,
+      });
+ 
+      confetti({
+        ...defaults,
+        particleCount: 15,
+        scalar: scalar / 2,
+        shapes: ["circle"],
+      });
+    };
+ 
+    setTimeout(shoot, 0);
+    setTimeout(shoot, 100);
+
+  };
   const handleScratch = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!isScratching) return
 

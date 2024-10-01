@@ -26,7 +26,7 @@ const Loader: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center lg:h-screen">
+    <div className="flex flex-col justify-center min-h-[50vh] items-center lg:h-screen">
       {/* Lottie Animation */}
       {/* <Player
         autoplay

@@ -173,7 +173,7 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
           <ScoreDisplay score={beams} />
           <Link
         href='/levolution'
-        className='my-3 w-full text-brand underline font-medium text-center mx-auto text-sm'
+        className='my-3 w-full text-brand underline font-medium md:text-left text-center md:mx-0 mx-auto text-sm'
       >
         View Levels progress here
       </Link>

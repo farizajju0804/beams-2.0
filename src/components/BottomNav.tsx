@@ -140,15 +140,17 @@ export default function BottomNav() {
                       color={selected === index ? "#f96f2e" : "#94A3B8"}
                     />
                   </motion.div>
-                  <motion.span
-                    className="text-[10px] mt-1 font-medium"
-                    animate={{
-                      color: selected === index ? "#f96f2e" : "#94A3B8",
-                    }}
-                    style={{ zIndex: 1 }}
-                  >
-                    {item.label}
-                  </motion.span>
+                  {selected === index && (
+          <motion.span
+            className="text-[10px] mt-1 font-medium"
+            animate={{
+              color: "#f96f2e",
+            }}
+            style={{ zIndex: 1 }}
+          >
+            {item.label}
+          </motion.span>
+        )}
                 </button>
               </Link>
             ))}

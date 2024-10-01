@@ -11,21 +11,24 @@ interface FactOfTheDayProps {
 }
 
 const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [fact, setFact] = useState<{ id: string, finalImage: string; scratchImage: string } | null>(null);
+  const [factData, setFactData] = useState<{
+    fact: { id: string; finalImage: string; scratchImage: string } | null;
+    isCompleted: boolean;
+    isRevealed: boolean;
+  }>({ fact: null, isCompleted: false, isRevealed: false });
   const [loading, setLoading] = useState(true);
-  const [isCompleted, setIsCompleted] = useState(false); // To check if the fact is already completed
-  const clientDate = new Date().toLocaleDateString("en-CA");
 
   useEffect(() => {
     const fetchFactOfTheDay = async () => {
       try {
-        const factData = await getFactOfTheDay(clientDate); // Fetch fact of the day
-        setFact(factData);
+        const clientDate = new Date().toLocaleDateString("en-CA");
+        const fact = await getFactOfTheDay(clientDate);
         
-        if (factData) {
-          const completedStatus = await getFactCompletionStatus(userId, factData.id); // Check if fact is completed
-          setIsCompleted(completedStatus);
+        if (fact) {
+          const completedStatus = await getFactCompletionStatus(userId, fact.id);
+          setFactData({ fact, isCompleted: completedStatus, isRevealed: completedStatus });
+        } else {
+          setFactData({ fact: null, isCompleted: false, isRevealed: false });
         }
       } catch (error) {
         console.error("Error fetching fact of the day:", error);
@@ -35,39 +38,33 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
     };
 
     fetchFactOfTheDay();
-  }, [clientDate, userId]);
+  }, [userId]);
 
-  // Handle fact completion after scratch
   const handleReveal = async () => {
-    if (fact && !isCompleted) {
+    if (factData.fact && !factData.isCompleted) {
       try {
-        await markFactAsCompleted(userId, fact.id); // Mark fact as completed
-        setIsCompleted(true); // Update state to reflect completion
+        await markFactAsCompleted(userId, factData.fact.id);
+        setFactData(prev => ({ ...prev, isCompleted: true, isRevealed: true }));
       } catch (error) {
         console.error("Error marking fact as completed:", error);
       }
     }
-    setIsRevealed(true);
   };
 
-  if (loading) {
-    return <Loader/>;
-  }
+  if (loading) return <Loader />;
 
   return (
     <div className="w-full py-6 text-left relative max-w-6xl mx-auto">
-      {/* Heading */}
       <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Fact of the Day</h1>
         <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
 
-      {/* Main Content */}
-      {fact ? (
+      {factData.fact ? (
         <div className="relative w-full max-w-sm mx-auto h-96 rounded-lg">
-          {isCompleted ? (
+          {factData.isCompleted ? (
             <Image
-              src={fact.finalImage}
+              src={factData.fact.finalImage}
               alt="fact"
               priority={true}
               fill={true}
@@ -76,14 +73,13 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
             />
           ) : (
             <ScratchCard
-              scratchImage={fact.scratchImage}
-              finalImage={fact.finalImage}
+              scratchImage={factData.fact.scratchImage}
+              finalImage={factData.fact.finalImage}
               onReveal={handleReveal}
             />
           )}
         </div>
       ) : (
-        // Message displayed if no fact is available
         <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-0">
           No fact available for today
         </p>

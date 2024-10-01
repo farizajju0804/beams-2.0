@@ -81,7 +81,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
   const displayedActivities = showAll ? sortedActivities : sortedActivities.slice(0, 3);
 
   return (
-    <div className='px-6'>
+    <div className='px-6 md:px-0'>
     <div className="w-full shadow-lg rounded-3xl p-4 mt-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-poppins font-semibold">Recent Activity</h2>
