@@ -15,7 +15,6 @@ import { useUserStore } from "@/store/userStore";
 import { Gallery, Edit2 } from "iconsax-react";
 import { z } from "zod";
 import toast, { Toaster } from 'react-hot-toast';
-import { sha1 } from 'crypto-hash';
 
 const genders = [
   { title: 'Male', name: 'MALE' },
@@ -113,6 +112,13 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
     }
   };
 
+  function sha1(str: string) {
+    const utf8 = new TextEncoder().encode(str);
+    return crypto.subtle.digest('SHA-1', utf8).then((hashBuffer) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    });
+  }
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
     if (input.files && input.files.length > 0) {
