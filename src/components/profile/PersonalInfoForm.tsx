@@ -15,8 +15,8 @@ import { useUserStore } from "@/store/userStore";
 import { Gallery, Edit2 } from "iconsax-react";
 import { z } from "zod";
 import toast, { Toaster } from 'react-hot-toast';
-import { v2 as cloudinary } from 'cloudinary';
 import { sha1 } from 'crypto-hash';
+
 const genders = [
   { title: 'Male', name: 'MALE' },
   { title: 'Female', name: 'FEMALE' },
