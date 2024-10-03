@@ -44,16 +44,27 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
     if (!isRevealed && fact && !isCompleted) {
       try {
         const result = await markFactAsCompleted(userId, fact.id, clientDate);
+        
         setIsCompleted(true);
-        if (result && result.streakDay) {
+        
+        if (result) {
           setStreakDay(result.streakDay);
-          setStreakMessage(result.streakMessage);
-          setShowStreakModal(true);
+          
+          if (result.message) {
+            setStreakMessage(result.message);
+            setShowStreakModal(true);
+            
+          } else {
+            console.log("Achievement already completed, no streak modal shown");
+           
+          }
         }
       } catch (error) {
         console.error("Error marking fact as completed:", error);
+   
       }
     }
+    
     setIsRevealed(true);
   };
 

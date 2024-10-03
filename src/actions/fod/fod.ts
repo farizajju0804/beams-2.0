@@ -66,7 +66,7 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
 
     console.log(`[markFactAsCompleted] Achievement progress updated for userId: ${userId} for achievement 'Week Warrior'`);
 
-    return { message: "Fact marked as completed.", streakDay, streakMessage: message };
+    return {  streakDay, message: message };
   } catch (error) {
     console.error(`[markFactAsCompleted] Error marking fact as completed for userId: ${userId}, factId: ${factId}:`, error);
     throw new Error(`Error marking fact as completed: ${(error as Error).message}`);
@@ -74,10 +74,10 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
 };
 
 
-async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string): Promise<{ streakDay: number; message: string }> {
+async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string): Promise<{ streakDay: number; message: string | null }> {
+  const user: any = await currentUser();
+  const username = user?.firstName || "User";
 
-  const user:any = await currentUser()
-  const username = user?.firstName
   try {
     console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}, clientDate: ${clientDate}`);
 
@@ -92,6 +92,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
     }
 
     console.log(`[updateAchievementProgress] Found achievement '${achievementName}' with ID: ${achievement.id}`);
+
     const today = new Date('2024-10-05T00:00:00.000+00:00');
     // const today = new Date(clientDate);
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight UTC for comparing days
@@ -103,22 +104,29 @@ async function updateAchievementProgress(userId: string, achievementName: string
       where: { userId_achievementId: { userId, achievementId: achievement.id } },
     });
 
+    // If achievement is already completed, return early
+    if (userAchievement && userAchievement.completionStatus) {
+      console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
+      return { streakDay: userAchievement.progress, message: null };
+    }
+
     let newProgress = 1;
-    let message = "";
+    let message: string | null = null;
     let isReset = false;
+
     if (!userAchievement) {
       console.log(`[updateAchievementProgress] No existing achievement progress found. Creating new entry for userId: ${userId}, achievementId: ${achievement.id}`);
 
-      await db.userAchievement.create({
+      userAchievement = await db.userAchievement.create({
         data: {
           userId,
           achievementId: achievement.id,
           progress: newProgress,
           updatedAt: today,
+          completionStatus: false,
         },
       });
 
-   
       console.log(`[updateAchievementProgress] New achievement progress created for userId: ${userId}, achievementId: ${achievement.id}`);
     } else {
       console.log(`[updateAchievementProgress] Existing achievement progress found for userId: ${userId}, achievementId: ${achievement.id}`);
@@ -129,39 +137,37 @@ async function updateAchievementProgress(userId: string, achievementName: string
       const dayDifference = Math.floor((today.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24));
 
       if (dayDifference === 1) {
-        console.log(`[updateAchievementProgress] Last updated yesterday (${lastUpdated.toISOString()}). Incrementing progress for userId: ${userId}`);
+        console.log(`[updateAchievementProgress] Last updated yesterday. Incrementing progress for userId: ${userId}`);
         newProgress = userAchievement.progress + 1;
-       
       } else if (dayDifference > 1) {
-        console.log(`[updateAchievementProgress] Last updated more than 1 day ago (${lastUpdated.toISOString()}). Resetting progress for userId: ${userId}`);
+        console.log(`[updateAchievementProgress] Last updated more than 1 day ago. Resetting progress for userId: ${userId}`);
         newProgress = 1;
         isReset = true;
-        
       } else {
-        console.log(`[updateAchievementProgress] Progress is already updated for today (${today.toISOString()}) for userId: ${userId}`);
+        console.log(`[updateAchievementProgress] Progress already updated for today for userId: ${userId}`);
         newProgress = userAchievement.progress;
-      
       }
 
-      await db.userAchievement.update({
+      const isNowCompleted = newProgress >= achievement.totalCount;
+
+      userAchievement = await db.userAchievement.update({
         where: { id: userAchievement.id },
         data: {
           progress: newProgress,
-          completionStatus: newProgress >= achievement.totalCount,
+          completionStatus: isNowCompleted,
           updatedAt: today,
         },
       });
 
+      console.log(`[updateAchievementProgress] Achievement progress updated for userId: ${userId}, new progress: ${newProgress}, completed: ${isNowCompleted}`);
 
-
-      if (isReset) {
+      if (isNowCompleted) {
+        message = `Congratulations ${username}! You've completed the ${achievementName} achievement!`;
+      } else if (isReset) {
         message = `${username}, your streak reset, but don't worry. Every day is a new opportunity to build your streak!`;
       } else {
         message = getStreakMessage(newProgress, username);
       }
-
-      
-      console.log(`[updateAchievementProgress] Achievement progress updated for userId: ${userId}, new progress: ${newProgress}`);
     }
 
     return { streakDay: newProgress, message };
