@@ -73,7 +73,7 @@ const Sidebar = () => {
           {menuItems.map((item, index) => {
             const isActive = pathname === item.path;
             return (
-              <Link href={item.path} key={index}>
+              <Link href={item.path} key={index} prefetch>
                 <motion.div
                   className={`flex items-center p-4 cursor-pointer 
                               ${isActive ? 'border-r-4 border-brand' : 'hover:text-brand'}

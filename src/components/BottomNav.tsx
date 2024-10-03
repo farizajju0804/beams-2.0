@@ -104,7 +104,7 @@ export default function BottomNav() {
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <nav className="flex items-center justify-around py-1">
+          <nav className="flex items-center justify-around py-2">
             {navItems.map((item, index) => (
               <Link
                 key={item.label}
@@ -115,9 +115,9 @@ export default function BottomNav() {
                 <Button
                  isIconOnly={!selected}
                  radius="full"
-                //  variant={selected === index ? "bordered" : 'light'}
+                 variant={selected === index ? "shadow" : 'light'}
                 //  color={selected === index ? "primary" : 'default'}
-                  className={`${selected === index ? "text-brand px-0 bg-transparent gap-2-1" : "bg-transparent text-[#94A3B8]"} flex min-w-0 py-0 items-center justify-center w-fit  relative`}
+                  className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent text-[#94A3B8]"} flex min-w-0 py-2 px-3 h-auto  items-center justify-center w-fit  relative`}
                   startContent={
                       
                     <item.icon

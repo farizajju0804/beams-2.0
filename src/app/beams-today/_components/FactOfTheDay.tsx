@@ -51,7 +51,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
   }
 
   return (
-    <div className="w-full bg-grey-1 py-8 mb-4 text-left relative max-w-md md:rounded-3xl mx-auto">
+    <div className="w-full bg-grey-1 py-8 mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
       {/* Heading */}
       <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Fact of the Day</h1>
