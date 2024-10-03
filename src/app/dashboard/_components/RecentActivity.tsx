@@ -81,9 +81,9 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
   const displayedActivities = showAll ? sortedActivities : sortedActivities.slice(0, 3);
 
   return (
-    <div className='px-6 mt-8 md:px-0'>
+    <div className='px-6 mt-12 md:mt-8 md:px-0'>
        <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-poppins font-semibold">My Recent Activity</h2>
+        <h2 className="text-base md:text-lg font-semibold">My Recent Activity</h2>
         <button
           className="text-sm text-grey-2 flex mr-2 items-center"
           onClick={handleToggleShowAll}

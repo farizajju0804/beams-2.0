@@ -16,7 +16,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, imageSrc, modalConten
 
   return (
     <>
-      <div className="bg-background rounded-2xl shadow-defined p-6 flex items-center justify-between  ">
+      <div className="bg-background rounded-2xl shadow-defined p-4 md:p-6 flex items-center justify-between  ">
         <div className="flex flex-col items-start">
           <h4 className="text-sm md:text-lg font-semibold text-text">{title}</h4>
           <p className="text-2xl md:text-4xl font-poppins my-3 font-bold bg-gradient-to-b from-brand to-yellow text-transparent bg-clip-text">{value}</p>
