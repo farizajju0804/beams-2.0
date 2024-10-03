@@ -175,7 +175,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[250]">
         <Spinner size="lg" color="primary" />
       </div>
     );

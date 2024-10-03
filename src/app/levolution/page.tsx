@@ -32,7 +32,7 @@ const page = async() => {
         <Divider className='my-4'/>
         <section id='achievements'>
         <AchievementsModal />
-        <div className='w-full pb-6 grid gap-12 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
+        <div className='w-full  pb-6 grid gap-12 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
         {allAchievements.map((achievement) => {
           const userAchievement = userAchievements.find(ua => ua.achievementId === achievement.id);
           const progress = userAchievement?.progress || 0;
