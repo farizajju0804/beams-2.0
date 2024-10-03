@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Chart, BookSquare, Rank, Microscope, Cup } from "iconsax-react"
-import { Spinner } from "@nextui-org/react"
+import { Button, Spinner } from "@nextui-org/react"
 import { useCurrentUser } from "@/hooks/use-current-user"
 
 const navItems = [
@@ -94,7 +94,7 @@ export default function BottomNav() {
         )}
       </AnimatePresence> */}
 
-      <div className="md:hidden block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
+      <div className="md:hidden  block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
         <motion.div
           className="bg-background rounded-2xl shadow-lg"
           initial={{ y: 100, opacity: 0 }}
@@ -104,7 +104,7 @@ export default function BottomNav() {
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <nav className="flex items-center justify-around p-0">
+          <nav className="flex items-center justify-around py-1">
             {navItems.map((item, index) => (
               <Link
                 key={item.label}
@@ -112,47 +112,27 @@ export default function BottomNav() {
                 prefetch={true}
                 // onClick={() => handleNavigation(index)}
               >
-                <button
-                  className="flex flex-col items-center justify-center w-fit h-12 relative"
-                  // disabled={redirecting}
-                >
-                  {/* <AnimatePresence>
-                    {selected === index && (
-                      <motion.div
-                        className="absolute bottom-0 w-1 h-1 rounded-full"
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -20, opacity: 0 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                        style={{ backgroundColor: "#f96f2e", zIndex: 2 }}
-                      />
-                    )}
-                  </AnimatePresence> */}
-                  <motion.div
-                    animate={{
-                      scale: selected === index ? 1.2 : 1,
-                    }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    style={{ zIndex: 1 }}
-                  >
+                <Button
+                 isIconOnly={!selected}
+                 radius="full"
+                //  variant={selected === index ? "bordered" : 'light'}
+                //  color={selected === index ? "primary" : 'default'}
+                  className={`${selected === index ? "text-brand px-0 bg-transparent gap-2-1" : "bg-transparent text-[#94A3B8]"} flex min-w-0 py-0 items-center justify-center w-fit  relative`}
+                  startContent={
+                      
                     <item.icon
-                      size={16}
-                      variant={"Bold"}
-                      color={selected === index ? "#f96f2e" : "#94A3B8"}
-                    />
-                  </motion.div>
-                  {selected === index && (
-          <motion.span
-            className="text-[10px] mt-1 font-medium"
-            animate={{
-              color: "#f96f2e",
-            }}
-            style={{ zIndex: 1 }}
-          >
-            {item.label}
-          </motion.span>
-        )}
-                </button>
+                    size={16}
+                    variant={"Bold"}
+                    // color={selected === index ? "#f96f2e" : "#94A3B8"}
+                  />
+                  }
+                >
+
+                  {selected === index && 
+                     item.label}
+         
+                    
+                </Button>
               </Link>
             ))}
           </nav>

@@ -53,6 +53,7 @@ export default function IconFillingEffect({
   const filledIcons = Math.ceil(progress / (100 / totalIcons));
 
   return (
+    
     <div className="flex p-4  rounded-full shadow-defined md:gap-3 lg:gap-4 gap-2" style={{ gap: `${iconGap}px` }}>
       {[...Array(totalIcons)].map((_, i) => (
         <DynamicIcon

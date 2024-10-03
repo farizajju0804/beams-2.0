@@ -81,18 +81,19 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
   const displayedActivities = showAll ? sortedActivities : sortedActivities.slice(0, 3);
 
   return (
-    <div className='px-6 md:px-0'>
-    <div className="w-full shadow-lg rounded-3xl p-4 mt-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-poppins font-semibold">Recent Activity</h2>
+    <div className='px-6 mt-8 md:px-0'>
+       <div className="flex justify-between items-center mb-2">
+        <h2 className="text-lg font-poppins font-semibold">My Recent Activity</h2>
         <button
-          className="text-sm text-grey-2 flex items-center"
+          className="text-sm text-grey-2 flex mr-2 items-center"
           onClick={handleToggleShowAll}
         >
           {showAll ? 'Collapse' : 'View all'}
           {showAll && <ArrowDown2 size="20" className="ml-1" />}
         </button>
       </div>
+    <div className="w-full px-4 py-6 shadow-defined rounded-xl ">
+     
 
       {showAll && (
         <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-4">

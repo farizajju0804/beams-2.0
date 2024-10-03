@@ -7,6 +7,8 @@ import { Cup, Icon, MessageQuestion, Share, TickCircle } from 'iconsax-react';
 import Heading from './Heading';
 import Link from 'next/link';
 import { FaTrophy } from 'react-icons/fa';
+import IconFillingEffect from '@/components/IconFillingEffect';
+import LevelName from '@/components/LevelName';
 
 // Define interfaces for props
 interface LevelProgressProps {
@@ -63,7 +65,7 @@ const LevelProgress: React.FC<LevelProgressProps> = ({ level, progress, total })
 // ScoreDisplay component
 const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score }) => (
   <motion.div
-    className="text-6xl font-bold text-orange-500 mb-4"
+    className="text-6xl my-4 font-bold text-orange-500 mb-4"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -169,13 +171,24 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
     <div className="w-full bg-background">
       <Heading heading={`My Beams`} />
       <div className='px-6 md:px-0 w-full grid grid-cols-1 md:grid-cols-2'>
-        <div className='w-full flex flex-col items-center md:items-start justify-center '>
-          <div className="bg-yellow text-black px-3 py-1 rounded-full mb-4">{userLevel.name}</div>
-          <LevelProgress level={userLevel.levelNumber} progress={beams} total={userLevel.maxPoints} />
+        <div className='w-full gap-2 flex flex-col items-center md:items-start justify-center '>
+         <LevelName 
+         minPoints={userLevel.minPoints}
+        maxPoints={userLevel.maxPoints}
+        name={userLevel.name} 
+        levelNumber={userLevel.levelNumber}
+       />
+          <IconFillingEffect
+                    icon={userLevel.icon}
+                    filledColor={userLevel.bgColor}
+                    beams={beams}  
+                    minPoints={userLevel.minPoints}
+                    maxPoints={userLevel.maxPoints}
+                  />
           <ScoreDisplay score={beams} />
           <Link
         href='/levolution'
-        className='my-3 w-full text-brand underline font-medium md:text-left text-center md:mx-0 mx-auto text-sm'
+        className='w-full mb-6 text-brand underline font-medium md:text-left text-center md:mx-0 mx-auto text-sm'
       >
         View Levels progress here
       </Link>

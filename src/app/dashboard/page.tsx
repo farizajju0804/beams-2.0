@@ -52,7 +52,7 @@ const DashboardPage = async () => {
         userType={user?.userType}
         previous={previousWeekTop3}
       /> */}
-      <Achievements />
+      {/* <Achievements /> */}
     </div>
   );
 };
