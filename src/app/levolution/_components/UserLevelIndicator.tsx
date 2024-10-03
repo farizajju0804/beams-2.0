@@ -79,11 +79,11 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                   variant="shadow" 
                   style={{
                     width: `80px`,
-                    backgroundColor: isAboveLevel ? config.bgColor : "#e5e5e5",
+                    backgroundColor: (isWithinLevelRange || isAboveLevel) ? config.bgColor : "#e5e5e5",
                     height: "100%",
                     minWidth: "24px",
                   }}
-                  className={`${isAboveLevel ? 'text-white' : "text-black"} font-bold text-xs w-12 h-10`}
+                  className={`${(isWithinLevelRange || isAboveLevel) ? 'text-white' : "text-black"} font-bold text-xs w-12 h-10`}
                 >
                   {progress}%
                 </Button>
@@ -94,9 +94,9 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                   variant="shadow" 
                   size="sm"
                   style={{
-                    backgroundColor: isWithinLevelRange ? config.bgColor : "#e5e5e5",
+                    backgroundColor: (isWithinLevelRange || isAboveLevel)  ? config.bgColor : "#e5e5e5",
                   }}
-                  className={`${isWithinLevelRange ? 'text-white' : "text-black"} p-[6px] min-w-0 font-bold text-xs`}
+                  className={`${(isWithinLevelRange || isAboveLevel) ? 'text-white' : "text-black"} p-[6px] min-w-0 font-bold text-xs`}
                 >
                   {progress}%
                 </Button>

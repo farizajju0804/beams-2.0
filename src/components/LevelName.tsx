@@ -19,10 +19,10 @@ const LevelName = ({
 }: LevelNameProps
 ) => {
   return (
-    <div className="w-full flex items-center justify-center md:justify-start">
+    <div className="w-full flex items-center justify-center ">
     <div className="flex items-center gap-2 md:gap-4">
       <div className="flex items-start flex-col gap-1">
-        <p className="text-xs mx-auto md:mx-0 md:text-base text-grey-2">Level {levelNumber}</p>
+        <p className="text-xs mx-auto  md:text-base text-grey-2">Level {levelNumber}</p>
         <div className="flex items-center gap-2">
           <p className="text-sm md:text-lg uppercase font-medium font-poppins text-text relative">
             <span className="inline-block" >

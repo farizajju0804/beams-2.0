@@ -33,7 +33,7 @@ export default function StreakModal({
       }}
     >
       <ModalContent>
-        <div className="px-6 py-10 w-full flex flex-col items-center">
+        <div className="px-4 md:px-6 py-10 w-full flex flex-col items-center">
           <div className='flex w-full items-center flex-col mb-4'>
             <Image
               src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727954482/achievements/flame-3d_mu1kmu.webp"
@@ -64,7 +64,7 @@ export default function StreakModal({
             ))}
           </div>
           
-          <p className="text-center text-text mb-8 max-w-md text-base md:text-lg font-semibold">
+          <p className="text-center text-text mb-8 w-full text-base md:text-lg font-semibold">
        
             {streakMessage}
           </p>

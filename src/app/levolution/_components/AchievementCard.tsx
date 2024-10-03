@@ -51,7 +51,8 @@ export default function AchievementCard({
   const cardColor = noProgress ? '#a2a2a2' : color
 
   return (
-    <div className="w-80 max-w-sm mx-auto bg-background rounded-2xl overflow-hidden shadow-defined">
+    <div className='flex w-full justify-start'>
+    <div className="w-80 max-w-sm bg-background rounded-2xl overflow-hidden shadow-defined">
       <div className="relative h-40" style={{ backgroundColor: cardColor }}>
         <div className="absolute inset-0 opacity-30">
           <svg width="100%" height="100%">
@@ -89,7 +90,7 @@ export default function AchievementCard({
 
         </div>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 my-6">
             {[...Array(totalCount)].map((_, index) => (
               <div
                 key={index}
@@ -121,6 +122,7 @@ export default function AchievementCard({
           <ArrowRight2 size={20} /> </Button> )} 
         </div>
       </div>
+    </div>
     </div>
   )
 }

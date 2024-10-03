@@ -162,7 +162,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
       console.log(`[updateAchievementProgress] Achievement progress updated for userId: ${userId}, new progress: ${newProgress}, completed: ${isNowCompleted}`);
 
       if (isNowCompleted) {
-        message = `Congratulations ${username}! You've completed the ${achievementName} achievement!`;
+        message = `Congratulations ${username}! You've unlocked the ${achievementName} badge!`;
       } else if (isReset) {
         message = `${username}, your streak reset, but don't worry. Every day is a new opportunity to build your streak!`;
       } else {
