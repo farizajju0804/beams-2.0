@@ -93,8 +93,8 @@ async function updateAchievementProgress(userId: string, achievementName: string
 
     console.log(`[updateAchievementProgress] Found achievement '${achievementName}' with ID: ${achievement.id}`);
 
-    const today = new Date('2024-10-05T00:00:00.000+00:00');
-    // const today = new Date(clientDate);
+    // const today = new Date('2024-10-05T00:00:00.000+00:00');
+    const today = new Date(clientDate);
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight UTC for comparing days
 
     console.log(`[updateAchievementProgress] Today's date set to ${today.toISOString()}`);

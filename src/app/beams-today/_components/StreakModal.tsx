@@ -54,9 +54,9 @@ export default function StreakModal({
                 <span className="text-sm text-grey-2 mb-2">{day}</span>
                 <Button 
                   isIconOnly 
-                  variant='shadow' 
+                  variant={day <= streakDay ? 'shadow' : 'solid'} 
                   color={day <= streakDay ? 'primary' : 'default'} 
-                  className={`text-xl p-2 h-fit min-w-0 ${day <= streakDay ? ' text-white' : 'bg-transparent text-grey-1'}`}
+                  className={`text-xl p-2 h-fit min-w-0 ${day <= streakDay ? ' text-white' : 'bg-transparent text-[#a2a2a2]'}`}
                 >
                   <FaLightbulb />
                 </Button>
@@ -64,7 +64,7 @@ export default function StreakModal({
             ))}
           </div>
           
-          <p className="text-center text-text mb-8 max-w-md text-lg font-semibold">
+          <p className="text-center text-text mb-8 max-w-md text-base md:text-lg font-semibold">
        
             {streakMessage}
           </p>

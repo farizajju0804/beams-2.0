@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ScratchCard from "@/components/ScratchCard";
@@ -24,6 +24,9 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   const clientDate = new Date().toLocaleDateString("en-CA");
   const router = useRouter();
 
+  const revealLock = useRef(false);  // Ensures that reveal happens only once
+
+
   useEffect(() => {
     const fetchFactAndCompletion = async () => {
       try {
@@ -41,31 +44,35 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   }, [clientDate, userId]);
 
   const handleReveal = async () => {
-    if (!isRevealed && fact && !isCompleted) {
-      try {
-        const result = await markFactAsCompleted(userId, fact.id, clientDate);
-        
-        setIsCompleted(true);
-        
-        if (result) {
-          setStreakDay(result.streakDay);
-          
-          if (result.message) {
-            setStreakMessage(result.message);
-            setShowStreakModal(true);
-            
-          } else {
-            console.log("Achievement already completed, no streak modal shown");
-           
-          }
-        }
-      } catch (error) {
-        console.error("Error marking fact as completed:", error);
-   
-      }
+    if (isRevealed || isCompleted || !fact || revealLock.current) {
+      return; // Prevent further execution if already revealed or locked
     }
-    
-    setIsRevealed(true);
+
+    revealLock.current = true;  // Lock future invocations
+    setIsRevealed(true);  // Update the state
+
+    try {
+      const result = await markFactAsCompleted(userId, fact.id, clientDate);
+      setIsCompleted(true);
+
+      if (result) {
+        setStreakDay(result.streakDay);
+
+        if (result.message) {
+          setStreakMessage(result.message);
+
+          setTimeout(() => {
+            setShowStreakModal(true);
+          }, 1000);
+        } else {
+          console.log("Achievement already completed, no streak modal shown");
+        }
+      }
+    } catch (error) {
+      console.error("Error marking fact as completed:", error);
+    } finally {
+      revealLock.current = false;  // Unlock after process is done
+    }
   };
 
   const handleCloseStreakModal = () => {
