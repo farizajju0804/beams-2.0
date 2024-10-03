@@ -51,7 +51,7 @@ export default function AchievementCard({
   const cardColor = noProgress ? '#a2a2a2' : color
 
   return (
-    <div className='flex w-full justify-start'>
+    <div className='flex w-full md:justify-start justify-center'>
     <div className="w-80 max-w-sm bg-background rounded-2xl overflow-hidden shadow-defined">
       <div className="relative h-40" style={{ backgroundColor: cardColor }}>
         <div className="absolute inset-0 opacity-30">
@@ -79,16 +79,20 @@ export default function AchievementCard({
         </div>
       </div>
       <div className="px-4 py-4">
-        <p className="text-grey-2 text-sm mt-2 mb-4">{taskDefinition}</p>
+        <p className="text-grey-2 font-medium text-sm mt-2 mb-4">{taskDefinition}</p>
         <div className="mb-4">
-          <div className="flex justify-between font-semibold text-sm text-grey-2 mb-2">
+          <div className="flex items-center justify-between font-semibold text-sm text-grey-2 mb-2">
             <span>
               {completedCount}/{totalCount} <span>{actionText}</span>
             </span>
-            <div className={` rounded-full p-1  text-xs  shadow-defined  'bg-background text-text' `} >
-           {`${beamsToGain} Beams`} 
-
-        </div>
+            <Chip
+                    style={{ backgroundColor: color }}
+                    variant="shadow"
+                    size="sm"
+                    className=" text-white"
+                  >
+                    +{beamsToGain} Beams
+                  </Chip>
           </div>
           <div className="flex flex-wrap gap-1 my-6">
             {[...Array(totalCount)].map((_, index) => (

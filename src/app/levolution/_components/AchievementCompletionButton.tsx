@@ -193,6 +193,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
           backgroundColor: isCompleted ? color : undefined,
           color: isCompleted ? 'white' : undefined,
         }}
+        isDisabled={!isCompleted}
       >
         {`${userFirstName}, ${personalizedMessage}`}
       </Button>
