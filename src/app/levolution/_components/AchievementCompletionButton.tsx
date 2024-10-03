@@ -8,6 +8,7 @@ import ShareButton from './ShareButton';
 import { Level, UserType } from '@prisma/client';
 import IconFillingEffect from '@/components/IconFillingEffect';
 import { getHasGainedBeamsStatus, handleUserPointsAndMarkGained } from '@/actions/points/handleUserPointsAndMarkGained';
+import LevelName from '@/components/LevelName';
 
 interface AchievementCompletionButtonProps {
   userId: string;
@@ -222,7 +223,21 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
                 <>
                   <p className="text-sm mb-4">{inspiringMessage}</p>
 
-                  {/* Icon Filling Effect */}
+                  {leveledUp && (
+                    <div className="text-center my-4">
+                      <h3 className="text-lg font-bold">Level Up!</h3>
+                      <p className="text-sm">{levelCaption}</p>
+                      
+                    </div>
+                  )}
+
+                  <LevelName
+                   minPoints={newLevel ? newLevel.minPoints : currentLevel.minPoints}
+                   maxPoints={newLevel ? newLevel.maxPoints : currentLevel.maxPoints}
+                   name={newLevel ? newLevel.name : currentLevel.name}
+                   levelNumber={newLevel ? newLevel.levelNumber : currentLevel.levelNumber}
+                  />
+  
                   <IconFillingEffect
                     icon={newLevel ? newLevel.icon : currentLevel.icon}
                     filledColor={newLevel ? newLevel.bgColor : currentLevel.bgColor}
@@ -230,15 +245,6 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
                     minPoints={newLevel ? newLevel.minPoints : currentLevel.minPoints}
                     maxPoints={newLevel ? newLevel.maxPoints : currentLevel.maxPoints}
                   />
-
-                  {/* If leveled up, show level up message */}
-                  {leveledUp && (
-                    <div className="text-center my-4">
-                      <h3 className="text-lg font-bold">Level Up!</h3>
-                      <p className="text-sm">{levelCaption}</p>
-                      <p className="text-sm">{levelCaption}</p>
-                    </div>
-                  )}
 
                   <Chip
                     style={{ backgroundColor: color }}

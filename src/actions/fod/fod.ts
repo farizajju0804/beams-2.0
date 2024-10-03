@@ -1,5 +1,6 @@
 "use server"; // Indicates that this code runs on the server side.
 
+import { currentUser } from "@/libs/auth";
 import { db } from "@/libs/db"; // Import the Prisma database instance.
 
 
@@ -61,11 +62,11 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
     console.log(`[markFactAsCompleted] Fact marked as completed for userId: ${userId}, factId: ${factId}`);
     
     // Update achievement progress
-    await updateAchievementProgress(userId, 'Week Warrior', clientDate);
+    const { streakDay, message } = await updateAchievementProgress(userId, 'Week Warrior', clientDate);
 
     console.log(`[markFactAsCompleted] Achievement progress updated for userId: ${userId} for achievement 'Week Warrior'`);
 
-    return { message: "Fact marked as completed." };
+    return { message: "Fact marked as completed.", streakDay, streakMessage: message };
   } catch (error) {
     console.error(`[markFactAsCompleted] Error marking fact as completed for userId: ${userId}, factId: ${factId}:`, error);
     throw new Error(`Error marking fact as completed: ${(error as Error).message}`);
@@ -73,7 +74,10 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
 };
 
 
-async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string) {
+async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string): Promise<{ streakDay: number; message: string }> {
+
+  const user:any = await currentUser()
+  const username = user?.firstName
   try {
     console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}, clientDate: ${clientDate}`);
 
@@ -88,7 +92,6 @@ async function updateAchievementProgress(userId: string, achievementName: string
     }
 
     console.log(`[updateAchievementProgress] Found achievement '${achievementName}' with ID: ${achievement.id}`);
-
     const today = new Date('2024-10-05T00:00:00.000+00:00');
     // const today = new Date(clientDate);
     today.setUTCHours(0, 0, 0, 0); // Set time to midnight UTC for comparing days
@@ -100,72 +103,73 @@ async function updateAchievementProgress(userId: string, achievementName: string
       where: { userId_achievementId: { userId, achievementId: achievement.id } },
     });
 
+    let newProgress = 1;
+    let message = "";
+    let isReset = false;
     if (!userAchievement) {
       console.log(`[updateAchievementProgress] No existing achievement progress found. Creating new entry for userId: ${userId}, achievementId: ${achievement.id}`);
 
-      // Create new achievement progress (first time for this user)
       await db.userAchievement.create({
         data: {
           userId,
           achievementId: achievement.id,
-          progress: 1,
+          progress: newProgress,
           updatedAt: today,
         },
       });
 
+   
       console.log(`[updateAchievementProgress] New achievement progress created for userId: ${userId}, achievementId: ${achievement.id}`);
     } else {
       console.log(`[updateAchievementProgress] Existing achievement progress found for userId: ${userId}, achievementId: ${achievement.id}`);
 
       const lastUpdated = new Date(userAchievement.updatedAt);
-      lastUpdated.setUTCHours(0, 0, 0, 0); // Normalize to midnight for accurate day comparison
+      lastUpdated.setUTCHours(0, 0, 0, 0);
 
       const dayDifference = Math.floor((today.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24));
 
       if (dayDifference === 1) {
         console.log(`[updateAchievementProgress] Last updated yesterday (${lastUpdated.toISOString()}). Incrementing progress for userId: ${userId}`);
-
-        // Increment progress for daily streak
-        const newProgress = userAchievement.progress + 1;
-        await db.userAchievement.update({
-          where: { id: userAchievement.id },
-          data: {
-            progress: newProgress,
-            completionStatus: newProgress >= achievement.totalCount,
-            updatedAt: today,
-          },
-        });
-
-        console.log(`[updateAchievementProgress] Achievement progress incremented for userId: ${userId}, new progress: ${newProgress}`);
+        newProgress = userAchievement.progress + 1;
+       
       } else if (dayDifference > 1) {
         console.log(`[updateAchievementProgress] Last updated more than 1 day ago (${lastUpdated.toISOString()}). Resetting progress for userId: ${userId}`);
-
-        // Reset progress if more than 1 day has passed
-        await db.userAchievement.update({
-          where: { id: userAchievement.id },
-          data: {
-            progress: 1,
-            completionStatus: false, // Reset completion status if the achievement requires multiple completions
-            updatedAt: today,
-          },
-        });
-
-        console.log(`[updateAchievementProgress] Achievement progress reset for userId: ${userId}`);
+        newProgress = 1;
+        isReset = true;
+        
       } else {
         console.log(`[updateAchievementProgress] Progress is already updated for today (${today.toISOString()}) for userId: ${userId}`);
+        newProgress = userAchievement.progress;
+      
       }
+
+      await db.userAchievement.update({
+        where: { id: userAchievement.id },
+        data: {
+          progress: newProgress,
+          completionStatus: newProgress >= achievement.totalCount,
+          updatedAt: today,
+        },
+      });
+
+
+
+      if (isReset) {
+        message = `${username}, your streak reset, but don't worry. Every day is a new opportunity to build your streak!`;
+      } else {
+        message = getStreakMessage(newProgress, username);
+      }
+
+      
+      console.log(`[updateAchievementProgress] Achievement progress updated for userId: ${userId}, new progress: ${newProgress}`);
     }
+
+    return { streakDay: newProgress, message };
   } catch (error) {
     console.error(`[updateAchievementProgress] Error updating achievement progress for userId: ${userId}, achievementName: ${achievementName}:`, error);
     throw new Error(`Error updating achievement progress: ${(error as Error).message}`);
   }
 }
-
-
-
-
-
-
 
 
 
@@ -207,3 +211,21 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
   }
 };
 
+
+function getStreakMessage(streakDay: number, username: string): string {
+  const messages = [
+    `${username}, every streak starts with one. How big can you make this one?`,
+    `Day 2, ${username}! You're building momentum. Keep it up!`,
+    `${username}, you're on fire! 3 days and counting.`,
+    `4 days in, ${username}. You're proving your commitment!`,
+    `High five, ${username}! You've reached day 5.`,
+    `6 days strong, ${username}. You're almost there!`,
+    `Congratulations, ${username}! You've completed a full week. What an achievement!`
+  ];
+
+  if (streakDay <= 7) {
+    return messages[streakDay - 1];
+  } else {
+    return `Incredible, ${username}! You're on day ${streakDay} of your streak. Keep up the fantastic work!`;
+  }
+}

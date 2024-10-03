@@ -30,7 +30,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
       <TopicOfTheDayContainer user={user} />
       {/* <div  className=" w-full h-[1px] rounded-full  mb-2 border-[0.5] bg-grey-1" ></div> */}
 
-      <FactOfTheDay userId={user.id}/>
+      <FactOfTheDay userId={user.id} />
       {/* <div  className=" w-full h-[1px] rounded-full  mb-2 border-[0.5] bg-grey-1" ></div> */}
 
 

@@ -2,25 +2,32 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ScratchCard from "@/components/ScratchCard";
-import {markFactAsCompleted, getFactAndCompletionStatus } from "@/actions/fod/fod";
+import { markFactAsCompleted, getFactAndCompletionStatus } from "@/actions/fod/fod";
 import Loader from "@/components/Loader";
+import StreakModal from "./StreakModal";
 
 interface FactOfTheDayProps {
   userId: string;
+  
 }
 
-const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
+const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   const [isRevealed, setIsRevealed] = useState(false);
-  const [fact, setFact] = useState<{ id: string, finalImage: string; scratchImage: string } | null>(null);
+  const [fact, setFact] = useState<{ id: string; finalImage: string; scratchImage: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isCompleted, setIsCompleted] = useState(false); // To check if the fact is already completed
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  const [streakDay, setStreakDay] = useState(0);
+  const [streakMessage, setStreakMessage] = useState("");
   const clientDate = new Date().toLocaleDateString("en-CA");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchFactAndCompletion = async () => {
       try {
-        const { fact, completed } = await getFactAndCompletionStatus(userId, clientDate); // Fetch fact and completion status together
+        const { fact, completed } = await getFactAndCompletionStatus(userId, clientDate);
         setFact(fact);
         setIsCompleted(completed);
       } catch (error) {
@@ -33,12 +40,16 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
     fetchFactAndCompletion();
   }, [clientDate, userId]);
 
-  // Handle fact completion after scratch
   const handleReveal = async () => {
     if (!isRevealed && fact && !isCompleted) {
       try {
-        await markFactAsCompleted(userId, fact.id, clientDate);
-        setIsCompleted(true); 
+        const result = await markFactAsCompleted(userId, fact.id, clientDate);
+        setIsCompleted(true);
+        if (result && result.streakDay) {
+          setStreakDay(result.streakDay);
+          setStreakMessage(result.streakMessage);
+          setShowStreakModal(true);
+        }
       } catch (error) {
         console.error("Error marking fact as completed:", error);
       }
@@ -46,8 +57,20 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
     setIsRevealed(true);
   };
 
+  const handleCloseStreakModal = () => {
+    setShowStreakModal(false);
+  };
+
+  const handleStreakCTA = () => {
+    if (streakDay >= 7) {
+      router.push('/levolution/#achievements');
+    } else {
+      handleCloseStreakModal();
+    }
+  };
+
   if (loading) {
-    return <Loader/>;
+    return <Loader />;
   }
 
   return (
@@ -79,11 +102,20 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId }) => {
           )}
         </div>
       ) : (
-        // Message displayed if no fact is available
         <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-0">
           No fact available for today
         </p>
       )}
+
+      <StreakModal
+       
+        streakDay={streakDay}
+        streakMessage={streakMessage}
+        isOpen={showStreakModal}
+        onClose={handleCloseStreakModal}
+        onCTA={handleStreakCTA}
+        ctaText={streakDay >= 7 ? "View My Badge" : "I'm committed"}
+      />
     </div>
   );
 };
