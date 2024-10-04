@@ -19,7 +19,7 @@ export default function AnimatedImageCard({ imageUrl, name }: AnimatedImageCardP
     <>
       <div className="overflow-hidden rounded-2xl shadow-defined bg-background">
         <motion.div
-          className="relative w-full h-96 cursor-pointer"
+          className="relative w-full h-96 md:h-72 cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleExpand}

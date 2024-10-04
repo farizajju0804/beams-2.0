@@ -76,7 +76,13 @@ export default function AchievementCard({
                 style={{ backgroundColor: 'white', color: cardColor }}
                 variant="flat"
                 size="sm"
-                className="font-medium"
+                className="font-semibold"
+                classNames={
+                  {
+                    content : "font-semibold"
+
+                  }
+                }
               >
                 +{beamsToGain} Beams
               </Chip>
