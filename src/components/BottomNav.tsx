@@ -6,94 +6,32 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Chart, BookSquare, Rank, Microscope, Cup } from "iconsax-react"
 import { Button, Spinner } from "@nextui-org/react"
-import { useCurrentUser } from "@/hooks/use-current-user"
+
 
 const navItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
+  { icon: BookSquare, label: "Beams Facts", path: "/beams-facts" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
-  { icon: BookSquare, label: "My Library", path: "/my-library" },
-  { icon: Cup, label: "Victory", path: "/levolution" },
+  { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },
 ]
 
 export default function BottomNav() {
   const pathname = usePathname()
   const [selected, setSelected] = useState<number | null>(null)
-  // const [redirecting, setRedirecting] = useState(false)
-  // const [randomMessage, setRandomMessage] = useState("")
-  const user: any = useCurrentUser()
 
-  // const messages = [
-  //   `${user?.firstName}, remember you're the sunshine in someone's cloudy day ☀️.`,
-  //   `Hey ${user?.firstName}, the world seems better just knowing you're in it 🌍💫.`,
-  //   `You know, ${user?.firstName}, even the stars can't shine without a little darkness 🌟.`,
-  //   `${user?.firstName}, don't forget – a little kindness goes a long way. You've got this! 💪💛.`,
-  //   `Just a reminder, ${user?.firstName}: you're doing way better than you think 👍😊.`,
-  //   `${user?.firstName}, today's your day to sparkle. Don't hold back! ✨.`,
-  //   `Hey ${user?.firstName}, pause for a second – you've been nothing short of amazing 🏆.`,
-  //   `${user?.firstName}, the world's a better place because you're here 🌸.`,
-  //   `You're one of a kind, ${user?.firstName}. And that's your superpower 🦸‍♂️💥.`,
-  //   `Remember, ${user?.firstName}, even small steps can lead to great things 🚶‍♂️🌱.`,
-  //   `${user?.firstName}, take a breath – you're exactly where you need to be 🌬️💖.`,
-  //   `Hey ${user?.firstName}, did anyone tell you today? You're doing great 🌟.`,
-  //   `${user?.firstName}, you light up this world more than you realize 🌈✨.`,
-  //   `${user?.firstName}, you're not just a drop in the ocean, you're the whole ocean in a drop 🌊.`,
-  //   `Hey ${user?.firstName}, you make the world feel like home 🏡💫.`,
-  //   `${user?.firstName}, you're a walking reminder that good things happen every day 🌟💕.`,
-  //   `You've got the kind of vibe that makes people feel better, ${user?.firstName} 🌻.`,
-  //   `Hey ${user?.firstName}, just so you know, the world's a little brighter with you in it 🌞💫.`,
-  //   `Reminder, ${user?.firstName}: the smallest moments often bring the biggest smiles 😊✨.`,
-  //   `${user?.firstName}, your energy is contagious in the best way possible ⚡️💖.`,
-  //   `The world's a playground, ${user?.firstName}, don't forget to have some fun today 🎠😄.`,
-  //   `In case you forgot, ${user?.firstName}, you're already enough 🙌💛.`,
-  //   `${user?.firstName}, you've got the kind of magic that makes ordinary moments extraordinary ✨.`,
-  //   `Hey ${user?.firstName}, today's a good day to celebrate just how far you've come 🎉.`,
-  //   `You're the reason someone's smiling today, ${user?.firstName}, keep that going 😊💫.`,
-  //   `${user?.firstName}, you've got a whole lot of strength inside you 💪💖.`,
-  //   `${user?.firstName}, your kindness is like a ripple that turns into waves of goodness 🌊💖.`,
-  // ]
+
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(item => item.path === pathname)
     setSelected(currentIndex !== -1 ? currentIndex : null)
   }, [pathname])
 
-  // useEffect(() => {
-  //   if (redirecting) {
-  //     setRandomMessage(messages[Math.floor(Math.random() * messages.length)])
-  //   }
-  // }, [redirecting])
 
-  // const handleNavigation = (index: number) => {
-  //   setSelected(index)
-  //   setRedirecting(true)
-
-  // }
 
   return (
     <>
-      {/* <AnimatePresence>
-        {redirecting && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 flex items-center justify-center bg-background  z-[100]"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="text-center"
-            >
-              <Spinner />
-              <p className="mx-4 mt-4 text-lg font-medium text-[#a2a2a2]">{randomMessage}</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence> */}
-
+     
       <div className="md:hidden  block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
         <motion.div
           className="bg-background rounded-2xl shadow-lg"
@@ -104,7 +42,7 @@ export default function BottomNav() {
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <nav className="flex items-center justify-around py-2">
+          <nav className="flex items-center justify-around py-1">
             {navItems.map((item, index) => (
               <Link
                 key={item.label}
@@ -117,11 +55,11 @@ export default function BottomNav() {
                  radius="full"
                 //  variant={selected === index ? "shadow" : 'light'}
                 //  color={selected === index ? "primary" : 'default'}
-                  className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent text-[#94A3B8]"} flex min-w-0 py-2 px-3 h-auto  items-center justify-center w-fit  relative`}
+                  className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent  text-[#94A3B8]"} flex text-xs min-w-0 py-1 px-3 h-auto flex-col items-center justify-center w-fit  relative`}
                   startContent={
                       
                     <item.icon
-                    size={16}
+                    size={18}
                     variant={"Bold"}
                     // color={selected === index ? "#f96f2e" : "#94A3B8"}
                   />

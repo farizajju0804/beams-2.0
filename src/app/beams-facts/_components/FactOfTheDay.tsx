@@ -7,6 +7,8 @@ import ScratchCard from "@/components/ScratchCard";
 import { markFactAsCompleted, getFactAndCompletionStatus } from "@/actions/fod/fod";
 import Loader from "@/components/Loader";
 import StreakModal from "./StreakModal";
+import DateComponent from "./DateComponent";
+
 
 interface FactOfTheDayProps {
   userId: string;
@@ -15,7 +17,7 @@ interface FactOfTheDayProps {
 
 const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   const [isRevealed, setIsRevealed] = useState(false);
-  const [fact, setFact] = useState<{ id: string; finalImage: string; scratchImage: string } | null>(null);
+  const [fact, setFact] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
@@ -30,7 +32,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   useEffect(() => {
     const fetchFactAndCompletion = async () => {
       try {
-        const { fact, completed } = await getFactAndCompletionStatus(userId, clientDate);
+        const { fact, completed }:any= await getFactAndCompletionStatus(userId, clientDate);
         setFact(fact);
         setIsCompleted(completed);
       } catch (error) {
@@ -81,7 +83,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
 
   const handleStreakCTA = () => {
     if (streakDay >= 7) {
-      router.push('/levolution/#achievements');
+      router.push('/achievements/#victory');
     } else {
       handleCloseStreakModal();
     }
@@ -92,16 +94,24 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   }
 
   return (
-    <div className="w-full bg-grey-1 py-8 mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
+    <div className="w-full  mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
       {/* Heading */}
-      <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
-        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Fact of the Day</h1>
-        <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
+      <div className="px-6 lg:px-0 flex flex-col items-start lg:items-center">
+        {/* <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Fact of the Day</h1> */}
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">{fact.title}</h1>
+        <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
+        <div className="w-full flex justify-start md:justify-center mb-3 items-center">
+        {/* <h1 className="text-lg md:text-2xl text-text  font-semibold ]">{fact.title}</h1> */}
+       
+        {fact?.date &&
+        <DateComponent date={fact.date.toISOString().split('T')[0]} />
+          }
+        </div>
       </div>
 
       {/* Main Content */}
       {fact ? (
-        <div className="relative w-full max-w-sm mx-auto h-96 rounded-lg">
+        <div className="relative w-full max-w-md  shadow-defined-top mx-auto h-[400px] rounded-lg">
           {isCompleted ? (
             <Image
               src={fact.finalImage}

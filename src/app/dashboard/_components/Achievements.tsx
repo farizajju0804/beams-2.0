@@ -30,7 +30,7 @@ const Achievements = async () => {
       )}
 
       <Link
-        href='/levolution/#achievements'
+        href='/achievements/#victory'
         className='mt-6 w-full text-brand underline font-medium text-center mx-auto text-sm'
       >
         View Achievements progress here

@@ -27,6 +27,7 @@ const AchievementsModal = () => {
         scrollBehavior="inside"
         backdrop="blur"
         className="bg-background"
+        hideCloseButton={true}
         classNames={{
           wrapper : 'z-[110]'
         }}
@@ -83,7 +84,7 @@ const AchievementsModal = () => {
   return (
     <div className='w-full flex justify-between pl-6 my-4 pr-6'>
       <div className="flex flex-col items-start">
-        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Achievements</h1>
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Victory</h1>
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div>
       </div>
       <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}>

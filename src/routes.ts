@@ -26,6 +26,7 @@ export const publicRoutes = [
    * @type {string[]}
    */
   export const authRoutes = [
+    "/",
     "/auth/login", // Login page
     "/auth/register", // Registration page
     "/auth/error", // Error page for handling authentication errors

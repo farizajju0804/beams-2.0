@@ -196,6 +196,7 @@ model ContactFormResponse {
 model FactOfTheday {
   id                    String                           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   date                  DateTime                         @unique // Date of the Beams Today content
+  title                 String
   finalImage            String // Title of the Beams Today content
   scratchImage          String // Title of the Beams Today content
  completions FactCompletion[]

@@ -3,7 +3,7 @@ import React from "react";
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as GiIcons from "react-icons/gi";
-
+import * as AiIcons from "react-icons/ai";
 interface IconFillingEffectProps {
   icon: string;
   filledColor: string;
@@ -20,6 +20,7 @@ const iconLibraries: any = {
   fa: FaIcons,
   md: MdIcons,
   gi: GiIcons,
+  ai: AiIcons
   // Add other libraries as needed
 };
 

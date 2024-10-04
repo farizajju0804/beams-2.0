@@ -9,7 +9,7 @@ import { Level, UserType } from '@prisma/client';
 import IconFillingEffect from '@/components/IconFillingEffect';
 import { getHasGainedBeamsStatus, handleUserPointsAndMarkGained } from '@/actions/points/handleUserPointsAndMarkGained';
 import LevelName from '@/components/LevelName';
-import ShareButton from '@/app/levolution/_components/ShareButton';
+import ShareButton from '@/app/achievements/_components/ShareButton';
 
 interface AchievementCompletionButtonProps {
   userId: string;

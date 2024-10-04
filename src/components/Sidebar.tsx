@@ -8,9 +8,9 @@ import Image from 'next/image';
 
 const menuItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
+  { icon: BookSquare, label: "Beams Facts", path: "/beams-facts" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
-  { icon: BookSquare, label: "My Library", path: "/my-library" },
-  { icon: Cup, label: "Levolution", path: "/levolution" },
+  { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },
 ]
 

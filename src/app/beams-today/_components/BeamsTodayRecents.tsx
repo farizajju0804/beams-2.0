@@ -205,33 +205,7 @@ export function BeamsTodayRecents() {
       {/* List of Topics */}
       <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-10">
         {paginatedTopics.map((topic: any, index: number) => (
-          // <motion.div
-          //   layoutId={`card-${topic.title}-${id}`}
-          //   key={topic.id}
-          //   onClick={() => setActive(topic)}
-          //   className="flex flex-col rounded-2xl cursor-pointer"
-          // >
-          //   <div className="flex gap-4 flex-col w-full">
-          //     <motion.div layoutId={`image-${topic.title}-${id}`}>
-          //       <Image
-          //         priority
-          //         width={200}
-          //         height={200}
-          //         src={topic.thumbnailUrl}
-          //         alt={topic.title}
-          //         className="h-48 w-full rounded-lg object-cover object-center"
-          //       />
-          //     </motion.div>
-          //     <div className="flex justify-center items-center flex-col">
-          //       <motion.h3
-          //         layoutId={`title-${topic.title}-${id}`}
-          //         className="font-medium text-text font-poppins text-left text-base"
-          //       >
-          //         {topic.title}
-          //       </motion.h3>
-          //     </div>
-          //   </div>
-          // </motion.div>
+       
           <motion.div
           layoutId={`card-${topic.title}-${id}`}
           key={topic.id}

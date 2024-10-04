@@ -23,6 +23,7 @@ const LevelsModal = () => {
     return (
       <Modal 
         size='2xl'
+        hideCloseButton={true}
         isOpen={isOpen} 
         onOpenChange={onOpenChange}
         scrollBehavior="inside"

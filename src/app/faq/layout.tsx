@@ -1,33 +1,34 @@
-import type { Metadata } from "next";
-import { Quicksand } from "next/font/google";
-import { SessionProviders } from "../SessionProviders";
-
+import React from 'react';
+import Sidebar from "@/components/Sidebar";
+import TopNav from "@/components/TopNav";
 import PublicFooter from "@/components/PublicFooter";
-import Nav from "@/components/Navbar";
-import BottomNav from "@/components/BottomNav";
-
-const quicksand = Quicksand({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Beams - Next-gen Learning Platform",
-  description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
-};
+import { SessionProviders } from "../SessionProviders";
+import BottomNav from '@/components/BottomNav';
 
 export default function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   return (
-  
-   
-      <div className={`relative bg-background ${quicksand.className}`}>
-         <Nav/>
-         <BottomNav /> 
-        {children}
-          <PublicFooter/>
+    <SessionProviders>
+      <div className="relative w-full h-screen overflow-hidden flex">
+        <div className="h-full">
+          <Sidebar />
+          <BottomNav /> 
+
+        </div>
+        <div className="flex flex-col flex-grow overflow-auto">
+          <TopNav />
+          <div className="flex-grow">
+            {children} 
+          </div>
+          <PublicFooter />
+        </div>
       </div>
-    
+    </SessionProviders>
   );
 }
+
+
+

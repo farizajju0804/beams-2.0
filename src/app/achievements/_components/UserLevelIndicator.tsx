@@ -70,8 +70,8 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                 minPoints={config.minPoints}
                 maxPoints={config.maxPoints}
                 totalIcons={10} // Adjust as needed
-                iconSize={16}  // Adjust as needed
-                iconGap={8}   // Adjust as needed
+                iconSize={18}  // Adjust as needed
+                iconGap={9}   // Adjust as needed
               />
 
               <div className="hidden w-12 h-10 md:flex items-center justify-center">

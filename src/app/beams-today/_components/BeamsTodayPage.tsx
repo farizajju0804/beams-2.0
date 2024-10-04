@@ -6,7 +6,7 @@ import SearchBar from "./SearchBar";
 import BeamsTodayCard from "./BeamsTodayCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { BeamsTodayRecents } from "./BeamsTodayRecents";
-import FactOfTheDay from "./FactOfTheDay";
+import FactOfTheDay from "../../beams-facts/_components/FactOfTheDay";
 import { Divider } from "@nextui-org/react";
 
 interface BeamsTodayPageProps {
@@ -30,7 +30,6 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
       <TopicOfTheDayContainer user={user} />
       {/* <div  className=" w-full h-[1px] rounded-full  mb-2 border-[0.5] bg-grey-1" ></div> */}
 
-      <FactOfTheDay userId={user.id} />
       {/* <div  className=" w-full h-[1px] rounded-full  mb-2 border-[0.5] bg-grey-1" ></div> */}
 
 
