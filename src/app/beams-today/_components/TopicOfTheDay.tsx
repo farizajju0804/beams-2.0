@@ -18,7 +18,7 @@ interface TopicOfTheDayProps {
  */
 const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
   return (
-    <div className="w-full py-1 mb-8 text-left relative max-w-6xl mx-auto">
+    <div className="w-full py-1 mb-4 text-left relative max-w-6xl mx-auto">
       
       {/* Heading */}
       <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">

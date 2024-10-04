@@ -111,19 +111,20 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
 
       {/* Main Content */}
       {fact ? (
-        <div className="relative w-full max-w-md  shadow-defined-top mx-auto h-[400px] rounded-lg">
+        <div className="relative w-full max-w-md  shadow-defined-top mx-auto h-[390px] rounded-lg">
           {isCompleted ? (
             <Image
               src={fact.finalImage}
               alt="fact"
               priority={true}
-              fill={true}
+              width={400}
+              height={400}
               style={{ objectFit: "cover" }}
-              className="z-2 aspect-auto md:aspect-video lg:rounded-lg"
+              className="z-2 aspect-auto max-w-sm lg:rounded-lg"
             />
           ) : (
             <ScratchCard
-              scratchImage={fact.scratchImage}
+              scratchImage={fact.scratchImage ? fact.scratchImage : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1727699559/fact%20of%20the%20day/wrap_zd7veo.png' }
               finalImage={fact.finalImage}
               onReveal={handleReveal}
             />

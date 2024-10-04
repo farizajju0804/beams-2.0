@@ -4,13 +4,13 @@ import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Chart, BookSquare, Rank, Microscope, Cup } from "iconsax-react"
+import { Chart, BookSquare, Rank, Microscope, Cup, LampCharge } from "iconsax-react"
 import { Button, Spinner } from "@nextui-org/react"
 
 
 const navItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
-  { icon: BookSquare, label: "Beams Facts", path: "/beams-facts" },
+  { icon: LampCharge, label: "Beams Facts", path: "/beams-facts" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

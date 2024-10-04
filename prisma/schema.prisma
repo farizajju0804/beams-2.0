@@ -198,7 +198,7 @@ model FactOfTheday {
   date                  DateTime                         @unique // Date of the Beams Today content
   title                 String
   finalImage            String // Title of the Beams Today content
-  scratchImage          String // Title of the Beams Today content
+  scratchImage          String? // Title of the Beams Today content
  completions FactCompletion[]
 
 }

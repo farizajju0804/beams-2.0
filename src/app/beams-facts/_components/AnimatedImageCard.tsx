@@ -19,7 +19,7 @@ export default function AnimatedImageCard({ imageUrl, name }: AnimatedImageCardP
     <>
       <div className="overflow-hidden rounded-2xl shadow-defined bg-background">
         <motion.div
-          className="relative w-full h-80 cursor-pointer"
+          className="relative w-full h-96 cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleExpand}
@@ -53,7 +53,7 @@ export default function AnimatedImageCard({ imageUrl, name }: AnimatedImageCardP
               className="relative bg-background rounded-3xl shadow-defined w-full max-w-3xl max-h-[90vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-full h-[380px]">
+              <div className="relative w-full  h-[340px] md:h-[380px]">
                 <Image
                   src={imageUrl}
                   alt={name}
@@ -63,7 +63,7 @@ export default function AnimatedImageCard({ imageUrl, name }: AnimatedImageCardP
                 />
               </div>
               <div className="bg-background">
-                <h2 className="text-lg md:text-2xl text-center font-bold mb-2">{name}</h2>
+                <h2 className="text-lg md:text-2xl text-center font-bold my-4">{name}</h2>
               </div>
               <motion.button
                 className="absolute top-2 right-2 p-2 bg-background/50 rounded-full text-foreground hover:bg-background/75 transition-colors"

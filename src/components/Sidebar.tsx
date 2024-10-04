@@ -1,14 +1,14 @@
 'use client'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Chart, Cup, BookSquare, Rank,  ArrowLeft2, ArrowRight2, Microscope } from 'iconsax-react';
+import { Chart, Cup, BookSquare, Rank,  ArrowLeft2, ArrowRight2, Microscope, LampCharge } from 'iconsax-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const menuItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
-  { icon: BookSquare, label: "Beams Facts", path: "/beams-facts" },
+  { icon: LampCharge, label: "Beams Facts", path: "/beams-facts" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

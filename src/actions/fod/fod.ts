@@ -272,3 +272,32 @@ export const getTrendingFacts = async (clientDate: string) => {
     throw new Error(`Error fetching trending facts: ${(error as Error).message}`);
   }
 };
+
+
+
+export const getCompletedFacts = async (userId:string) => {
+
+
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+
+  try {
+    // Fetch the completed facts for the user
+    const completedFacts = await db.factCompletion.findMany({
+      where: {
+        userId: userId,
+        completed : true,
+      },
+      select: {
+        factId: true,
+      },
+    });
+
+    // Return the array of completed fact IDs
+    return completedFacts.map((completion) => completion.factId);
+  } catch (error) {
+    console.error("Error fetching completed facts:", error);
+    throw new Error("Failed to fetch completed facts");
+  }
+};

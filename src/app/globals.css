@@ -76,7 +76,7 @@ textarea {
 }
 
 .shadow-defined-both{
-  box-shadow: 6px -6px 6px 0px rgba(var(--shadow));
+  box-shadow: 0px -6px 6px 0px rgba(var(--shadow)) ;
 }
 .sidebar {
   width: 5rem; /* collapsed width */
