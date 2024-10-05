@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast'; // React Hot Toast
 import { VolumeHigh, VolumeMute, Play, Pause, Forward, Backward } from 'iconsax-react';
 import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
 import Image from 'next/image';
-import AchievementCompletionPopup from './AchievementCOmpletionPopup';
+import AchievementCompletionPopup from './AchievementPopup';
 
 interface AudioPlayerProps {
   beamsTodayId: string;

@@ -7,7 +7,9 @@ import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import RewardsModal from '@/components/Rewards';
-import AchievementCompletionPopup from './AchievementCOmpletionPopup';
+import AchievementCompletionPopup from './AchievementPopup';
+
+
 
 interface ArticleProps {
   articleUrl: string | undefined;

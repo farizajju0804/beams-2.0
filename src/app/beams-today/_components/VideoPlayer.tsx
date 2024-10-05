@@ -5,7 +5,7 @@ import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import { Toaster, toast } from 'react-hot-toast';
 import RewardsModal from '@/components/Rewards';
 import { Spinner } from '@nextui-org/react';
-import AchievementCompletionPopup from './AchievementCOmpletionPopup';
+import AchievementCompletionPopup from './AchievementPopup';
 
 interface VideoPlayerProps {
   id: string;
