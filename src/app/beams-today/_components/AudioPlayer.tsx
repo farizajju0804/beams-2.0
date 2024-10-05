@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'; // React Hot Toast
 import { VolumeHigh, VolumeMute, Play, Pause, Forward, Backward } from 'iconsax-react';
 import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
 import Image from 'next/image';
+import AchievementCompletionPopup from './AchievementCOmpletionPopup';
 
 interface AudioPlayerProps {
   beamsTodayId: string;
@@ -26,7 +27,9 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
   const [levelUp, setLevelUp] = useState(false);
   const [beams, setBeams] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
-
+  const [achievement, setAchievement] = useState<any>();
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  
   // Expose the elapsed play time for parent component via ref
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current,
@@ -74,7 +77,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
       try {
        
-        const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'audio');
+        const { success, leveledUp, beams,  newLevel, pointsAdded, achievementUpdate  } = await markTopicAsCompleted(beamsTodayId, 'audio');
 
         if (success) {
           setPointsAdded(pointsAdded);
@@ -83,6 +86,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
           if (leveledUp) {
             setLevelUp(leveledUp);
           }
+          setAchievement(achievementUpdate)
           setIsModalOpen(true);
         }
       } catch (error) {
@@ -134,9 +138,26 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
        levelUp={levelUp}
        beams={beams}
        isOpen={isModalOpen}
-       onClose={()=>{setIsModalOpen(false)}}
+       onClose={()=>{
+        setIsModalOpen(false);
+        if(!achievement?.isAlreadyCompleted){
+           setIsCompletionModalOpen(true);
+        }
+      }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
+      />
+      <AchievementCompletionPopup
+       isOpen={isCompletionModalOpen}
+       onClose={()=>{
+        setIsCompletionModalOpen(false);
+      }}
+      achievementName={achievement?.achievement.achievementName}
+      completedTasks={achievement?.progress}
+      totalTasks={achievement?.achievement.totalCount}
+      badgeImageUrl={achievement?.achievement.badgeImageUrl}
+      progressColor={achievement?.achievement.color}
+      
       />
     </div>
   );

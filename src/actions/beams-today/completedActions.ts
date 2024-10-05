@@ -7,6 +7,7 @@ import { updateLeaderboardEntry } from "../points/updateLeaderboardEntry";
 import { recordPointsHistory } from "../points/recordPointsHistory";
 import { updateUserPoints } from "../points/updateUserPoints";
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
+import { Achievement } from "@prisma/client";
 
 /**
  * Marks a specific topic as completed by a user in a given format (video, audio, or text).
@@ -71,7 +72,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     let userBeamPoints = null;
     let leveledUp = false;
     let newLevel = null;
-    
+    let achievementUpdate =null;
 
     if (isFirstCompletion) {
       console.log(`[markTopicAsCompleted] Processing first-time completion for beamsTodayId: ${beamsTodayId}`);
@@ -104,11 +105,9 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       userBeamPoints = beams
 
       
-      const achievementUpdate = await updateAchievementProgress(userId, 'Momentum Master');
+    achievementUpdate = await updateAchievementProgress(userId, 'Momentum Master');
      console.log(`Progress Updated for 'Momentum Master':`, achievementUpdate);
-     if (achievementUpdate.isCompleted) {
-      console.log('Achievement already completed.');
-    }
+    
     }
 
     console.log(`[markTopicAsCompleted] Updating watched content`);
@@ -127,7 +126,8 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       leveledUp,
       beams: userBeamPoints?.beams,
       newLevel,
-      pointsAdded
+      pointsAdded,
+      achievementUpdate
     };
   } catch (error) {
     console.error("[markTopicAsCompleted] Error marking topic as completed:", error);
@@ -137,7 +137,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
 
 
 
-async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isCompleted: boolean }> {
+async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isAlreadyCompleted: boolean,achievement: Achievement }> {
   try {
     console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}`);
 
@@ -154,12 +154,13 @@ async function updateAchievementProgress(userId: string, achievementName: string
     // Check if user already has progress for this achievement
     let userAchievement = await db.userAchievement.findUnique({
       where: { userId_achievementId: { userId, achievementId: achievement.id } },
+      include: { achievement: true },
     });
 
     // If the achievement is already completed, return early
     if (userAchievement && userAchievement.completionStatus) {
       console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
-      return { progress: userAchievement.progress, isCompleted: true };
+      return { progress: userAchievement.progress, isAlreadyCompleted: true, achievement: userAchievement.achievement };
     }
 
     let newProgress = 1;
@@ -177,6 +178,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
           completionStatus: false,
           updatedAt: new Date(),
         },
+        include: { achievement: true }
       });
     } else {
       // Increment progress
@@ -191,12 +193,14 @@ async function updateAchievementProgress(userId: string, achievementName: string
           completionStatus: isNowCompleted,
           updatedAt: new Date(),
         },
+        include: { achievement: true },
       });
     }
 
     return {
       progress: newProgress,
-      isCompleted: isNowCompleted
+      isAlreadyCompleted: false,
+      achievement: userAchievement.achievement
     };
   } catch (error) {
     console.error(`[updateAchievementProgress] Error updating achievement progress for userId: ${userId}, achievementName: ${achievementName}:`, error);

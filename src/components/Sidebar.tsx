@@ -5,10 +5,11 @@ import { Chart, Cup, BookSquare, Rank,  ArrowLeft2, ArrowRight2, Microscope, Lam
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { FaLightbulb } from 'react-icons/fa';
 
 const menuItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
-  { icon: LampCharge, label: "Beams Facts", path: "/beams-facts" },
+  { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

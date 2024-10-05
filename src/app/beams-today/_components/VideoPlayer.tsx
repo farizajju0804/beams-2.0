@@ -5,6 +5,7 @@ import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import { Toaster, toast } from 'react-hot-toast';
 import RewardsModal from '@/components/Rewards';
 import { Spinner } from '@nextui-org/react';
+import AchievementCompletionPopup from './AchievementCOmpletionPopup';
 
 interface VideoPlayerProps {
   id: string;
@@ -24,10 +25,12 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const playTimeRef = useRef(0);
   const [completionMarked, setCompletionMarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
   const [pointsAdded, setPointsAdded] = useState(0);
   const [levelUp, setLevelUp] = useState(false);
   const [beams, setBeams] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
+  const [achievement, setAchievement] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
@@ -37,7 +40,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       setCompletionMarked(true);
       try {
         console.log('Marking topic as completed for video ID:', videoId);
-        const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
+        const { success, leveledUp, beams,  newLevel, pointsAdded, achievementUpdate } = await markTopicAsCompleted(id, 'video');
 
         if (success) {
           setPointsAdded(pointsAdded);
@@ -46,6 +49,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
           if (leveledUp) {
             setLevelUp(leveledUp);
           }
+          setAchievement(achievementUpdate)
           setIsModalOpen(true);
         }
       } catch (error) {
@@ -148,9 +152,26 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
        levelUp={levelUp}
        beams={beams}
        isOpen={isModalOpen}
-       onClose={()=>{setIsModalOpen(false)}}
+       onClose={()=>{
+        setIsModalOpen(false);
+        if(!achievement?.isAlreadyCompleted){
+           setIsCompletionModalOpen(true);
+        }
+      }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
+      />
+      <AchievementCompletionPopup
+       isOpen={isCompletionModalOpen}
+       onClose={()=>{
+        setIsCompletionModalOpen(false);
+      }}
+      achievementName={achievement?.achievement.achievementName}
+      completedTasks={achievement?.progress}
+      totalTasks={achievement?.achievement.totalCount}
+      badgeImageUrl={achievement?.achievement.badgeImageUrl}
+      progressColor={achievement?.achievement.color}
+      
       />
     </>
   );

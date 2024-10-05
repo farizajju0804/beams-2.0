@@ -7,6 +7,7 @@ import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 import { markTopicAsCompleted } from '@/actions/beams-today/completedActions';
 import RewardsModal from '@/components/Rewards';
+import AchievementCompletionPopup from './AchievementCOmpletionPopup';
 
 interface ArticleProps {
   articleUrl: string | undefined;
@@ -26,6 +27,8 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [achievement, setAchievement] = useState<any>();
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
 
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => 0
@@ -59,7 +62,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const markCompleted = async () => {
     console.log('Marking as completed');
     try {
-      const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'text');
+      const { success, leveledUp, beams,  newLevel, pointsAdded, achievementUpdate } = await markTopicAsCompleted(beamsTodayId, 'text');
       if (success) {
         setPointsAdded(pointsAdded);
         setNewLevel(newLevel);
@@ -67,6 +70,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         if (leveledUp) {
           setLevelUp(leveledUp);
         }
+        setAchievement(achievementUpdate)
         setIsModalOpen(true);
       }
     } catch (error) {
@@ -103,9 +107,26 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
        levelUp={levelUp}
        beams={beams}
        isOpen={isModalOpen}
-       onClose={()=>{setIsModalOpen(false)}}
+       onClose={()=>{
+        setIsModalOpen(false);
+        if(!achievement?.isAlreadyCompleted){
+           setIsCompletionModalOpen(true);
+        }
+      }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
+      />
+      <AchievementCompletionPopup
+       isOpen={isCompletionModalOpen}
+       onClose={()=>{
+        setIsCompletionModalOpen(false);
+      }}
+      achievementName={achievement?.achievement.name}
+      completedTasks={achievement?.progress}
+      totalTasks={achievement?.achievement.totalCount}
+      badgeImageUrl={achievement?.achievement.badgeImageUrl}
+      progressColor={achievement?.achievement.color}
+      
       />
     </div>
   );

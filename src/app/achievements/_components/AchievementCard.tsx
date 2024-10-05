@@ -81,10 +81,10 @@ export default function AchievementCard({
               <h2 className="text-white font-poppins font-semibold text-lg">{badgeName}</h2>
               <Chip
                   style={{
-                    backgroundColor: isCompleted ? color : undefined,
-                    color: isCompleted ? 'white' : undefined,
+                    backgroundColor: isCompleted ? 'white' : undefined,
+                    color: isCompleted ? color : undefined,
                   }}
-                variant={isCompleted ? 'flat' : 'solid'}
+                variant={'solid'}
                 size="sm"
                 className="font-semibold"
                 classNames={
