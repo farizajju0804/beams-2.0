@@ -96,11 +96,18 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   return (
     <div className="w-full  mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
       {/* Heading */}
-      <div className="px-6 lg:px-0 flex flex-col items-start lg:items-center">
+      
+
+      {/* Main Content */}
+      {fact ? (
+        <>
+        <div className="px-6 lg:px-0 flex justify-between items-start lg:items-center">
         {/* <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Fact of the Day</h1> */}
+        <div className="w-full flex-1">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">{fact.title}</h1>
         <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
-        <div className="w-full flex justify-start md:justify-center mb-3 items-center">
+        </div>
+        <div className="flex justify-start md:justify-center mb-3 items-center">
         {/* <h1 className="text-lg md:text-2xl text-text  font-semibold ]">{fact.title}</h1> */}
        
         {fact?.date &&
@@ -108,9 +115,6 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
           }
         </div>
       </div>
-
-      {/* Main Content */}
-      {fact ? (
         <div className="relative w-full max-w-md  shadow-defined-top mx-auto h-[390px] rounded-lg">
           {isCompleted ? (
             <Image
@@ -130,6 +134,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
             />
           )}
         </div>
+        </>
       ) : (
         <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-0">
           No fact available for today
