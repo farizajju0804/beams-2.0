@@ -1,24 +1,28 @@
+"use client"
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Button } from '@nextui-org/react';
 import Image from 'next/image';
+import { IoTrendingUp } from 'react-icons/io5';
+import { Award, CloseCircle } from 'iconsax-react';
+import { FaTimes } from 'react-icons/fa';
+import IconFillingEffect from './IconFillingEffect';
+import LevelName from './LevelName';
+import { DynamicIcon } from './DynamicComponent';
+import { Level } from '@prisma/client';
 
-interface Level {
-  levelNumber: number;
-  maxPoints: number;
-}
+
 
 interface RewardsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  points: number;
-  newPoints: number;
-  caption: string;
   levelUp: boolean;
   currentLevel: Level;
-  nextLevel: Level;
-  currentPoints : number
+  pointsAdded: number;
+  beams : number;
 }
 
 const motivationalMessages: string[] = [
@@ -44,157 +48,152 @@ const motivationalMessages: string[] = [
     "If enthusiasm was electricity, you could power a small city! ⚡️🏙️"
   ];
 
-  const RewardsModal: React.FC<RewardsModalProps> = ({ 
-    isOpen, 
-    onClose, 
-    points, 
-    newPoints, 
-    levelUp, 
-    currentLevel, 
-    nextLevel,
-    caption,
-    currentPoints
-  }) => {
-    const [displayedPoints, setDisplayedPoints] = useState(points);
-    const [message, setMessage] = useState<string>('');
-    const audioRef = React.useRef<HTMLAudioElement>(null);
-  
-    const playLevelUpSound = useCallback(() => {
-      if (audioRef.current) {
-        audioRef.current.play();
-        console.log('Playing level up sound');
-      }
-    }, []);
-  
-    const incrementPoints = useCallback(() => {
-      const incrementStep = Math.ceil((newPoints - points) / 20);
-      let currentPoints = points;
-      const interval = setInterval(() => {
-        currentPoints = Math.min(currentPoints + incrementStep, newPoints);
-        setDisplayedPoints(currentPoints);
-        if (currentPoints >= newPoints) {
-          clearInterval(interval);
-          console.log('Points increment completed:', currentPoints);
-        }
-      }, 50);
-    }, [newPoints, points]);
-  
+
+
+  export default function RewardsModal({
+    isOpen,
+    onClose,
+    levelUp,
+    currentLevel,
+    pointsAdded,
+    beams
+   
+  }: RewardsModalProps) {
+     
+    const [count, setCount] = useState(0);
+    const [motivationalMessage, setMotivationalMessage] = useState("");
     useEffect(() => {
       if (isOpen) {
-        setMessage(motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]);
-        console.log('Modal opened with points:', { points, newPoints });
-  
+        const pickedMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+      setMotivationalMessage(pickedMessage);
         if (levelUp) {
-          console.log('Level Up! Current Level:', currentLevel, 'Next Level:', nextLevel);
           confetti({
-            particleCount: 100,
             spread: 70,
-            origin: { y: 0.6 }
+            startVelocity: 30,
+            particleCount: 100,
+            origin: { y: 0.6 },
           });
-          playLevelUpSound();
         }
   
-        incrementPoints();
+        // Animated points counter
+        const timer = setInterval(() => {
+          setCount((prevCount) => {
+            if (prevCount < pointsAdded) {
+              return prevCount + Math.ceil((pointsAdded - prevCount) / 10);
+            }
+            clearInterval(timer);
+            return prevCount;
+          });
+        }, 100);
+  
+        return () => clearInterval(timer);
       }
-    }, [isOpen, levelUp, incrementPoints, playLevelUpSound]);
-  
-    const modalVariants = {
-      hidden: { opacity: 0, scale: 0.8 },
-      visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-      exit: { opacity: 0, scale: 0.8, transition: { duration: 0.3 } }
-    };
-  
-    // Move console logs outside JSX
-    if (levelUp) {
-      console.log('Next level details:', nextLevel);
-    }
-    
-    if (currentLevel || nextLevel) {
-      console.log('Progress bar width calculation:', {
-        points,
-        newPoints,
-        currentLevel: levelUp ? nextLevel : currentLevel,
-      });
-    }
-  
+    }, [isOpen, pointsAdded, levelUp]);
+
     return (
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
           >
             <motion.div
-              className="bg-background shadow-defined rounded-3xl max-w-md w-full max-h-[90vh] flex flex-col"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', damping: 15 }}
+              className={`relative w-full bg-background max-w-md overflow-hidden rounded-lg p-6 text-text shadow-xl`}
+              // style={{ backgroundColor: currentLevel.bgColor }} 
             >
-              <div className="p-4 overflow-y-auto">
-                <h2 className="text-xl font-bold mb-2 text-center text-text">
-                  Awesome Progress! 🎉
-                </h2>
-                <Image
-                  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725632828/authentication/onboarding-popup_y2qcaa.webp"
-                  alt="Celebration"
-                  className="mx-auto mb-2"
-                  width={100}
-                  height={100}
-                />
-                <p className="text-sm text-center mb-3 text-grey-2 italic font-medium">
-                  {message}
-                </p>
-                <div className="mb-6">
-                  <p className="text-center text-lg font-semibold mb-2 text-text">
-                    You&apos;ve earned {newPoints - points} points!
-                  </p>
-                  {levelUp && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-center mb-3"
-                  >
-                    <h3 className="text-lg font-bold text-secondary-2 mb-1">
-                      Level Up! 🚀
-                    </h3>
-                    <p className="text-sm text-grey-2">
-                      You&apos;ve reached level {nextLevel?.levelNumber}!
-                    </p>
-                    <p className="text-sm text-grey-2 my-2 italic font-medium">
-                      {caption}
-                    </p>
-                  </motion.div>
-                )}
-                  <div className="bg-grey-1 h-3 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-brand"
-                      initial={{ width: `${(points / (levelUp ? nextLevel?.maxPoints : currentLevel?.maxPoints)) * 100}%` }}
-                      animate={{ width: `${(currentPoints / (levelUp ? nextLevel?.maxPoints : currentLevel?.maxPoints)) * 100}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                    />
-                  </div>
-                  <p className="text-center mt-3 text-sm text-grey-2">
-                    Total: {currentPoints} / {levelUp ? nextLevel?.maxPoints : currentLevel?.maxPoints}
-                  </p>
-                </div>
-               
-                <Button
-                  onClick={onClose}
-                  className="w-full bg-brand text-base text-white font-bold py-3 px-4 transition duration-200"
+              <button
+                onClick={onClose}
+                className="absolute right-2 top-2 text-text transition-colors"
+              >
+                <CloseCircle variant='Bold' className="h-6 w-6" />
+              </button>
+  
+              <div className="flex flex-col items-center">
+                {/* Modal Header */}
+                {levelUp &&
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-4 text-3xl font-bold"
                 >
-                  Keep Learning!
-                </Button>
+                  Level Up!
+                </motion.div>
+              }
+                {/* Dynamic Icon */}
+               
+  
+
+                <div className='flex flex-col gap-2 items-center justify-center'>
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', damping: 10, delay: 0.4 }}
+                  className="mb-2 rounded-full bg-background shadow-defined p-4"
+                >
+                  <DynamicIcon icon={currentLevel.icon} size={80} style={{ color: currentLevel.bgColor }} />
+                </motion.div>
+                {/* Icon Filling Effect */}
+                <IconFillingEffect
+                  icon={currentLevel.icon}
+                  minPoints={currentLevel.minPoints}
+                  maxPoints={currentLevel.maxPoints}
+                  filledColor={currentLevel.bgColor}
+                  beams={beams}
+                />
+  
+                {/* Level Name */}
+                <span className="text-base font-semibold">
+                  Level {currentLevel.levelNumber} - {currentLevel.name}
+                </span>
+                {levelUp && 
+                <span className="text-sm font-medium italic">
+                {currentLevel.caption}
+                </span>
+                }
+                </div>
+                {/* Points Earned Counter */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+              style={{ color: currentLevel.bgColor }} 
+
+                  className="text-6xl font-bold mt-6"
+                >
+                  +{count}
+                </motion.div>
+  
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  className="my-2 text-xl font-semibold"
+                >
+                  Beams Earned
+                </motion.div>
+  
+                {/* Motivational Message */}
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 1.2 }}
+                  className="mt-4 text-center text-sm"
+                >
+                  {motivationalMessage}
+                </motion.div>
+  
+                
               </div>
             </motion.div>
           </motion.div>
         )}
-        <audio ref={audioRef} src="https://res.cloudinary.com/drlyyxqh9/video/upload/v1726498206/Beams%20today/Level_Up_ufjevv.mp3" preload="auto" />
       </AnimatePresence>
     );
-  };
-  
-  export default RewardsModal;
+  }

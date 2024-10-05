@@ -6,6 +6,7 @@ import { getBeamsTodayById } from "./getBeamsTodayById";
 import { updateLeaderboardEntry } from "../points/updateLeaderboardEntry";
 import { recordPointsHistory } from "../points/recordPointsHistory";
 import { updateUserPoints } from "../points/updateUserPoints";
+import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
 
 /**
  * Marks a specific topic as completed by a user in a given format (video, audio, or text).
@@ -70,6 +71,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     let userBeamPoints = null;
     let leveledUp = false;
     let newLevel = null;
+    
 
     if (isFirstCompletion) {
       console.log(`[markTopicAsCompleted] Processing first-time completion for beamsTodayId: ${beamsTodayId}`);
@@ -82,21 +84,31 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
         data: { completionCount: { increment: 1 } },
       });
       
-      pointsAdded = 100;
+      pointsAdded = 10;
       console.log(`[markTopicAsCompleted] Points added: ${pointsAdded}`);
 
       console.log(`[markTopicAsCompleted] Updating user points`);
-      ({ userBeamPoints, leveledUp, newLevel } = await updateUserPoints(userId, pointsAdded));
-      console.log(`[markTopicAsCompleted] User points updated. New points:`, userBeamPoints);
-      console.log(`[markTopicAsCompleted] Level up?`, leveledUp);
-      console.log(`[markTopicAsCompleted] New level:`, newLevel);
 
-      console.log(`[markTopicAsCompleted] Recording points history`);
       const beamsToday = await getBeamsTodayById(beamsTodayId);
-      await recordPointsHistory(userId, pointsAdded, 'BEAMS_TODAY', `Completed beams today, "${beamsToday.title}"`);
 
-      console.log(`[markTopicAsCompleted] Updating leaderboard entry`);
-      await updateLeaderboardEntry(userId, pointsAdded, user.userType);
+      const updateResult = await updateUserPointsAndLeaderboard(
+        userId, 
+        pointsAdded, 
+        'BEAMS_TODAY', 
+        `Completed beams today, "${beamsToday.title}"`, 
+        user.userType
+      );
+      const {  userBeamPoints : beams , leveledUp: leveledUpFlag, newLevel: updatedLevel, levelCaption: caption } = updateResult;
+      leveledUp = leveledUpFlag;
+      newLevel = updatedLevel;
+      userBeamPoints = beams
+
+      
+      const achievementUpdate = await updateAchievementProgress(userId, 'Momentum Master');
+     console.log(`Progress Updated for 'Momentum Master':`, achievementUpdate);
+     if (achievementUpdate.isCompleted) {
+      console.log('Achievement already completed.');
+    }
     }
 
     console.log(`[markTopicAsCompleted] Updating watched content`);
@@ -106,11 +118,14 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     });
 
     console.log(`[markTopicAsCompleted] Operation completed successfully`);
+
+    
+
+ 
     return {
       success: isFirstCompletion,
       leveledUp,
-      currentLevel: userBeamPoints?.level,
-      currentPoints: userBeamPoints?.beams,
+      beams: userBeamPoints?.beams,
       newLevel,
       pointsAdded
     };
@@ -119,6 +134,91 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     throw new Error("Error marking topic as completed.");
   }
 };
+
+
+
+async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isCompleted: boolean }> {
+  try {
+    console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}`);
+
+    // Find achievement by name
+    const achievement = await db.achievement.findUnique({
+      where: { name: achievementName },
+    });
+
+    if (!achievement) {
+      console.error(`[updateAchievementProgress] Achievement '${achievementName}' not found`);
+      throw new Error(`Achievement '${achievementName}' not found`);
+    }
+
+    // Check if user already has progress for this achievement
+    let userAchievement = await db.userAchievement.findUnique({
+      where: { userId_achievementId: { userId, achievementId: achievement.id } },
+    });
+
+    // If the achievement is already completed, return early
+    if (userAchievement && userAchievement.completionStatus) {
+      console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
+      return { progress: userAchievement.progress, isCompleted: true };
+    }
+
+    let newProgress = 1;
+    let isNowCompleted = false;
+
+    // If no progress exists, create a new entry
+    if (!userAchievement) {
+      console.log(`[updateAchievementProgress] No existing progress, creating new entry for userId: ${userId}`);
+
+      userAchievement = await db.userAchievement.create({
+        data: {
+          userId,
+          achievementId: achievement.id,
+          progress: newProgress,
+          completionStatus: false,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      // Increment progress
+      newProgress = userAchievement.progress + 1;
+      isNowCompleted = newProgress >= achievement.totalCount;
+
+      // Update progress and completion status
+      userAchievement = await db.userAchievement.update({
+        where: { id: userAchievement.id },
+        data: {
+          progress: newProgress,
+          completionStatus: isNowCompleted,
+          updatedAt: new Date(),
+        },
+      });
+    }
+
+    return {
+      progress: newProgress,
+      isCompleted: isNowCompleted
+    };
+  } catch (error) {
+    console.error(`[updateAchievementProgress] Error updating achievement progress for userId: ${userId}, achievementName: ${achievementName}:`, error);
+    throw new Error(`Error updating achievement progress: ${(error as Error).message}`);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Increment the view count for a topic and format when a user opens a tab.
  * This ensures the overall view count for a topic only increments once per user.
@@ -252,3 +352,5 @@ export const getcompletedBeamsToday = async (userId: string) => {
     throw new Error(`Error fetching completed topics: ${(error as Error).message}`);
   }
 };
+
+

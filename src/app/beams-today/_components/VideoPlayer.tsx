@@ -24,12 +24,10 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const playTimeRef = useRef(0);
   const [completionMarked, setCompletionMarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
-  const [newPoints, setNewPoints] = useState(0);
-  const [currentLevel2, setCurrentLevel] = useState<any>();
+  const [pointsAdded, setPointsAdded] = useState(0);
   const [levelUp, setLevelUp] = useState(false);
-  const [currentPoints, setCurrentPoints] = useState<any>();
-  const [newLevel, setnewLevel] = useState<any>();
+  const [beams, setBeams] = useState<any>();
+  const [newLevel, setNewLevel] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
@@ -39,18 +37,14 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       setCompletionMarked(true);
       try {
         console.log('Marking topic as completed for video ID:', videoId);
-        const { success, leveledUp, currentLevel, currentPoints, newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
-
+        const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(id, 'video');
 
         if (success) {
-          setUserPoints(prevPoints => prevPoints + 100);
-          setNewPoints(prevPoints => prevPoints + 100);
-          setCurrentLevel(currentLevel);
-          setCurrentPoints(currentPoints)
+          setPointsAdded(pointsAdded);
+          setNewLevel(newLevel);
+          setBeams(beams)
           if (leveledUp) {
             setLevelUp(leveledUp);
-            setnewLevel(newLevel);
-            console.log('Level Up! Current Level:', currentLevel, 'New Level:', newLevel);
           }
           setIsModalOpen(true);
         }
@@ -63,38 +57,43 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
 
   useEffect(() => {
     const videoElement = videoRef.current;
-
+  
     const handleTimeUpdate = () => {
       if (videoElement && !videoElement.paused && !videoElement.seeking) {
+        // Calculate elapsed time only when video is playing
         const currentTime = videoElement.currentTime;
         const elapsedTime = currentTime - lastTimeRef.current;
-        playTimeRef.current += elapsedTime;
-        lastTimeRef.current = currentTime;
+  
+        if (elapsedTime > 0) {
+          playTimeRef.current += elapsedTime;
+          lastTimeRef.current = currentTime;
+        }
       }
     };
-
-   
+  
     const handlePlay = () => {
       if (videoElement) {
         lastTimeRef.current = videoElement.currentTime;
         console.log('Video playing, current time:', lastTimeRef.current);
       }
     };
-
+  
     const handlePause = () => {
-      handleTimeUpdate();
+      handleTimeUpdate(); // Update the playtime on pause
       console.log('Video paused, total playtime so far:', playTimeRef.current);
     };
-    const handleLoadedData = () => {
-      setIsLoading(false);
-    };
+  
     const handleSeeked = () => {
       if (videoElement) {
-        lastTimeRef.current = videoElement.currentTime;
+        lastTimeRef.current = videoElement.currentTime; // Update lastTimeRef after seeking
         console.log('Video seeked, new current time:', lastTimeRef.current);
       }
     };
-
+  
+    const handleLoadedData = () => {
+      setIsLoading(false);
+    };
+  
     if (videoElement) {
       videoElement.addEventListener('timeupdate', handleTimeUpdate);
       videoElement.addEventListener('ended', handleEnded);
@@ -102,6 +101,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       videoElement.addEventListener('pause', handlePause);
       videoElement.addEventListener('seeked', handleSeeked);
       videoElement.addEventListener('loadeddata', handleLoadedData);
+  
       return () => {
         videoElement.removeEventListener('timeupdate', handleTimeUpdate);
         videoElement.removeEventListener('ended', handleEnded);
@@ -112,6 +112,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       };
     }
   }, [id, completionMarked]);
+  
 
   return (
     <>
@@ -144,15 +145,12 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         />
       </div>
       <RewardsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        points={userPoints - 100} 
-        newPoints={newPoints}
-        levelUp={levelUp}
-        currentLevel={currentLevel2}
-        nextLevel={newLevel}
-        caption={newLevel?.caption}
-        currentPoints={currentPoints}
+       levelUp={levelUp}
+       beams={beams}
+       isOpen={isModalOpen}
+       onClose={()=>{setIsModalOpen(false)}}
+       currentLevel={newLevel}
+       pointsAdded={pointsAdded}
       />
     </>
   );

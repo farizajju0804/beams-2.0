@@ -37,6 +37,7 @@ import { startOfWeek, endOfWeek } from 'date-fns';
 import { updateUserPoints } from '../points/updateUserPoints';
 import { recordPointsHistory } from '../points/recordPointsHistory';
 import { updateLeaderboardEntry } from '../points/updateLeaderboardEntry';
+import { updateUserPointsAndLeaderboard } from '../points/updateUserPointsAndLeaderboard';
 
 export const recordPollResponse = async (pollOptionId: string) => {
   const user = await currentUser();
@@ -73,23 +74,28 @@ export const recordPollResponse = async (pollOptionId: string) => {
       data: { votes: { increment: 1 } },
     });
 
-    console.log(`Updating user points for user ID: ${user.id}`);
-    const { userBeamPoints, leveledUp, newLevel } = await updateUserPoints(user.id, 50);
+    const pointsAdded = 5;
+
+    console.log(`Updating user points and leaderboard for user ID: ${user.id}`);
+    const updateResult = await updateUserPointsAndLeaderboard(
+      user.id,
+      pointsAdded,
+      'POLL_PARTICIPATION',
+      `Participated in poll, "${beamsTodayTitle}"`,
+      user.userType
+    );
+
+    const { userBeamPoints, leveledUp, newLevel, levelCaption } = updateResult;
     console.log(`User points updated. New total: ${userBeamPoints.beams}`);
 
-    console.log(`Recording points history for user ID: ${user.id}`);
-    await recordPointsHistory(user.id, 50, 'POLL_PARTICIPATION', `Participated in poll, "${beamsTodayTitle}"`);
-
-    // Update or create leaderboard entry
-    console.log(`Updating leaderboard entry for user ID: ${user.id} with points: 50`);
-    await updateLeaderboardEntry(user.id,50,user.userType);
-
     console.log(`Poll response recorded successfully for user ID: ${user.id}`);
+    
     return {
-      pointsAwarded: 50,
-      newTotalPoints: userBeamPoints.beams,
+      success: true,
       leveledUp,
+      beams: userBeamPoints?.beams,
       newLevel,
+      pointsAdded,
     };
   } catch (error) {
     console.error(`Error recording poll response: ${(error as Error).message}`);

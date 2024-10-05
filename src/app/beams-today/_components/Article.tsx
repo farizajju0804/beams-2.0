@@ -19,11 +19,9 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const { theme } = useTheme();
   const [completed, setCompleted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
-  const [newPoints, setNewPoints] = useState(0);
-  const [currentLevel, setCurrentLevel] = useState<any>();
+  const [pointsAdded, setPointsAdded] = useState(0);
   const [levelUp, setLevelUp] = useState(false);
-  const [currentPoints, setCurrentPoints] = useState<any>();
+  const [beams, setBeams] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -61,19 +59,15 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const markCompleted = async () => {
     console.log('Marking as completed');
     try {
-      const { success, leveledUp, currentLevel, currentPoints, newLevel } = await markTopicAsCompleted(beamsTodayId, 'text');
-      console.log('markTopicAsCompleted response:', { success, leveledUp, currentLevel, currentPoints, newLevel });
+      const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'text');
       if (success) {
-        setUserPoints(prevPoints => prevPoints + 100);
-        setNewPoints(prevPoints => prevPoints + 100);
-        setCurrentLevel(currentLevel);
-        setCurrentPoints(currentPoints);
+        setPointsAdded(pointsAdded);
+        setNewLevel(newLevel);
+        setBeams(beams)
         if (leveledUp) {
           setLevelUp(leveledUp);
-          setNewLevel(newLevel);
         }
         setIsModalOpen(true);
-        console.log('Modal opened');
       }
     } catch (error) {
       console.error('Error marking as completed:', error);
@@ -106,15 +100,12 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         </Worker>
       </div>
       <RewardsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        points={userPoints - 100}
-        newPoints={newPoints}
-        levelUp={levelUp}
-        currentLevel={currentLevel}
-        nextLevel={newLevel}
-        caption={newLevel?.caption}
-        currentPoints={currentPoints}
+       levelUp={levelUp}
+       beams={beams}
+       isOpen={isModalOpen}
+       onClose={()=>{setIsModalOpen(false)}}
+       currentLevel={newLevel}
+       pointsAdded={pointsAdded}
       />
     </div>
   );

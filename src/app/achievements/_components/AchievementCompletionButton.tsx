@@ -186,7 +186,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
   return (
     <>
       <Button
-        className="flex-wrap flex h-auto py-2 mb-2 items-center justify-between font-medium font-poppins"
+        className="flex-wrap flex h-auto py-2 items-center justify-between font-medium font-poppins"
         endContent={<Cup size={20} variant='Bold' />}
         onClick={handleOpenModal}
         style={{
@@ -195,7 +195,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
         }}
         isDisabled={!isCompleted}
       >
-        {`${userFirstName}, ${personalizedMessage}`}
+        {`${personalizedMessage}`}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center">

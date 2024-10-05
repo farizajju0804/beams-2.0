@@ -59,12 +59,11 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
 
   // New states for RewardsModal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
-  const [newPoints, setNewPoints] = useState(0);
+  const [pointsAdded, setPointsAdded] = useState(0);
   const [currentPoints, setCurrentPoints] = useState(0);
   const [currentLevel, setCurrentLevel] = useState<any>();
   const [levelUp, setLevelUp] = useState(false);
-  const [newLevel, setNewLevel] = useState<any>();
+ 
 
   useEffect(() => {
     const checkUserResponse = async () => {
@@ -86,25 +85,23 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   // Handle voting and trigger RewardsModal on success
   const handleIncrementVote = async (vote: VoteType) => {
     try {
-      const { pointsAwarded, leveledUp, newLevel: nextLevel, newTotalPoints } = await recordPollResponse(vote.id);
+      const { success, beams, leveledUp, newLevel: nextLevel, pointsAdded: points } = await recordPollResponse(vote.id);
       const newVote = { ...vote, votes: vote.votes + 1 };
       setVotes((pv) => pv.map((v) => (v.id === newVote.id ? newVote : v)));
       setHasVoted(true);
       setShowResults(true);
       setUserResponse(vote.id);
 
-      // Update RewardsModal data
-      setUserPoints(prevPoints => prevPoints + pointsAwarded);
-      setNewPoints(prevPoints => prevPoints + 100);
-      setCurrentPoints(newTotalPoints);
-      setCurrentLevel(nextLevel);
-      if (leveledUp) {
-        setLevelUp(true);
-        setNewLevel(nextLevel);
+      if (success) {
+        setPointsAdded(points); // Set points added for RewardsModal
+        setCurrentPoints(beams);
+        setCurrentLevel(nextLevel);
+        setLevelUp(leveledUp);
+       
+        setTimeout(() => {
+          setIsModalOpen(true); // Open the RewardsModal after the delay
+        }, 1000); // Adjust the duration as needed
       }
-      setTimeout(() => {
-        setIsModalOpen(true); // Open the RewardsModal after the delay
-      }, 1000); // Adjust the duration as needed
     } catch (error) {
       console.error("Error recording vote:", error);
     }
@@ -138,15 +135,12 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
 
       {/* Rewards Modal */}
       <RewardsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        points={userPoints}
-        newPoints={newPoints}
-        levelUp={levelUp}
-        currentLevel={currentLevel}
-        nextLevel={newLevel}
-        caption={newLevel?.caption}
-        currentPoints={currentPoints}
+       levelUp={levelUp}
+       beams={currentPoints}
+       isOpen={isModalOpen}
+       onClose={()=>{setIsModalOpen(false)}}
+       currentLevel={currentLevel}
+       pointsAdded={pointsAdded}
       />
     </section>
   );
@@ -234,15 +228,16 @@ const Results = ({
           const userVoteClass = vote.id === userResponse ? 'flex items-center' : ''; // Highlight the user's selected vote
 
           return (
-            <div key={vote.id} className="w-full lg:w-4/6">
-              <div className={`flex items-center mb-1 ${userVoteClass}`}>
-                <span className="text-sm md:text-lg font-medium text-grey-2">
+            <div key={vote.id} className="w-full lg:w-5/6">
+              <div className={`flex items-center  mb-1 ${userVoteClass}`}>
+                <span className="text-sm w-4/6 md:text-lg font-medium text-grey-2">
                   {optionLabels[index]}. {vote.title} {/* Display the option label and title */}
                 </span>
+                
+                <span className="ml-2 w-1/6 gap-2 flex-1  items-center flex justify-end text-xs md:text-base text-grey-2/70">
                 {vote.id === userResponse && (
                   <TickCircle size="24" color="#34D399" className="ml-2" /> // Show tick if this is the user's vote
                 )}
-                <span className="ml-2 text-xs md:text-base text-grey-2/70">
                   {vote.votes} votes {/* Display the vote count */}
                 </span>
               </div>

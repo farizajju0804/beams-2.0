@@ -70,31 +70,41 @@ export default function AchievementCard({
                 className="rounded-full w-16 h-12"
               />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+            {/* <Image
+                src={badgeName}
+                alt={`${badgeName} Badge`}
+                width={160}
+                height={80}
+                className="rounded-full  aspect auto"
+              /> */}
               <h2 className="text-white font-poppins font-semibold text-lg">{badgeName}</h2>
               <Chip
-                style={{ backgroundColor: 'white', color: cardColor }}
-                variant="flat"
+                  style={{
+                    backgroundColor: isCompleted ? color : undefined,
+                    color: isCompleted ? 'white' : undefined,
+                  }}
+                variant={isCompleted ? 'flat' : 'solid'}
                 size="sm"
                 className="font-semibold"
                 classNames={
                   {
-                    content : "font-semibold"
+                    content : isCompleted ? "font-semibold" : 'font-medium'
 
                   }
                 }
               >
-                +{beamsToGain} Beams
+                {beamsToGain} Beams
               </Chip>
             </div>
           </div>
         </div>
-        <div className="px-4 py-4">
+        <div className="px-4 py-2">
           <p className="text-grey-2 font-medium text-sm mt-2 mb-4">{taskDefinition}</p>
           <div className="mb-4">
-            <div className="flex items-center justify-between font-semibold text-sm text-grey-2 mb-6">
+            <div className="flex items-center justify-start gap-4 font-semibold text-sm text-grey-2 mb-6">
              
-              <div className="flex flex-wrap flex-1 gap-1">
+              <div className="flex flex-wrap gap-1">
                 {[...Array(visibleBars)].map((_, index) => (
                   <div
                     key={index}
@@ -107,11 +117,11 @@ export default function AchievementCard({
                 ))}
               </div>
               <span className='text-xs'>
-                {completedCount}/{totalCount} {actionText}
+                {completedCount}/{totalCount}
               </span>
             </div>
           </div>
-          <div className="flex flex-wrap justify-between items-center w-full">
+          <div className="flex justify-between items-start mb-2 w-full">
             <AchievementCompletionButton
               badgeName={badgeName}
               userId={userId}
@@ -126,8 +136,8 @@ export default function AchievementCard({
               currentLevel={currentLevel}
               isCompleted={isCompleted}
             />
-           {!isCompleted && ( <Button isIconOnly as="a" href={actionUrl} variant="light" size='sm' className="bg-transparent" > 
-            <ArrowRight2 size={20} /> </Button> )} 
+           {!isCompleted && ( <Button  as="a" href={actionUrl}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
+             Go </Button> )} 
           </div>
         </div>
       </div>

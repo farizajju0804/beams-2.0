@@ -22,11 +22,9 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
   // New states for RewardsModal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
-  const [newPoints, setNewPoints] = useState(0);
-  const [currentLevel, setCurrentLevel] = useState<any>();
+  const [pointsAdded, setPointsAdded] = useState(0);
   const [levelUp, setLevelUp] = useState(false);
-  const [currentPoints, setCurrentPoints] = useState<any>();
+  const [beams, setBeams] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
 
   // Expose the elapsed play time for parent component via ref
@@ -75,17 +73,17 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
       setCompletionMarked(true); // Avoid multiple triggers
 
       try {
-        const { success, leveledUp, currentLevel, newLevel, currentPoints, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'audio');
+       
+        const { success, leveledUp, beams,  newLevel, pointsAdded } = await markTopicAsCompleted(beamsTodayId, 'audio');
+
         if (success) {
-          setUserPoints(prevPoints => prevPoints + 100);
-          setNewPoints(prevPoints => prevPoints + 100);
-          setCurrentLevel(currentLevel);
-          setCurrentPoints(currentPoints);
+          setPointsAdded(pointsAdded);
+          setNewLevel(newLevel);
+          setBeams(beams)
           if (leveledUp) {
             setLevelUp(leveledUp);
-            setNewLevel(newLevel);
           }
-          setIsModalOpen(true); // Open the RewardsModal
+          setIsModalOpen(true);
         }
       } catch (error) {
         console.error('Error marking topic as completed:', error);
@@ -133,15 +131,12 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
       />
 
       <RewardsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        points={userPoints - 100}
-        newPoints={newPoints}
-        levelUp={levelUp}
-        currentLevel={currentLevel}
-        nextLevel={newLevel}
-        caption={newLevel?.caption}
-        currentPoints={currentPoints}
+       levelUp={levelUp}
+       beams={beams}
+       isOpen={isModalOpen}
+       onClose={()=>{setIsModalOpen(false)}}
+       currentLevel={newLevel}
+       pointsAdded={pointsAdded}
       />
     </div>
   );
