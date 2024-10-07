@@ -15,7 +15,7 @@ import PasswordStrength from "./PasswordStrength2"; // Component for password st
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../../../components/ui/form"; // Custom form components
 import { useRouter } from "next/navigation"; // Hook for navigation
 import Link from "next/link"; // Link component for navigation
-
+import { useSearchParams } from 'next/navigation';
 // Props interface for the RegisterForm component
 interface RegisterFormProps {
   ip: string; // Client's IP address
@@ -36,7 +36,8 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
   const [showPasswordStrength, setShowPasswordStrength] = useState(false); // State to show password strength indicator
   const [isMobile, setIsMobile] = useState(false); // State to check if the screen is mobile
   const router = useRouter(); // Hook for handling navigation
-
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get('referral');
   // Set up form with Zod validation schema and default values
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -65,7 +66,13 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
     setSuccess(""); // Clear previous success messages
     startTransition(async () => {
       try {
-        const result: any = await registerAndSendVerification(values, ip); // Call the register action with form values and IP address
+        let result
+        if(referralCode){
+        result= await registerAndSendVerification(values, ip,referralCode); 
+        }
+        if(!referralCode){
+        result = await registerAndSendVerification(values, ip); 
+        }
 
         if (result?.error === "VERIFY_EMAIL") {
           router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`); // Redirect to email verification page

@@ -24,6 +24,12 @@ enum NotificationType {
   // Add more types as needed
 }
 
+enum ReferralStatus {
+  REGISTERED // Default status when the user registers
+  VERIFIED // Status when the user verifies their email
+  SUBSCRIBED // Status when the user subscribes
+}
+
 // Enum to define types of users
 enum UserType {
   STUDENT // Represents a student user
@@ -32,32 +38,34 @@ enum UserType {
 
 // User model definition for storing user data
 model User {
-  id                        String                      @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  firstName                 String? // User's first name (optional)
-  lastName                  String? // User's last name (optional)
-  email                     String?                     @unique // User's email address (optional and unique)
-  emailVerified             DateTime? // Timestamp of email verification (optional)
-  image                     String? // User profile image URL (optional)
-  password                  String? // User's hashed password (optional)
-  dob                       DateTime? // Date of birth of the user (optional)
-  userType                  UserType                    @default(NON_STUDENT) // Type of user, default is NON_STUDENT
-  grade                     String? // Grade of the student (optional)
-  gender                    String? // Gender of the user (optional)
-  schoolName                String? // Name of the user's school (optional)
-  interests                 String[]                    @default([]) // List of user interests (default is an empty array)
-  securityQuestion1         String? // First security question (optional)
-  securityAnswer1           String? // First security answer (optional)
-  securityQuestion2         String? // Second security question (optional)
-  securityAnswer2           String? // Second security answer (optional)
-  accounts                  Account[] // Relationship to the Account model (many-to-one)
-  role                      UserRole                    @default(USER) // User's role, default is USER
-  isTwoFactorEnabled        Boolean                     @default(false) // Whether two-factor authentication is enabled
-  twoFactorConfirmation     TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
-  createdAt                 DateTime                    @default(now()) // Timestamp of user account creation
-  updatedAt                 DateTime                    @updatedAt // Timestamp of last update
-  userFormCompleted         Boolean                     @default(false) // Whether the user completed the form
-  onBoardingCompleted       Boolean                     @default(false) // Whether the user completed onboarding
-  notificationPreference    Boolean                    @default(false)
+  id                     String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  firstName              String? // User's first name (optional)
+  lastName               String? // User's last name (optional)
+  email                  String?                @unique // User's email address (optional and unique)
+  emailVerified          DateTime? // Timestamp of email verification (optional)
+  image                  String? // User profile image URL (optional)
+  password               String? // User's hashed password (optional)
+  dob                    DateTime? // Date of birth of the user (optional)
+  userType               UserType               @default(NON_STUDENT) // Type of user, default is NON_STUDENT
+  grade                  String? // Grade of the student (optional)
+  gender                 String? // Gender of the user (optional)
+  schoolName             String? // Name of the user's school (optional)
+  interests              String[]               @default([]) // List of user interests (default is an empty array)
+  securityQuestion1      String? // First security question (optional)
+  securityAnswer1        String? // First security answer (optional)
+  securityQuestion2      String? // Second security question (optional)
+  securityAnswer2        String? // Second security answer (optional)
+  accounts               Account[] // Relationship to the Account model (many-to-one)
+  role                   UserRole               @default(USER) // User's role, default is USER
+  isTwoFactorEnabled     Boolean                @default(false) // Whether two-factor authentication is enabled
+  twoFactorConfirmation  TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
+  createdAt              DateTime               @default(now()) // Timestamp of user account creation
+  updatedAt              DateTime               @updatedAt // Timestamp of last update
+  userFormCompleted      Boolean                @default(false) // Whether the user completed the form
+  onBoardingCompleted    Boolean                @default(false) // Whether the user completed onboarding
+  notificationPreference Boolean                @default(false)
+ referralStatus            ReferralStatus? @default(REGISTERED)
+  referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
   lastLoginAt               DateTime? // Timestamp of the last login (optional)
   lastLoginIp               String? // IP address of the last login (optional)
   notes                     BeamsTodayUserNote[] // Relationship to BeamsTodayUserNote (many-to-one)
@@ -68,10 +76,11 @@ model User {
   beamsTheatreFavorites     BeamsTheatreFavorite[] // Relationship to BeamsTheatreFavorite (many-to-one)
   beamsTheatreUserAnalytics BeamsTheatreUserAnalytics[] // Relationship to BeamsTheatreUserAnalytics (many-to-one)
   Leaderboard               Leaderboard[]
-  notifications          Notification[]
-  userAchievements UserAchievement[]
-  factCompletions FactCompletion[]
-  
+  notifications             Notification[]
+  userAchievements          UserAchievement[]
+  factCompletions           FactCompletion[]
+
+  Referral Referral?
 }
 
 // Account model for storing external account login information
@@ -147,22 +156,30 @@ model PendingVerification {
 }
 
 model Notification {
-  id          String           @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String           @db.ObjectId
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type        NotificationType
-  content     String
-  isShown     Boolean          @default(false)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  metadata    Json?            // For storing additional data specific to each notification type
-  actionUrl   String?          // Optional URL or deep link for the notification action
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String           @db.ObjectId
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  content   String
+  isShown   Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  metadata  Json? // For storing additional data specific to each notification type
+  actionUrl String? // Optional URL or deep link for the notification action
 
   @@index([userId])
   @@index([type])
   @@index([isShown])
 }
 
+model Referral {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @unique @db.ObjectId // Foreign key to the user who made the referral
+  user         User     @relation(fields: [userId], references: [id]) // The user who made the referral
+  referralCode String   @unique // Unique referral code for the referrer
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
 // model NotificationPreference {
 //   id       String @id @default(auto()) @map("_id") @db.ObjectId
@@ -170,7 +187,6 @@ model Notification {
 //   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 //   settings Json   // Store user preferences for each notification type
 // }
-
 
 // FAQ model for storing frequently asked questions and answers
 model FAQ {
@@ -194,26 +210,25 @@ model ContactFormResponse {
 }
 
 model FactOfTheday {
-  id                    String                           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  date                  DateTime                         @unique // Date of the Beams Today content
-  title                 String
-  finalImage            String // Title of the Beams Today content
-  scratchImage          String? // Title of the Beams Today content
- completions FactCompletion[]
-
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  date         DateTime         @unique // Date of the Beams Today content
+  title        String
+  finalImage   String // Title of the Beams Today content
+  scratchImage String? // Title of the Beams Today content
+  completions  FactCompletion[]
 }
 
 model FactCompletion {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  factId      String     @db.ObjectId // Foreign key to FactOfTheday
-  userId      String     @db.ObjectId // Foreign key to User
-  completed   Boolean    @default(false) // Whether the fact is completed
-  completedAt DateTime?  // Optional timestamp of when the fact was completed
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  factId      String    @db.ObjectId // Foreign key to FactOfTheday
+  userId      String    @db.ObjectId // Foreign key to User
+  completed   Boolean   @default(false) // Whether the fact is completed
+  completedAt DateTime? // Optional timestamp of when the fact was completed
 
-  fact        FactOfTheday @relation(fields: [factId], references: [id], onDelete: Cascade)
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fact FactOfTheday @relation(fields: [factId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   @@unique([factId, userId])
+  @@unique([factId, userId])
 }
 
 //// Beams Today Section
@@ -255,7 +270,7 @@ model BeamsTodayWatchedContent {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId              String   @unique @db.ObjectId // Foreign key to the User model
   viewedBeamsToday    String[] @default([]) // List of viewed Beams Today content
-  viewedFormats        Json     @default("{}") // JSON data to track viewed formats (video, audio, etc.)
+  viewedFormats       Json     @default("{}") // JSON data to track viewed formats (video, audio, etc.)
   completedBeamsToday String[] @default([]) // List of completed Beams Today content
   completedFormats    Json     @default("{}") // JSON data to track completed formats (video, audio, etc.)
   updatedAt           DateTime @default(now()) // Timestamp of last update
@@ -366,7 +381,7 @@ model BeamsTodayFavorite {
 // Model for storing levels dynamically with name, point range, and caption
 model Level {
   id          String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  levelNumber Int                     // The level number (e.g., 1, 2, 3, ...)
+  levelNumber Int // The level number (e.g., 1, 2, 3, ...)
   minPoints   Int // Minimum points required to reach this level
   maxPoints   Int // Maximum points before moving to the next level
   name        String // Display name of the level (e.g., "Newbie", "Amateur")
@@ -381,27 +396,26 @@ model Level {
 }
 
 model UserBeamPoints {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId    String           @db.ObjectId       @unique // Foreign key to the User model
-  beams     Int              @default(0) // Total points accumulated by the user
-  levelId   String           @db.ObjectId // Foreign key to the Level model
-  level     Level            @relation(fields: [levelId], references: [id])
-  createdAt DateTime?        @default(now()) // Timestamp of when points were earned
-  updatedAt DateTime?        @updatedAt // Timestamp of last update
-  user      User             @relation(fields: [userId], references: [id]) // Relationship to the User model
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId    String    @unique @db.ObjectId // Foreign key to the User model
+  beams     Int       @default(0) // Total points accumulated by the user
+  levelId   String    @db.ObjectId // Foreign key to the Level model
+  level     Level     @relation(fields: [levelId], references: [id])
+  createdAt DateTime? @default(now()) // Timestamp of when points were earned
+  updatedAt DateTime? @updatedAt // Timestamp of last update
+  user      User      @relation(fields: [userId], references: [id]) // Relationship to the User model
 
- // Index for faster queries on userId
+  // Index for faster queries on userId
   @@index([levelId]) // Index for faster queries on levelId
 }
 
-
 model BeamPointsHistory {
-  id            String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId        String           @db.ObjectId // Foreign key to the User model
-  points        Int              // Number of points earned
-  source        String // Source of the points (e.g., watching videos, completing quizzes)
-  description   String           // Description or reason for the points (e.g., "Watched 3 videos")
-  createdAt     DateTime         @default(now()) // Timestamp of when points were earned
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId      String   @db.ObjectId // Foreign key to the User model
+  points      Int // Number of points earned
+  source      String // Source of the points (e.g., watching videos, completing quizzes)
+  description String // Description or reason for the points (e.g., "Watched 3 videos")
+  createdAt   DateTime @default(now()) // Timestamp of when points were earned
 
   @@index([userId]) // Index for faster queries on userId
 }
@@ -415,17 +429,16 @@ model Leaderboard {
   endDate   DateTime
   createdAt DateTime? @default(now())
   user      User      @relation(fields: [userId], references: [id])
-  
-  userType  UserType  // "STUDENT" or "NON_STUDENT"
+
+  userType UserType // "STUDENT" or "NON_STUDENT"
 
   @@index([userId]) // Index for quick user lookups
   @@index([userType, startDate, endDate]) // Composite index for efficient queries based on user type and date range
   @@index([userId, startDate, endDate]) // Composite index for efficient queries based on userId and date range
 }
 
-
 model LeaderboardAnnouncement {
-   id               String    @id @default(auto()) @map("_id") @db.ObjectId 
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userType  UserType
   startDate DateTime
   endDate   DateTime
@@ -433,40 +446,42 @@ model LeaderboardAnnouncement {
 
   @@unique([userType, startDate, endDate])
 }
+
 model Achievement {
-  id            String           @id @default(auto()) @map("_id") @db.ObjectId
-  name          String           @unique
-  badgeImageUrl String
-  task          String
-  color         String
-  actionText    String
-  totalCount    Int
-  beamsToGain   Int              
-  personalizedMessage  String
-  actionUrl     String?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  userAchievements UserAchievement[]
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  name                String            @unique
+  badgeImageUrl       String
+  task                String
+  color               String
+  actionText          String
+  totalCount          Int
+  beamsToGain         Int
+  personalizedMessage String
+  actionUrl           String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  userAchievements    UserAchievement[]
 }
 
 // UserAchievement model to track user progress on achievements
 model UserAchievement {
-  id               String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId           String     @db.ObjectId
-  achievementId    String     @db.ObjectId
-  completionStatus Boolean    @default(false)
-  hasGainedBeams   Boolean    @default(false)
-  progress         Int        @default(0)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @db.ObjectId
+  achievementId    String   @db.ObjectId
+  completionStatus Boolean  @default(false)
+  hasGainedBeams   Boolean  @default(false)
+  progress         Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  user       User       @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
   achievement Achievement @relation(fields: [achievementId], references: [id])
 
   @@unique([userId, achievementId])
   @@index([userId])
   @@index([achievementId])
 }
+
 // Model for storing analytics data about Beams Today usage
 model BeamsTodayUserAnalytics {
   id                        String @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId

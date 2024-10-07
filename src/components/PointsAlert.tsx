@@ -11,8 +11,7 @@ interface PointsAlertProps {
   duration?: number;
   icon: string;
   color: string;
-  isVisible: boolean;  // Add the isVisible prop
-  onClose?: () => void;  // Optional callback for parent to handle when alert is closed
+  onClose: () => void;
 }
 
 export default function PointsAlert({
@@ -21,31 +20,29 @@ export default function PointsAlert({
   duration = 6000,
   icon,
   color,
-  isVisible,  // Use the isVisible prop
-  onClose,    // Optional callback for parent component
+  onClose
 }: PointsAlertProps) {
-  const [localVisible, setLocalVisible] = useState(isVisible);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    setLocalVisible(isVisible);  // Update visibility based on prop
-  }, [isVisible]);
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      onClose();
+    }, duration);
 
-  useEffect(() => {
-    if (localVisible) {
-      const timer = setTimeout(() => {
-        setLocalVisible(false);
-        if (onClose) onClose();  // Trigger the callback when the alert is dismissed
-      }, duration);
+    return () => clearTimeout(timer);
+  }, [duration]);
 
-      return () => clearTimeout(timer);
-    }
-  }, [localVisible, duration, onClose]);
+  if (!isVisible) return null;
 
-  if (!localVisible) return null;
 
+  const handleClose = () => {
+    setIsVisible(false);
+    onClose();
+  };
   return (
     <AnimatePresence>
-      {localVisible && (
+      {isVisible && (
         <motion.div
           initial={{ opacity: 0, y: -50, scale: 0.8, rotate: -10 }}
           animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
@@ -54,7 +51,6 @@ export default function PointsAlert({
           className="fixed top-4 right-5 md:right-6  lg:right-12 bg-background z-[250] shadow-defined p-4 max-w-xs w-full overflow-hidden"
           style={{ borderTop: `3px solid ${color}` }}
         >
-          {/* Border progress bar shrinking with duration */}
           <motion.div
             initial={{ width: '100%' }}
             animate={{ width: '0%' }}
@@ -62,32 +58,23 @@ export default function PointsAlert({
             className="absolute top-0 left-0 h-[3px]"
             style={{ background: color }}
           />
-
-          {/* Close button */}
           <button
-            onClick={() => {
-              setLocalVisible(false);
-              if (onClose) onClose();
-            }}
+            onClick={handleClose}
             className="absolute top-1 right-1 text-grey-2 transition-colors"
             aria-label="Close alert"
           >
-            <CloseCircle variant="Bold" size={18} />
+            <CloseCircle  variant='Bold' size={18} />
           </button>
-
           <div className="flex items-center mb-3">
-            {/* Dynamic Icon */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 500, delay: 0.2 }}
-              className="w-8 h-8 rounded-full flex items-center flex-shrink-0 justify-center mr-3"
+              className="w-8 h-8 rounded-full flex items-center flex-shrink-0  justify-center mr-3"
               style={{ background: `${color}33` }}  // Slightly transparent version of the color
             >
-              <DynamicIcon size={20} icon={icon} style={{ color: color }} />
+              <DynamicIcon size={20} icon={icon} style={{ color:color }}/>
             </motion.div>
-
-            {/* Message */}
             <motion.p
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -97,8 +84,6 @@ export default function PointsAlert({
               {message}
             </motion.p>
           </div>
-
-          {/* Points */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

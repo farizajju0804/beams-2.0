@@ -49,7 +49,7 @@ export const getUserLevelAndHistory = async (userId:string) => {
       }
     })
     return {
-      userLevel: userBeamPoints?.level || { levelNumber: levelDefault?.levelNumber, name: levelDefault?.name, maxPoints: levelDefault?.maxPoints }, // Default to level 1
+      userLevel: userBeamPoints?.level || { levelNumber: levelDefault?.levelNumber, icon : levelDefault?.icon, bgColor: levelDefault?.bgColor, minPoints : levelDefault?.minPoints,name: levelDefault?.name, maxPoints: levelDefault?.maxPoints }, // Default to level 1
       beams: userBeamPoints?.beams || 0, // Total beams (points)
       recentActivities, // Recent activities in descending order
       accumulatedPoints, // Accumulated points by source

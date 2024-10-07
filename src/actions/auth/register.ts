@@ -16,7 +16,7 @@ import { currentUser } from '@/libs/auth';
  * @param {string} ip - The IP address of the registering user.
  * @returns {Promise<Object>} A response indicating success or error.
  */
-export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>, ip: string) => {
+export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>, ip: string, referralCode?: string) => {
   const validatedFields = RegisterSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid Fields!" };
@@ -35,12 +35,22 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
+  let referredById = null;
+  if (referralCode) {
+    const referrer = await getUserByReferralCode(referralCode);
+    if (referrer) {
+      referredById = referrer.userId;
+    }
+  }
   await db.user.create({
     data: {
       email,
       password: hashedPassword,
       lastLoginIp: ip,
       lastLoginAt: new Date(),
+      referredById, // Set referredById if found
+      referralStatus: 'REGISTERED'
     },
   });
 
@@ -183,4 +193,13 @@ export const deletePendingVerification = async (email: string) => {
   });
   console.log(res);
   return res;
+};
+
+
+
+export const getUserByReferralCode = async (referralCode: string) => {
+  return await db.referral.findUnique({
+    where: { referralCode },
+    include: { user: true }, // Include the user who referred
+  });
 };

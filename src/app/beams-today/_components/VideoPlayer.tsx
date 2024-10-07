@@ -34,7 +34,6 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const [newLevel, setNewLevel] = useState<any>();
   const [achievement, setAchievement] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
-  const [isPointsAlertOpen, setIsPointsAlertOpen] = useState(false);
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
@@ -121,25 +120,9 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   }, [id, completionMarked]);
   
 
-  const handleRewardsModalClose = () => {
+   const handleRewardsModalClose = () => {
     setIsModalOpen(false);
 
-    // After the rewards modal closes, open the achievement popup or alert
-    if (!achievement?.isAlreadyCompleted) {
-      setIsCompletionModalOpen(true);
-    } else {
-      // If no achievement update, we close everything
-      setIsCompletionModalOpen(false);
-    }
-  };
-
-  const handlePointsAlertClose = () => {
-    setIsPointsAlertOpen(false);
-
-    // After the points alert closes, open the achievement popup or alert
-    if (!achievement?.isAlreadyCompleted) {
-      setIsCompletionModalOpen(true);
-    }
   };
   return (
     <>
@@ -179,28 +162,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
       />
-        {isPointsAlertOpen && (
-        <PointsAlert
-          message="Great job, you've earned some points!"
-          points={pointsAdded}
-          isVisible={isPointsAlertOpen}
-          icon={newLevel?.icon || 'fa/FaStar'}
-          color={newLevel?.bgColor || '#FFD700'}
-          onClose={handlePointsAlertClose}
-        />
-      )}
-      <AchievementCompletionPopup
-       isOpen={isCompletionModalOpen}
-       onClose={()=>{
-        setIsCompletionModalOpen(false);
-      }}
-      achievementName={achievement?.achievement.achievementName}
-      completedTasks={achievement?.progress}
-      totalTasks={achievement?.achievement.totalCount}
-      badgeImageUrl={achievement?.achievement.badgeImageUrl}
-      progressColor={achievement?.achievement.color}
       
-      />
       
     </>
   );

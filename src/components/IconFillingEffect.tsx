@@ -25,9 +25,11 @@ const iconLibraries: any = {
 };
 
 const DynamicIcon = ({ icon, ...props }: any) => {
+  let IconComponent
+  if (icon) {
   const [library, iconName]: any = icon.split('/');
-  const IconComponent = iconLibraries[library]?.[iconName];
-
+  IconComponent = iconLibraries[library]?.[iconName];
+  }
   if (!IconComponent) {
     console.error(`Icon not found: ${icon}`);
     return <div style={{ width: props.size, height: props.size }}></div>;

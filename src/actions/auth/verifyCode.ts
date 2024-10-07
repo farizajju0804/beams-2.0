@@ -6,6 +6,7 @@ import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
+import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
 
 /**
  * Verifies the verification code for a user's email verification process.
@@ -35,10 +36,31 @@ export const verifyCode = async (code: string, email: string) => {
 
   await db.user.update({
     where: { email: existingToken.email },
-    data: { emailVerified: new Date() },
+    data: { emailVerified: new Date(),
+      referralStatus: existingUser.referredById ? 'VERIFIED' : null,
+     },
   });
 
   await db.verificationToken.delete({ where: { id: existingToken.id } });
+  if (existingUser.referredById) {
+    const pointsAdded = 20; // Points to be awarded for referral email verification
+    const referrer = await db.user.findUnique({
+      where: { id: existingUser.referredById },
+    });
+
+    if (referrer) {
+      // Update points and leaderboard for the referrer
+      const updateResult = await updateUserPointsAndLeaderboard(
+        referrer.id,
+        pointsAdded,
+        'REFERRAL', // The source for referral points
+        `Referral for user, "${existingUser.email}"`, // Description message
+        referrer.userType // Referrer's user type
+      );
+
+      
+    }
+  }
 
   return { success: "Email verified successfully!" };
 };
@@ -49,6 +71,7 @@ export const verifyCode = async (code: string, email: string) => {
  * @returns {Object} - Returns an error or success message with login details.
  */
 export const verifyCode2 = async (code: string) => {
+  
   const existingToken = await getVerificationTokenByToken(code);
   if (!existingToken) {
     return { error: "Invalid or expired code." };
@@ -66,10 +89,11 @@ export const verifyCode2 = async (code: string) => {
 
   await db.user.update({
     where: { email: existingToken.email },
-    data: { emailVerified: new Date() },
+    data: { emailVerified: new Date()
+     },
   });
 
-  await db.verificationToken.delete({ where: { id: existingToken.id } });
+ 
 
   try {
     const result = await signIn("credentials", {

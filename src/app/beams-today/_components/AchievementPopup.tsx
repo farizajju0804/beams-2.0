@@ -19,7 +19,7 @@ interface AchievementCompletionProps {
   progressColor: string;
 }
 
-export default function AchievementCompletion({
+export default function AchievementPopup({
   isOpen,
   onClose,
   achievementName,
@@ -51,7 +51,7 @@ export default function AchievementCompletion({
   // Delay showing the TasksAlert to prevent it from showing immediately on page load
   useEffect(() => {
     if (completedTasks < totalTasks) {
-      // Set a delay to show the alert (e.g., 1 second delay)
+
       const alertTimer = setTimeout(() => {
         setShowTasksAlert(true);
       }, 1000);

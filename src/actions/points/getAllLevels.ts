@@ -19,12 +19,26 @@ export const getUserLevelAndBeams = async (userId:string): Promise<any> => {
         where : {
             userId :  userId
         },
+        
         include : {
            level : true
         }
         
       });
-      return beams;
+      const levelDefault = await db.level.findFirst({
+        where : {
+          levelNumber :  1
+        }
+      })
+      if (beams) {
+        return beams;
+      } else {
+        return {
+          beams: 0, // Default beams to 0
+          level: levelDefault, // Set the default level to Level 1
+        };
+      }
+      
     } catch (error) {
       throw new Error(`Error fetching beamsToday entries: ${(error as Error).message}`);
     }

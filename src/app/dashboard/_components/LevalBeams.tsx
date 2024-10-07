@@ -139,6 +139,8 @@ const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
   POLL_PARTICIPATION: 'Poll',
   SHARE: 'Share',
+  ACHIEVEMENT : 'Badges',
+  REFERRAL : 'Referral'
 };
 
 // Map sources to icons
@@ -149,13 +151,20 @@ const iconMap: { [key: string]: Icon } = {
   ACHIEVEMENT : Cup
 };
 
+const colorMap: { [key: string]: string } = {
+  BEAMS_TODAY: '#F96f2e', // Yellow
+  POLL_PARTICIPATION: '#F9d24e', // Orange
+  SHARE: '#673AB7', // Purple
+  ACHIEVEMENT: '#4CAF50', // Green
+  REFERRAL: '#00BCD4' // Cyan
+};
 // Main Dashboard component
 const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivities, accumulatedPoints }) => {
   // Generate pie chart data from accumulated points
   const pieChartData = Object.keys(accumulatedPoints).map(source => ({
     name: sourceMap[source] || source,
     value: accumulatedPoints[source],
-    color: source === 'BEAMS_TODAY' ? '#FFC107' : source === 'POLL' ? '#FF5722' : '#673AB7',
+    color: colorMap[source] || '#888888'
   }));
 
   // Map recent activities
