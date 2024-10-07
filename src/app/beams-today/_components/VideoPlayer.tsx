@@ -6,6 +6,8 @@ import { Toaster, toast } from 'react-hot-toast';
 import RewardsModal from '@/components/Rewards';
 import { Spinner } from '@nextui-org/react';
 import AchievementCompletionPopup from './AchievementPopup';
+import PointsAlert from '@/components/PointsAlert';
+import TasksAlert from './TasksAlert';
 
 interface VideoPlayerProps {
   id: string;
@@ -32,6 +34,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const [newLevel, setNewLevel] = useState<any>();
   const [achievement, setAchievement] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  const [isPointsAlertOpen, setIsPointsAlertOpen] = useState(false);
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
@@ -118,6 +121,26 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   }, [id, completionMarked]);
   
 
+  const handleRewardsModalClose = () => {
+    setIsModalOpen(false);
+
+    // After the rewards modal closes, open the achievement popup or alert
+    if (!achievement?.isAlreadyCompleted) {
+      setIsCompletionModalOpen(true);
+    } else {
+      // If no achievement update, we close everything
+      setIsCompletionModalOpen(false);
+    }
+  };
+
+  const handlePointsAlertClose = () => {
+    setIsPointsAlertOpen(false);
+
+    // After the points alert closes, open the achievement popup or alert
+    if (!achievement?.isAlreadyCompleted) {
+      setIsCompletionModalOpen(true);
+    }
+  };
   return (
     <>
       <Toaster position="top-center" />
@@ -152,15 +175,20 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
        levelUp={levelUp}
        beams={beams}
        isOpen={isModalOpen}
-       onClose={()=>{
-        setIsModalOpen(false);
-        if(!achievement?.isAlreadyCompleted){
-           setIsCompletionModalOpen(true);
-        }
-      }}
+       onClose={handleRewardsModalClose}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
       />
+        {isPointsAlertOpen && (
+        <PointsAlert
+          message="Great job, you've earned some points!"
+          points={pointsAdded}
+          isVisible={isPointsAlertOpen}
+          icon={newLevel?.icon || 'fa/FaStar'}
+          color={newLevel?.bgColor || '#FFD700'}
+          onClose={handlePointsAlertClose}
+        />
+      )}
       <AchievementCompletionPopup
        isOpen={isCompletionModalOpen}
        onClose={()=>{
@@ -173,6 +201,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       progressColor={achievement?.achievement.color}
       
       />
+      
     </>
   );
 });

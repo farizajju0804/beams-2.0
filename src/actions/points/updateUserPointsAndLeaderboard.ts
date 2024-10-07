@@ -43,7 +43,7 @@ export const updateUserPointsAndLeaderboard = async (
     let newLevel = userBeamPoints.level;
     let levelCaption = null;
     
-    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {
+    if (userBeamPoints.beams > userBeamPoints.level.maxPoints) {
       const nextLevel = await db.level.findFirst({
         where: { levelNumber: { gt: userBeamPoints.level.levelNumber } },
       });

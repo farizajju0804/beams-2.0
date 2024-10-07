@@ -29,7 +29,7 @@ export const updateUserPoints = async (userId: string, points: number) => {
   
     let leveledUp = false;
     let newLevel;
-    if (userBeamPoints.beams >= userBeamPoints.level.maxPoints) {
+    if (userBeamPoints.beams > userBeamPoints.level.maxPoints) {
       newLevel = await db.level.findFirst({
         where: { levelNumber: { gt: userBeamPoints.level.levelNumber } },
       });

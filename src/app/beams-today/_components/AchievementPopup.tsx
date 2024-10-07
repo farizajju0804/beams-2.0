@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { CloseCircle } from "iconsax-react";
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Modal, ModalContent, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import Image from 'next/image';
+import { CloseCircle } from 'iconsax-react';
+
 import { useRouter } from "next/navigation";
+import TasksAlert from './TasksAlert';
 
-interface AchievementCompletionPopupProps {
+interface AchievementCompletionProps {
   isOpen: boolean;
   onClose: () => void;
   achievementName: string;
@@ -17,18 +19,18 @@ interface AchievementCompletionPopupProps {
   progressColor: string;
 }
 
-export default function AchievementCompletionPopup({
+export default function AchievementCompletion({
   isOpen,
   onClose,
   achievementName,
   completedTasks,
   totalTasks,
   badgeImageUrl,
-  progressColor,
-}: AchievementCompletionPopupProps) {
+  progressColor
+}: AchievementCompletionProps) {
   const [animatedCount, setAnimatedCount] = useState(0);
+  const [showTasksAlert, setShowTasksAlert] = useState(false);  // New state to control alert visibility
   const router = useRouter();
-  const { isOpen: modalIsOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
     if (isOpen) {
@@ -46,6 +48,19 @@ export default function AchievementCompletionPopup({
     }
   }, [isOpen, completedTasks]);
 
+  // Delay showing the TasksAlert to prevent it from showing immediately on page load
+  useEffect(() => {
+    if (completedTasks < totalTasks) {
+      // Set a delay to show the alert (e.g., 1 second delay)
+      const alertTimer = setTimeout(() => {
+        setShowTasksAlert(true);
+      }, 1000);
+
+      return () => clearTimeout(alertTimer);
+    }
+  }, [completedTasks, totalTasks]);
+
+  // Calculate the motivational message based on progress
   const motivationalMessage = useMemo(() => {
     const progressPercentage = (completedTasks / totalTasks) * 100;
 
@@ -83,30 +98,28 @@ export default function AchievementCompletionPopup({
   };
 
   return (
-    <AnimatePresence>
-      <Modal 
-        isOpen={isOpen} 
-        onOpenChange={onOpenChange}
-        onClose={onClose}
-        motionProps={{
-          variants: {
-            enter: { opacity: 1, scale: 1 },
-            exit: { opacity: 0, scale: 0.8 }
-          },
-          transition: { type: 'spring', damping: 15 }
-        }}
-        classNames={{
-          backdrop: "bg-black bg-opacity-50",
-          base: "max-w-md bg-background rounded-lg shadow-defined",
-          header: "border-b-0",
-          body: "p-6",
-          closeButton: "absolute right-2 top-2 z-50",
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-             
+    <>
+      {completedTasks >= totalTasks ? (
+        <AnimatePresence>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            motionProps={{
+              variants: {
+                enter: { opacity: 1, scale: 1 },
+                exit: { opacity: 0, scale: 0.8 }
+              },
+              transition: { type: 'spring', damping: 15 }
+            }}
+            classNames={{
+              backdrop: "bg-black bg-opacity-50",
+              base: "max-w-md bg-background rounded-lg shadow-defined",
+              header: "border-b-0",
+              body: "p-6",
+              closeButton: "absolute right-2 top-2 z-50",
+            }}
+          >
+            <ModalContent>
               <ModalBody>
                 <div className="flex flex-col items-center">
                   <motion.div
@@ -133,19 +146,6 @@ export default function AchievementCompletionPopup({
                     {motivationalMessage}
                   </motion.div>
 
-                  <div className="w-full flex items-center justify-center gap-1">
-                    {[...Array(totalTasks)].map((_, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ backgroundColor: "#E5E7EB" }}
-                        animate={{
-                          backgroundColor: index < animatedCount ? progressColor : "#E5E7EB",
-                        }}
-                        className={`h-6 w-6 rounded-md`}
-                      />
-                    ))}
-                  </div>
-
                   <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -165,13 +165,23 @@ export default function AchievementCompletionPopup({
                   onPress={handleStreakCTA}
                   className="w-full max-w-sm text-lg text-white font-semibold py-3 rounded-lg"
                 >
-                  {completedTasks >= totalTasks ? 'View my Badge' : "I'm committed"}
+                  View my Badge
                 </Button>
               </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </AnimatePresence>
+            </ModalContent>
+          </Modal>
+        </AnimatePresence>
+      ) : (
+        showTasksAlert && (  // Only show the alert if it's toggled after the delay
+          <TasksAlert
+            message={motivationalMessage}
+            completedTasks={completedTasks}
+            totalTasks={totalTasks}
+            badgeName={achievementName}
+            color={progressColor}    // Pass progress color
+          />
+        )
+      )}
+    </>
   );
 }

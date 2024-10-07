@@ -13,8 +13,12 @@ const iconLibraries: any = {
 };
 
 export const DynamicIcon = ({ icon, ...props }: any) => {
-  const [library, iconName]: any = icon.split('/');
-  const IconComponent = iconLibraries[library]?.[iconName];
+  let  IconComponent
+  if(icon){
+    const [library, iconName]: any = icon.split('/');
+    IconComponent = iconLibraries[library]?.[iconName];
+  }
+
 
   if (!IconComponent) {
     console.error(`Icon not found: ${icon}`);
