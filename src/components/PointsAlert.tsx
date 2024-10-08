@@ -15,31 +15,34 @@ interface PointsAlertProps {
 }
 
 export default function PointsAlert({
-  message,
-  points,
-  duration = 6000,
-  icon,
-  color,
-  onClose
-}: PointsAlertProps) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
+    message,
+    points,
+    duration = 6000,
+    icon,
+    color,
+    onClose
+  }: PointsAlertProps) {
+    const [isVisible, setIsVisible] = useState(true);
+  
+    useEffect(() => {
+      console.log("PointsAlert isVisible:", isVisible); // Log PointsAlert visibility state
+  
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        console.log("PointsAlert visibility timed out"); // Log when the alert times out
+        onClose();
+      }, duration);
+  
+      return () => clearTimeout(timer);
+    }, [duration, isVisible]);
+  
+    if (!isVisible) return null;
+  
+    const handleClose = () => {
+      console.log("PointsAlert manually closed"); // Log when manually closed
       setIsVisible(false);
       onClose();
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [duration]);
-
-  if (!isVisible) return null;
-
-
-  const handleClose = () => {
-    setIsVisible(false);
-    onClose();
-  };
+    };
   return (
     <AnimatePresence>
       {isVisible && (

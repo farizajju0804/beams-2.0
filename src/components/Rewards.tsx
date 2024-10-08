@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti';
 import { DynamicIcon } from './DynamicComponent';
 import { Level } from '@prisma/client';
 import PointsAlert from './PointsAlert';
-import AchievementPopup from '@/app/beams-today/_components/AchievementPopup';
+
 
 interface RewardsModalProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ interface RewardsModalProps {
   pointsAdded: number;
   beams: number;
   achievement?: {
-    isAlreadyCompleted: boolean;
+    isFirstTimeCompletion: boolean;
     achievement: {
       achievementName: string;
       totalCount: number;
@@ -61,27 +61,21 @@ export default function RewardsModal({
   const [count, setCount] = useState(0);
   const [motivationalMessage, setMotivationalMessage] = useState("");
   const [showPointsAlert, setShowPointsAlert] = useState(false);
-  const [showAchievementPopup, setShowAchievementPopup] = useState(false);
-  const [pointsAlertClosed, setPointsAlertClosed] = useState(false);
-  const [showModal, setShowModal] = useState(isOpen);
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const defaultIcon = 'fa/FaStar';
   const defaultColor = '#FFD700';
 
   useEffect(() => {
     if (isOpen) {
       setCount(0);
-      setShowModal(true);
-      setPointsAlertClosed(false);
-      const pickedMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-      setMotivationalMessage(pickedMessage);
+      setMotivationalMessage(motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]);
 
       if (levelUp) {
-        confetti({
-          spread: 70,
-          startVelocity: 30,
-          particleCount: 100,
-          origin: { y: 0.6 },
-        });
+        console.log("Level up detected, showing level up modal");
+        setShowLevelUpModal(true);
+      } else {
+        console.log("No level up, showing points alert");
+        setShowPointsAlert(true);
       }
 
       const timer = setInterval(() => {
@@ -94,55 +88,45 @@ export default function RewardsModal({
         });
       }, 100);
 
-      if (!levelUp) {
-        setShowModal(false);
-        setShowPointsAlert(true);
-      }
-
       return () => clearInterval(timer);
     }
   }, [isOpen, pointsAdded, levelUp]);
 
-  const handleClose = () => {
-    setShowModal(false);
-    if (!levelUp) {
-      setShowPointsAlert(true);
-    } else {
-      if (achievement && !achievement.isAlreadyCompleted) {
-        setShowAchievementPopup(true);
-      } else {
-        onClose();
-      }
-    }
+  const handleLevelUpModalClose = () => {
+    console.log("LevelUpModal closed");
+    setShowLevelUpModal(false);
+    onClose()
+   
   };
 
   const handlePointsAlertClose = () => {
+    console.log("PointsAlert closed");
     setShowPointsAlert(false);
-    setPointsAlertClosed(true);
+    onClose()
+   
   };
 
-  const handleAchievementPopupClose = () => {
-    setShowAchievementPopup(false);
-    onClose();
-  };
+
+
 
   useEffect(() => {
-    if (pointsAlertClosed && achievement && !achievement.isAlreadyCompleted) {
-      const timer = setTimeout(() => {
-        setShowAchievementPopup(true);
-      }, 300); // Small delay to prevent abrupt appearance
-      return () => clearTimeout(timer);
-    } else if (pointsAlertClosed) {
-      onClose();
+    if (showLevelUpModal) {
+      confetti({
+        spread: 70,
+        startVelocity: 30,
+        particleCount: 100,
+        origin: { y: 0.6 },
+      });
     }
-  }, [pointsAlertClosed, achievement, onClose]);
+  }, [showLevelUpModal]);
+
   return (
     <>
       <AnimatePresence>
-        {showModal && levelUp && (
+        {isOpen && levelUp && (
           <Modal 
-            isOpen={showModal} 
-            onClose={handleClose}
+            isOpen={isOpen} 
+            onClose={handleLevelUpModalClose}
             placement="center"
             motionProps={{
               variants: {
@@ -210,7 +194,7 @@ export default function RewardsModal({
                     backgroundColor: currentLevel.bgColor,
                   }}
                   variant="shadow"
-                  onPress={handleClose}
+                  onPress={handleLevelUpModalClose}
                   className="w-full max-w-sm text-lg text-white font-semibold py-3 rounded-lg"
                 >
                   Continue
@@ -222,7 +206,7 @@ export default function RewardsModal({
       </AnimatePresence>
 
       <AnimatePresence>
-        {showPointsAlert && (
+        {showPointsAlert && !levelUp && (
           <PointsAlert
             message={motivationalMessage}
             points={pointsAdded}
@@ -233,20 +217,7 @@ export default function RewardsModal({
           />
         )}
       </AnimatePresence>
-
-      <AnimatePresence>
-        {showAchievementPopup && achievement && (
-          <AchievementPopup
-            isOpen={showAchievementPopup}
-            onClose={handleAchievementPopupClose}
-            achievementName={achievement.achievement.achievementName}
-            completedTasks={achievement.progress}
-            totalTasks={achievement.achievement.totalCount}
-            badgeImageUrl={achievement.achievement.badgeImageUrl}
-            progressColor={achievement.achievement.color}
-          />
-        )}
-      </AnimatePresence>
+    
     </>
   );
 }

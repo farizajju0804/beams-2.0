@@ -31,6 +31,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const [hasScrolled, setHasScrolled] = useState(false);
   const [achievement, setAchievement] = useState<any>();
   const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  const [showAchievementPopup, setShowAchievementPopup] = useState(false);
 
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => 0
@@ -112,25 +113,20 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
        isOpen={isModalOpen}
        onClose={()=>{
         setIsModalOpen(false);
-        if(!achievement?.isAlreadyCompleted){
-           setIsCompletionModalOpen(true);
-        }
+    if(achievement.isFirstTimeCompletion){
+         setShowAchievementPopup(true)
+    }
       }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
       />
-      <AchievementCompletionPopup
-       isOpen={isCompletionModalOpen}
-       onClose={()=>{
-        setIsCompletionModalOpen(false);
-      }}
-      achievementName={achievement?.achievement.name}
-      completedTasks={achievement?.progress}
-      totalTasks={achievement?.achievement.totalCount}
-      badgeImageUrl={achievement?.achievement.badgeImageUrl}
-      progressColor={achievement?.achievement.color}
-      
-      />
+        <AchievementCompletionPopup
+            isOpen={showAchievementPopup}
+            onClose={()=>setShowAchievementPopup(true)}
+            achievementName={achievement?.achievement.name}
+            badgeImageUrl={achievement?.achievement.badgeImageUrl}
+            badgeColor={achievement?.achievement.color}
+        />
     </div>
   );
 });

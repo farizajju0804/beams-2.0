@@ -137,7 +137,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
 
 
 
-async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isAlreadyCompleted: boolean,achievement: Achievement }> {
+async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isFirstTimeCompletion: boolean,achievement: Achievement }> {
   try {
     console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}`);
 
@@ -160,7 +160,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
     // If the achievement is already completed, return early
     if (userAchievement && userAchievement.completionStatus) {
       console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
-      return { progress: userAchievement.progress, isAlreadyCompleted: true, achievement: userAchievement.achievement };
+      return { progress: userAchievement.progress, isFirstTimeCompletion: false, achievement: userAchievement.achievement };
     }
 
     let newProgress = 1;
@@ -197,9 +197,10 @@ async function updateAchievementProgress(userId: string, achievementName: string
       });
     }
 
+   
     return {
       progress: newProgress,
-      isAlreadyCompleted: false,
+      isFirstTimeCompletion: userAchievement.completionStatus,
       achievement: userAchievement.achievement
     };
   } catch (error) {

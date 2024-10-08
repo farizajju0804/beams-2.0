@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { BeamsTodayRecents } from "./BeamsTodayRecents";
 import FactOfTheDay from "../../beams-facts/_components/FactOfTheDay";
 import { Divider } from "@nextui-org/react";
+import ReferralUpdater from "./ReferralUpdater";
 
 interface BeamsTodayPageProps {
   completedTopics: string[];
@@ -34,6 +35,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
 
 
       <BeamsTodayRecents />
+      <ReferralUpdater/>
     </div>
     </>
   );

@@ -34,24 +34,31 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   const [newLevel, setNewLevel] = useState<any>();
   const [achievement, setAchievement] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  const [showAchievementPopup, setShowAchievementPopup] = useState(false);
+  
   useImperativeHandle(ref, () => ({
     getElapsedTime: () => playTimeRef.current
   }));
+
   const handleEnded = async () => {
+    console.log("Video ended"); // Log when video ends
+
     if (!completionMarked) {
       setCompletionMarked(true);
       try {
         console.log('Marking topic as completed for video ID:', videoId);
-        const { success, leveledUp, beams,  newLevel, pointsAdded, achievementUpdate } = await markTopicAsCompleted(id, 'video');
+        const { success, leveledUp, beams, newLevel, pointsAdded, achievementUpdate } = await markTopicAsCompleted(id, 'video');
 
         if (success) {
+          console.log("Topic marked as completed successfully"); // Success log
           setPointsAdded(pointsAdded);
           setNewLevel(newLevel);
-          setBeams(beams)
+          setBeams(beams);
           if (leveledUp) {
+            console.log("User leveled up"); // Log level-up event
             setLevelUp(leveledUp);
           }
-          setAchievement(achievementUpdate)
+          setAchievement(achievementUpdate);
           setIsModalOpen(true);
         }
       } catch (error) {
@@ -62,11 +69,12 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   };
 
   useEffect(() => {
+    console.log("VideoPlayer mounted"); // Log on component mount
+
     const videoElement = videoRef.current;
   
     const handleTimeUpdate = () => {
       if (videoElement && !videoElement.paused && !videoElement.seeking) {
-        // Calculate elapsed time only when video is playing
         const currentTime = videoElement.currentTime;
         const elapsedTime = currentTime - lastTimeRef.current;
   
@@ -91,13 +99,14 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
   
     const handleSeeked = () => {
       if (videoElement) {
-        lastTimeRef.current = videoElement.currentTime; // Update lastTimeRef after seeking
+        lastTimeRef.current = videoElement.currentTime;
         console.log('Video seeked, new current time:', lastTimeRef.current);
       }
     };
   
     const handleLoadedData = () => {
       setIsLoading(false);
+      console.log('Video data loaded'); // Log when video data is loaded
     };
   
     if (videoElement) {
@@ -118,19 +127,21 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
       };
     }
   }, [id, completionMarked]);
-  
 
-   const handleRewardsModalClose = () => {
+  const handleRewardsModalClose = () => {
     setIsModalOpen(false);
-
+    if(achievement.isFirstTimeCompletion){
+         setShowAchievementPopup(true)
+    }
   };
+
   return (
     <>
       <Toaster position="top-center" />
       <div className="min-w-full w-full mx-auto relative">
-      {isLoading && (
+        {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
-                   <Spinner size="lg" color="primary" />
+            <Spinner size="lg" color="primary" />
           </div>
         )}
         <CldVideoPlayer
@@ -155,18 +166,24 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(({ id, videoId, thumbnailU
         />
       </div>
       <RewardsModal
-       levelUp={levelUp}
-       beams={beams}
-       isOpen={isModalOpen}
-       onClose={handleRewardsModalClose}
-       currentLevel={newLevel}
-       pointsAdded={pointsAdded}
+        levelUp={levelUp}
+        beams={beams}
+        isOpen={isModalOpen}
+        onClose={handleRewardsModalClose}
+        currentLevel={newLevel}
+        pointsAdded={pointsAdded}
       />
-      
-      
+        <AchievementCompletionPopup
+            isOpen={showAchievementPopup}
+            onClose={()=>setShowAchievementPopup(true)}
+            achievementName={achievement?.achievement.name}
+            badgeImageUrl={achievement?.achievement.badgeImageUrl}
+            badgeColor={achievement?.achievement.color}
+        />
     </>
   );
 });
+
 
 VideoPlayer.displayName = 'VideoPlayer';
 export default VideoPlayer;

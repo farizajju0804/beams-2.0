@@ -4,16 +4,25 @@ import { Button } from "@nextui-org/react"; // Import Button component from Next
 import { FcGoogle } from "react-icons/fc"; // Import Google icon from react-icons
 import { signIn } from "next-auth/react"; // Import signIn function from next-auth for Google authentication
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"; // Import default login redirect route
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 /**
  * Social component provides a button for Google social login using NextAuth.
  */
 const Social = () => {
-
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get('referral');
   /**
    * Handles social sign-in via Google
    */
+  useEffect(() => {
+    if (referralCode) {
+      localStorage.setItem('referral', referralCode); // Store referral code in local storage
+    }
+  }, [referralCode]);
   const handleSocialSignIn = () => {
+
     signIn("google", { redirectTo: DEFAULT_LOGIN_REDIRECT }); // Trigger sign-in with Google and redirect after success
   };
 
