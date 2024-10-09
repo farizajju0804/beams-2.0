@@ -104,15 +104,16 @@ export const updateUserMetadata = async (email: string, values: {
   userType?: "STUDENT" | "NON_STUDENT",
 }) => {
   try {
-    const response = await db.user.update({
+    const existingUser = await db.user.update({
       where: { email },
       data: {
         ...values,
         userFormCompleted: true,
       },
     });
-    console.log('updateUserMetadata: Updated user:', response);
-    return response;
+    
+    console.log('updateUserMetadata: Updated user:', existingUser);
+    return existingUser;
   } catch (error) {
     console.error("Error updating user metadata:", error);
     return error;

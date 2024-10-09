@@ -11,6 +11,8 @@ import Leaderboard from './_components/Leaderboard';
 import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import LevelBeams from './_components/LevalBeams';
+import ReferralSection from './_components/Referrals';
+import { getReferredUsers } from '@/actions/dashboard/getReferredUsers';
 
 const DashboardPage = async () => {
   const user: any = await currentUser();
@@ -20,18 +22,15 @@ const DashboardPage = async () => {
     pollData,
     watchedData,
     { userLevel, beams, recentActivities, accumulatedPoints },
-    // leaderboardData,
-    // previousWeekTop3
+    referred
   ]:any = await Promise.all([
     getUserAnalyticsById(user?.id),
     getPollDataByUserId(user?.id),
     getWatchedBeamsTodayContent(user?.id),
     getUserLevelAndHistory(user?.id),
-    // getLeaderboardData(user?.id, user?.userType),
-    // getTop3EntriesForMostRecentWeek(user?.userType,user?.id)
+    getReferredUsers(user?.id)
   ]);
 
-// console.log("previous",previousWeekTop3)
 
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
@@ -46,13 +45,8 @@ const DashboardPage = async () => {
         recentActivities={recentActivities}
         accumulatedPoints={accumulatedPoints}
       />
-      {/* <Leaderboard
-        userId={user?.id}
-        initialData={leaderboardData}
-        userType={user?.userType}
-        previous={previousWeekTop3}
-      /> */}
-      {/* <Achievements /> */}
+      <ReferralSection referrals={referred}/>
+   
     </div>
   );
 };

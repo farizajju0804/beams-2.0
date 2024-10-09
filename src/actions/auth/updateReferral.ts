@@ -12,7 +12,7 @@ export const updateReferral = async (referralCode:string) => {
   const userId = user?.id
 
   let success = false
- const existingUser = await getUserById2(userId)
+ const existingUser:any = await getUserById2(userId)
 
  if (existingUser?.referredById) {
     return false; 
@@ -40,10 +40,18 @@ export const updateReferral = async (referralCode:string) => {
   });
 
 
-  const pointsAdded = 20; // Points to be awarded for referral email verification
+  const pointsAdded = 20; 
+  await updateUserPointsAndLeaderboard(
+    existingUser?.id,
+    pointsAdded,
+    'REFERRAL_BONUS', 
+    `Welcome bonus"`, 
+    existingUser?.userType // Referrer's user type
+  );
   const referrer = await db.user.findUnique({
     where: { id: referredById },
   });
+
 
 
   if (referrer) {
@@ -51,8 +59,8 @@ export const updateReferral = async (referralCode:string) => {
     await updateUserPointsAndLeaderboard(
       referrer.id,
       pointsAdded,
-      'REFERRAL_EMAIL_VERIFICATION', // The source for referral points
-      `Referral for user, "${existingUser?.email}"`, // Description message
+      'REFERRAL', // The source for referral points
+      `Referral for user, "${existingUser?.firstName}"`, // Description message
       referrer.userType // Referrer's user type
     );
   }
