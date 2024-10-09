@@ -85,7 +85,7 @@ export default function AchievementCompletionPopup({
                 transition={{ delay: 1 }}
                 className=" text-center text-base"
               >
-                Congratulations! You&apos;ve unlocked this {achievementName} Great job!
+                Congratulations! You&apos;ve unlocked {achievementName}. Great job!
               </motion.div>
             </div>
           </ModalBody>

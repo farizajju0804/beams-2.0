@@ -105,8 +105,8 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       userBeamPoints = beams
 
       
-    achievementUpdate = await updateAchievementProgress(userId, 'Momentum Master');
-     console.log(`Progress Updated for 'Momentum Master':`, achievementUpdate);
+     achievementUpdate = await updateAchievementProgress(userId, ['Momentum Master', 'Perpetual Performer']);
+     console.log(`Progress Updated':`, achievementUpdate);
     
     }
 
@@ -137,81 +137,84 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
 
 
 
-async function updateAchievementProgress(userId: string, achievementName: string): Promise<{ progress: number; isFirstTimeCompletion: boolean,achievement: Achievement }> {
+async function updateAchievementProgress(
+  userId: string,
+  achievements: string[]
+): Promise<{ achievementUpdates: { [key: string]: { progress: number; isFirstTimeCompletion: boolean } } }> {
   try {
-    console.log(`[updateAchievementProgress] Starting process for userId: ${userId}, achievementName: ${achievementName}`);
+    console.log(`[updateAchievementProgress] Processing achievements for userId: ${userId}, achievements: ${achievements.join(", ")}`);
 
-    // Find achievement by name
-    const achievement = await db.achievement.findUnique({
-      where: { name: achievementName },
-    });
+    const achievementUpdates: { [key: string]: { progress: number; isFirstTimeCompletion: boolean,achievement: Achievement } } = {};
 
-    if (!achievement) {
-      console.error(`[updateAchievementProgress] Achievement '${achievementName}' not found`);
-      throw new Error(`Achievement '${achievementName}' not found`);
-    }
-
-    // Check if user already has progress for this achievement
-    let userAchievement = await db.userAchievement.findUnique({
-      where: { userId_achievementId: { userId, achievementId: achievement.id } },
-      include: { achievement: true },
-    });
-
-    // If the achievement is already completed, return early
-    if (userAchievement && userAchievement.completionStatus) {
-      console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
-      return { progress: userAchievement.progress, isFirstTimeCompletion: false, achievement: userAchievement.achievement };
-    }
-
-    let newProgress = 1;
-    let isNowCompleted = false;
-
-    // If no progress exists, create a new entry
-    if (!userAchievement) {
-      console.log(`[updateAchievementProgress] No existing progress, creating new entry for userId: ${userId}`);
-
-      userAchievement = await db.userAchievement.create({
-        data: {
-          userId,
-          achievementId: achievement.id,
-          progress: newProgress,
-          completionStatus: false,
-          updatedAt: new Date(),
-        },
-        include: { achievement: true }
+    for (const achievementName of achievements) {
+      // Find the achievement by name
+      const achievement = await db.achievement.findUnique({
+        where: { name: achievementName },
       });
-    } else {
-      // Increment progress
-      newProgress = userAchievement.progress + 1;
-      isNowCompleted = newProgress >= achievement.totalCount;
 
-      // Update progress and completion status
-      userAchievement = await db.userAchievement.update({
-        where: { id: userAchievement.id },
-        data: {
-          progress: newProgress,
-          completionStatus: isNowCompleted,
-          updatedAt: new Date(),
-        },
+      if (!achievement) {
+        console.error(`[updateAchievementProgress] Achievement '${achievementName}' not found`);
+        throw new Error(`Achievement '${achievementName}' not found`);
+      }
+
+      // Check if the user already has progress for this achievement
+      let userAchievement = await db.userAchievement.findUnique({
+        where: { userId_achievementId: { userId, achievementId: achievement.id } },
         include: { achievement: true },
       });
+
+      // If the achievement is already completed, skip it
+      if (userAchievement && userAchievement.completionStatus) {
+        console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}, achievement: ${achievementName}`);
+        achievementUpdates[achievementName] = { progress: userAchievement.progress, isFirstTimeCompletion: false,achievement: userAchievement.achievement };
+        continue;
+      }
+
+      let newProgress = 1;
+      let isNowCompleted = false;
+
+      // If no progress exists, create a new entry
+      if (!userAchievement) {
+        console.log(`[updateAchievementProgress] No existing progress, creating new entry for userId: ${userId}, achievement: ${achievementName}`);
+
+        userAchievement = await db.userAchievement.create({
+          data: {
+            userId,
+            achievementId: achievement.id,
+            progress: newProgress,
+            completionStatus: false,
+            updatedAt: new Date(),
+          },
+          include: { achievement: true }
+        });
+      } else {
+        // Increment progress
+        newProgress = userAchievement.progress + 1;
+        isNowCompleted = newProgress >= achievement.totalCount;
+
+        // Update progress and completion status
+        userAchievement = await db.userAchievement.update({
+          where: { id: userAchievement.id },
+          data: {
+            progress: newProgress,
+            completionStatus: isNowCompleted,
+            updatedAt: new Date(),
+          },
+          include: { achievement: true },
+        });
+      }
+
+      achievementUpdates[achievementName] = { progress: newProgress, isFirstTimeCompletion: isNowCompleted,achievement: userAchievement.achievement };
     }
 
-   
     return {
-      progress: newProgress,
-      isFirstTimeCompletion: userAchievement.completionStatus,
-      achievement: userAchievement.achievement
+      achievementUpdates
     };
   } catch (error) {
-    console.error(`[updateAchievementProgress] Error updating achievement progress for userId: ${userId}, achievementName: ${achievementName}:`, error);
+    console.error(`[updateAchievementProgress] Error updating achievement progress:`, error);
     throw new Error(`Error updating achievement progress: ${(error as Error).message}`);
   }
 }
-
-
-
-
 
 
 

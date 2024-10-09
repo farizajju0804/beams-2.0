@@ -27,7 +27,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
   const [levelUp, setLevelUp] = useState(false);
   const [beams, setBeams] = useState<any>();
   const [newLevel, setNewLevel] = useState<any>();
-  const [achievement, setAchievement] = useState<any>();
+  const [achievementToShow, setAchievementToShow] = useState<any>();
   const [showAchievementPopup, setShowAchievementPopup] = useState(false);
 
   // Expose the elapsed play time for parent component via ref
@@ -86,7 +86,19 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
           if (leveledUp) {
             setLevelUp(leveledUp);
           }
-          setAchievement(achievementUpdate)
+          if (achievementUpdate && achievementUpdate.achievementUpdates) {
+            const firstTimeAchievements = Object.keys(achievementUpdate.achievementUpdates).filter(
+              (achievementKey) => achievementUpdate.achievementUpdates[achievementKey].isFirstTimeCompletion
+            );
+          
+            console.log("First-time achievements found:", firstTimeAchievements);
+          
+            if (firstTimeAchievements.length > 0) {
+              const firstAchievement = achievementUpdate.achievementUpdates[firstTimeAchievements[0]];
+              console.log("First achievement to show:", firstAchievement);
+              setAchievementToShow(firstAchievement);
+            }
+          }
           setIsModalOpen(true);
         }
       } catch (error) {
@@ -140,20 +152,23 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
        isOpen={isModalOpen}
        onClose={()=>{
         setIsModalOpen(false);
-        if(achievement.isFirstTimeCompletion){
-             setShowAchievementPopup(true)
+        if (achievementToShow) {
+          setShowAchievementPopup(true);
+          console.log("Showing achievement popup for:", achievementToShow);
         }
       }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
       />
-       <AchievementCompletionPopup
-            isOpen={showAchievementPopup}
-            onClose={()=>setShowAchievementPopup(true)}
-            achievementName={achievement?.achievement.name}
-            badgeImageUrl={achievement?.achievement.badgeImageUrl}
-            badgeColor={achievement?.achievement.color}
+       {achievementToShow && (
+        <AchievementCompletionPopup
+          isOpen={showAchievementPopup}
+          onClose={() => setShowAchievementPopup(false)}
+          achievementName={achievementToShow?.achievement?.name}
+          badgeImageUrl={achievementToShow?.achievement?.badgeImageUrl}
+          badgeColor={achievementToShow?.achievement?.color}
         />
+      )}
     </div>
   );
 });

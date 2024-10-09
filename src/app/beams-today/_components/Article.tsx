@@ -29,8 +29,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [achievement, setAchievement] = useState<any>();
-  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  const [achievementToShow, setAchievementToShow] = useState<any>();
   const [showAchievementPopup, setShowAchievementPopup] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -73,7 +72,19 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
         if (leveledUp) {
           setLevelUp(leveledUp);
         }
-        setAchievement(achievementUpdate)
+        if (achievementUpdate && achievementUpdate.achievementUpdates) {
+          const firstTimeAchievements = Object.keys(achievementUpdate.achievementUpdates).filter(
+            (achievementKey) => achievementUpdate.achievementUpdates[achievementKey].isFirstTimeCompletion
+          );
+        
+          console.log("First-time achievements found:", firstTimeAchievements);
+        
+          if (firstTimeAchievements.length > 0) {
+            const firstAchievement = achievementUpdate.achievementUpdates[firstTimeAchievements[0]];
+            console.log("First achievement to show:", firstAchievement);
+            setAchievementToShow(firstAchievement);
+          }
+        }
         setIsModalOpen(true);
       }
     } catch (error) {
@@ -113,20 +124,23 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
        isOpen={isModalOpen}
        onClose={()=>{
         setIsModalOpen(false);
-    if(achievement.isFirstTimeCompletion){
-         setShowAchievementPopup(true)
-    }
+        if (achievementToShow) {
+          setShowAchievementPopup(true);
+          console.log("Showing achievement popup for:", achievementToShow);
+        }
       }}
        currentLevel={newLevel}
        pointsAdded={pointsAdded}
       />
+       {achievementToShow && (
         <AchievementCompletionPopup
-            isOpen={showAchievementPopup}
-            onClose={()=>setShowAchievementPopup(true)}
-            achievementName={achievement?.achievement.name}
-            badgeImageUrl={achievement?.achievement.badgeImageUrl}
-            badgeColor={achievement?.achievement.color}
+          isOpen={showAchievementPopup}
+          onClose={() => setShowAchievementPopup(false)}
+          achievementName={achievementToShow?.achievement?.name}
+          badgeImageUrl={achievementToShow?.achievement?.badgeImageUrl}
+          badgeColor={achievementToShow?.achievement?.color}
         />
+      )}
     </div>
   );
 });
