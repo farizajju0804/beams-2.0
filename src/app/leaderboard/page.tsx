@@ -30,7 +30,7 @@ console.log("previous",previousWeekTop3)
         userType={user?.userType}
         previous={previousWeekTop3}
       />
-      {/* <Achievements /> */}
+    
     </div>
   );
 };

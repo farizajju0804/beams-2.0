@@ -42,25 +42,7 @@ export const verifyCode = async (code: string, email: string) => {
   });
 
   await db.verificationToken.delete({ where: { id: existingToken.id } });
-  // if (existingUser.referredById) {
-  //   const pointsAdded = 20; // Points to be awarded for referral email verification
-  //   const referrer = await db.user.findUnique({
-  //     where: { id: existingUser.referredById },
-  //   });
 
-  //   if (referrer) {
-  //     // Update points and leaderboard for the referrer
-  //     const updateResult = await updateUserPointsAndLeaderboard(
-  //       referrer.id,
-  //       pointsAdded,
-  //       'REFERRAL', // The source for referral points
-  //       `Referral for user, "${existingUser.email}"`, // Description message
-  //       referrer.userType // Referrer's user type
-  //     );
-
-      
-  //   }
-  // }
 
   return { success: "Email verified successfully!" };
 };

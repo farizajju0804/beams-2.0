@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection, User } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 import { signOut, useSession } from "next-auth/react";
@@ -15,13 +15,20 @@ import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode"
 const getAvatarSrc = (user: any) => user?.image;
 
 export default function UserButton() {
+  const searchParams = useSearchParams();
   const { user: storeUser, setUser: setStoreUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [referralUrl, setReferralUrl] = useState<string | null>(null);
 
-
+  useEffect(() => {
+    // Check for referral param and open modal
+    if (searchParams.get("referral") === "true") {
+      openReferralModal();
+    }
+  }, [searchParams]);
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {

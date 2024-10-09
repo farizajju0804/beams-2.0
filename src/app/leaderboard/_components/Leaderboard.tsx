@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import UserStatus from './UserStatus';
-import { announceLeaderboard, getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
+import {  getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
@@ -13,6 +13,7 @@ import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar, AiFi
 
 import Image from 'next/image';
 import LowerRanksTable from './LowerRanksCard';
+import { updateAchievementsAfterLeaderboard } from '@/actions/points/updateAchievementsAfterLeaderboard';
 
 interface LeaderboardProps {
   userId: string;
@@ -83,6 +84,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [endDate, setEndDate] = useState(initialData.endDate);
   const lastWeekSectionRef = useRef<HTMLDivElement>(null);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const achievementUpdateLock = useRef(false); 
     // Client-side parsed dates
     const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
     const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
@@ -134,7 +136,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
         getTop3EntriesForMostRecentWeek(userType,userId),
-        getLeaderboardData(userId, userType,'2024-09-26T18:00:00.413Z')
+        getLeaderboardData(userId, userType,'2024-10-09T18:00:00.413Z')
         // getLeaderboardData(userId, userType)
 
       ]);
@@ -154,7 +156,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
  
 
       playConfetti(); // Play confetti when timer ends and new data is loaded
-
+      if (!achievementUpdateLock.current) {
+        achievementUpdateLock.current = true;  // Lock further execution
+        await updateAchievementsAfterLeaderboard(userType);
+      }
     } catch (error) {
       console.error('Error updating leaderboard:', error);
       // setLeaderboardMessage("An error occurred while updating the leaderboard.");
@@ -229,6 +234,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       {users.length > 3 && <LowerRanksTable userPosition={lastWeekUserPosition}  users={users} />}
     </div>
   ), []);
+
   const RuleItem = ({ icon, title, description }:any) => (
     <div className="flex items-start space-x-3">
       <div className="flex-shrink-0">

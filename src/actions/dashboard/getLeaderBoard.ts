@@ -15,7 +15,7 @@ export interface LeaderboardData {
 }
 
 export const getLeaderboardData = async (userId: string, userType: UserType, start?: string): Promise<LeaderboardData> => {
-  const { startDate, endDate } = getPreviousAndNextDates(6, start);
+  const { startDate, endDate } = getPreviousAndNextDates(3, start);
   const now = new Date();
 
   console.log(`Fetching leaderboard data from ${startDate.toISOString()} to ${endDate.toISOString()}`);
@@ -44,16 +44,3 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
   };
 };
 
-export async function announceLeaderboard() {
-
-
-
-
-  await generateNotificationForAllUsers(
-    'REMINDER',
-    `This week's leaderboard has been announced!`,
-    '/dashboard'
-  );
-
-
-}

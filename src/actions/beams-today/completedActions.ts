@@ -221,12 +221,6 @@ async function updateAchievementProgress(
 
 
 
-
-
-
-
-
-
 /**
  * Increment the view count for a topic and format when a user opens a tab.
  * This ensures the overall view count for a topic only increments once per user.

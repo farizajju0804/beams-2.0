@@ -99,3 +99,61 @@ export const getTop3EntriesForMostRecentWeek = async (
     throw error;
   }
 };
+
+
+
+export const getTop10EntriesForMostRecentWeek = async (
+  userType: UserType,
+  start?: string
+): Promise<LeaderboardResult & { userPosition?: number, userPoints?: number }> => {
+  try {
+    // Log the userType, userId, and optional start date passed in
+    console.log('getTop3EntriesForMostRecentWeek called with:', { userType, start });
+
+    const baseDate = start ? new Date(start) : new Date();
+    const now = new Date(baseDate.getTime() + 60 * 1000);
+
+    console.log('Base date:', baseDate);
+    console.log('Current adjusted date (now):', now);
+
+    // Find the most recent week
+    const mostRecentWeek = await db.leaderboard.findFirst({
+      where: { endDate: { lt: now }, userType },
+      orderBy: { endDate: 'desc' },
+      select: { startDate: true, endDate: true }
+    });
+
+    // Log if no week is found
+    if (!mostRecentWeek) {
+      console.log('No leaderboard week found');
+      return { entries: [], startDate: new Date(), endDate: new Date(), userPosition: undefined, userPoints: undefined };
+    }
+
+    console.log('Most recent week found:', mostRecentWeek);
+
+    // Fetch the top 10 entries for that week
+    const top10Entries = await db.leaderboard.findMany({
+      where: { endDate: mostRecentWeek.endDate, userType },
+      orderBy: { rank: 'asc' },
+      take: 10,  // Fetch top 10 only
+      include: {
+        user: {
+          select: { id: true, firstName: true, lastName: true, image: true }
+        }
+      }
+    });
+
+    console.log('Top 10 leaderboard entries:', top10Entries);
+
+  
+
+    return {
+      entries: top10Entries,
+      startDate: mostRecentWeek.startDate,
+      endDate: mostRecentWeek.endDate,
+    };
+  } catch (error) {
+    console.error('Error in getTop3EntriesForMostRecentWeek:', error);
+    throw error;
+  }
+};

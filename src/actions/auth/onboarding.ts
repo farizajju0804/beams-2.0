@@ -6,6 +6,7 @@ import { auth } from "@/auth" // Import the authentication helper
 import { redirect } from 'next/navigation' // Import for redirection purposes (not used here)
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes' // Import the default redirect route
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
+import { generateNotification } from "../notifications/notifications"
 
 /**
  * Updates the onboarding status of the authenticated user.
@@ -54,7 +55,62 @@ export async function updateOnboardingStatus(status: boolean) {
         referrer.userType // Referrer's user type
       );
 
+
+      const achievementName = "Growth Ambassador";
+    const achievement = await db.achievement.findUnique({
+      where: { name: achievementName },
+    });
+
+  if (achievement) {
+    let userAchievement = await db.userAchievement.findUnique({
+      where: { userId_achievementId: { userId: referrer.id, achievementId: achievement.id } },
+    });
+
+    if (userAchievement?.completionStatus) {
+      // Achievement is already completed, so don't do anything
+      console.log(`'Growth Ambassador' already completed for user: ${referrer.id}`);
+      return true;
     }
+
+    if (!userAchievement) {
+      // Create new progress if no existing achievement
+      userAchievement = await db.userAchievement.create({
+        data: {
+          userId: referrer.id,
+          achievementId: achievement.id,
+          progress: 1,
+          completionStatus: false,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      // Increment progress
+      const newProgress = userAchievement.progress + 1;
+      const isNowCompleted = newProgress >= achievement.totalCount;
+
+      await db.userAchievement.update({
+        where: { id: userAchievement.id },
+        data: {
+          progress: newProgress,
+          completionStatus: isNowCompleted,
+          updatedAt: new Date(),
+        },
+      });
+
+      if (isNowCompleted) {
+        // Generate notification if the achievement is completed
+        await generateNotification(
+          referrer.id,
+          'ACHIEVEMENT', // Assuming you have this enum value
+          `Congratulations! You've unlocked 'Growth Ambassador' badge!`,
+          `/achievements/#growth-ambassador` // Action URL for achievements
+        );
+      }
+    }
+  }
+    }
+
+    
     }
     return existingUser // Return the updated user data
   } catch (error) {
