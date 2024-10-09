@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell } from 'recharts';
 import RecentActivity from './RecentActivity';
-import { Cup, Icon, MessageQuestion, Share, TickCircle } from 'iconsax-react';
+import { Cup, Icon, InfoCircle, MessageQuestion, Share, TickCircle } from 'iconsax-react';
 import Heading from './Heading';
 import Link from 'next/link';
 import { FaTrophy } from 'react-icons/fa';
 import IconFillingEffect from '@/components/IconFillingEffect';
 import LevelName from '@/components/LevelName';
+import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 
 // Define interfaces for props
 interface LevelProgressProps {
@@ -181,12 +182,33 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
       <Heading heading={`My Beams`} />
       <div className='px-6 md:px-0 w-full grid grid-cols-1 md:grid-cols-2'>
         <div className='w-full gap-2 flex flex-col items-center md:items-start justify-center '>
-         <LevelName 
-         minPoints={userLevel.minPoints}
-        maxPoints={userLevel.maxPoints}
-        name={userLevel.name} 
-        levelNumber={userLevel.levelNumber}
-       />
+        <div className="w-full flex items-center md:justify-start justify-center ">
+    <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-start flex-col gap-1">
+        <p className="text-xs md:mx-0 mx-auto  md:text-base text-grey-2">Level {userLevel.levelNumber}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm md:text-lg uppercase font-medium font-poppins text-text relative">
+            <span className="inline-block" >
+            {userLevel.name}
+              <sup className="absolute -top-1 -right-3">
+                <Popover showArrow>
+                  <PopoverTrigger>
+                    <InfoCircle size={10} color="#808080" className="cursor-pointer" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-fit text-left p-4">
+                    <p className="text-xs w-full font-medium mb-2">Level {userLevel.levelNumber} - {userLevel.name}</p>
+                    <p className="text-xs w-full text-grey-2">Beams Range: {userLevel.minPoints} - {userLevel.maxPoints}</p>
+                  </PopoverContent>
+                </Popover>
+              </sup>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        
           <IconFillingEffect
                     icon={userLevel.icon}
                     filledColor={userLevel.bgColor}

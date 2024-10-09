@@ -10,7 +10,7 @@ import { generateNotification } from "../notifications/notifications";
 export const updateAchievementsAfterLeaderboard = async (userType: UserType) => {
   try {
     // Get the top 10 entries from the last week's leaderboard
-    const lastWeekData = await getTop10EntriesForMostRecentWeek(userType,'2024-10-09T18:00:00.413Z');
+    const lastWeekData = await getTop10EntriesForMostRecentWeek(userType);
 
     // Only proceed if there are at least 3 entries
     if (lastWeekData.entries.length < 3) {
