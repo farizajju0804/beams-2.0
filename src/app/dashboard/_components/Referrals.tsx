@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, CardBody, User } from "@nextui-org/react";
-import { Profile2User } from "iconsax-react";
+import { Button, Card, CardBody, User } from "@nextui-org/react";
+import { Gift, Profile2User } from "iconsax-react";
 import { User as Users } from '@prisma/client';
+import Image from 'next/image';
 
 interface Referral {
   referrals: Users[]
@@ -44,11 +45,13 @@ export default function ReferralSection({ referrals }: Referral) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Profile2User size="48" className="text-grey-2 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No Referrals Yet</h3>
-            <p className="text-grey-2">
-              Start inviting friends and colleagues to earn Beams!
+            {/* <Profile2User size="48" className="text-grey-2 mb-4" /> */}
+            <Image className='mb-4'  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" alt="referraal" width={100} height={100} />
+            <h3 className="text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That! </h3>
+            <p className="text-grey-2 mb-4">
+            Invite your friends and colleagues today. More friends, more Beams, more fun.
             </p>
+            <Button as={'a'} href='/dashboard/?referral=true' color={"primary"} startContent={<Gift className="text-white" variant="Bold" />} >Refer a Friend</Button>
           </div>
         )}
       </CardBody>

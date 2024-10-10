@@ -82,6 +82,7 @@ export const {
         session.user.image = token.image as string;
         session.user.userFormCompleted = token.userFormCompleted as boolean; // Attach form completion status
         session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Attach onboarding completion status
+        session.user.isAccessible = token.isAccessible as boolean;
       }
       return session; // Return the session with additional user info
     },
@@ -110,6 +111,7 @@ export const {
           token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
           token.userFormCompleted = existingUser.userFormCompleted;
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
+          token.isAccessible = existingUser.isAccessible;
         }
       }
       return token; // Return updated token

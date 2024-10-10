@@ -36,7 +36,8 @@ export const updateReferral = async (referralCode:string) => {
     where: { id: userId },
     data: {
       referredById, // Set referredById if found
-      referralStatus: 'VERIFIED' // Set the referral status as verified
+      referralStatus: 'VERIFIED', // Set the referral status as verified
+      isAccessible : true
     }
   });
 
@@ -123,4 +124,27 @@ export const updateReferral = async (referralCode:string) => {
 
 
  return true;
+}
+
+
+
+export const updateAccessibleStatus = async () => {
+  const user:any = await currentUser()
+  const userId = user?.id
+
+  const existingUser:any = await getUserById2(userId)
+ 
+  if (existingUser?.referredById) {
+     return true; 
+   }
+ 
+   if (!existingUser?.referredById && user?.isOAuth ) {
+   await db.user.update({
+     where: { id: userId },
+     data: {
+       isAccessible : true
+     }
+   });
+   }
+
 }

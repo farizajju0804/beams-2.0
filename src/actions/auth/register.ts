@@ -43,15 +43,22 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
       referredById = referrer.userId;
     }
   }
+  const userData = {
+    email,
+    password: hashedPassword,
+    lastLoginIp: ip,
+    lastLoginAt: new Date(),
+  };
+
+  if (referralCode && referredById) {
+    Object.assign(userData, {
+      referredById,
+      referralStatus: 'REGISTERED',
+      isAccessible: true
+    });
+  }
   await db.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      lastLoginIp: ip,
-      lastLoginAt: new Date(),
-      referredById, // Set referredById if found
-      referralStatus: 'REGISTERED'
-    },
+    data: userData
   });
 
   const verificationToken = await getVerificationToken(email);

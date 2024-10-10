@@ -61,7 +61,7 @@ const Step3Form: React.FC = ({ }) => {
         const result = await submitSecurityAnswers(values, email); // Submit security answers
         if (result.success) {
         await update(); 
-        router.push('/user-info'); 
+        router.push('/access-code'); 
         }
         if(result?.error)
         {

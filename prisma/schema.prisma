@@ -63,6 +63,7 @@ model User {
   updatedAt              DateTime               @updatedAt // Timestamp of last update
   userFormCompleted      Boolean                @default(false) // Whether the user completed the form
   onBoardingCompleted    Boolean                @default(false) // Whether the user completed onboarding
+  isAccessible            Boolean              @default(false)
   notificationPreference Boolean                @default(false)
  referralStatus            ReferralStatus? @default(REGISTERED)
   referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
@@ -147,6 +148,15 @@ model TwoFactorConfirmation {
   @@unique([userId]) // Ensures a unique two-factor confirmation per user
 }
 
+
+model AccessCode {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier
+  code      String   @unique // The actual access code
+  createdAt DateTime @default(now()) // Timestamp of creation
+  updatedAt DateTime @updatedAt // Timestamp of last update
+}
+
+
 // Model for pending verification requests (e.g., email verification)
 model PendingVerification {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
@@ -181,12 +191,7 @@ model Referral {
   updatedAt    DateTime @updatedAt
 }
 
-// model NotificationPreference {
-//   id       String @id @default(auto()) @map("_id") @db.ObjectId
-//   userId   String @unique @db.ObjectId
-//   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   settings Json   // Store user preferences for each notification type
-// }
+
 
 // FAQ model for storing frequently asked questions and answers
 model FAQ {

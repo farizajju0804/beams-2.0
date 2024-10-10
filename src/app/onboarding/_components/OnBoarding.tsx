@@ -11,6 +11,7 @@ import Pagination from './Pagination'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import RedirectionMessage from '@/components/RedirectionMessage'
 import { motion } from 'framer-motion';
+import RedirectMessage from "@/components/Redirection";
 
 const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
@@ -127,10 +128,15 @@ const OnboardingPage = () => {
   const handleAction = () => {
     startTransition(async () => {
       const updatedUser: any = await updateOnboardingStatus(true);
+      
       if (updatedUser) {
         // Show the completion modal before updating session
         setIsCompletionModalOpen(true);
       }
+      if(updatedUser.referredById){
+        localStorage.removeItem('referral');
+      }
+      
     });
   };
 
@@ -153,7 +159,8 @@ const OnboardingPage = () => {
     style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
       {isRedirecting ? (
-        <RedirectionMessage />
+               <RedirectMessage/>
+
       ) : (
         <>
           <div className="w-full flex justify-between items-center px-6 lg:py-2">

@@ -68,7 +68,7 @@ export const ReferFriendModal = ({ isOpen, onOpenChange, referralUrl }:any) => {
             <ModalHeader className="flex flex-col gap-3 bg-background  text-text  p-6">
               <h1 className="font-poppins text-3xl font-bold">Share the Love! 🎉</h1>
               <p className="text-sm text-text opacity-80">
-                Invite your friends and earn amazing rewards together.
+                Invite your friends and earn 20 Beams together.
               </p>
             </ModalHeader>
             <ModalBody className="">
@@ -80,7 +80,7 @@ export const ReferFriendModal = ({ isOpen, onOpenChange, referralUrl }:any) => {
               >
                 <div className=" w-full">
                 <Image
-                  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728376954/authentication/referal-3d-6704f060722f0_x6cirk.webp"
+                  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp"
                   alt="Referral illustration"
                   width={250}
                   height={250}
@@ -89,9 +89,9 @@ export const ReferFriendModal = ({ isOpen, onOpenChange, referralUrl }:any) => {
                 
                 </div>
               
-                <p className="text-center text-lg font-semibold text-text">
+                {/* <p className="text-center text-lg font-semibold text-text">
                   Share your unique link and start earning!
-                </p>
+                </p> */}
                 <div className="relative w-full">
                   <Input
                     type="text"

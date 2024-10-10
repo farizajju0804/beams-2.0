@@ -12,7 +12,7 @@ const Contact = async () => {
 
   return (
     <div className='w-full max-w-7xl mx-auto'>  {/* Main container for the page */}
-      {user ? <Nav /> : <PublicNav />}  {/* Conditionally render Nav or PublicNav based on user authentication */}
+      {user?.firstName && <Nav /> }  {/* Conditionally render Nav or PublicNav based on user authentication */}
       <Contactheader />  {/* Render the contact page header */}
       <ContactFormContainer />  {/* Render the contact form */}
       <ContactFooter />  {/* Render the contact page footer */}

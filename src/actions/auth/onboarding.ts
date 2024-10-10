@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation' // Import for redirection purposes (n
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes' // Import the default redirect route
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
+import { User } from "@prisma/client"
 
 /**
  * Updates the onboarding status of the authenticated user.
@@ -26,7 +27,7 @@ export async function updateOnboardingStatus(status: boolean) {
 
   try {
     // Update the `onBoardingCompleted` field in the database for the authenticated user
-    const existingUser = await db.user.update({
+    const existingUser:User = await db.user.update({
       where: { id: session.user.id }, // Locate the user by their ID
       data: { onBoardingCompleted: status }, // Set the new onboarding status
     })

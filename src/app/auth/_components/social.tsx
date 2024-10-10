@@ -19,6 +19,8 @@ const Social = () => {
   useEffect(() => {
     if (referralCode) {
       localStorage.setItem('referral', referralCode); // Store referral code in local storage
+    }else {
+      localStorage.removeItem('referral'); // Remove referral code from local storage if not found in URL
     }
   }, [referralCode]);
   const handleSocialSignIn = () => {

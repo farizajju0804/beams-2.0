@@ -14,6 +14,7 @@ import { updateUserMetadata } from '@/actions/auth/register';  // Function to up
 import RedirectionMessage from '@/components/RedirectionMessage';  // Component to show redirection message
 import Image from 'next/image';
 import { Button } from '@nextui-org/react';  // Import Button from NextUI
+import RedirectMessage from '@/components/Redirection';
 
 const Page = () => {
   const { data: session, update } = useSession();  // Retrieve session data
@@ -132,7 +133,8 @@ const Page = () => {
 
       {/* Redirection message */}
       {isRedirecting ? (
-        <RedirectionMessage />
+          <RedirectMessage/>
+
       ) : (
         <>
           {currentSlide === 0 && <MainSlide onNext={handleNext} />}  {/* Render slides conditionally */}

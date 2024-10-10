@@ -13,8 +13,13 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the route is an authentication route (e.g., login, register)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // Check if the route is a public route
+
   if (nextUrl.pathname.startsWith('/api/leaderboard')) {
     return; // Allow the cron job to run without redirecting
+  }
+
+  if (isPublicRoute) {
+    return;
   }
   // Allow API authentication routes to bypass authentication checks
   if (isApiAuthRoute) {
@@ -45,27 +50,33 @@ export default auth(async (req) => {
 
       // Log the current user state for debugging purposes
       console.log("Current user state:", {
+        isAccessible: user.isAccessible,
         userFormCompleted: user.userFormCompleted,
         onBoardingCompleted: user.onBoardingCompleted,
         currentPath: nextUrl.pathname
       });
 
-      // If user info is not completed, redirect to user-info page
-      if (!user.userFormCompleted && nextUrl.pathname !== '/user-info' && !isPublicRoute) {
+      // Check if the user isAccessible, if not, redirect to /access-code
+      if (!user.isAccessible && nextUrl.pathname !== '/access-code') {
+        console.log("Redirecting to /access-code");
+        return Response.redirect(new URL('/access-code', nextUrl));
+      }
+
+      // If isAccessible is true, and userFormCompleted is false, redirect to /user-info
+      if (user.isAccessible && !user.userFormCompleted && nextUrl.pathname !== '/user-info') {
         console.log("Redirecting to /user-info");
         return Response.redirect(new URL('/user-info', nextUrl));
       }
-
-      // If user info is completed but onboarding is not, redirect to onboarding page
-      if (user.userFormCompleted && !user.onBoardingCompleted &&
-          nextUrl.pathname !== '/onboarding' && !isPublicRoute) {
+    
+      // If userFormCompleted is true and onboarding is not completed, redirect to /onboarding
+      if (user.userFormCompleted && !user.onBoardingCompleted && nextUrl.pathname !== '/onboarding') {
         console.log("Redirecting to /onboarding");
         return Response.redirect(new URL('/onboarding', nextUrl));
       }
 
-      // If both user info and onboarding are completed, redirect to the default page
-      if (user.userFormCompleted && user.onBoardingCompleted &&
-          (nextUrl.pathname === '/user-info' || nextUrl.pathname === '/onboarding')) {
+      // If both userFormCompleted and onBoardingCompleted are true and isAccessible is true, redirect to default page
+      if (user.userFormCompleted && user.onBoardingCompleted && user.isAccessible &&
+          (nextUrl.pathname === '/user-info' || nextUrl.pathname === '/onboarding' || nextUrl.pathname === '/access-code')) {
         console.log("Redirecting to DEFAULT_LOGIN_REDIRECT");
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
       }

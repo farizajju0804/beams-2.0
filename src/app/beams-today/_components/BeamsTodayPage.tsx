@@ -36,7 +36,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = ({ completedTopics, user, 
 
 
       <BeamsTodayRecents />
-      <ReferralUpdater/>
+      {/* <ReferralUpdater/> */}
     </div>
     </>
   );
