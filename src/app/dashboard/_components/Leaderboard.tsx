@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import UserStatus from './UserStatus';
-import { announceLeaderboard, getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
+import { getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
 import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
