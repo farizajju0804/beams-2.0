@@ -13,7 +13,8 @@ import { getCompletedAchievements } from '@/actions/points/achievements';
 import ProfilePictureForm from '@/components/ProfilePictureForm';
 import LevelDetails from './_components/LevelDetails';
 import AccordionMenu from './_components/AccordionMenu';
-import { Activity, Book, Gift, User } from 'iconsax-react';
+import { Activity, Book, Coin, Coin1, Gift, User } from 'iconsax-react';
+import PieChartBeams from './_components/PieChart';
 
 const DashboardPage = async () => {
   const user: any = await currentUser();
@@ -45,6 +46,18 @@ const DashboardPage = async () => {
       title: "My Learning",
       icon: <Book variant="Bold" className="h-5 w-5 text-grey-2" />,
       content: <LearningOverview userAnalytics={userAnalytics} pollData={pollData} watchedData={watchedData} />,
+    },
+    {
+      title: "My Beams",
+      icon:  <Coin1 variant="Bold" className="h-5 w-5 text-grey-2" />,
+      content: (
+        <PieChartBeams
+         
+          beams={beams}
+          
+          accumulatedPoints={accumulatedPoints}
+        />
+      ),
     },
     {
       title: "My Activity",

@@ -1,26 +1,9 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { PieChart, Pie, Cell } from 'recharts';
+
 import RecentActivity from './RecentActivity';
 import { Cup, Icon, InfoCircle, MessageQuestion, Share, TickCircle } from 'iconsax-react';
-import Heading from './Heading';
-import Link from 'next/link';
-import { FaTrophy } from 'react-icons/fa';
-import IconFillingEffect from '@/components/IconFillingEffect';
-import LevelName from '@/components/LevelName';
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 
-// Define interfaces for props
-interface LevelProgressProps {
-  level: number;
-  progress: number;
-  total: number;
-}
-
-interface ScoreDisplayProps {
-  score: number;
-}
 
 interface ActivityData {
   name: string;
@@ -39,90 +22,6 @@ interface Activity {
     createdAt : Date;
     source : string;
 }
-
-
-interface RecentActivityProps {
-  activities: Activity[];
-}
-
-// LevelProgress component
-const LevelProgress: React.FC<LevelProgressProps> = ({ level, progress, total }) => (
-  <div className="mb-4 w-full flex flex-col ">
-    <div className="flex mx-auto md:mx-0 w-4/6 items-center justify-between mb-2">
-      <span className="text-lg font-semibold">Level - {level}</span>
-      <span className="text-sm text-grey-2">{progress}/{total}</span>
-    </div>
-    <div className="h-2 w-4/6 md:mx-0 mx-auto bg-gray-200 rounded-full overflow-hidden">
-      <motion.div
-        className="h-full bg-brand"
-        initial={{ width: 0 }}
-        animate={{ width: `${(progress / total) * 100}%` }}
-        transition={{ duration: 0.5 }}
-      />
-    </div>
-  </div>
-);
-
-// ScoreDisplay component
-const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score }) => (
-  <motion.div
-    className="text-6xl my-4 font-bold text-orange-500 mb-4"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    {score}
-  </motion.div>
-);
-
-// ActivityPieChart component
-
-
-
-
-const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ data }) => {
-    const chartSize = 200; // Increased size
-    const outerRadius = chartSize / 2 - 10; // Slightly smaller to ensure it's not cut off
-    const innerRadius = outerRadius - 30; // Adjust for desired thickness
-    const [isClient, setIsClient] = useState(false); 
-    useEffect(() => {
-      setIsClient(true); // Set to true only after the component mounts on the client-side
-    }, []);
-    if (!isClient) {
-      return null; // Return null during SSR to prevent hydration mismatch
-    }
-    return (
-      <div className="flex flex-col md:flex-row items-center gap-8 justify-center w-full max-w-2xl">
-        <PieChart width={chartSize} height={chartSize}>
-          <Pie
-            data={data}
-            cx={chartSize / 2}
-            cy={chartSize / 2}
-            innerRadius={innerRadius}
-            outerRadius={outerRadius}
-            paddingAngle={3}
-            dataKey="value"
-            startAngle={90}
-            endAngle={-270}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-        <div className="flex flex-col space-y-4 md:ml-8">
-          {data.map((item) => (
-            <div key={item.name} className="flex justify-center md:justify-start items-center">
-              <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: item.color }} />
-              <span className="text-sm text-grey-2 mr-2">{item.name}</span>
-              <span className="text-sm font-semibold">{item.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
 
 
 
@@ -148,8 +47,8 @@ const sourceMap: { [key: string]: string } = {
 const iconMap: { [key: string]: Icon } = {
   BEAMS_TODAY: TickCircle,
   POLL_PARTICIPATION: TickCircle,
-  SHARE: Share,
-  ACHIEVEMENT : Cup
+  SHARE: TickCircle,
+  ACHIEVEMENT : TickCircle
 };
 
 const colorMap: { [key: string]: string } = {
@@ -180,48 +79,7 @@ const LevelBeams: React.FC<LevelBeamsProps> = ({ userLevel, beams, recentActivit
   return (
     <div className="w-full ">
    
-      
-      {/* <div className=' w-full bg-background rounded-2xl p-2 grid grid-cols-1 md:grid-cols-2'> */}
-        {/* <div className='w-full gap-2 flex flex-col items-center md:items-start justify-center '> */}
-        {/* <div className="w-full flex items-center md:justify-start justify-center ">
-    <div className="w-full flex items-center justify-center gap-8">
-      <div className="flex items-center gap-2">
-        <p className="text-xs mx-auto  md:text-base text-grey-2">Level {userLevel.levelNumber}</p>
-        <div className="flex items-center gap-2">
-          <p className="text-xs md:text-base uppercase font-medium font-poppins text-text relative">
-            <span className="inline-block" >
-            {userLevel.name}
-            </span>
-          </p>
-        </div>
-      </div>
-      <p className="text-sm md:text-base mx-auto text-grey-2 font-semibold">{beams} Beams</p>
-
-    </div>
-  </div> */}
-
-{/*         
-          <IconFillingEffect
-                    icon={userLevel.icon}
-                    filledColor={userLevel.bgColor}
-                    beams={beams}  
-                    minPoints={userLevel.minPoints}
-                    maxPoints={userLevel.maxPoints}
-                  />
-  
-          <Link
-        href='/achievements'
-        className='w-full mb-6 text-brand underline font-medium md:text-left text-center md:mx-0 mx-auto text-sm'
-      >
-        View Levels progress here
-      </Link> */}
-        {/* </div> */}
-        {/* {beams > 0 && 
-        <div>
-          <ActivityPieChart data={pieChartData} />
-        </div>
-        } */}
-      {/* </div> */}
+    
      
       <RecentActivity activities={recentActivityData} />
       
