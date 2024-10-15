@@ -13,32 +13,31 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion';
 import { updateAccessibleStatus } from '@/actions/auth/updateReferral';
 import RedirectMessage from '@/components/Redirection';
+
 type FormData = {
   [key: string]: string;
 }
 
 export default function AccessCodeComponent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isRedirecting, setIsRedirecting] = useState(false)  // Redirection state
-  const [isReferralProcessed, setIsReferralProcessed] = useState(false); // State to track referral processing
+  const [isRedirecting, setIsRedirecting] = useState(false)
+  const [isReferralProcessed, setIsReferralProcessed] = useState(false);
 
-  const { data: session, update } = useSession();  // Retrieve session data
+  const { data: session, update } = useSession();
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const router = useRouter();  // Initialize router
+  const router = useRouter();
   const { control, handleSubmit, formState: { errors }, setValue, trigger } = useForm<FormData>({
     defaultValues: {
-      code1: '', code2: '', code3: '', code4: '',
-      code5: '', code6: '', code7: '', code8: ''
+      code1: '', code2: '', code3: '', code4: '', code5: '', code6: ''
     }
   })
 
-  // Process referral code on component mount
   useEffect(() => {
     const updateReferralCode = async () => {
-      const referralCode = localStorage.getItem('referral'); // Check for referral code in local storage
+      const referralCode = localStorage.getItem('referral');
 
       if (referralCode) {
-        setIsRedirecting(true);  // Show redirection message while processing referral
+        setIsRedirecting(true);
 
         try {
           await updateAccessibleStatus(); 
@@ -52,26 +51,27 @@ export default function AccessCodeComponent() {
           
           router.push('/user-info')
         } catch (error) {
-          console.error("Failed to update referral:", error); // Log error if update fails
+          console.error("Failed to update referral:", error);
         } finally {
-          setIsRedirecting(false);  // Stop showing redirection message
-         
+          localStorage.removeItem('referral');
+          setIsRedirecting(false);
         }
       } else {
-        setIsReferralProcessed(true); // If no referral code, directly show access form
+        setIsReferralProcessed(true);
       }
     };
 
-    updateReferralCode(); // Execute referral update on component mount
+    updateReferralCode();
   }, []);
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true)
-  
+    console.log("Form data submitted:", data); // Add this to check form submission
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
     try {
-      const accessCode = Object.values(data).join('')  // Combine all the code parts into one access code
-      const result = await updateAccessStatus(accessCode)  // Call the server action directly
-  
+        const accessCode = Object.values(data).join('');
+   
+        const result = await updateAccessStatus(accessCode);
       if (result.status === 'success') {
         setSubmitStatus('success')
         await update({
@@ -82,7 +82,7 @@ export default function AccessCodeComponent() {
           },
         });
         setIsRedirecting(true);
-        router.push('/user-info');  // Redirect to user-info page on success
+        router.push('/user-info');
       } else {
         setSubmitStatus('error')
       }
@@ -100,7 +100,7 @@ export default function AccessCodeComponent() {
     if (value.length <= 1 && /^[A-Z0-9]$/.test(lastChar)) {
       setValue(`code${index}`, lastChar)
       if (lastChar !== '') {
-        if (index < 8) {
+        if (index < 6) {
           const nextInput = document.getElementById(`code${index + 1}`)
           nextInput?.focus()
         }
@@ -139,12 +139,10 @@ export default function AccessCodeComponent() {
     }
   }
 
-  // Render redirection message if referral is processing or if the user is being redirected
   if (isRedirecting || !isReferralProcessed) {
     return <RedirectMessage />;
   }
 
-  // Render the access code form after referral processing is complete
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <motion.div 
@@ -176,7 +174,7 @@ export default function AccessCodeComponent() {
             className="flex items-center justify-center gap-2 sm:gap-4"
             variants={childVariants}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+            {[1, 2, 3, 4, 5, 6].map((num) => (
               <Controller
                 key={num}
                 name={`code${num}`}
@@ -206,12 +204,12 @@ export default function AccessCodeComponent() {
               />
             ))}
           </motion.div>
-          <motion.div variants={childVariants}>
+          <motion.div className='flex mt-2 items-center justify-center' variants={childVariants}>
             <Button 
               type="submit" 
               color="primary"
-              size="lg"
-              className="w-full text-white font-semibold"
+              size="md"
+              className="w-40 text-white font-semibold"
               isLoading={isSubmitting}
               startContent={
                 !isSubmitting && <Unlock variant='Bold'  /> 
@@ -228,21 +226,22 @@ export default function AccessCodeComponent() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Oh! That&apos;s not the magic code. Try again, or ask a wizard for help!
+            Oh! That&apos;s not the magic code. Try again, or ask for help!
           </motion.p>
         )}
         <motion.div 
-          className="mt-6 text-center space-y-4"
+          className="mt-8 text-center space-y-4"
           variants={childVariants}
         >
           <Link href="/contact-us" passHref>
             <Button 
               color="primary"
               variant="bordered"
+              size="sm"
               className="font-semibold"
               startContent={<Sms variant='Bold'/>}
             >
-              Contact the Keeper of the Code
+              Need Help?
             </Button>
           </Link>
         </motion.div>
