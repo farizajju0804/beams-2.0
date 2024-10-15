@@ -8,6 +8,7 @@ import { recordPointsHistory } from "../points/recordPointsHistory";
 import { updateUserPoints } from "../points/updateUserPoints";
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
 import { Achievement } from "@prisma/client";
+import { BEAMS_TODAY_COMPLETION_POINTS } from "@/constants/pointsConstants";
 
 /**
  * Marks a specific topic as completed by a user in a given format (video, audio, or text).
@@ -85,7 +86,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
         data: { completionCount: { increment: 1 } },
       });
       
-      pointsAdded = 10;
+      pointsAdded = BEAMS_TODAY_COMPLETION_POINTS;
       console.log(`[markTopicAsCompleted] Points added: ${pointsAdded}`);
 
       console.log(`[markTopicAsCompleted] Updating user points`);

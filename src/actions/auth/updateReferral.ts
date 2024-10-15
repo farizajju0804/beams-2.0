@@ -6,6 +6,7 @@ import { getUserByReferralCode } from "./register"
 import { db } from "@/libs/db"
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
+import { REFERRAL_POINTS } from "@/constants/pointsConstants"
 
 
 export const updateReferral = async (referralCode:string) => {
@@ -42,7 +43,7 @@ export const updateReferral = async (referralCode:string) => {
   });
 
 
-  const pointsAdded = 20; 
+  const pointsAdded = REFERRAL_POINTS; 
   await updateUserPointsAndLeaderboard(
     existingUser?.id,
     pointsAdded,

@@ -38,6 +38,7 @@ import { updateUserPoints } from '../points/updateUserPoints';
 import { recordPointsHistory } from '../points/recordPointsHistory';
 import { updateLeaderboardEntry } from '../points/updateLeaderboardEntry';
 import { updateUserPointsAndLeaderboard } from '../points/updateUserPointsAndLeaderboard';
+import { POLL_POINTS } from '@/constants/pointsConstants';
 
 export const recordPollResponse = async (pollOptionId: string) => {
   const user = await currentUser();
@@ -74,7 +75,7 @@ export const recordPollResponse = async (pollOptionId: string) => {
       data: { votes: { increment: 1 } },
     });
 
-    const pointsAdded = 5;
+    const pointsAdded = POLL_POINTS;
 
     console.log(`Updating user points and leaderboard for user ID: ${user.id}`);
     const updateResult = await updateUserPointsAndLeaderboard(

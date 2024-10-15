@@ -8,6 +8,7 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/routes' // Import the default redirect
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
 import { User } from "@prisma/client"
+import { REFERRAL_POINTS } from "@/constants/pointsConstants"
 
 /**
  * Updates the onboarding status of the authenticated user.
@@ -34,7 +35,7 @@ export async function updateOnboardingStatus(status: boolean) {
     
 
     if (existingUser.referredById) {
-      const pointsAdded = 20; 
+      const pointsAdded = REFERRAL_POINTS; 
       await updateUserPointsAndLeaderboard(
         existingUser?.id,
         pointsAdded,
