@@ -16,9 +16,11 @@
     ModalBody,
     ModalFooter,
     useDisclosure,
+    Checkbox,
     } from "@nextui-org/react";
     import { Level, Achievement } from '@prisma/client';
     import { createAchievement, createLevel, deleteAchievement, deleteLevel, getAchievements, getLevels, updateAchievement, updateLevel } from './_actions/beams-system';
+import toast, { Toaster } from 'react-hot-toast';
 
     // Server actions
 
@@ -67,12 +69,14 @@
     }
 
     function AchievementForm({ achievement, onSubmit, onCancel }: AchievementFormProps) {
+      const [isPublished, setIsPublished] = useState(achievement?.published || false);
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData:any = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries()) as Omit<Achievement, 'id' | 'createdAt' | 'updatedAt'>;
         data.totalCount = parseInt(data.totalCount as any);
         data.beamsToGain = parseInt(data.beamsToGain as any);
+        data.published = isPublished; 
         onSubmit(data);
     };
 
@@ -88,6 +92,14 @@
         <Input name="beamsToGain" label="Beams to Gain" defaultValue={achievement?.beamsToGain.toString()} />
         <Input name="personalizedMessage" label="Personalized Message" defaultValue={achievement?.personalizedMessage} />
         <Input name="actionUrl" label="Action URL" defaultValue={achievement?.actionUrl || ''} />
+        <Checkbox
+        defaultSelected={isPublished}
+          isSelected={isPublished}
+          onValueChange={setIsPublished}
+          color="primary"
+        >
+          Published
+        </Checkbox>
         </div>
         <div className='my-4 flex gap-4'>
         <Button className='bg-brand text-white' type="submit">Submit</Button>
@@ -117,25 +129,41 @@
     }, []);
 
       
-        const handleCreate = async (data: Omit<Level | Achievement, 'id' | 'createdAt' | 'updatedAt'>) => {
-          if (isLevel) {
-            await createLevel(data as Omit<Level, 'id' | 'createdAt' | 'updatedAt'>);
-          } else {
-            await createAchievement(data as Omit<Achievement, 'id' | 'createdAt' | 'updatedAt'>);
-          }
-          onClose();
-          fetchData();
-        };
+    const handleCreate = async (data: Omit<Level | Achievement, 'id' | 'createdAt' | 'updatedAt'>) => {
+      try {
+        console.log('Creating new item:', data);
+        if (isLevel) {
+          await createLevel(data as Omit<Level, 'id' | 'createdAt' | 'updatedAt'>);
+          toast.success('Level created successfully');
+        } else {
+          await createAchievement(data as Omit<Achievement, 'id' | 'createdAt' | 'updatedAt'>);
+          toast.success('Achievement created successfully');
+        }
+        onClose();
+        fetchData();
+      } catch (error) {
+        console.error('Error creating item:', error);
+        toast.error('Failed to create item');
+      }
+    };
       
         const handleUpdate = async (data: Partial<Omit<Level | Achievement, 'id' | 'createdAt' | 'updatedAt'>>) => {
           if (!selectedItem) return;
-          if (isLevel) {
-            await updateLevel(selectedItem.id, data as Partial<Omit<Level, 'id' | 'createdAt' | 'updatedAt'>>);
-          } else {
-            await updateAchievement(selectedItem.id, data as Partial<Omit<Achievement, 'id' | 'createdAt' | 'updatedAt'>>);
+          try {
+            console.log('Updating item:', { id: selectedItem.id, data });
+            if (isLevel) {
+              await updateLevel(selectedItem.id, data as Partial<Omit<Level, 'id' | 'createdAt' | 'updatedAt'>>);
+              toast.success('Level updated successfully');
+            } else {
+              await updateAchievement(selectedItem.id, data as Partial<Omit<Achievement, 'id' | 'createdAt' | 'updatedAt'>>);
+              toast.success('Achievement updated successfully');
+            }
+            onClose();
+            fetchData();
+          } catch (error) {
+            console.error('Error updating item:', error);
+            toast.error('Failed to update item');
           }
-          onClose();
-          fetchData();
         };
       
         const handleDelete = async (id: string) => {
@@ -144,17 +172,26 @@
       
         const confirmDelete = async () => {
           if (!itemToDelete) return;
-          if (isLevel) {
-            await deleteLevel(itemToDelete);
-          } else {
-            await deleteAchievement(itemToDelete);
+          try {
+            console.log('Deleting item:', itemToDelete);
+            if (isLevel) {
+              await deleteLevel(itemToDelete);
+              toast.success('Level deleted successfully');
+            } else {
+              await deleteAchievement(itemToDelete);
+              toast.success('Achievement deleted successfully');
+            }
+            setItemToDelete(null);
+            fetchData();
+          } catch (error) {
+            console.error('Error deleting item:', error);
+            toast.error('Failed to delete item');
           }
-          setItemToDelete(null);
-          fetchData();
         };
       
         return (
           <div className="container mx-auto p-4">
+            <Toaster position="top-right" />
             <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
             
             <div className="flex items-center gap-4 flex-col md:flex-row mb-6">

@@ -4,7 +4,11 @@ import { Achievement, UserAchievement } from "@prisma/client";
 
 export const getAllAchievements = async (): Promise<Achievement[]> => {
   try {
-    const achievements = await db.achievement.findMany();
+    const achievements = await db.achievement.findMany({
+      where : {
+        published : true
+      }
+    });
     return achievements;
   } catch (error) {
     console.error("Error fetching all achievements:", error);

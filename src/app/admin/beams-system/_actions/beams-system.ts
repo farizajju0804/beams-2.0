@@ -12,6 +12,8 @@ export async function getLevels(): Promise<Level[]> {
     const db = (await import('@/libs/db')).db;
     return db.level.create({ data });
   }
+
+  
   
   export async function updateLevel(id: string, data: Partial<Omit<Level, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Level> {
   
