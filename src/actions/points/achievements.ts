@@ -40,7 +40,7 @@ export const getCompletedAchievements = async (userId: string): Promise<UserAchi
       },
       include: {
         achievement: true,
-      },
+      }
     });
     return userAchievements;
   } catch (error) {

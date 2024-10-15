@@ -57,7 +57,8 @@ export default function AchievementCard({
     : completedCount
 
   return (
-    <div className='flex w-full md:justify-start justify-center'>
+    <section id={id}>
+    <div  className='flex w-full md:justify-start justify-center'>
       <div className="w-80 max-w-sm bg-background rounded-2xl overflow-hidden shadow-defined">
         <div className="relative h-24" style={{ backgroundColor: cardColor }}>
           <div className="absolute inset-0 flex items-center px-4">
@@ -142,5 +143,6 @@ export default function AchievementCard({
         </div>
       </div>
     </div>
+    </section>
   )
 }

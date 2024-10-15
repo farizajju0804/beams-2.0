@@ -1,3 +1,4 @@
+'use server'
 import { db } from "@/libs/db";
 
 // Function to fetch all relevant BeamsToday data based on watched content IDs

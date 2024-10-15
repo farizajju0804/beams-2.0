@@ -12,20 +12,20 @@ const getAvatarSrc = (user: any) => user?.image;
 
 export default function ReferralSection({ referrals }: Referral) {
   return (
-    <Card className="w-full max-w-md px-6 lg:px-0 shadow-none border-none outline-none">
+    <Card className="w-full bg-transparent max-w-md shadow-none border-none outline-none">
       <CardBody className="outline-none p-0">
-        <div className="flex items-center justify-between mb-4">
+        {/* <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col items-start">
             <h2 className="text-lg md:text-2xl font-bold">My Referrals</h2>
             <div className="border-b-2 border-brand w-[60px]"></div>
           </div>
-        </div>
+        </div> */}
         {referrals.length > 0 ? (
           <div className="space-y-4">
             {referrals.map((referral) => (
               <div
                 key={referral.id}
-                className="flex items-center justify-between p-3 bg-grey-1 rounded-lg transition-all duration-300 ease-in-out"
+                className="flex bg-background items-center justify-between p-3 rounded-lg transition-all duration-300 ease-in-out"
               >
                 <User
                   name={`${referral.firstName} ${referral.lastName}`}
@@ -49,9 +49,9 @@ export default function ReferralSection({ referrals }: Referral) {
             <Image className='mb-4'  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" alt="referraal" width={100} height={100} />
             <h3 className="text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That! </h3>
             <p className="text-grey-2 mb-4">
-            Invite your friends and colleagues today. More friends, more Beams, more fun.
+             More friends, more Beams, more fun.
             </p>
-            <Button as={'a'} href='/dashboard/?referral=true' color={"primary"} startContent={<Gift className="text-white" variant="Bold" />} >Refer a Friend</Button>
+            <Button as={'a'} className="text-white font-medium" href='/dashboard/?referral=true' color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
           </div>
         )}
       </CardBody>

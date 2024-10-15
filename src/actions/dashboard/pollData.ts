@@ -1,5 +1,5 @@
 // File: actions/dashboard/pollData.ts
-
+'use server'
 import { db } from "@/libs/db";
 
 // Fetch only the poll questions, options, and user responses that the given user has responded to
