@@ -12,6 +12,7 @@ import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-conf
 import { getAccountByUserId } from "./actions/auth/account";
 import { getUserByEmail, getUserById2 } from "./actions/auth/getUserByEmail";
 import { UserType } from "@prisma/client";
+import { getClientIp } from "./utils/getClientIp";
 
 // Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
@@ -41,6 +42,30 @@ export const {
     // Sign-in callback to handle additional validation like two-factor authentication
     async signIn({ user, account }) {
       // Skip validation if the provider is not credentials-based (e.g., Google OAuth)
+      if (account?.provider === "google") {
+        const ip = getClientIp();
+        try {
+          const existingUser = await getUserByEmail(user.email as string);
+          if (existingUser) {
+            await db.user.update({
+              where: { email: user.email as string },
+              data: {
+                lastLoginIp: ip,
+                lastLoginAt: new Date(),
+              },
+            });
+          } else {
+            return true;
+          }
+        } catch (error) {
+          console.error("Error in Google signIn callback:", error);
+          return false;
+        }
+        return true;
+      }
+      
+
+      
       if (account?.provider !== "credentials") return true;
       
       // Fetch user data to check if email is verified

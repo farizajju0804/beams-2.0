@@ -80,8 +80,10 @@ model User {
   notifications             Notification[]
   userAchievements          UserAchievement[]
   factCompletions           FactCompletion[]
-
+  beamsTodayWatchedContent BeamsTodayWatchedContent?
+  pollResponses          BeamsTodayPollResponse[]
   Referral Referral?
+  beamPointsHistory      BeamPointsHistory[]
 }
 
 // Account model for storing external account login information
@@ -185,7 +187,7 @@ model Notification {
 model Referral {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   userId       String   @unique @db.ObjectId // Foreign key to the user who made the referral
-  user         User     @relation(fields: [userId], references: [id]) // The user who made the referral
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   referralCode String   @unique // Unique referral code for the referrer
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -279,6 +281,7 @@ model BeamsTodayWatchedContent {
   completedBeamsToday String[] @default([]) // List of completed Beams Today content
   completedFormats    Json     @default("{}") // JSON data to track completed formats (video, audio, etc.)
   updatedAt           DateTime @default(now()) // Timestamp of last update
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Model for categorizing Beams Today content
@@ -321,7 +324,7 @@ model BeamsTodayPollResponse {
   pollOptionId String               @db.ObjectId // Foreign key to the poll option
   pollOption   BeamsTodayPollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade) // Relationship to the poll option
   createdAt    DateTime             @default(now()) // Timestamp of the response
-
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId]) // Index for faster queries on userId
   @@index([pollOptionId]) // Index for faster queries on pollOptionId
 }
@@ -408,7 +411,7 @@ model UserBeamPoints {
   level     Level     @relation(fields: [levelId], references: [id])
   createdAt DateTime? @default(now()) // Timestamp of when points were earned
   updatedAt DateTime? @updatedAt // Timestamp of last update
-  user      User      @relation(fields: [userId], references: [id]) // Relationship to the User model
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to the User model
 
   // Index for faster queries on userId
   @@index([levelId]) // Index for faster queries on levelId
@@ -421,7 +424,7 @@ model BeamPointsHistory {
   source      String // Source of the points (e.g., watching videos, completing quizzes)
   description String // Description or reason for the points (e.g., "Watched 3 videos")
   createdAt   DateTime @default(now()) // Timestamp of when points were earned
-
+  user      User      @relation(fields: [userId], references: [id],onDelete: Cascade)
   @@index([userId]) // Index for faster queries on userId
 }
 
@@ -433,7 +436,7 @@ model Leaderboard {
   startDate DateTime
   endDate   DateTime
   createdAt DateTime? @default(now())
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id],onDelete: Cascade)
 
   userType UserType // "STUDENT" or "NON_STUDENT"
 
@@ -480,8 +483,8 @@ model UserAchievement {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  user        User        @relation(fields: [userId], references: [id])
-  achievement Achievement @relation(fields: [achievementId], references: [id])
+  user        User        @relation(fields: [userId], references: [id],onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id],onDelete: Cascade)
 
   @@unique([userId, achievementId])
   @@index([userId])

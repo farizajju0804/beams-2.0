@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Table, 
@@ -23,6 +22,7 @@ import {
 import { User as UserW, Profile2User, Trash } from 'iconsax-react';
 import { getUsers, getUserDetails, deleteUser, banUser, terminateSession } from './_actions/usersActions';
 import { Account, User, UserType } from '@prisma/client';
+import toast, { Toaster } from 'react-hot-toast';
 
 type UserWithAccounts = User & { accounts: Account[] };
 const getAvatarSrc = (user: any) => user?.image;
@@ -32,23 +32,45 @@ export default function UserManagement() {
   const [filteredUsers, setFilteredUsers] = useState<UserWithAccounts[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserWithAccounts | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isDetailsOpen, onOpen: onDetailsOpen, onClose: onDetailsClose } = useDisclosure();
+  const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure();
   const [filter, setFilter] = useState({ userType: '', accountType: '' });
   const [sortBy, setSortBy] = useState('');
+  const [confirmAction, setConfirmAction] = useState<{ type: string; userId: string } | null>(null);
   
   const fetchUsers = useCallback(async () => {
-    const fetchedUsers = await getUsers(
-      filter.userType as UserType || undefined,
-      filter.accountType as 'oidc' | 'credentials' || undefined
-    );
-    setUsers(fetchedUsers);
+    try {
+      const fetchedUsers = await getUsers(
+        filter.userType as UserType || undefined
+      );
+      console.log(fetchedUsers);
+      // Filter users based on account type
+      const filteredUsers = fetchedUsers.filter(user => {
+        if (filter.accountType === 'credentials') {
+          // Filter users who have no accounts or have accounts that are not 'oidc'
+          return user.accounts.length === 0 || !user.accounts.some(account => account.type === 'oidc');
+        } else if (filter.accountType === 'oidc') {
+          // Filter users who have accounts of 'oidc'
+          return user.accounts.some(account => account.type === 'oidc');
+        }
+        // If no account type is selected, return all users
+        return true;
+      });
+  
+      setUsers(filteredUsers);
+      console.log(filteredUsers)
+    } catch (error) {
+      toast.error('Failed to fetch users');
+    }
   }, [filter]);
+  
+  
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const sortUsers = useCallback((usersToSort: any[]) => {
+  const sortUsers = useCallback((usersToSort: UserWithAccounts[]) => {
     return [...usersToSort].sort((a, b) => {
       switch (sortBy) {
         case 'nameAsc':
@@ -76,24 +98,56 @@ export default function UserManagement() {
 
   const handleViewDetails = async (user: UserWithAccounts) => {
     setSelectedUser(user);
-    const details = await getUserDetails(user.id);
-    setUserDetails(details);
-    onOpen();
+    try {
+      const details = await getUserDetails(user.id);
+      setUserDetails(details);
+      onDetailsOpen();
+    } catch (error) {
+      toast.error('Failed to fetch user details');
+    }
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    await deleteUser(userId);
-    fetchUsers();
+  const handleDeleteUser = (userId: string) => {
+    setConfirmAction({ type: 'delete', userId });
+    onConfirmOpen();
   };
 
-  const handleBanUser = async (userId: string) => {
-    await banUser(userId);
-    fetchUsers();
+  const handleBanUser = (userId: string) => {
+    setConfirmAction({ type: 'ban', userId });
+    onConfirmOpen();
   };
 
-  const handleTerminateSession = async (userId: string) => {
-    await terminateSession(userId);
-    fetchUsers();
+  const handleTerminateSession = (userId: string) => {
+    setConfirmAction({ type: 'terminate', userId });
+    onConfirmOpen();
+  };
+
+  const executeAction = async () => {
+    if (!confirmAction) return;
+
+    const { type, userId } = confirmAction;
+    try {
+      switch (type) {
+        case 'delete':
+          await deleteUser(userId);
+          toast.success('User deleted successfully');
+          break;
+        case 'ban':
+          await banUser(userId);
+          toast.success('User banned successfully');
+          break;
+        case 'terminate':
+          await terminateSession(userId);
+          toast.success('User session terminated successfully');
+          break;
+      }
+      fetchUsers();
+    } catch (error) {
+      toast.error(`Error: ${(error as Error).message}`);
+    } finally {
+      setConfirmAction(null);
+      onConfirmClose();
+    }
   };
 
   const columns = [
@@ -108,7 +162,7 @@ export default function UserManagement() {
       case 'user':
         return (
           <NextUIUser
-            avatarProps={{ src: getAvatarSrc(user), name: "", showFallback: true }}
+            avatarProps={{ src: getAvatarSrc(user), name: `${user.firstName} ${user.lastName}`, showFallback: true }}
             name={`${user.firstName} ${user.lastName}`}
             description={user.email}
           />
@@ -120,17 +174,16 @@ export default function UserManagement() {
       case 'actions':
         return (
           <div className="flex items-center gap-2">
-            <Button color="primary"  className='text-white' aria-label="View" onClick={() => handleViewDetails(user)}>
+            <Button color="primary" className='text-white' aria-label="View" onPress={() => handleViewDetails(user)}>
               View
             </Button>
-            
-            <Button  onClick={() => handleTerminateSession(user.id)}>
+            <Button onPress={() => handleTerminateSession(user.id)}>
               Terminate Session
             </Button>
-            <Button  color='warning' className='text-black' onClick={() => handleBanUser(user.id)}>
+            <Button color='warning' className='text-black' onPress={() => handleBanUser(user.id)}>
               Ban User
             </Button>
-            <Button isIconOnly color="danger" aria-label="Delete" onClick={() => handleDeleteUser(user.id)}>
+            <Button isIconOnly color="danger" aria-label="Delete" onPress={() => handleDeleteUser(user.id)}>
               <Trash size={20} />
             </Button>
           </div>
@@ -142,6 +195,7 @@ export default function UserManagement() {
 
   return (
     <div className="container mx-auto p-6">
+      <Toaster position="top-right" />
       <h1 className="text-2xl font-bold mb-6">User Management</h1>
       <div className="mb-4 flex gap-4">
         <Select
@@ -187,37 +241,49 @@ export default function UserManagement() {
           )}
         </TableBody>
       </Table>
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isDetailsOpen} onClose={onDetailsClose} size="2xl">
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>User Details</ModalHeader>
-              <ModalBody>
-                {userDetails && (
-                  <div>
-                    <p><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</p>
-                    <p><strong>Email:</strong> {userDetails.email}</p>
-                    <p><strong>User Type:</strong> {userDetails.userType}</p>
-                    <p><strong>Account :</strong> {userDetails.accounts[0]?.provider || 'Credentials'}</p>
-                    <p><strong>Beams Points:</strong> {userDetails.beamPoints[0]?.beams || 0}</p>
-                    <p><strong>Current Level:</strong> {userDetails.beamPoints[0]?.level?.name || 'Newbie'}</p>
-                    <p><strong>Unlocked Achievements:</strong> {userDetails.userAchievements.map((ua: any) => ua.achievement.name).join(', ')}</p>
-                    <p><strong>Last Login:</strong> {userDetails.lastLoginAt ? new Date(userDetails.lastLoginAt).toLocaleString() : 'N/A'}</p>
-                    <p><strong>Last Login IP:</strong> {userDetails.lastLoginIp || 'N/A'}</p>
-                  </div>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+          <ModalHeader>User Details</ModalHeader>
+          <ModalBody>
+            {userDetails && (
+              <div>
+                <p><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</p>
+                <p><strong>Email:</strong> {userDetails.email}</p>
+                <p><strong>User Type:</strong> {userDetails.userType}</p>
+                <p><strong>Account:</strong> {userDetails.accounts[0]?.provider || 'Credentials'}</p>
+                <p><strong>Beams Points:</strong> {userDetails.beamPoints[0]?.beams || 0}</p>
+                <p><strong>Current Level:</strong> {userDetails.beamPoints[0]?.level?.name || 'Newbie'}</p>
+                <p><strong>Unlocked Achievements:</strong> {userDetails.userAchievements.map((ua: any) => ua.achievement.name).join(', ')}</p>
+                <p><strong>Last Login:</strong> {userDetails.lastLoginAt ? new Date(userDetails.lastLoginAt).toLocaleString() : 'N/A'}</p>
+                <p><strong>Last Login IP:</strong> {userDetails.lastLoginIp || 'N/A'}</p>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onPress={onDetailsClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isConfirmOpen} onClose={onConfirmClose}>
+        <ModalContent>
+          <ModalHeader>Confirm Action</ModalHeader>
+          <ModalBody>
+            {confirmAction?.type === 'delete' && <p>Are you sure you want to delete this user?</p>}
+            {confirmAction?.type === 'ban' && <p>Are you sure you want to ban this user?</p>}
+            {confirmAction?.type === 'terminate' && <p>Are you sure you want to terminate this user's session?</p>}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onPress={executeAction}>
+              Confirm
+            </Button>
+            <Button color="default" onPress={onConfirmClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>
   );
 }
-
-

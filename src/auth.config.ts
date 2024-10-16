@@ -5,6 +5,7 @@ import type { NextAuthConfig } from "next-auth"; // Importing the NextAuthConfig
 import { LoginSchema } from '@/schema'; // Import a schema to validate login credentials
 import { getUserByEmail } from '@/actions/auth/getUserByEmail'; // Action to get a user by email
 import bcrypt from 'bcryptjs'; // Bcrypt for hashing and verifying passwords
+import { getClientIp } from './utils/getClientIp';
 
 export default {
   providers: [
@@ -20,13 +21,16 @@ export default {
         },
       },
       // Custom profile handler to structure the user's profile data after successful OAuth login
-      profile: (_profile) => {
+      profile: async (_profile) => {
+        const ip = getClientIp();
         return {
-          id: _profile.sub, // Google user ID
-          firstName: _profile.given_name, // First name
-          lastName: _profile.family_name, // Last name
-          email: _profile.email, // User's email
-          image: _profile.picture, // Profile image URL
+          id: _profile.sub,
+          firstName: _profile.given_name,
+          lastName: _profile.family_name,
+          email: _profile.email,
+          image: _profile.picture,
+          lastLoginIp: ip,
+          lastLoginAt: new Date(),
         };
       }
     }),
