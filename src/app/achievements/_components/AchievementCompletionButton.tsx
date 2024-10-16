@@ -195,7 +195,8 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
         }}
         isDisabled={!isCompleted}
       >
-        {`${personalizedMessage}`}
+        Claim Badge
+        {/* {`${personalizedMessage}`} */}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center">

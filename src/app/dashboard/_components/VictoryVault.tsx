@@ -8,9 +8,10 @@ import Link from 'next/link';
 
 interface VictoryVaultProps {
   badges: any;
+  color : string;
 }
 
-const VictoryVault: React.FC<VictoryVaultProps> = ({ badges }) => {
+const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [showLeftShadow, setShowLeftShadow] = useState(false)
   const [showRightShadow, setShowRightShadow] = useState(false)
@@ -42,7 +43,17 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges }) => {
       </div>
       
       {badges.length === 0 ? (
+        <>
         <p className="text-center text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
+        <Image
+                    src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1729076438/achievements/badge-fallback-group_au6dos.webp"}
+                    alt={`Badge`}
+                    width={1000}
+                    height={100}
+                    objectFit="cover"
+                    className="w-60 mt-2 h-16"
+                  />
+      </>
       ) : (
         <div className="relative">
           <div
@@ -88,12 +99,14 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges }) => {
       )}
       
    
-        <div className="mt-6 text-center">
+        <div className="mt-4 text-center">
         <Link
             href="/achievements/#victory"
-            className="text-brand text-sm underline font-medium"
+            style={{ color: color }}
+
+            className="text-sm underline font-medium"
           >
-            {badges.length === 0 ? "Explore badges" : "View my badges"}
+            {badges.length === 0 ? "Explore Badges" : "View My Badges"}
           </Link>
         </div>
      

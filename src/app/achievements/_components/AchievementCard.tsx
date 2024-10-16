@@ -58,9 +58,9 @@ export default function AchievementCard({
 
   return (
     <section id={id}>
-    <div  className='flex w-full md:justify-start justify-center'>
+    <div  className='flex w-full items-center md:justify-start justify-center'>
       <div className="w-80 max-w-sm bg-background rounded-2xl overflow-hidden shadow-defined">
-        <div className="relative h-24" style={{ backgroundColor: cardColor }}>
+        <div className="relative h-20" style={{ backgroundColor: cardColor }}>
           <div className="absolute inset-0 flex items-center px-4">
             <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center shadow-lg mr-4">
               <Image
@@ -101,7 +101,7 @@ export default function AchievementCard({
           </div>
         </div>
         <div className="px-4 py-2">
-          <p className="text-grey-2 font-medium text-sm mt-2 mb-4">{taskDefinition}</p>
+          <p className="text-grey-2 font-medium text-base mt-2 mb-4">{taskDefinition}</p>
           <div className="mb-4">
             <div className="flex items-center justify-start gap-4 font-semibold text-sm text-grey-2 mb-6">
              
@@ -138,7 +138,7 @@ export default function AchievementCard({
               isCompleted={isCompleted}
             />
            {!isCompleted && ( <Button  as="a" href={actionUrl}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
-             Go </Button> )} 
+            Take Me There </Button> )} 
           </div>
         </div>
       </div>

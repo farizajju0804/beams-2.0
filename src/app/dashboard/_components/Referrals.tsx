@@ -47,11 +47,11 @@ export default function ReferralSection({ referrals }: Referral) {
           <div className="flex flex-col items-center justify-center py-8 text-center">
             {/* <Profile2User size="48" className="text-grey-2 mb-4" /> */}
             <Image className='mb-4'  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" alt="referraal" width={100} height={100} />
-            <h3 className="text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That! </h3>
+            <h3 className="text-lg md:text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That! </h3>
             <p className="text-grey-2 mb-4">
              More friends, more Beams, more fun.
             </p>
-            <Button as={'a'} className="text-white font-medium" href='/dashboard/?referral=true' color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
+            <Button as={'a'} className="text-white font-semibold" href='/dashboard/?referral=true' color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
           </div>
         )}
       </CardBody>

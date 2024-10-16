@@ -12,11 +12,11 @@ interface LevelDetailsProps {
 const LevelDetails: React.FC<LevelDetailsProps>= ({ userLevel, beams}) => {
   return (
 
-    <div className='gap-6 flex flex-col items-center justify-center '>
+    <div className='gap-3 flex flex-col items-center justify-center '>
     <div className="flex items-center md:justify-start justify-center ">
 <div className="flex items-center justify-center gap-4">
   <div className="flex items-center gap-2">
-    <p className="text-xs mx-auto  md:text-base text-grey-2">Level {userLevel.levelNumber}</p>
+    <p className="text-xs mx-auto  md:text-base font-poppins font-medium uppercase ">Level {userLevel.levelNumber}</p>
     <div className="flex items-center gap-2">
       <p className="text-xs md:text-base uppercase font-medium font-poppins text-text relative">
         <span className="inline-block" >
@@ -25,7 +25,7 @@ const LevelDetails: React.FC<LevelDetailsProps>= ({ userLevel, beams}) => {
       </p>
     </div>
   </div>
-  <p className="text-sm md:text-base mx-auto text-grey-2 font-semibold">{beams} Beams</p>
+  <p className="text-xs md:text-base mx-auto font-poppins  font-medium">{beams} Beams</p>
 
 </div>
 </div>
@@ -41,9 +41,9 @@ const LevelDetails: React.FC<LevelDetailsProps>= ({ userLevel, beams}) => {
 
       <Link
     href='/achievements'
-    className='w-full text-brand underline font-medium  text-center mx-auto text-sm'
-  >
-    View Levels progress
+    style={{ color: userLevel.bgColor }}
+    className={` w-full underline font-medium  text-center mx-auto text-sm`}>
+    View Progress
   </Link>
   </div>
 

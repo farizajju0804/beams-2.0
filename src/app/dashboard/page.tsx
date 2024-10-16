@@ -14,7 +14,8 @@ import ProfilePictureForm from '@/components/ProfilePictureForm';
 import LevelDetails from './_components/LevelDetails';
 import AccordionMenu from './_components/AccordionMenu';
 import { Activity, Book, Coin, Coin1, Gift, User } from 'iconsax-react';
-import PieChartBeams from './_components/PieChart';
+import VibrantBeamsBreakdown from './_components/PieChart';
+
 
 const DashboardPage = async () => {
   const user: any = await currentUser();
@@ -51,7 +52,7 @@ const DashboardPage = async () => {
       title: "My Beams",
       icon:  <Coin1 variant="Bold" className="h-5 w-5 text-grey-2" />,
       content: (
-        <PieChartBeams
+        <VibrantBeamsBreakdown
          
           beams={beams}
           
@@ -76,10 +77,10 @@ const DashboardPage = async () => {
 
   return (
     <div className='w-full flex flex-col px-6 md:px-8 gap-12 py-4'>
-      <div className='grid gap-6 w-full grid-cols-1 md:grid-cols-3'> 
+      <div className='grid gap-4 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8'> 
         <ProfilePictureForm user={user} />
         <LevelDetails userLevel={userLevel} beams={beams} />
-        <VictoryVault badges={completed} />
+        <VictoryVault color={userLevel.bgColor} badges={completed} />
       </div>
 
       {/* Pass the plain data to AccordionMenu */}

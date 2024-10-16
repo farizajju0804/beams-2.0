@@ -1,7 +1,7 @@
 'use client'
 import React, { useRef, useState } from "react";
 import { Avatar, Spinner } from "@nextui-org/react";
-import { Gallery } from "iconsax-react";
+import { Edit2, Gallery } from "iconsax-react";
 import { Toaster, toast } from "react-hot-toast";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";
@@ -152,7 +152,7 @@ const ProfilePictureForm: React.FC<ProfilePictureProps> = ({ user }) => {
                 className="w-24 h-24 text-large"
               />
               <div className="absolute bottom-2 right-1 bg-primary p-1 flex items-center justify-center z-[30] rounded-full">
-                <Gallery variant="Bold" size={16} className="text-white" />
+                <Edit2 variant="Bold" size={14} className="text-white" />
               </div>
             </div>
           )}
@@ -164,7 +164,7 @@ const ProfilePictureForm: React.FC<ProfilePictureProps> = ({ user }) => {
             accept="image/jpeg,image/png,image/gif"
           />
         </div>
-        <h2 className="text-2xl md:text-3xl font-poppins font-bold mt-2">{user.firstName} {user.lastName}</h2>
+        <h2 className="text-2xl md:text-3xl font-poppins font-semibold ">{user.firstName} {user.lastName}</h2>
       </div>
     </>
   );

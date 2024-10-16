@@ -61,7 +61,7 @@ const AccordionMenu: React.FC<AccordionMenuProps> = ({ menuItems }) => {
                   }}
                   className="overflow-hidden"
                 >
-                  <div className="p-4 bg-grey-1">{item.content}</div> {/* Render content */}
+                  <div className="p-4 bg-grey-3">{item.content}</div> {/* Render content */}
                 </motion.div>
               )}
             </AnimatePresence>
