@@ -13,14 +13,10 @@ const getAvatarSrc = (user: any) => user?.image;
 export default function ReferralSection({ referrals }: Referral) {
   return (
     <Card className="w-full bg-transparent max-w-md shadow-none border-none outline-none">
-      <CardBody className="outline-none p-0">
-        {/* <div className="flex items-center justify-between mb-4">
-          <div className="flex flex-col items-start">
-            <h2 className="text-lg md:text-2xl font-bold">My Referrals</h2>
-            <div className="border-b-2 border-brand w-[60px]"></div>
-          </div>
-        </div> */}
+      
+    
         {referrals.length > 0 ? (
+          <CardBody className="outline-none p-0">
           <div className="space-y-4">
             {referrals.map((referral) => (
               <div
@@ -43,7 +39,10 @@ export default function ReferralSection({ referrals }: Referral) {
               </div>
             ))}
           </div>
+      </CardBody>
+
         ) : (
+          <CardBody className="outline-none p-0 w-full">
           <div className="flex flex-col items-center justify-center py-8 text-center">
             {/* <Profile2User size="48" className="text-grey-2 mb-4" /> */}
             <Image className='mb-4'  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" alt="referraal" width={100} height={100} />
@@ -53,8 +52,8 @@ export default function ReferralSection({ referrals }: Referral) {
             </p>
             <Button as={'a'} className="text-white font-semibold" href='/dashboard/?referral=true' color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
           </div>
-        )}
       </CardBody>
+        )}
     </Card>
   );
 }

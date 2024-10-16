@@ -62,7 +62,7 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
   const totalPoints = pieChartData.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 bg-grey-3 rounded-2xl shadow-xl">
+    <div className="w-full max-w-2xl mx-auto p-4 bg-background rounded-2xl shadow-defined">
       {beams > 0 ? (
         <>
           <ScoreDisplay score={beams} />

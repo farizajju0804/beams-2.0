@@ -164,7 +164,7 @@ const ProfilePictureForm: React.FC<ProfilePictureProps> = ({ user }) => {
             accept="image/jpeg,image/png,image/gif"
           />
         </div>
-        <h2 className="text-2xl md:text-3xl font-poppins font-semibold ">{user.firstName} {user.lastName}</h2>
+        <h2 className="text-2xl md:text-2xl font-poppins font-semibold ">{user.firstName} {user.lastName}</h2>
       </div>
     </>
   );
