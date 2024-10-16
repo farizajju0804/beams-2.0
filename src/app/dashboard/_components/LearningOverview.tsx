@@ -332,7 +332,7 @@ const LearningOverview: React.FC<LearningOverviewProps> = ({ userAnalytics, watc
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
         {stats.map((stat, index) => (
           <React.Fragment key={index}>
-            <div className={`flex items-center justify-center ${index !== stats.length - 1 ? 'border-b md:border-b-0 md:border-r' : ''} border-grey-1 py-4 md:py-0`}>
+            <div className={`flex items-center justify-center ${index !== stats.length - 1 ? 'border-b md:border-b-0 md:border-r' : ''} border-grey-1  md:py-0`}>
               <StatItem {...stat} />
             </div>
           </React.Fragment>
