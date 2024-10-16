@@ -36,7 +36,7 @@ const ScoreDisplay: React.FC<{ score: number }> = ({ score }) => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <span className="text-lg md:text-2xl">You've earned</span>
+    <span className="text-lg md:text-2xl">You&apos;ve earned</span>
     <br />
     <span className="text-3xl md:text-5xl font-bold">{score} Beams</span>
   </motion.div>
