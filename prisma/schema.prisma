@@ -7,6 +7,7 @@ generator client {
 datasource db {
   provider = "mongodb" // Specifies MongoDB as the database provider
   url      = env("DATABASE_URL") // Database connection URL, sourced from an environment variable
+  directUrl = env("DIRECT_URL")
 }
 
 // Enum for defining different user roles

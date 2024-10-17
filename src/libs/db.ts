@@ -14,3 +14,7 @@ export const db = globalThis.prisma || new PrismaClient();
 // In development, assign the PrismaClient instance to `globalThis.prisma` to ensure that
 // the same instance is reused across hot-reloads in development mode.
 if (process.env.NODE_ENV !== "production") globalThis.prisma = db;
+
+
+
+

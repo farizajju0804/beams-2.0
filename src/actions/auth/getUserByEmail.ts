@@ -1,4 +1,5 @@
 import { db } from '@/libs/db'; // Import the database instance from the database library
+import { prismaDb } from '@/libs/prisma';
 import { revalidatePath } from 'next/cache';
 
 /**
@@ -8,7 +9,7 @@ import { revalidatePath } from 'next/cache';
  */
 export const getUserByEmail = async (email: string) => {
   try {
-    const user = await db.user.findUnique({
+    const user = await prismaDb.user.findUnique({
       where: {
         email,
       },
@@ -17,7 +18,6 @@ export const getUserByEmail = async (email: string) => {
      
     );
   
-    // revalidatePath('/', 'layout')
     return user;
   
   } catch (error) {
@@ -65,4 +65,3 @@ export const getUserBySecurityAnswers = async (securityAnswer1: string, security
 };
 
 
-export const fetchCache = 'force-no-store';

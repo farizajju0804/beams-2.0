@@ -11,7 +11,7 @@ export default auth(async (req) => {
 
   const isLoggedIn = !!req.auth; // Check if the user is logged in
   const user = await currentUser(); // Fetch the current user data
-  // console.log("session",user);
+  console.log("middleware session",user);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the route is an authentication route (e.g., login, register)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // Check if the route is a public route
@@ -41,7 +41,7 @@ export default auth(async (req) => {
   }
 
   // If the user is not logged in and the route is not public, redirect to the login page
-  if (!isLoggedIn && !isPublicRoute && !user) {
+  if ( !isPublicRoute && !user) {
     return Response.redirect(new URL('/auth/login', nextUrl));
   }
 
