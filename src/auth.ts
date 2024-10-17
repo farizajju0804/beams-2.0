@@ -53,7 +53,7 @@ export const {
       if (account?.provider === "google") {
         const ip = getClientIp();
         try {
-          const existingUser = await getUserByEmail(user.email as string);
+          // const existingUser = await getUserByEmail(user.email as string);
           if (existingUser) {
             await db.user.update({
               where: { email: user.email as string },
