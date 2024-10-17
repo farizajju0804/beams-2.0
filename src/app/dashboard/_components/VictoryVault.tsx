@@ -36,22 +36,22 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
   }
 
   return (
-    <div className="bg-background text-text p-4 rounded-3xl shadow-defined flex flex-col items-center justify-center max-w-md">
-      <div className="flex items-center mb-6">
+    <div className="bg-background gap-3 text-text pb-4 rounded-3xl shadow-defined flex flex-col items-center justify-center max-w-md">
+      <div className="flex items-center bg-yellow w-full justify-center py-2 rounded-t-3xl">
         <Award variant='Bold' size={20} className="mr-2" />
         <h2 className="text-sm md:text-lg font-poppins font-semibold">My Victory Vault</h2>
       </div>
       
       {badges.length === 0 ? (
         <>
-        <p className="text-center text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
+        <p className="text-center text-sm text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
         <Image
                     src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1729076438/achievements/badge-fallback-group_au6dos.webp"}
                     alt={`Badge`}
                     width={1000}
                     height={100}
                     objectFit="cover"
-                    className="w-60 mt-2 h-16"
+                    className="w-60  h-16"
                   />
       </>
       ) : (
@@ -99,7 +99,7 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
       )}
       
    
-        <div className="mt-4 text-center">
+        <div className="text-center">
         <Link
             href="/achievements/#victory"
             style={{ color: color }}

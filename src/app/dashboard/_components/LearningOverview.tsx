@@ -118,6 +118,7 @@ interface StatItemProps {
   viewLabel: string;
   modalContent: React.ReactNode;
   showViewLabel: boolean;
+  actionUrl : string;
 }
 
 const TopicsPopoverContent: React.FC<{ topics: WatchedData[] }> = ({ topics }) => (
@@ -190,7 +191,7 @@ const PollsPopoverContent: React.FC<{ polls: PollData[] }> = ({ polls }) => (
     )}
   </div>
 );
-const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalContent, showViewLabel }) => {
+const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalContent, showViewLabel,actionUrl }) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   return (
@@ -201,10 +202,21 @@ const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalConte
         {showViewLabel && (
           <Button
             size="sm"
-            className="mt-2 text-xs text-grey-2 bg-transparent underline p-0"
+            className="mt-2 text-xs "
             onClick={onOpen}
           >
             {viewLabel}
+          </Button>
+        )}
+        {!showViewLabel && (
+          <Button
+          as={'a'}
+            size="sm"
+
+            href={actionUrl}
+            className="mt-2 text-xs "
+          >
+            Start
           </Button>
         )}
       </div>
@@ -309,22 +321,23 @@ const LearningOverview: React.FC<LearningOverviewProps> = ({ userAnalytics, watc
       title: "Topics Mastered",
       viewLabel: "View all topics",
       modalContent: <TopicsPopoverContent topics={watchedData} />,
-      showViewLabel: watchedData.length > 0
+      showViewLabel: watchedData.length > 0,
+      actionUrl : '/beams-today'
     },
-    {
-      value: timeSpent,
-      title: "Time Invested",
-      viewLabel: "View time breakdown",
-      modalContent: <TimeBreakdownPopoverContent timeData={timeData} />,
-      showViewLabel: !!userAnalytics
-    },
-    {
-      value: pollData?.length || 0,
-      title: "Polls Engaged",
-      viewLabel: "View all polls",
-      modalContent: <PollsPopoverContent polls={pollData || []} />,
-      showViewLabel: !!pollData && pollData.length > 0
-    }
+    // {
+    //   value: timeSpent,
+    //   title: "Time Invested",
+    //   viewLabel: "View time breakdown",
+    //   modalContent: <TimeBreakdownPopoverContent timeData={timeData} />,
+    //   showViewLabel: !!userAnalytics
+    // },
+    // {
+    //   value: pollData?.length || 0,
+    //   title: "Polls Engaged",
+    //   viewLabel: "View all polls",
+    //   modalContent: <PollsPopoverContent polls={pollData || []} />,
+    //   showViewLabel: !!pollData && pollData.length > 0
+    // }
   ];
 
   return (

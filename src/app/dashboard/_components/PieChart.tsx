@@ -17,7 +17,7 @@ const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
   POLL_PARTICIPATION: 'Poll',
   SHARE: 'Share',
-  ACHIEVEMENT: 'Badges',
+  ACHIEVEMENT: 'Victory',
   REFERRAL: 'Referral'
 };
 
@@ -88,7 +88,7 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
                     <span className="font-semibold" style={{ color: item.color }}>{item.name}</span>
                     <span className="font-semibold" style={{ color: item.color }}>{item.value}</span>
                   </div>
-                  <div className="h-10 w-full bg-grey-1 rounded-full overflow-hidden shadow-inner relative">
+                  {/* <div className="h-10 w-full bg-grey-1 rounded-full overflow-hidden shadow-inner relative">
                     <motion.div
                       className="h-full rounded-full flex items-center justify-end pr-2 text-xs font-bold"
                       style={{ 
@@ -111,7 +111,7 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
                         {percentage.toFixed(1)}%
                       </span>
                     )}
-                  </div>
+                  </div> */}
                 </motion.div>
               );
             })}

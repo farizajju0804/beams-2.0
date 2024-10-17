@@ -12,7 +12,7 @@ interface LevelDetailsProps {
 const LevelDetails: React.FC<LevelDetailsProps>= ({ userLevel, beams}) => {
   return (
 
-    <div className='gap-3 flex flex-col items-center justify-center '>
+    <div className='gap-3 mb-2 md:mb-0 flex flex-col items-center justify-center '>
     <div className="flex items-center md:justify-start justify-center ">
 <div className="flex items-center justify-center gap-4">
   <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ const LevelDetails: React.FC<LevelDetailsProps>= ({ userLevel, beams}) => {
       <Link
     href='/achievements'
     style={{ color: userLevel.bgColor }}
-    className={` w-full underline font-medium  text-center mx-auto text-sm`}>
+    className={` w-full underline font-medium mt-1  text-center mx-auto text-sm`}>
     View Progress
   </Link>
   </div>

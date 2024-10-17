@@ -114,10 +114,14 @@ export const {
 
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
+      
+
       // Update token with session data when explicitly triggered
       if (trigger === "update") {
         return { ...token, ...session.user };
       }
+
+
 
       // If the token contains a user identifier (sub), update it with fresh data
       if (token.sub) {

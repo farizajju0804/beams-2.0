@@ -65,6 +65,7 @@ model User {
   onBoardingCompleted    Boolean                @default(false) // Whether the user completed onboarding
   isAccessible            Boolean              @default(false)
   notificationPreference Boolean                @default(false)
+  isSessionValid          Boolean             @default(true)
  referralStatus            ReferralStatus? @default(REGISTERED)
   referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
   lastLoginAt               DateTime? // Timestamp of the last login (optional)

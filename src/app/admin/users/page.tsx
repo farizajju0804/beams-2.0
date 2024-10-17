@@ -272,7 +272,7 @@ export default function UserManagement() {
           <ModalBody>
             {confirmAction?.type === 'delete' && <p>Are you sure you want to delete this user?</p>}
             {confirmAction?.type === 'ban' && <p>Are you sure you want to ban this user?</p>}
-            {confirmAction?.type === 'terminate' && <p>Are you sure you want to terminate this user's session?</p>}
+            {confirmAction?.type === 'terminate' && <p>Are you sure you want to terminate this user&apos;s session?</p>}
           </ModalBody>
           <ModalFooter>
             <Button color="danger" onPress={executeAction}>
