@@ -35,6 +35,7 @@ export const getRecentUploads = async (clientDate: string) => {
           {
             published: true, // Only include published videos
           },
+          
         ],
       },
       orderBy: {
