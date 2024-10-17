@@ -152,7 +152,7 @@ export default function UserManagement() {
           await deleteUser(userId);
           toast.success('User deleted successfully');
           break;
-        case 'ban':
+        case 'ban': 
           await banUser(userId);
           toast.success('User banned successfully');
           break;
