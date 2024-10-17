@@ -11,6 +11,7 @@ export type ExtendedUser = DefaultSession["user"] & {
     onBoardingCompleted : boolean;
     isAccessible : boolean;
     isSessionValid : boolean;
+    isBanned : boolean;
     image : string;
 }
 declare module "next-auth"{

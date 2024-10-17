@@ -36,6 +36,10 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
     return { error: "Hmm, can't find that email. Sure it's right?", success: undefined };
   }
 
+  if (existingUser.isBanned) {
+    return { error: "Your Account is Banned", success: undefined };
+  }
+
   // Check if the user has a linked account with a provider (OAuth user)
   const linkedAccount = await db.account.findFirst({
     where: {

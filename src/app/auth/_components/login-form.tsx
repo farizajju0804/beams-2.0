@@ -29,7 +29,17 @@ interface LoginFormProps {
  */
 const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   const searchParams = useSearchParams(); // Hook to get query parameters from the URL
-  const urlError = searchParams.get("error") === "OAuthAccountNotLinked" ? "Email already in use with different provider!" : ""; // Set error if OAuth account is not linked
+  const urlError = (() => {
+    const error = searchParams.get("error");
+  
+    if (error === "OAuthAccountNotLinked") {
+      return "Email already in use with a different provider!";
+    } else if (error === "AccessDenied") {
+      return "Your account is banned or access was denied!";
+    } else {
+      return "";
+    }
+  })();
   const [error, setError] = useState<string | undefined>(urlError); // State for error messages
   const [success, setSuccess] = useState<string | undefined>(""); // State for success messages
   const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for form submission

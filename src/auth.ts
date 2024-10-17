@@ -23,7 +23,7 @@ export const {
 } = NextAuth({
   pages: {
     signIn: "/auth/login", // Custom sign-in page
-    error: "auth/error", // Custom error page
+    error: "/auth/error", // Custom error page
   },
   
   // Event handlers for specific authentication events
@@ -44,6 +44,11 @@ export const {
   callbacks: {
     // Sign-in callback to handle additional validation like two-factor authentication
     async signIn({ user, account }) {
+      const existingUser = await getUserByEmail(user.email as string);
+      if (existingUser?.isBanned) {
+        return false;
+      }
+
       // Skip validation if the provider is not credentials-based (e.g., Google OAuth)
       if (account?.provider === "google") {
         const ip = getClientIp();
@@ -73,7 +78,7 @@ export const {
       if (account?.provider !== "credentials") return true;
       
       // Fetch user data to check if email is verified
-      const existingUser = await getUserById2(user.id as string);
+      
       if (!existingUser?.emailVerified) {
         return false; // Block login if email is not verified
       }
@@ -119,6 +124,7 @@ export const {
         session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Attach onboarding completion status
         session.user.isAccessible = token.isAccessible as boolean;
         session.user.isSessionValid = token.isSessionValid as boolean; 
+        session.user.isBanned = token.isBanned as boolean;
       }
       
       return session; // Return the session with additional user info
@@ -157,12 +163,16 @@ export const {
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
           token.isAccessible = existingUser.isAccessible;
           token.isSessionValid = existingUser.isSessionValid;
+          token.isBanned = existingUser.isBanned;
+          if (existingUser.isBanned) {
+            token.isSessionValid = false;
+          }
         }
       }
-      if (token.isSessionValid === false) {
+   
+      if (token.isSessionValid === false || token.isBanned === true) {
         return null;
       }
-      
       return token; // Return updated token
     },
 

@@ -53,8 +53,16 @@ export async function deleteUser(userId: string): Promise<User> {
   return db.user.delete({ where: { id: userId } });
 }
 
-export async function banUser(userId: string): Promise<void> {
-  console.log(`User ${userId} has been banned.`);
+export async function banUser(userId: string) {
+  const user = await db.user.update({
+    where: { id: userId },
+    data: {
+      isBanned: true,
+      isSessionValid: false, // Invalidate their session
+    },
+  });
+
+  return user;
 }
 
 export async function terminateSession(userId: string): Promise<void> {

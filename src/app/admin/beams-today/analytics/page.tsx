@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getBeamsTodayAnalytics, getUserAnalytics } from '@/actions/beams-today/admin/analyticsActions';
 import { BeamsToday } from '@/types/beamsToday';
-import { Card, CardHeader, CardBody, CardFooter, Image, Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, CardFooter, Image, Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar } from '@nextui-org/react';
 
 const AdminAnalyticsPage = () => {
   const [topics, setTopics] = useState<any>([]);
@@ -100,15 +100,15 @@ const AdminAnalyticsPage = () => {
         {userAnalytics.map((user: any) => (
           <Card key={user.id} className="w-full">
             <CardHeader className="flex gap-3">
-              <Image
+              <Avatar
                 alt="profile"
-                height={40}
-                radius="sm"
+                
+                radius="full"
                 src={user.user.image || 'https://via.placeholder.com/40'}
-                width={40}
+                size='lg'
               />
               <div className="flex flex-col">
-                <p className="text-md">{user.user.name || 'Anonymous'}</p>
+                <p className="text-md">{user.user.firstName} {user.user.lastName}</p>
               </div>
             </CardHeader>
             <Divider />

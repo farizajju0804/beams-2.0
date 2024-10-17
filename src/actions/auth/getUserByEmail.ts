@@ -1,4 +1,5 @@
 import { db } from '@/libs/db'; // Import the database instance from the database library
+import { revalidatePath } from 'next/cache';
 
 /**
  * Fetch a user from the database by their email address.
@@ -9,12 +10,19 @@ export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
       where: {
-        email, // Search for user by email
+        email,
       },
-    });
-    return user; // Return the found user
-  } catch {
-    return null; // Return null if an error occurs or user is not found
+       
+    }, 
+     
+    );
+  
+    // revalidatePath('/', 'layout')
+    return user;
+  
+  } catch (error) {
+    console.error(`Error fetching user with email ${email}:`, error);
+    return null;
   }
 };
 
@@ -30,7 +38,7 @@ export const getUserById2 = async (id: string) => {
         id, // Search for user by unique ID
       },
     });
-    console.log("got by id", user); // Log the retrieved user for debugging purposes
+
     return user; // Return the found user
   } catch {
     return null; // Return null if an error occurs or user is not found
@@ -55,3 +63,6 @@ export const getUserBySecurityAnswers = async (securityAnswer1: string, security
     },
   });
 };
+
+
+export const fetchCache = 'force-no-store';

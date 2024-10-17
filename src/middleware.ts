@@ -11,11 +11,11 @@ export default auth(async (req) => {
 
   const isLoggedIn = !!req.auth; // Check if the user is logged in
   const user = await currentUser(); // Fetch the current user data
-  console.log("session",user);
+  // console.log("session",user);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the route is an authentication route (e.g., login, register)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // Check if the route is a public route
-
+ 
   if (nextUrl.pathname.startsWith('/api/leaderboard')) {
     return; // Allow the cron job to run without redirecting
   }
@@ -28,9 +28,13 @@ export default auth(async (req) => {
     return;
   }
 
+  // if (!user || !user.isSessionValid) {
+  //   // Redirect to login if session is invalid
+  //   return Response.redirect(new URL('/auth/login', nextUrl));
+  // }
   // Redirect logged-in users away from auth routes (e.g., to prevent accessing login page if already logged in)
   if (isAuthRoute) {
-    if (isLoggedIn) {
+    if (isLoggedIn && user) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl)); // Redirect to default page after login
     }
     return;
@@ -41,6 +45,11 @@ export default auth(async (req) => {
     return Response.redirect(new URL('/auth/login', nextUrl));
   }
 
+
+  // if(!user?.isSessionValid){
+  //   return Response.redirect(new URL('/auth/login', nextUrl));
+
+  // }
   // Logic for logged-in users
   if (isLoggedIn) {
     try {
