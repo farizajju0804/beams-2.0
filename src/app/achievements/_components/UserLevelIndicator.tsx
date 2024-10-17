@@ -22,7 +22,7 @@ interface UserLevelIndicatorProps {
 
 export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndicatorProps) {
   return (
-    <div className="w-full flex flex-col gap-10 px-8 mb-6 bg-background">
+    <div className="w-full flex flex-col gap-10 px-4 md:px-8 mb-6 bg-background">
       {levels.map((config) => {
         const isWithinLevelRange = beams >= config.minPoints && beams <= config.maxPoints;
         const isAboveLevel = beams > config.maxPoints;

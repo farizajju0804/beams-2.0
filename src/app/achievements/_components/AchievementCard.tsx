@@ -79,7 +79,7 @@ export default function AchievementCard({
                 height={80}
                 className="rounded-full  aspect auto"
               /> */}
-              <h2 className="text-white font-poppins font-semibold text-lg">{badgeName}</h2>
+              <h2 className="text-white font-poppins font-semibold text-base">{badgeName}</h2>
               <Chip
                   style={{
                     backgroundColor: isCompleted ? 'white' : undefined,
