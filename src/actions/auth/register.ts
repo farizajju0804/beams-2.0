@@ -9,6 +9,7 @@ import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
+import { getClientIp } from '@/utils/getClientIp';
 
 /**
  * Registers a new user and sends a verification email.
@@ -160,7 +161,8 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
       redirect: false,
       isAutoLogin: true,
     });
-
+   
+  
     if (result?.error) {
       console.error("Sign-in error:", result.error);
       return { error: "Sign-in failed." };

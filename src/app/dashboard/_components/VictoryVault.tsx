@@ -43,8 +43,8 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
       </div>
       
       {badges.length === 0 ? (
-        <>
-        <p className="text-center text-sm text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
+        <div className='px-4 flex flex-col items-center'>
+        <p className="text-center  text-sm text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
         <Image
                     src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1729076438/achievements/badge-fallback-group_au6dos.webp"}
                     alt={`Badge`}
@@ -53,9 +53,9 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
                     objectFit="cover"
                     className="w-60  h-16"
                   />
-      </>
+      </div>
       ) : (
-        <div className="relative">
+        <div className="relative px-4">
           <div
             ref={scrollRef}
             className="flex items-center justify-center space-x-6 overflow-x-auto scrollbar-hide"

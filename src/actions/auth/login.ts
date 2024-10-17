@@ -2,7 +2,7 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { LoginSchema } from "@/schema";
-import { auth, signIn } from "@/auth";
+import { auth, signIn,} from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
@@ -115,13 +115,16 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
     await signIn("credentials", { email, password, redirect: false });
 
     // Update user login details
-    await db.user.update({
+    const updated = await db.user.update({
       where: { id: existingUser.id },
       data: {
         lastLoginIp: ip,
         lastLoginAt: new Date(),
+        isSessionValid: true 
+
       },
     });
+    console.log("db updated",updated)
 
     return { success: "Login success" }; // Successful login
   } catch (error) {

@@ -43,6 +43,8 @@ export default auth(async (req) => {
   if (isLoggedIn) {
     try {
       const user = await currentUser(); // Fetch the current user data
+      console.log("session",user);
+
       if (!user) {
         console.error("User not found");
         return Response.redirect(new URL('/auth/login', nextUrl)); // Redirect to login if the user is not found

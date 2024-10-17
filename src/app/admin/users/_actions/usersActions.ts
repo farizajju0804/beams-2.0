@@ -49,6 +49,7 @@ export async function getUserDetails(userId: string): Promise<any> {
 }
 
 export async function deleteUser(userId: string): Promise<User> {
+  await terminateSession(userId)
   return db.user.delete({ where: { id: userId } });
 }
 
@@ -57,5 +58,17 @@ export async function banUser(userId: string): Promise<void> {
 }
 
 export async function terminateSession(userId: string): Promise<void> {
+  await db.user.update({
+    where: { id: userId },
+    data: { isSessionValid: false },
+  });
   console.log(`Session for user ${userId} has been terminated.`);
+}
+
+// Server action to terminate all sessions
+export async function terminateAllSessions(): Promise<void> {
+  await db.user.updateMany({
+    data: { isSessionValid: false },
+  });
+  console.log(`All user sessions have been terminated.`);
 }

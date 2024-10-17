@@ -20,7 +20,7 @@ import {
   SelectItem
 } from '@nextui-org/react';
 import { User as UserW, Profile2User, Trash } from 'iconsax-react';
-import { getUsers, getUserDetails, deleteUser, banUser, terminateSession } from './_actions/usersActions';
+import { getUsers, getUserDetails, deleteUser, banUser, terminateSession, terminateAllSessions } from './_actions/usersActions';
 import { Account, User, UserType } from '@prisma/client';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -37,7 +37,7 @@ export default function UserManagement() {
   const [filter, setFilter] = useState({ userType: '', accountType: '' });
   const [sortBy, setSortBy] = useState('');
   const [confirmAction, setConfirmAction] = useState<{ type: string; userId: string } | null>(null);
-  
+  const [confirmAllAction, setConfirmAllAction] = useState(false);
   const fetchUsers = useCallback(async () => {
     try {
       const fetchedUsers = await getUsers(
@@ -121,6 +121,26 @@ export default function UserManagement() {
     setConfirmAction({ type: 'terminate', userId });
     onConfirmOpen();
   };
+  
+  const handleTerminateAllSessions = async () => {
+    try {
+      await terminateAllSessions();
+      toast.success('All user sessions terminated successfully');
+      fetchUsers();  // Optional: Refresh user list if necessary
+    } catch (error) {
+      toast.error('Failed to terminate all sessions');
+    } finally {
+      setConfirmAllAction(false);  // Close the modal after action
+    }
+  };
+
+  const openConfirmAllSessionsModal = () => {
+    setConfirmAllAction(true);  // Open the confirmation modal
+  };
+
+  const closeConfirmAllSessionsModal = () => {
+    setConfirmAllAction(false);  // Close modal without action
+  };
 
   const executeAction = async () => {
     if (!confirmAction) return;
@@ -197,8 +217,12 @@ export default function UserManagement() {
     <div className="container mx-auto p-6">
       <Toaster position="top-right" />
       <h1 className="text-2xl font-bold mb-6">User Management</h1>
-      <div className="mb-4 flex gap-4">
+      <Button className ="my-4" color="danger" onPress={openConfirmAllSessionsModal}>
+          Terminate All Sessions
+        </Button>
+      <div className="mb-4 flex  gap-4">
         <Select
+        className='flex flex-wrap w-full'
           placeholder="User Type"
           selectedKeys={filter.userType ? [filter.userType] : []}
           onChange={(e) => setFilter(prev => ({ ...prev, userType: e.target.value }))}
@@ -279,6 +303,22 @@ export default function UserManagement() {
               Confirm
             </Button>
             <Button color="default" onPress={onConfirmClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={confirmAllAction} onClose={closeConfirmAllSessionsModal}>
+        <ModalContent>
+          <ModalHeader>Confirm Termination of All Sessions</ModalHeader>
+          <ModalBody>
+            <p>Are you sure you want to terminate all active user sessions?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onPress={handleTerminateAllSessions}>
+              Confirm
+            </Button>
+            <Button color="default" onPress={closeConfirmAllSessionsModal}>
               Cancel
             </Button>
           </ModalFooter>

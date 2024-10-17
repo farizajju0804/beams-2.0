@@ -10,6 +10,7 @@ export type ExtendedUser = DefaultSession["user"] & {
     userFormCompleted : boolean;
     onBoardingCompleted : boolean;
     isAccessible : boolean;
+    isSessionValid : boolean;
     image : string;
 }
 declare module "next-auth"{

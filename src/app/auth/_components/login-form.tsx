@@ -37,7 +37,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false); // State to show two-factor authentication field
   const [isMobile, setIsMobile] = useState(false); // State to determine if the screen is mobile
   const router = useRouter(); // Hook for navigation
-  const { update } = useSession(); // Session hook for user authentication
+  const {  data: session,update } = useSession(); // Session hook for user authentication
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false); // State to check if email input is focused
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false); // State to check if password input is focused
 
@@ -85,8 +85,8 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
         setIsLoading(false);
       } else if (data?.success) {
         setSuccess("Login successful!"); // Show success message
+       
         setIsLoading(false);
-        await update(); 
         router.push("/beams-today"); // Redirect to the main page
       } else if (data?.twoFactor) {
         setShowTwoFactor(true); // Show two-factor authentication field if required

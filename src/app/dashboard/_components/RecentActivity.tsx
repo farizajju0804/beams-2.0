@@ -88,7 +88,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities, emptyStateM
     <div className="w-full">
       {/* Check if activities are empty */}
       {activities.length === 0 ? (
-        <div className="text-center text-grey-2 py-2">{emptyStateMessage}</div>
+        <div className="text-center text-grey-2 py-8 text-lg font-medium">{emptyStateMessage}</div>
       ) : (
         <>
           {showAll && (

@@ -32,7 +32,10 @@ export const {
       // When an account is linked, update the user's email verification status
       await db.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() }, // Set emailVerified to the current date
+        data: { 
+          emailVerified: new Date(),
+          isSessionValid: true
+         }, // Set emailVerified to the current date
       });
     },
   },
@@ -52,6 +55,7 @@ export const {
               data: {
                 lastLoginIp: ip,
                 lastLoginAt: new Date(),
+                isSessionValid: true
               },
             });
           } else {
@@ -83,12 +87,18 @@ export const {
         await db.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
         });
+       
       }
+      await db.user.update({
+        where: { id: existingUser.id },
+        data: { isSessionValid: true }
+      });
       return true; // Allow login if all conditions are satisfied
     },
 
     // Callback to customize session data
     async session({ token, session }) {
+     
       if (token.sub && session.user) {
         session.user.id = token.sub; // Attach the user's ID to the session
       }
@@ -108,7 +118,9 @@ export const {
         session.user.userFormCompleted = token.userFormCompleted as boolean; // Attach form completion status
         session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Attach onboarding completion status
         session.user.isAccessible = token.isAccessible as boolean;
+        session.user.isSessionValid = token.isSessionValid as boolean; 
       }
+      
       return session; // Return the session with additional user info
     },
 
@@ -116,16 +128,19 @@ export const {
     async jwt({ token, user, trigger, session }) {
       
 
-      // Update token with session data when explicitly triggered
-      if (trigger === "update") {
-        return { ...token, ...session.user };
-      }
+    
+    
+    if (trigger === "update" && session?.user) {
+      console.log("Updating token with session data:", session.user);
+      token = { ...token, ...session.user };
+    }
 
 
 
       // If the token contains a user identifier (sub), update it with fresh data
       if (token.sub) {
-        const existingUser = await getUserByEmail(token.email as string);
+        const existingUser = await getUserByEmail(token.email as string); 
+       
         token.sub = existingUser?.id; // Update token with the user's ID
         if (existingUser) {
           // Fetch the user's account and update token with relevant user data
@@ -141,8 +156,13 @@ export const {
           token.userFormCompleted = existingUser.userFormCompleted;
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
           token.isAccessible = existingUser.isAccessible;
+          token.isSessionValid = existingUser.isSessionValid;
         }
       }
+      if (token.isSessionValid === false) {
+        return null;
+      }
+      
       return token; // Return updated token
     },
 
