@@ -144,7 +144,7 @@ export const {
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
     
-      if (user) {
+      if (user?.id) {
         token.sub = user.id
       }
     

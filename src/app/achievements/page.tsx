@@ -25,6 +25,7 @@ const page = async() => {
 
   return (
     <div className='flex flex-col w-full'>
+      <h1 className="w-fit mx-auto md:mx-8 font-poppins md:text-2xl font-semibold my-2 md:my-4 bg-yellow text-purple p-2">Achivements</h1>
         <LevelsModal/>
         <UserLevelIndicator levels={levels} 
         beams={beams} 
