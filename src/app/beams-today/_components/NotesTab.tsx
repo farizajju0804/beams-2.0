@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardBody, CardFooter, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
-import { Trash } from 'iconsax-react';
+import { Microscope, Trash } from 'iconsax-react';
 import { toast, Toaster } from 'react-hot-toast';
 import { removeNote } from '@/actions/beams-today/removeNote';
+import Image from 'next/image';
 
 interface NotesTabProps {
   notes: any[];
@@ -43,15 +44,39 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
     setSelectedNote(noteId); // Set the selected note to be deleted
   };
 
+
+  if (notes.length === 0) {
+    return (
+      <div className="flex flex-col mt-4 items-center justtify-center md:justify-start md:min-h-[60vh] text-center">
+        <div className="w-40 h-40 mb-8">
+          <Image
+            src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729248097/achievements/note-3d_unfkbk.webp"
+            alt="No Notes"
+            width={300}
+            height={300}
+            className="object-contain"
+          />
+        </div>
+        <h2 className="text-lg md:text-2xl font-bold mb-2">Your Notes Are Empty</h2> 
+        <p className="text-xs md:text-base mb-6"> Jot down a thought, a spark of inspiration, or a quick idea!  </p>
+        <Button
+          color="primary"
+          className='text-white font-semibold'
+          startContent={<Microscope variant='Bold'  />}
+          onClick={() => router.push('/beams-today')}
+        >
+          Explore Beams Today
+        </Button>
+      </div>
+    );
+  }
   return (
     <>
   
 
       <div className="mt-4 min-h-[80vh]">
-        {notes.length === 0 ? (
-          <p>No notes found.</p> // Show message if no notes are available
-        ) : (
-          notes.map((note) => (
+          
+          {notes.map((note) => (
             <div key={note.id} className="mb-4 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
               <Card>
                 <CardHeader>
@@ -72,7 +97,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
               </Card>
             </div>
           ))
-        )}
+        }
 
         {/* Confirmation modal for deleting the note */}
         <Modal placement='center' isOpen={selectedNote !== null} className='z-[1100]' onClose={() => setSelectedNote(null)}>

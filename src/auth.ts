@@ -53,7 +53,7 @@ export const {
       // Skip validation if the provider is not credentials-based (e.g., Google OAuth)
       if (account?.provider === "google") {
         const ip = getClientIp();
-        try {
+       
           const existingUser = await getUserByEmail(user.email as string);
           if (existingUser) {
             await db.user.update({
@@ -64,13 +64,8 @@ export const {
                 isSessionValid: true
               },
             });
-          } else {
-            return true;
-          }
-        } catch (error) {
-          console.error("Error in Google signIn callback:", error);
-          return false;
-        }
+          } 
+        
         return true;
       }
       
@@ -104,16 +99,30 @@ export const {
 
     // Callback to customize session data
     async session({ token, session }) {
-     
+      // console.log("Session callback - token:", JSON.stringify(token, null, 2));
+      // console.log("Session callback - initial session:", JSON.stringify(session, null, 2));
+    
       if (token.sub && session.user) {
-        session.user.id = token.sub; // Attach the user's ID to the session
+        session.user.id = token.sub;
+        // console.log("Set session.user.id to:", token.sub);
+      } else {
+        // console.log("Unable to set session.user.id. token.sub:", token.sub, "session.user:", session.user);
+        
+        // Attempt to fetch user if id is missing
+        if (session.user && session.user.email && !session.user.id) {
+          // console.log("Attempting to fetch user data for email:", session.user.email);
+          const user = await getUserByEmail(session.user.email);
+          if (user && user.id) {
+            session.user.id = user.id;
+            // console.log("Retrieved and set user id:", user.id);
+          } else {
+            console.warn("Failed to retrieve user id for email:", session.user.email);
+          }
+        }
       }
-      if (token.role && session.user) {
-        session.user.role = token.role as "ADMIN" | "USER"; // Attach user role to the session
-      }
+    
+      // Assign other user properties
       if (session.user) {
-        // Attach other user-related data to the session
-
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
@@ -121,21 +130,23 @@ export const {
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
-        session.user.userFormCompleted = token.userFormCompleted as boolean; // Attach form completion status
-        session.user.onBoardingCompleted = token.onBoardingCompleted as boolean; // Attach onboarding completion status
+        session.user.userFormCompleted = token.userFormCompleted as boolean;
+        session.user.onBoardingCompleted = token.onBoardingCompleted as boolean;
         session.user.isAccessible = token.isAccessible as boolean;
-        session.user.isSessionValid = token.isSessionValid as boolean; 
+        session.user.isSessionValid = token.isSessionValid as boolean;
         session.user.isBanned = token.isBanned as boolean;
       }
-      
-      return session; // Return the session with additional user info
+    
+      // console.log("Session callback - final session:", JSON.stringify(session, null, 2));
+      return session;
     },
 
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
-      
-
     
+      if (user) {
+        token.sub = user.id
+      }
     
     if (trigger === "update" && session?.user) {
       console.log("Updating token with session data:", session.user);

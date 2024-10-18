@@ -24,14 +24,14 @@ async function connectToDatabase() {
 }
 
 export async function GET(request: Request) {
-//   console.log('API Route: Received GET request');
+  // console.log('API Route: Received GET request');
   const { searchParams } = new URL(request.url);
   const email = searchParams.get('email');
 
-//   console.log('API Route: Received request for email:', email);
+  // console.log('API Route: Received request for email:', email);
 
   if (!email) {
-    // console.log('API Route: Email is required');
+    console.log('API Route: Email is required');
     return NextResponse.json({ error: 'Email is required' }, { status: 400 });
   }
 
@@ -42,11 +42,11 @@ export async function GET(request: Request) {
     const user = await db.collection('User').findOne({ email });
 
     if (!user) {
-    //   console.log('API Route: User not found');
+      console.log('API Route: User not found');
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // console.log('API Route: User found', user);
+    // console.log('API Route: User found', JSON.stringify(user, null, 2));
     return NextResponse.json(user);
   } catch (error) {
     console.error(`API Route: Error fetching user with email ${email}:`, error);
