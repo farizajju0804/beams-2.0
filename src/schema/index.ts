@@ -32,7 +32,13 @@ export const LoginSchema = z.object({
 	  .min(1, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' })
 	  .min(8, { message: 'Password must have at least 8 characters, that includes 1 Uppercase, 1 Lowercase, 1 Number and 1 Special character!' }),
 	  
-	code: z.optional(z.string()),
+	  code: z
+	  .string()
+	  .min(6, { message: 'Code must be atleast 6 digits' })
+	  .max(6, { message: 'Code must be only 6 digits' })
+	  .regex(/^\d+$/, { message: 'Code must contain only numbers' })
+	  .optional()
+	  .or(z.literal(''))
 	
 });
 

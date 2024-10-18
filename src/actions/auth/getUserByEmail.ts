@@ -1,6 +1,9 @@
 import { db } from '@/libs/db'; // Import the database instance from the database library
-import { prismaDb } from '@/libs/prisma';
 import { revalidatePath } from 'next/cache';
+export const runtime = 'edge';
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+export const dynmaic = 'force dynamic';
 
 /**
  * Fetch a user from the database by their email address.
@@ -8,8 +11,8 @@ import { revalidatePath } from 'next/cache';
  * @returns {Promise<Object | null>} The user object if found, otherwise null.
  */
 export const getUserByEmail = async (email: string) => {
-  try {
-    const user = await prismaDb.user.findUnique({
+
+    const user = await db.user.findUnique({
       where: {
         email,
       },
@@ -19,11 +22,7 @@ export const getUserByEmail = async (email: string) => {
     );
   
     return user;
-  
-  } catch (error) {
-    console.error(`Error fetching user with email ${email}:`, error);
-    return null;
-  }
+
 };
 
 /**

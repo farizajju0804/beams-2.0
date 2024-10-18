@@ -50,7 +50,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   const {  data: session,update } = useSession(); // Session hook for user authentication
   const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false); // State to check if email input is focused
   const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false); // State to check if password input is focused
-
+  const [userEmail, setUserEmail] = useState<string>("");
   // Set up the form using React Hook Form with Zod schema for validation
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema), // Zod schema for form validation
@@ -80,7 +80,11 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
     setError(""); // Clear previous errors
     setSuccess(""); // Clear previous success messages
     setIsLoading(true); // Set loading state
-
+    if (showTwoFactor && (!values.code || values.code.length !== 6)) {
+      setError("Please enter a valid 6-digit code");
+      setIsLoading(false);
+      return;
+    }
     try {
       const data = await login(values, ip); // Call login action with form values and IP address
      
@@ -100,6 +104,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
         router.push("/beams-today"); // Redirect to the main page
       } else if (data?.twoFactor) {
         setShowTwoFactor(true); // Show two-factor authentication field if required
+        setUserEmail(values.email);
         setIsLoading(false);
       }
     } catch (error) {
@@ -123,38 +128,49 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex flex-col gap-6">
-            {showTwoFactor && (
-              // Two-factor authentication code input
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        isRequired
-                        variant="underlined"
-                        label="Two-Factor Code"
-                        classNames={{
-                          label: 'font-semibold  text-text',
-                          mainWrapper: "w-full flex-1",
-                          inputWrapper: "h-12",
-                          input: [
-                            "placeholder:text-grey-2",
-                            'w-full flex-1 font-medium',
-                          ],
-                        }}
-                        {...field}
-                        type="text"
-                        disabled={isLoading}
-                        labelPlacement="outside"
-                        placeholder="Enter your code"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          {showTwoFactor && (
+              <>
+                <div className="text-center mb-4">
+                  <p className="text-lg font-semibold mb-2">Just One More Step! 🚀</p>
+                  <p className="text-md text-grey-2 mb-2">
+                    We've sent a secret code to:
+                  </p>
+                  <p className="font-bold text-primary text-lg mb-4">{userEmail}</p>
+                  <p className="text-sm text-grey-4">
+                    Check your inbox and enter the code below to unlock your account.
+                  </p>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          isRequired
+                          variant="underlined"
+                          label="Verification Code"
+                          classNames={{
+                            label: 'font-semibold text-text',
+                            mainWrapper: "w-full flex-1",
+                            inputWrapper: "h-12",
+                            input: [
+                              "placeholder:text-grey-2",
+                              'w-full flex-1 font-medium',
+                            ],
+                          }}
+                          {...field}
+                          type="text"
+                          disabled={isLoading}
+                          labelPlacement="outside"
+                          placeholder="Enter the 6-digit code"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
             )}
             {!showTwoFactor && (
               <>

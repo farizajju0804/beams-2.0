@@ -15,7 +15,7 @@ interface LoginPageProps {}
  */
 const LoginPage: FC<LoginPageProps> = async ({}) => {
   const ip = getClientIp(); // Fetch the client's IP address
-  const pendingEmail: any = await checkPendingVerification(ip); // Check if there's a pending email verification tied to the IP
+  // const pendingEmail: any = await checkPendingVerification(ip); // Check if there's a pending email verification tied to the IP
 
   return (
     // Wrapping the main content in Suspense for potential lazy loading
@@ -27,7 +27,7 @@ const LoginPage: FC<LoginPageProps> = async ({}) => {
         {/* Main content area where the login form is rendered */}
         <div className="w-full md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
           {/* Pass the client's IP and pending email verification status to the LoginForm */}
-          <LoginForm ip={ip} pendingEmail={pendingEmail} />
+          <LoginForm ip={ip}  />
         </div>
       </div>
     </Suspense>

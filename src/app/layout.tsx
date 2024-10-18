@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 import { GoogleAnalytics } from '@next/third-parties/google'
 import ThemeWatcher from "./ThemeWatcher";
+import TimeZoneSetter from "@/components/TimeZoneSetter";
 export default function RootLayout({
   children,
 }: {
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={quicksand.className}>
 
       <GoogleAnalytics gaId="G-W7VPHJY727" />
+      <TimeZoneSetter />
       {/* <Navbar/> */}
       <Providers>
         {children}

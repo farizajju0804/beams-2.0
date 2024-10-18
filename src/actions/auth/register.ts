@@ -135,47 +135,68 @@ export const updateUserMetadata = async (email: string, values: {
  * @returns {Promise<Object>} A response indicating success or error.
  */
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
+  console.log("Starting submitSecurityAnswers with email:", email);
+
+  // Validate the input values against the schema
   const validatedFields = SecuritySchema.safeParse(values);
   if (!validatedFields.success) {
+    console.log("Validation failed:", validatedFields.error);
     return { error: "Invalid Fields!" };
   }
 
+  // Check if the user exists
+  const existingUser = await getUserByEmail(email);
+  if (!existingUser) {
+    console.log("User not found for email:", email);
+    return { error: "User not found." };
+  }
+
+  // Check if security answers already exist
+  if (existingUser.securityAnswer1 && existingUser.securityAnswer2) {
+    console.log("Security answers already exist for user:", email);
+    return { error: "Unauthorized access." };
+  }
+
+  // Destructure the validated security answers
   const { securityAnswer1, securityAnswer2 } = validatedFields.data;
-  await db.user.update({
-    where: { email },
-    data: {
-      securityQuestion1: "What was your first pet's name?",
-      securityAnswer1,
-      securityQuestion2: "What is your mother's maiden name?",
-      securityAnswer2,
-    },
-  });
 
   try {
-    const existingUser = await getUserByEmail(email);
-    if (!existingUser) return { error: "User not found." };
+    // Update the user's security questions and answers in the database
+    console.log("Updating security questions and answers for user:", email);
+    await db.user.update({
+      where: { email },
+      data: {
+        securityQuestion1: "What was your first pet's name?",
+        securityAnswer1,
+        securityQuestion2: "What is your mother's maiden name?",
+        securityAnswer2,
+        isSessionValid: true,
+      },
+    });
 
+    // Attempt to sign in the user after saving the answers
+    console.log("Attempting to sign in user:", email);
     const result = await signIn("credentials", {
       email: existingUser.email,
       password: existingUser.password,
       redirect: false,
       isAutoLogin: true,
     });
-   
-  
+
+    // Handle sign-in errors
     if (result?.error) {
       console.error("Sign-in error:", result.error);
       return { error: "Sign-in failed." };
     }
 
+    console.log("Sign-in successful for user:", email);
     return { success: "Saved Successfully" };
-  
   } catch (error) {
     console.error("Error during sign-in:", error);
     return { error: "An unexpected error occurred during sign-in." };
   }
-
 };
+
 
 /**
  * Checks if there is any pending email verification associated with the given IP address.

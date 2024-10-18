@@ -10,10 +10,10 @@ import { db } from "@/libs/db";
 // Importing custom actions for authentication logic
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
-import { getUserByEmail, getUserById2 } from "./actions/auth/getUserByEmail";
+import {  getUserByEmail as getUserByEmail2,getUserById2 } from "./actions/auth/getUserByEmail";
 import { UserType } from "@prisma/client";
 import { getClientIp } from "./utils/getClientIp";
-import { revalidatePath } from "next/cache";
+import { getUserByEmail } from "./utils/user";
 
 // Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
@@ -96,7 +96,7 @@ export const {
        
       }
       await db.user.update({
-        where: { id: existingUser.id },
+        where: { email: existingUser.email },
         data: { isSessionValid: true }
       });
       return true; // Allow login if all conditions are satisfied
@@ -104,9 +104,6 @@ export const {
 
     // Callback to customize session data
     async session({ token, session }) {
-      // if (!token.isSessionValid || token.isBanned) {
-      //   return undefined; // Invalidate the session if isSessionValid is false or user is banned
-      // }
      
       if (token.sub && session.user) {
         session.user.id = token.sub; // Attach the user's ID to the session
@@ -136,44 +133,50 @@ export const {
 
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
-      // Update token if there's an update trigger
-      if (trigger === "update" && session?.user) {
-        token = { ...token, ...session.user };
-      }
+      
+
     
-      // Refetch user data to ensure session is valid
+    
+    if (trigger === "update" && session?.user) {
+      console.log("Updating token with session data:", session.user);
+      token = { ...token, ...session.user };
+    }
+
+
+
+      // If the token contains a user identifier (sub), update it with fresh data
       if (token.sub) {
-        
-        const existingUser = await getUserByEmail(token.email as string);
-           
+        const existingUser = await getUserByEmail(token.email as string); 
+       
+        token.sub = existingUser?.id; // Update token with the user's ID
         if (existingUser) {
-          token.sub = existingUser.id; // Update token with user ID
-          if (existingUser.isBanned || !existingUser.isSessionValid) {
-            return null;
-          }
           // Fetch the user's account and update token with relevant user data
-          token.isOAuth = !!(await getAccountByUserId(existingUser.id)); 
+          const existingAccount = await getAccountByUserId(existingUser.id);
+          token.isOAuth = !!existingAccount; // Check if the user has an OAuth account
           token.firstName = existingUser.firstName;
           token.lastName = existingUser.lastName;
+          token.userType = existingUser.userType;
+          token.email = existingUser.email;
+          token.role = existingUser.role;
+          token.image = existingUser.image;
           token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
           token.userFormCompleted = existingUser.userFormCompleted;
           token.onBoardingCompleted = existingUser.onBoardingCompleted;
-          token.isAccessible = existingUser.isAccessible
-          token.isSessionValid = existingUser.isSessionValid; // Ensure this field is updated
+          token.isAccessible = existingUser.isAccessible;
+          token.isSessionValid = existingUser.isSessionValid;
           token.isBanned = existingUser.isBanned;
-          
-          // Invalidate the session if necessary
-          
+          if (existingUser.isBanned) {
+            token.isSessionValid = false;
+          }
         }
       }
-    
-      // Invalidate the session if the token is invalid
+   
       if (token.isSessionValid === false || token.isBanned === true) {
-        return null; // Force session invalidation
+        return null;
       }
-    
-      return token;
-    },    
+      return token; // Return updated token
+    },
+
     // Redirect callback to control redirects after authentication actions
     async redirect({ url, baseUrl }) {
       // Handle internal redirects or external redirects to the base URL

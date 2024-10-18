@@ -14,25 +14,29 @@ import { BeamsToday } from "@/types/beamsToday";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import Loader from "@/components/Loader";
 
-export function BeamsTodayRecents() {
+interface BeamsTodayRecentsProps {
+
+  initialUploads: any[];
+}
+export function BeamsTodayRecents({ initialUploads }: BeamsTodayRecentsProps) {
   const [active, setActive] = useState<any | boolean | null>(null);
-  const [allUploads, setAllUploads] = useState<BeamsToday[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [allUploads, setAllUploads] = useState<any[]>(initialUploads);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState("dateDesc"); // State for sorting
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const [totalPages, setTotalPages] = useState(1); // State for total pages
   const itemsPerPage = 9; // Number of items per page
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const fetchRecentUploads = async () => {
-      const clientDate = new Date().toLocaleDateString("en-CA");
-      const uploads: any = await getRecentUploads(clientDate);
-      setAllUploads(uploads.slice(0, 5)); // Limit to 5 items
-      setIsLoading(false);
-    };
-    fetchRecentUploads();
-  }, []);
+  // useEffect(() => {
+  //   const fetchRecentUploads = async () => {
+  //     const clientDate = new Date().toLocaleDateString("en-CA");
+  //     const uploads: any = await getRecentUploads(clientDate);
+  //     setAllUploads(uploads.slice(0, 5)); // Limit to 5 items
+  //     setIsLoading(false);
+  //   };
+  //   fetchRecentUploads();
+  // }, []);
   // Effect to handle body overflow when a modal is active
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {

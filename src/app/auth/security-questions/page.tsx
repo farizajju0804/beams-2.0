@@ -34,14 +34,15 @@ const securityQuestions = [
  * in the registration process. It retrieves the email from the URL,
  * and upon submitting valid answers, navigates the user to the next step.
  */
-const Step3Form: React.FC = ({ }) => {
+const Step3Form: React.FC = () => {
   const [isPending, startTransition] = useTransition(); // Hook to manage transitions and loading state
   const searchParams = useSearchParams(); // Get URL search params
   const emailFromUrl = searchParams.get("email"); // Extract the email from URL params
-  const email:any = emailFromUrl; // Typecast email
+  const email: any = emailFromUrl; // Typecast email
   const router = useRouter(); // Next.js router hook
-  const [error, setError] = useState("")
-  const { update } = useSession();
+  const [error, setError] = useState(""); // State for error messages
+  const { update } = useSession(); // NextAuth session update
+
   // Initialize form with Zod schema and react-hook-form integration
   const form = useForm<z.infer<typeof SecuritySchema>>({
     resolver: zodResolver(SecuritySchema), // Using Zod as the form validation schema
@@ -60,19 +61,17 @@ const Step3Form: React.FC = ({ }) => {
       try {
         const result = await submitSecurityAnswers(values, email); // Submit security answers
         if (result.success) {
-        await update(); 
-        router.push('/access-code'); 
-        }
-        if(result?.error)
-        {
-          setError(error)
+          await update(); 
+          router.push('/access-code'); 
+        } else if (result.error) {
+          setError(result.error); // Set the error message from the result
         }
       } catch (err) {
         console.error("Error submitting security answers:", err); // Log error on failure
+        setError("An unexpected error occurred. Please try again."); // Set a generic error message
       }
     });
   };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 md:min-h-screen w-full ">
       {/* Left-side component */}
