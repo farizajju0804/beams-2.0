@@ -11,7 +11,7 @@ import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./actions/auth/two-factor-confirmation";
 import { getAccountByUserId } from "./actions/auth/account";
 import {  getUserByEmail as getUserByEmail2,getUserById2 } from "./actions/auth/getUserByEmail";
-import { UserType } from "@prisma/client";
+import { UserRole, UserType } from "@prisma/client";
 import { getClientIp } from "./utils/getClientIp";
 import { getUserByEmail } from "./utils/user";
 
@@ -128,6 +128,7 @@ export const {
         session.user.lastName = token.lastName as string;
         session.user.userType = token.userType as UserType;
         session.user.email = token.email as string;
+        session.user.role = token.role as UserRole;
         session.user.isOAuth = token.isOAuth as boolean;
         session.user.image = token.image as string;
         session.user.userFormCompleted = token.userFormCompleted as boolean;
