@@ -8,24 +8,24 @@ import { getTrendingFacts } from "@/actions/fod/fod";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { Radio, RadioGroup } from "@nextui-org/react"; // Import Radio component
 
-export function TrendingFacts({ completedFacts }: { completedFacts: string[] }) {
-  const [facts, setFacts] = useState<BeamsToday[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function TrendingFacts({ completedFacts,facts2 }: any) {
+  const [facts, setFacts] = useState<any>(facts2);
+  // const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("dateDesc");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filterOption, setFilterOption] = useState("all"); // State to manage the radio buttons (all, beamed, unbeamed)
   const itemsPerPage = 3;
 
-  useEffect(() => {
-    const fetchTrendingFacts = async () => {
-      const clientDate = new Date().toLocaleDateString("en-CA");
-      const facts: any = await getTrendingFacts(clientDate);
-      setFacts(facts);
-      setIsLoading(false);
-    };
-    fetchTrendingFacts();
-  }, []);
+  // useEffect(() => {
+  //   const fetchTrendingFacts = async () => {
+  //     const clientDate = new Date().toLocaleDateString("en-CA");
+  //     const facts: any = await getTrendingFacts(clientDate);
+  //     setFacts(facts);
+  //     setIsLoading(false);
+  //   };
+  //   fetchTrendingFacts();
+  // }, []);
 
   const filteredFacts = facts.filter((fact: any) => {
     if (filterOption === "beamed") {
@@ -63,9 +63,9 @@ export function TrendingFacts({ completedFacts }: { completedFacts: string[] }) 
     setCurrentPage(page);
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
 
   return (
     <>

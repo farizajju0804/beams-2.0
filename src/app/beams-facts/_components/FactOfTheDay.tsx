@@ -8,18 +8,20 @@ import { markFactAsCompleted, getFactAndCompletionStatus } from "@/actions/fod/f
 import Loader from "@/components/Loader";
 import StreakModal from "./StreakModal";
 import DateComponent from "./DateComponent";
+import { FactOfTheday } from "@prisma/client";
 
 
 interface FactOfTheDayProps {
   userId: string;
+  facts : any;
   
 }
 
-const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
+const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId,facts }) => {
   const [isRevealed, setIsRevealed] = useState(false);
-  const [fact, setFact] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [fact, setFact] = useState<any | null>(facts.fact);
+  // const [loading, setLoading] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(facts.completed);
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [streakDay, setStreakDay] = useState(0);
   const [streakMessage, setStreakMessage] = useState("");
@@ -29,21 +31,21 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
   const revealLock = useRef(false);  // Ensures that reveal happens only once
 
 
-  useEffect(() => {
-    const fetchFactAndCompletion = async () => {
-      try {
-        const { fact, completed }:any= await getFactAndCompletionStatus(userId, clientDate);
-        setFact(fact);
-        setIsCompleted(completed);
-      } catch (error) {
-        console.error("Error fetching fact and completion status:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFactAndCompletion = async () => {
+  //     try {
+  //       const { fact, completed }:any= await getFactAndCompletionStatus(userId, clientDate);
+  //       setFact(fact);
+  //       setIsCompleted(completed);
+  //     } catch (error) {
+  //       console.error("Error fetching fact and completion status:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchFactAndCompletion();
-  }, [clientDate, userId]);
+  //   fetchFactAndCompletion();
+  // }, [clientDate, userId]);
 
   const handleReveal = async () => {
     if (isRevealed || isCompleted || !fact || revealLock.current) {
@@ -89,9 +91,9 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, }) => {
     }
   };
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   return (
     <div className="w-full  mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
