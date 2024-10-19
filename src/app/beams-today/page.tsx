@@ -7,7 +7,7 @@ import { getAllCategories } from "@/actions/beams-today/categoryActions";
 export default async function Page() {
   // Fetch the currently authenticated user
   const user:any = await currentUser();
-  console.log('beams today session',user)
+  // console.log('beams today session',user)
   // If the user is not found, display a fallback message
   if (!user) {
     return <div>User not found</div>;

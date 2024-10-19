@@ -8,6 +8,8 @@ export const updateAccessStatus = async (submittedCode: string) => {
     const userId = user?.id
 
     if (!userId) {
+        console.log('No user')
+
         return { status: 'error', message: 'User not authenticated' }
     }
 
@@ -19,6 +21,7 @@ export const updateAccessStatus = async (submittedCode: string) => {
 
     // If no access code is found, return error status
     if (!accessCode) {
+        console.log('Invalid access code')
         return { status: 'error', message: 'Invalid access code' }
     }
 

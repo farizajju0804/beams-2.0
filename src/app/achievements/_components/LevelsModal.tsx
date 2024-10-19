@@ -91,7 +91,7 @@ const LevelsModal = () => {
   };
 
   return (
-    <div className='w-full flex justify-between px-4 md:px-8 my-4'>
+    <div className='w-full flex justify-between px-6 md:px-8 my-4'>
       <div className="flex flex-col items-start">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Levels</h1>
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div>

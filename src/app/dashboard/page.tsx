@@ -76,12 +76,18 @@ const DashboardPage = async () => {
   ];
 
   return (
-    <div className='w-full flex flex-col px-6 md:px-8 gap-12 py-4'>
-      <div className='grid gap-4 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8'> 
-        <ProfilePictureForm user={user} />
-        <LevelDetails userLevel={userLevel} beams={beams} />
-        <VictoryVault color={userLevel.bgColor} badges={completed} />
-      </div>
+    <div className='w-full flex flex-col px-6 md:px-8 gap-10 py-4'>
+      <div className="grid gap-8 w-full grid-cols-1 md:grid-cols-1 lg:grid-cols-12 md:gap-8">
+  <div className="lg:col-span-2">
+    <ProfilePictureForm user={user} />
+  </div>
+  <div className=" lg:col-span-5 flex items-center justify-center" >
+    <LevelDetails userLevel={userLevel} beams={beams} />
+  </div>
+  <div className="lg:col-span-5 flex items-center justify-center">
+    <VictoryVault color={userLevel.bgColor} badges={completed} />
+  </div>
+</div>
 
       {/* Pass the plain data to AccordionMenu */}
       <AccordionMenu menuItems={menuItems} />

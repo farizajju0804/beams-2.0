@@ -33,7 +33,7 @@ export default function BottomNav() {
   return (
     <>
      
-      <div className="md:hidden  block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
+      <div className="custom-md:hidden  block bg-background shadow-defined-top z-[100] fixed bottom-0 left-0 right-0">
         <motion.div
           className="bg-background rounded-2xl shadow-lg"
           initial={{ y: 100, opacity: 0 }}

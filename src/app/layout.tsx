@@ -24,7 +24,9 @@ export default function RootLayout({
     {/* <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" /> */}
       <body className={quicksand.className}>
 
-      <GoogleAnalytics gaId="G-W7VPHJY727" />
+      <GoogleAnalytics gaId="G-W7VPHJY727">
+        
+      </GoogleAnalytics>
       <TimeZoneSetter />
       {/* <Navbar/> */}
       <Providers>

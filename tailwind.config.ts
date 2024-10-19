@@ -11,6 +11,12 @@ const config = {
   ],
   prefix: "",
   theme: {
+    screens: {
+      'sm': '640px',
+      'md': '768px',  // Changed from 768px to 800px
+      'lg': '1024px',
+      'custom-md' : '769px'
+    },
     extend: {
       colors: {
         background: "rgba(var(--color-background))",

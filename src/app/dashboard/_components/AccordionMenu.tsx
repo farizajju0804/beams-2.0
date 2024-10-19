@@ -29,7 +29,7 @@ const AccordionMenu: React.FC<AccordionMenuProps> = ({ menuItems }) => {
   };
 
   return (
-    <div className="w-full md:mx-auto bg-background shadow-defined rounded-3xl overflow-hidden">
+    <div className="w-full max-w-lg lg:mx-0 mx-auto bg-background shadow-defined rounded-3xl overflow-hidden">
       <div className="divide-y divide-grey-1">
         {menuItems.map((item, index) => (
           <div key={index}>

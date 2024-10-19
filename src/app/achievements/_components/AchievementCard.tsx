@@ -48,6 +48,7 @@ export default function AchievementCard({
 }: AchievementCardProps) {
   const noProgress = completedCount === 0
   const cardColor = noProgress ? '#a2a2a2' : color
+  
 
   const MAX_VISIBLE_BARS = 10
   const progressPercentage = (completedCount / totalCount) * 100
@@ -59,12 +60,13 @@ export default function AchievementCard({
   return (
     <section id={id}>
     <div  className='flex w-full items-center md:justify-start justify-center'>
-      <div className="w-80 max-w-sm bg-background rounded-2xl overflow-hidden shadow-defined">
-        <div className="relative h-20" style={{ backgroundColor: cardColor }}>
+      <div className="w-full bg-background rounded-2xl overflow-hidden shadow-defined">
+        <div className="relative h-20" style={{ backgroundColor: color }}>
           <div className="absolute inset-0 flex items-center px-4">
             <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center shadow-lg mr-4">
               <Image
-                src={noProgress ? FALLBACK_BADGE_IMAGE : badgeImageUrl}
+                // src={noProgress ? FALLBACK_BADGE_IMAGE : badgeImageUrl}
+                src={badgeImageUrl}
                 alt={`${badgeName} Badge`}
                 width={400}
                 height={400}
@@ -123,6 +125,7 @@ export default function AchievementCard({
             </div>
           </div>
           <div className="flex justify-between items-start mb-2 w-full">
+          {isCompleted &&
             <AchievementCompletionButton
               badgeName={badgeName}
               userId={userId}
@@ -136,9 +139,9 @@ export default function AchievementCard({
               currentBeams={currentBeams}
               currentLevel={currentLevel}
               isCompleted={isCompleted}
-            />
+            />}
            {!isCompleted && ( <Button  as="a" href={actionUrl}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
-            Take Me There </Button> )} 
+            {personalizedMessage} </Button> )} 
           </div>
         </div>
       </div>

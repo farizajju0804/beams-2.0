@@ -24,7 +24,7 @@ const Sidebar = () => {
 
   return (
     <motion.div
-      className={`sidebar  ${isExpanded ? 'sidebar-expanded' : ''} h-screen bg-background shadow-defined md:block hidden`}
+      className={`sidebar  ${isExpanded ? 'sidebar-expanded' : ''} h-screen bg-background shadow-defined md:hidden custom-md:block hidden`}
       layout
       initial={false}
       animate={isExpanded ? "expanded" : "collapsed"}

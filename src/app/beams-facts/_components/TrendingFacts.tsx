@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useEffect, useState } from "react";
 import { BeamsToday } from "@/types/beamsToday";
 import Loader from "@/components/Loader";
@@ -6,26 +6,16 @@ import CustomPagination from "@/components/Pagination";
 import AnimatedImageCard from "./AnimatedImageCard";
 import { getTrendingFacts } from "@/actions/fod/fod";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
-import { Radio, RadioGroup } from "@nextui-org/react"; // Import Radio component
+import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup, Tooltip } from "@nextui-org/react";
+import { InfoCircle } from "iconsax-react";
 
-export function TrendingFacts({ completedFacts,facts2 }: any) {
+export function TrendingFacts({ completedFacts, facts2 }: any) {
   const [facts, setFacts] = useState<any>(facts2);
-  // const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("dateDesc");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [filterOption, setFilterOption] = useState("all"); // State to manage the radio buttons (all, beamed, unbeamed)
+  const [filterOption, setFilterOption] = useState("all");
   const itemsPerPage = 3;
-
-  // useEffect(() => {
-  //   const fetchTrendingFacts = async () => {
-  //     const clientDate = new Date().toLocaleDateString("en-CA");
-  //     const facts: any = await getTrendingFacts(clientDate);
-  //     setFacts(facts);
-  //     setIsLoading(false);
-  //   };
-  //   fetchTrendingFacts();
-  // }, []);
 
   const filteredFacts = facts.filter((fact: any) => {
     if (filterOption === "beamed") {
@@ -33,7 +23,7 @@ export function TrendingFacts({ completedFacts,facts2 }: any) {
     } else if (filterOption === "unbeamed") {
       return !completedFacts.includes(fact.id);
     }
-    return true; // Default is "all", so return all facts.
+    return true;
   });
 
   const sortedFacts = [...filteredFacts].sort((a: any, b: any) => {
@@ -63,9 +53,20 @@ export function TrendingFacts({ completedFacts,facts2 }: any) {
     setCurrentPage(page);
   };
 
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
+  const InfoIcon = ({ content }:{content:string}) => (
+    <Popover placement="top">
+      <PopoverTrigger>
+        <sup>
+          <InfoCircle size={12} className="ml-1 cursor-pointer text-grey-2" />
+        </sup>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="px-1 py-2">
+          <div className="text-tiny">{content}</div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 
   return (
     <>
@@ -80,29 +81,35 @@ export function TrendingFacts({ completedFacts,facts2 }: any) {
           ></div>
         </div>
         <div className="flex flex-col md:flex-row items-start gap-6 md:justify-between mb-6 px-6 md:items-center w-full">
-          {/* Sort By Filter */}
           <SortByFilter sortBy={sortBy} setSortBy={setSortBy} />
 
-          {/* Radio Group Filter */}
           <RadioGroup
             orientation="horizontal"
             value={filterOption}
             onValueChange={(value) => setFilterOption(value)}
+           
+            classNames={{
+              wrapper: "gap-1",
+            }}
           >
-            <Radio value="all">All Facts</Radio>
-            <Radio value="beamed">Beamed</Radio>
-            <Radio value="unbeamed">Unbeamed</Radio>
+            <Radio value="all" size="sm">All Facts</Radio>
+            <div className="flex items-center mx-1">
+            <Radio value="beamed" size="sm">Beamed</Radio>
+              <InfoIcon content="Facts marked as completed" />
+            </div>
+            <div className="flex items-center mx-1">
+            <Radio value="unbeamed" size="sm">Unbeamed</Radio>
+              <InfoIcon content="Facts not yet completed" />
+            </div>
           </RadioGroup>
         </div>
 
-        {/* No Facts Found */}
         {paginatedFacts.length === 0 && (
           <div className="text-center text-gray-500 mt-6">
             No facts found.
           </div>
         )}
 
-        {/* List of Facts */}
         <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-10">
           {paginatedFacts.map((fact: any, index: number) => (
             <AnimatedImageCard
@@ -113,7 +120,6 @@ export function TrendingFacts({ completedFacts,facts2 }: any) {
           ))}
         </ul>
 
-        {/* Pagination */}
         <div className="mt-6 md:mt-8">
           {totalPages > 1 && (
             <CustomPagination

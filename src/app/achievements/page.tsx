@@ -25,15 +25,15 @@ const page = async() => {
 
   return (
     <div className='flex flex-col w-full'>
-      <h1 className="w-fit mx-auto md:mx-8 font-poppins md:text-2xl font-semibold my-2 md:my-4 bg-yellow text-purple p-2">Achivements</h1>
+      <h1 className="w-fit mx-auto md:mx-8 font-poppins md:text-2xl uppercase  font-semibold my-2 md:my-4 bg-yellow text-purple py-2 px-4 ">Achievements</h1>
         <LevelsModal/>
         <UserLevelIndicator levels={levels} 
         beams={beams} 
         />
-        <Divider className='my-4'/>
+        {/* <Divider className='my-4'/> */}
         <section id='victory'>
         <AchievementsModal />
-        <div className='w-full px-4 md:px-8 pb-6 grid gap-16 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
+        <div className='w-full px-6 md:px-8 pb-6 grid gap-16 lg:grid-cols-3 md:grid-cols-2 grid-cols-1'>
         {allAchievements.map((achievement) => {
           const userAchievement = userAchievements.find(ua => ua.achievementId === achievement.id);
           const progress = userAchievement?.progress || 0;

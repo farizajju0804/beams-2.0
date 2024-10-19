@@ -82,8 +82,8 @@ export const ReferFriendModal = ({ isOpen, onOpenChange, referralUrl }:any) => {
                 <Image
                   src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp"
                   alt="Referral illustration"
-                  width={250}
-                  height={250}
+                  width={200}
+                  height={200}
                   className="mx-auto"
                 />
                 
@@ -131,19 +131,19 @@ export const ReferFriendModal = ({ isOpen, onOpenChange, referralUrl }:any) => {
                 </AnimatePresence>
                 <div className="grid grid-cols-5 gap-4">
                   <FacebookShareButton url={referralUrl} title={emailBody}>
-                    <FacebookIcon size={48} round />
+                    <FacebookIcon size={32} round />
                   </FacebookShareButton>
                   <TwitterShareButton url={referralUrl} title={emailBody}>
-                    <TwitterIcon size={48} round />
+                    <TwitterIcon size={32} round />
                   </TwitterShareButton>
                   <LinkedinShareButton url={referralUrl} title={emailBody}>
-                    <LinkedinIcon size={48} round />
+                    <LinkedinIcon size={32} round />
                   </LinkedinShareButton>
                   <WhatsappShareButton url={referralUrl} title={emailBody}>
-                    <WhatsappIcon size={48} round />
+                    <WhatsappIcon size={32} round />
                   </WhatsappShareButton>
                   <EmailShareButton url={referralUrl} subject={emailSubject} body={emailBody}>
-                    <EmailIcon size={48} round />
+                    <EmailIcon size={32} round />
                   </EmailShareButton>
                 </div>
               </motion.div>

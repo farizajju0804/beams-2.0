@@ -99,94 +99,65 @@ export const {
 
     // Callback to customize session data
     async session({ token, session }) {
-      // console.log("Session callback - token:", JSON.stringify(token, null, 2));
-      // console.log("Session callback - initial session:", JSON.stringify(session, null, 2));
-    
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-        // console.log("Set session.user.id to:", token.sub);
-      } else {
-        // console.log("Unable to set session.user.id. token.sub:", token.sub, "session.user:", session.user);
-        
-        // Attempt to fetch user if id is missing
-        if (session.user && session.user.email && !session.user.id) {
-          // console.log("Attempting to fetch user data for email:", session.user.email);
-          const user = await getUserByEmail(session.user.email);
-          if (user && user.id) {
-            session.user.id = user.id;
-            // console.log("Retrieved and set user id:", user.id);
-          } else {
-            console.warn("Failed to retrieve user id for email:", session.user.email);
-          }
+      if (token && session.user){
+        session.user = {
+          ...session.user,
+          id: token.sub as string,
+          email: token.email as string,
+          firstName: token.firstName as string,
+          image : token.image as string,
+          lastName: token.lastName as string,
+          userType: token.userType as UserType,
+          role: token.role as UserRole,
+          isOAuth : token.isOAuth as boolean,
+          isTwoFactorEnabled: token.isTwoFactorEnabled as boolean,
+          userFormCompleted: token.userFormCompleted as boolean,
+          onBoardingCompleted: token.onBoardingCompleted as boolean,
+          isAccessible: token.isAccessible as boolean,
+          isSessionValid: token.isSessionValid as boolean,
+          isBanned: token.isBanned as boolean,
         }
       }
-    
-      // Assign other user properties
-      if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.user.userType = token.userType as UserType;
-        session.user.email = token.email as string;
-        session.user.role = token.role as UserRole;
-        session.user.isOAuth = token.isOAuth as boolean;
-        session.user.image = token.image as string;
-        session.user.userFormCompleted = token.userFormCompleted as boolean;
-        session.user.onBoardingCompleted = token.onBoardingCompleted as boolean;
-        session.user.isAccessible = token.isAccessible as boolean;
-        session.user.isSessionValid = token.isSessionValid as boolean;
-        session.user.isBanned = token.isBanned as boolean;
-      }
-    
-      // console.log("Session callback - final session:", JSON.stringify(session, null, 2));
-      return session;
+      return session
     },
-
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
-    
       if (user?.id) {
-        token.sub = user.id
+        token.sub = user.id;
       }
     
-    if (trigger === "update" && session?.user) {
-      console.log("Updating token with session data:", session.user);
-      token = { ...token, ...session.user };
-    }
+      if (trigger === "update" && session?.user) {
+        token = { ...token, ...session.user };
+      }
 
-
-
-      // If the token contains a user identifier (sub), update it with fresh data
       if (token.sub) {
-        const existingUser = await getUserByEmail(token.email as string); 
-       
-        token.sub = existingUser?.id; // Update token with the user's ID
+        const existingUser = await getUserByEmail(token.email as string);
         if (existingUser) {
-          // Fetch the user's account and update token with relevant user data
           const existingAccount = await getAccountByUserId(existingUser.id);
-          token.isOAuth = !!existingAccount; // Check if the user has an OAuth account
-          token.firstName = existingUser.firstName;
-          token.lastName = existingUser.lastName;
-          token.userType = existingUser.userType;
-          token.email = existingUser.email;
-          token.role = existingUser.role;
-          token.image = existingUser.image;
-          token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-          token.userFormCompleted = existingUser.userFormCompleted;
-          token.onBoardingCompleted = existingUser.onBoardingCompleted;
-          token.isAccessible = existingUser.isAccessible;
-          token.isSessionValid = existingUser.isSessionValid;
-          token.isBanned = existingUser.isBanned;
-          if (existingUser.isBanned) {
-            token.isSessionValid = false;
-          }
+          token = {
+            ...token,
+            sub: existingUser.id,
+            isOAuth: !!existingAccount,
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            userType: existingUser.userType,
+            email: existingUser.email,
+            role: existingUser.role,
+            image: existingUser.image,
+            isTwoFactorEnabled: existingUser.isTwoFactorEnabled,
+            userFormCompleted: existingUser.userFormCompleted,
+            onBoardingCompleted: existingUser.onBoardingCompleted,
+            isAccessible: existingUser.isAccessible,
+            isSessionValid: existingUser.isSessionValid,
+            isBanned: existingUser.isBanned,
+          };
         }
       }
    
       if (token.isSessionValid === false || token.isBanned === true) {
         return null;
       }
-      return token; // Return updated token
+      return token;
     },
 
     // Redirect callback to control redirects after authentication actions
