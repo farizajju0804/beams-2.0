@@ -133,7 +133,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
                 <div className="text-center mb-4">
                   <p className="text-lg font-semibold mb-2">Just One More Step! 🚀</p>
                   <p className="text-md text-grey-2 mb-2">
-                    We&apos;ve sent a secret code to:
+                    We&apos;ve sent a code to:
                   </p>
                   <p className="font-bold text-primary text-lg mb-4">{userEmail}</p>
                   <p className="text-sm text-grey-4">

@@ -73,8 +73,8 @@ const ProfilePictureForm: React.FC<ProfilePictureProps> = ({ user }) => {
     try {
       const timestamp = Math.round((new Date()).getTime() / 1000);
       const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "";
-      const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || "";
-      const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET || "";
+      const apiKey = process.env.CLOUDINARY_API_KEY || "";
+      const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
       
       // Generate signature

@@ -226,6 +226,11 @@ const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalConte
         onClose={onClose}
         scrollBehavior="inside"
         size="3xl"
+        classNames={
+          {
+            wrapper : "z-[200]"
+          }
+        }
       >
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>

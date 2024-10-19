@@ -47,7 +47,7 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
     },
   });
 
-  const selectedGrade: Grade |undefined = form.watch("grade") as Grade; // Watch the selected grade and define its type
+  const selectedGrade: Grade | undefined = form.watch("grade") as Grade; // Watch the selected grade and define its type
 
   useEffect(() => {
     if (formData.firstName) {
@@ -56,11 +56,11 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
   }, [formData.firstName]);
 
   useEffect(() => {
-    if (selectedGrade && !feedbackMessageTemplate) {
+    if (selectedGrade) {
       const feedbackMessage = feedbackMessages[selectedGrade].replace("[Name]", formData.firstName);
-      setFeedbackMessageTemplate(feedbackMessage); // Set the feedback message for the selected grade
+      setFeedbackMessageTemplate(feedbackMessage); // Always update the feedback message on grade selection
     }
-  }, [selectedGrade, formData.firstName, feedbackMessageTemplate]);
+  }, [selectedGrade, formData.firstName]); // Removed the condition checking `feedbackMessageTemplate`
 
   const onSubmit = (data: { grade: string }) => {
     onNext({ grade: data.grade }); // Pass the selected grade to the next step

@@ -35,7 +35,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({ completedTopics, u
      
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-2 md:gap-6 items-center justify-center w-full bg-background ">
    
-      <h1 className="font-poppins text-2xl md:text-4xl font-semibold bg-yellow text-purple p-2">Beams Today</h1>
+      <h1 className="font-poppins text-2xl md:text-4xl uppercase font-semibold bg-yellow text-purple p-2">Beams Today</h1>
       <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
      
        {/* <TopicOfTheDayContainer user={user} /> */}

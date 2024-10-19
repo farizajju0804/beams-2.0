@@ -70,7 +70,11 @@ const TwoFactorAuthForm: React.FC<TwoFactorAuthFormProps> = ({ user }) => {
         {/* {success && <p className="text-green-500">{success}</p>} */}
       </form>
 
-      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+      <Modal 
+      classNames={{
+        wrapper : "z-[200]"
+      }}
+      isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <ModalContent>
           <ModalHeader>
             <h2 className="text-lg font-semibold">Confirm Action</h2>
