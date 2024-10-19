@@ -50,8 +50,8 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
                     alt={`Badge`}
                     width={1000}
                     height={100}
-                    objectFit="cover"
-                    className="w-72  h-14"
+                    // objectFit="cover"
+                    className="w-72 object-cover h-14"
                   />
       </div>
       ) : (

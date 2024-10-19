@@ -6,12 +6,10 @@ let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
   if (cachedDb && cachedClient) {
-    // Check if the connection is still alive
     try {
       await cachedClient.db().command({ ping: 1 });
       return cachedDb;
     } catch (error) {
-      // Connection is dead, close it
       await cachedClient.close();
       cachedClient = null;
       cachedDb = null;
@@ -23,7 +21,9 @@ async function connectToDatabase(): Promise<Db> {
   }
 
   try {
-    const client = await MongoClient.connect(process.env.DATABASE_URL);
+    const client = await MongoClient.connect(process.env.DATABASE_URL, {
+      maxPoolSize: 1, // Connection pooling to limit open connections
+    });
     const db = client.db();
     cachedClient = client;
     cachedDb = db;

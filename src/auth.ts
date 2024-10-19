@@ -45,7 +45,7 @@ export const {
   callbacks: {
     // Sign-in callback to handle additional validation like two-factor authentication
     async signIn({ user, account }) {
-      const existingUser = await getUserByEmail(user.email as string);
+      const existingUser = await getUserByEmail2(user.email as string);
       if (existingUser?.isBanned) {
         return false;
       }
@@ -54,7 +54,7 @@ export const {
       if (account?.provider === "google") {
         const ip = getClientIp();
        
-          const existingUser = await getUserByEmail(user.email as string);
+          const existingUser = await getUserByEmail2(user.email as string);
           if (existingUser) {
             await db.user.update({
               where: { email: user.email as string },
@@ -91,7 +91,7 @@ export const {
        
       }
       await db.user.update({
-        where: { email: existingUser.email },
+        where: { email: existingUser.email as string },
         data: { isSessionValid: true }
       });
       return true; // Allow login if all conditions are satisfied
