@@ -22,7 +22,7 @@ async function connectToDatabase(): Promise<Db> {
 
   try {
     const client = await MongoClient.connect(process.env.DATABASE_URL, {
-      maxPoolSize: 1, // Connection pooling to limit open connections
+      maxPoolSize: 10, // Connection pooling to limit open connections
     });
     const db = client.db();
     cachedClient = client;
