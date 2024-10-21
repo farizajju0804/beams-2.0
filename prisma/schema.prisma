@@ -67,7 +67,7 @@ model User {
   notificationPreference Boolean                @default(false)
   isSessionValid          Boolean             @default(true)
   isBanned                Boolean              @default(false)
-  referralStatus            ReferralStatus? @default(REGISTERED)
+  referralStatus            ReferralStatus?    
   referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
   lastLoginAt               DateTime? // Timestamp of the last login (optional)
   lastLoginIp               String? // IP address of the last login (optional)

@@ -29,18 +29,8 @@ interface LoginFormProps {
  */
 const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   const searchParams = useSearchParams(); // Hook to get query parameters from the URL
-  const urlError = (() => {
-    const error = searchParams.get("error");
-  
-    if (error === "OAuthAccountNotLinked") {
-      return "Email already in use with a different provider!";
-    } else if (error === "AccessDenied") {
-      return "Your account is banned or access was denied!";
-    } else {
-      return "";
-    }
-  })();
-  const [error, setError] = useState<string | undefined>(urlError); // State for error messages
+
+  const [error, setError] = useState<string | undefined>(''); // State for error messages
   const [success, setSuccess] = useState<string | undefined>(""); // State for success messages
   const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for form submission
   const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
@@ -63,6 +53,21 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
     },
   });
 
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      let errorMessage = "";
+      if (errorParam === "OAuthAccountNotLinked") {
+        errorMessage = "Email already in use with a different provider!";
+      } else if (errorParam === "AccessDenied") {
+        errorMessage = "Your account is banned or access was denied!";
+      }
+      setError(errorMessage);
+
+      // Remove the error parameter from the URL
+      router.replace('/auth/login');
+    }
+  }, [searchParams, router]);
   // Hook to check if the screen is mobile
   useEffect(() => {
     const checkMobile: any = () => {

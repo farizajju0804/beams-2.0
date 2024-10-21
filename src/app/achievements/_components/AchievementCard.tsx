@@ -1,9 +1,12 @@
+'use client'
 import React from 'react'
 import Image from 'next/image'
 import { ArrowRight2 } from 'iconsax-react'
 import AchievementCompletionButton from './AchievementCompletionButton'
 import { Button, Chip } from '@nextui-org/react'
 import { Level, UserType } from '@prisma/client'
+import { useReferralModalStore } from '@/store/referralStore'
+import { ReferFriendModal } from '@/components/ReferalModal'
 
 interface AchievementCardProps {
   id: string
@@ -48,7 +51,7 @@ export default function AchievementCard({
 }: AchievementCardProps) {
   const noProgress = completedCount === 0
   const cardColor = noProgress ? '#a2a2a2' : color
-  
+  const openReferralModal = useReferralModalStore(state => state.openModal)
 
   const MAX_VISIBLE_BARS = 10
   const progressPercentage = (completedCount / totalCount) * 100
@@ -57,7 +60,16 @@ export default function AchievementCard({
     ? Math.round((progressPercentage / 100) * MAX_VISIBLE_BARS)
     : completedCount
 
+
+    const handleAction = () => {
+      if (actionUrl === 'OPEN_REFERRAL_MODAL') {
+        openReferralModal()
+      } else if (actionUrl) {
+        window.location.href = actionUrl
+      }
+    }
   return (
+  
     <section id={id}>
     <div  className='flex w-full items-center md:justify-start justify-center'>
       <div className="w-full bg-background rounded-2xl overflow-hidden shadow-defined">
@@ -140,12 +152,14 @@ export default function AchievementCard({
               currentLevel={currentLevel}
               isCompleted={isCompleted}
             />}
-           {!isCompleted && ( <Button  as="a" href={actionUrl}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
+           {!isCompleted && ( <Button  onClick={handleAction}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
             {personalizedMessage} </Button> )} 
           </div>
         </div>
       </div>
     </div>
     </section>
+ 
+    
   )
 }

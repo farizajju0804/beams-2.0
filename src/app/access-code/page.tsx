@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { updateAccessStatus } from '@/actions/auth/updateAccessStatus';
 import { updateAccessibleStatus } from '@/actions/auth/updateReferral';
 
+
 type FormData = {
   accessCode: string;
 };
@@ -41,20 +42,27 @@ export default function AccessCodeComponent() {
         setIsRedirecting(true);
 
         try {
-          await updateAccessibleStatus();
-          await update({
-            ...session,
-            user: {
-              ...session?.user,
-              isAccessible: true,
-            },
-          });
-
-          router.push('/user-info');
+          const result = await updateAccessibleStatus(referralCode);
+          if (result.success) {
+            await update({
+              ...session,
+              user: {
+                ...session?.user,
+                isAccessible: true,
+              },
+            });
+          setIsRedirecting(true);
+            router.push('/user-info');
+          }
+          else {
+            setIsReferralProcessed(true);
+          }
+        
+          // router.push('/user-info');
         } catch (error) {
           console.error("Failed to update referral:", error);
         } finally {
-          localStorage.removeItem('referral');
+          // localStorage.removeItem('referral');
           setIsRedirecting(false);
         }
       } else {
@@ -99,6 +107,12 @@ export default function AccessCodeComponent() {
     }
   };
 
+  if(isRedirecting || !isReferralProcessed){
+    return (
+      <RedirectMessage/>
+    )
+  }
+ 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <motion.div

@@ -1,8 +1,11 @@
+'use client'
 import React from 'react';
 import { Button, Card, CardBody, User } from "@nextui-org/react";
 import { Gift, Profile2User } from "iconsax-react";
 import { User as Users } from '@prisma/client';
 import Image from 'next/image';
+import { useReferralModalStore } from '@/store/referralStore';
+import { ReferFriendModal } from '@/components/ReferalModal';
 
 interface Referral {
   referrals: Users[]
@@ -11,7 +14,10 @@ interface Referral {
 const getAvatarSrc = (user: any) => user?.image;
 
 export default function ReferralSection({ referrals }: Referral) {
+  const openReferralModal = useReferralModalStore(state => state.openModal)
+
   return (
+    <>
     <Card className="w-full bg-transparent max-w-md shadow-none border-none outline-none">
       
     
@@ -50,10 +56,13 @@ export default function ReferralSection({ referrals }: Referral) {
             <p className="text-grey-2 mb-4">
              More friends, more Beams, more fun.
             </p>
-            <Button as={'a'} className="text-white font-semibold" href='/dashboard/?referral=true' color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
+            <Button onClick={openReferralModal} className="text-white font-semibold"  color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
           </div>
       </CardBody>
         )}
     </Card>
+       <ReferFriendModal
+       />
+       </>
   );
 }

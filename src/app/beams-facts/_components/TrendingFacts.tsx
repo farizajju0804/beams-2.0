@@ -89,17 +89,33 @@ export function TrendingFacts({ completedFacts, facts2 }: any) {
             onValueChange={(value) => setFilterOption(value)}
            
             classNames={{
-              wrapper: "gap-1",
+              wrapper: "gap-2",
             }}
           >
-            <Radio value="all" size="sm">All Facts</Radio>
+            <Radio classNames={{
+              wrapper: "w-3 h-3",
+              control : "w-1 h-1",
+              label : "text-sm"
+            }} value="all" size="sm">All Facts</Radio>
             <div className="flex items-center mx-1">
-            <Radio value="beamed" size="sm">Beamed</Radio>
-              <InfoIcon content="Facts marked as completed" />
+            <Radio 
+             classNames={{
+              wrapper: "w-3 h-3",
+              control : "w-1 h-1",
+              label : "text-sm"
+            }} 
+            value="beamed" size="sm">Beamed</Radio>
+              <InfoIcon content="Beams facts that you have read" />
             </div>
             <div className="flex items-center mx-1">
-            <Radio value="unbeamed" size="sm">Unbeamed</Radio>
-              <InfoIcon content="Facts not yet completed" />
+            <Radio
+             classNames={{
+              wrapper: "w-3 h-3",
+              control : "w-1 h-1",
+              label : "text-sm"
+            }} 
+            value="unbeamed" size="sm">Unbeamed</Radio> 
+              <InfoIcon content="Beams facts that you haven't read" />
             </div>
           </RadioGroup>
         </div>
@@ -110,7 +126,7 @@ export function TrendingFacts({ completedFacts, facts2 }: any) {
           </div>
         )}
 
-        <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-10">
+        <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-12">
           {paginatedFacts.map((fact: any, index: number) => (
             <AnimatedImageCard
               key={fact.id}

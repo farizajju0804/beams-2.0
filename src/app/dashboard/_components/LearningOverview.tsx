@@ -116,6 +116,7 @@ interface StatItemProps {
   value: string | number;
   title: string;
   viewLabel: string;
+  buttonLabel: string;
   modalContent: React.ReactNode;
   showViewLabel: boolean;
   actionUrl : string;
@@ -191,7 +192,7 @@ const PollsPopoverContent: React.FC<{ polls: PollData[] }> = ({ polls }) => (
     )}
   </div>
 );
-const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalContent, showViewLabel,actionUrl }) => {
+const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalContent, showViewLabel,actionUrl,buttonLabel }) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   return (
@@ -216,7 +217,7 @@ const StatItem: React.FC<StatItemProps> = ({ value, title, viewLabel, modalConte
             href={actionUrl}
             className="mt-2 text-xs "
           >
-            Start
+           {buttonLabel}
           </Button>
         )}
       </div>
@@ -325,6 +326,7 @@ const LearningOverview: React.FC<LearningOverviewProps> = ({ userAnalytics, watc
       value: watchedData.length,
       title: "Topics Mastered",
       viewLabel: "View all topics",
+      buttonLabel : "Start Mastering",
       modalContent: <TopicsPopoverContent topics={watchedData} />,
       showViewLabel: watchedData.length > 0,
       actionUrl : '/beams-today'

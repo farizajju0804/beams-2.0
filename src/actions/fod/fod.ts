@@ -3,6 +3,7 @@
 import { currentUser } from "@/libs/auth";
 import { db } from "@/libs/db"; // Import the Prisma database instance.
 import { date } from "zod";
+import { generateNotification } from "../notifications/notifications";
 
 
 
@@ -63,11 +64,11 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
     console.log(`[markFactAsCompleted] Fact marked as completed for userId: ${userId}, factId: ${factId}`);
     
     // Update achievement progress
-    const { streakDay, message } = await updateAchievementProgress(userId, 'Week Warrior', clientDate);
+    const { streakDay } = await updateAchievementProgress(userId, 'Week Warrior', clientDate);
 
     console.log(`[markFactAsCompleted] Achievement progress updated for userId: ${userId} for achievement 'Week Warrior'`);
 
-    return {  streakDay, message: message };
+    return {  streakDay };
   } catch (error) {
     console.error(`[markFactAsCompleted] Error marking fact as completed for userId: ${userId}, factId: ${factId}:`, error);
     throw new Error(`Error marking fact as completed: ${(error as Error).message}`);
@@ -75,7 +76,7 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
 };
 
 
-async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string): Promise<{ streakDay: number; message: string | null }> {
+async function updateAchievementProgress(userId: string, achievementName: string, clientDate: string): Promise<{ streakDay: number }> {
   const user: any = await currentUser();
   const username = user?.firstName || "User";
 
@@ -108,7 +109,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
     // If achievement is already completed, return early
     if (userAchievement && userAchievement.completionStatus) {
       console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}`);
-      return { streakDay: userAchievement.progress, message: null };
+      return { streakDay: userAchievement.progress };
     }
 
     let newProgress = 1;
@@ -162,16 +163,28 @@ async function updateAchievementProgress(userId: string, achievementName: string
 
       console.log(`[updateAchievementProgress] Achievement progress updated for userId: ${userId}, new progress: ${newProgress}, completed: ${isNowCompleted}`);
 
+
       if (isNowCompleted) {
-        message = `Congratulations ${username}! You've unlocked the ${achievementName} badge!`;
-      } else if (isReset) {
-        message = `${username}, your streak reset, but don't worry. Every day is a new opportunity to build your streak!`;
-      } else {
-        message = getStreakMessage(newProgress, username);
+        // Generate notification if the achievement is completed
+        await generateNotification(
+          userId,
+          'ACHIEVEMENT',
+          `Congratulations ${username}! You've unlocked the Week Warrior badge!`,
+          `/achievements#${achievement.id}`
+        );
       }
+    
+
+      // if (isNowCompleted) {
+      //   message = `Congratulations ${username}! You've unlocked the ${achievementName} badge!`;
+      // } else if (isReset) {
+      //   message = `${username}, your streak reset, but don't worry. Every day is a new opportunity to build your streak!`;
+      // } else {
+      //   message = getStreakMessage(newProgress, username);
+      // }
     }
 
-    return { streakDay: newProgress, message };
+    return { streakDay: newProgress };
   } catch (error) {
     console.error(`[updateAchievementProgress] Error updating achievement progress for userId: ${userId}, achievementName: ${achievementName}:`, error);
     throw new Error(`Error updating achievement progress: ${(error as Error).message}`);

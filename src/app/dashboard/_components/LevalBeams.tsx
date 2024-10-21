@@ -39,8 +39,9 @@ const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
   POLL_PARTICIPATION: 'Poll',
   SHARE: 'Share',
-  ACHIEVEMENT : 'Badges',
-  REFERRAL : 'Referral'
+  ACHIEVEMENT : 'Victory Vault',
+  REFERRAL : 'Referral',
+  REFERRAL_BONUS : 'Welcome Bonus'
 };
 
 // Map sources to icons

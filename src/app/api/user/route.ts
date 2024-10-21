@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { MongoClient, Db } from 'mongodb';
 
+export const runtime = 'nodejs'
+
 let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
@@ -21,9 +23,11 @@ async function connectToDatabase(): Promise<Db> {
   }
 
   try {
-    const client = await MongoClient.connect(process.env.DATABASE_URL, {
-      maxPoolSize: 10, // Connection pooling to limit open connections
-    });
+    const client = await MongoClient.connect(process.env.DATABASE_URL, 
+    //   {
+    //   maxPoolSize: 10, // Connection pooling to limit open connections
+    // }
+  );
     const db = client.db();
     cachedClient = client;
     cachedDb = db;

@@ -10,6 +10,7 @@ import { Achievement, UserAchievement } from '@prisma/client'
 import { getAllAchievements, getUserAchievements } from '@/actions/points/achievements'
 import AchievementsModal from './_components/AchievementsModal'
 import AchievementCard from './_components/AchievementCard'
+import { ReferFriendModal } from '@/components/ReferalModal'
 
 
 
@@ -63,6 +64,8 @@ const page = async() => {
         })}
     </div>
     </section>
+    <ReferFriendModal
+    />
    </div>
   )
 }

@@ -31,6 +31,7 @@ export const getUserLevelAndHistory = async (userId:string) => {
         createdAt: true,
       }
     });
+    const top20RecentActivities = recentActivities.slice(0, 20);
 
     // Accumulate points based on source
     const accumulatedPoints = recentActivities.reduce((acc: any, activity) => {
@@ -52,6 +53,7 @@ export const getUserLevelAndHistory = async (userId:string) => {
       userLevel: userBeamPoints?.level || { levelNumber: levelDefault?.levelNumber, icon : levelDefault?.icon, bgColor: levelDefault?.bgColor, minPoints : levelDefault?.minPoints,name: levelDefault?.name, maxPoints: levelDefault?.maxPoints }, // Default to level 1
       beams: userBeamPoints?.beams || 0, // Total beams (points)
       recentActivities, // Recent activities in descending order
+      top20RecentActivities,
       accumulatedPoints, // Accumulated points by source
     };
   } catch (error) {

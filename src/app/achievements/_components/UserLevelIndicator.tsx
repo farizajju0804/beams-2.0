@@ -59,7 +59,7 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
               </PopoverContent>
             </Popover>
 
-            <div className="max-w-full w-full flex items-center gap-3 md:gap-4 relative">
+            <div className="max-w-full w-full flex items-center gap-2 md:gap-4 relative">
               <IconFillingEffect
                 icon={config.icon}
                 filledColor={config.bgColor}

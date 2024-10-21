@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 const TimeZoneSetter = () => {
   useEffect(() => {
+    console.log("time setter called")
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     
     // Set the time zone in a cookie

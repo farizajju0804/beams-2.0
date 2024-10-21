@@ -1,9 +1,6 @@
+'use server'
 import { db } from '@/libs/db'; // Import the database instance from the database library
 import { revalidatePath } from 'next/cache';
-export const runtime = 'edge';
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
-export const dynmaic = 'force dynamic';
 
 /**
  * Fetch a user from the database by their email address.

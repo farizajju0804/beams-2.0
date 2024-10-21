@@ -24,7 +24,7 @@ const DashboardPage = async () => {
     userAnalytics,
     pollData,
     watchedData,
-    { userLevel, beams, recentActivities, accumulatedPoints },
+    { userLevel, beams, recentActivities, top20RecentActivities ,accumulatedPoints },
     referred,
     completed
   ]: any = await Promise.all([
@@ -67,7 +67,7 @@ const DashboardPage = async () => {
         <LevelBeams
           userLevel={userLevel}
           beams={beams}
-          recentActivities={recentActivities}
+          recentActivities={top20RecentActivities}
           accumulatedPoints={accumulatedPoints}
         />
       ),

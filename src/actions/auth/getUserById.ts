@@ -13,6 +13,7 @@ export const getUserById = async (id: string) => {
     // Execute the Prisma query to find the user by their unique ID
     const user = await db.user.findUnique({
       where: { id }, // Find user by ID
+      
     });
 
     console.log("Prisma query successful"); // Log success for debugging purposes

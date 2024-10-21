@@ -17,8 +17,10 @@ const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
   POLL_PARTICIPATION: 'Poll',
   SHARE: 'Share',
-  ACHIEVEMENT: 'Victory',
-  REFERRAL: 'Referral'
+  ACHIEVEMENT: 'Victory Vault',
+  REFERRAL: 'Referral',
+  REFERRAL_BONUS : 'Welcome Bonus'
+
 };
 
 const colorMap: { [key: string]: string } = {

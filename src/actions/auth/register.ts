@@ -10,6 +10,7 @@ import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 }
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
 import { getClientIp } from '@/utils/getClientIp';
+import { getGrowthAmbassadorStatus, } from './getGrowthAmbassadorStatus';
 
 /**
  * Registers a new user and sends a verification email.
@@ -36,28 +37,40 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
   let referredById = null;
+  let isAccessible = false;
+  let referralStatus = null;
+
   if (referralCode) {
     const referrer = await getUserByReferralCode(referralCode);
     if (referrer) {
+     
+      const referralLimit = await getGrowthAmbassadorStatus(referrer.userId)
+      console.log('referral limit status',referralLimit)
+      if(!referralLimit?.completed){
       referredById = referrer.userId;
+      isAccessible = true;
+      referralStatus = 'REGISTERED';
+      }
     }
   }
-  const userData = {
+  const userData:any = {
     email,
     password: hashedPassword,
     lastLoginIp: ip,
     lastLoginAt: new Date(),
+    referredById,
+    referralStatus,
+    isAccessible
   };
 
-  if (referralCode && referredById) {
-    Object.assign(userData, {
-      referredById,
-      referralStatus: 'REGISTERED',
-      isAccessible: true
-    });
-  }
+  // if (referralCode && referredById) {
+  //   Object.assign(userData, {
+  //     referredById,
+  //     referralStatus: 'REGISTERED',
+  //     isAccessible: true
+  //   });
+  // }
   await db.user.create({
     data: userData
   });

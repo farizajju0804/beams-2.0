@@ -17,6 +17,7 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
   const [isRevealed, setIsRevealed] = useState(false)
   const [isScratching, setIsScratching] = useState(false)
   const [scratchPercentage, setScratchPercentage] = useState(0)
+  const [isScratchImageLoaded, setIsScratchImageLoaded] = useState(false)
 
   const initCanvas = useCallback(() => {
     const canvas = canvasRef.current
@@ -29,6 +30,7 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
 
       scratchImg.onload = () => {
         ctx.drawImage(scratchImg, 0, 0, canvas.width, canvas.height)
+        setIsScratchImageLoaded(true)
       }
     }
   }, [scratchImage])
@@ -132,7 +134,8 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
     scratchPercentage, 
     handleScratch,
     setIsScratching,
-    revealAll
+    revealAll,
+    isScratchImageLoaded
   }
 }
 
@@ -144,15 +147,18 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ scratchImage, finalImage, onR
     scratchPercentage, 
     handleScratch, 
     setIsScratching,
+    isScratchImageLoaded
   } = useScratchCard(scratchImage, finalImage, SCRATCH_THRESHOLD, onReveal)
 
   return (
     <div className="relative w-full h-full bg-white rounded-lg shadow-xl overflow-hidden">
-      <img 
-        src={finalImage} 
-        alt="Final image" 
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+     {isScratchImageLoaded && (
+        <img 
+          src={finalImage} 
+          alt="Final image" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
       <canvas
         ref={canvasRef}
         width={256}
@@ -166,14 +172,16 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ scratchImage, finalImage, onR
         onTouchMove={handleScratch}
         className={`absolute inset-0 w-full h-full cursor-pointer ${isRevealed ? 'pointer-events-none' : ''}`}
       />
-      {!isRevealed && scratchPercentage === 0 && (
+       {!isRevealed && scratchPercentage === 0 && isScratchImageLoaded && (
         <div className="absolute z-[10] inset-0 flex items-center justify-center pointer-events-none">
           <p className="text-text bg-background p-2 text-lg font-semibold">Scratch here!</p>
         </div>
       )}
-      <div className="absolute bottom-2 left-2 text-xs text-background bg-text bg-opacity-50 px-2 py-1 rounded">
-        {Math.round(scratchPercentage * 100)}% scratched
-      </div>
+      {isScratchImageLoaded && (
+        <div className="absolute bottom-2 left-2 text-xs text-background bg-text bg-opacity-50 px-2 py-1 rounded">
+          {Math.round(scratchPercentage * 100)}% scratched
+        </div>
+      )}
     </div>
   )
 }

@@ -122,16 +122,16 @@ export const {
     },
     // JWT callback to handle token-related logic
     async jwt({ token, user, trigger, session }) {
-      if (user?.id) {
-        token.sub = user.id;
-      }
+     if(!token.sub){
+      return token
+     }
     
       if (trigger === "update" && session?.user) {
         token = { ...token, ...session.user };
       }
 
       if (token.sub) {
-        const existingUser = await getUserByEmail(token.email as string);
+        const existingUser = await getUserById2(token.sub as string);
         if (existingUser) {
           const existingAccount = await getAccountByUserId(existingUser.id);
           token = {

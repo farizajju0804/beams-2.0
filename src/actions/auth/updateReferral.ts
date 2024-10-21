@@ -7,6 +7,7 @@ import { db } from "@/libs/db"
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
 import { REFERRAL_POINTS } from "@/constants/pointsConstants"
+import { getGrowthAmbassadorStatus } from "./getGrowthAmbassadorStatus"
 
 
 export const updateReferral = async (referralCode:string) => {
@@ -114,7 +115,7 @@ export const updateReferral = async (referralCode:string) => {
           referrer.id,
           'ACHIEVEMENT', // Assuming you have this enum value
           `Congratulations! You've unlocked 'Growth Ambassador' badge!`,
-          `/achievements/#growth-ambassador` // Action URL for achievements
+          `/achievements/#${achievement.id}` // Action URL for achievements
         );
       }
     }
@@ -128,24 +129,42 @@ export const updateReferral = async (referralCode:string) => {
 }
 
 
-
-export const updateAccessibleStatus = async () => {
-  const user:any = await currentUser()
+export const updateAccessibleStatus = async (referralCode: string) => {
+  const user: any = await currentUser()
   const userId = user?.id
 
-  const existingUser:any = await getUserById2(userId)
+  const existingUser: any = await getUserById2(userId)
  
   if (existingUser?.referredById) {
-     return true; 
-   }
+    return { success: true, message: "User already has a referrer" };
+  }
  
-   if (!existingUser?.referredById && user?.isOAuth ) {
-   await db.user.update({
-     where: { id: userId },
-     data: {
-       isAccessible : true
-     }
-   });
-   }
-
+  if (!existingUser?.referredById && user?.isOAuth) {
+    if (referralCode) {
+      const referrer = await getUserByReferralCode(referralCode);
+      if (referrer) {
+        const referralLimit = await getGrowthAmbassadorStatus(referrer.userId)
+        console.log('referral limit status', referralLimit)
+        if (!referralLimit?.completed) {
+          await db.user.update({
+            where: { id: userId },
+            data: {
+              isAccessible: true,
+              referredById: referrer.userId,
+              referralStatus: 'VERIFIED'
+            }
+          });
+          return { success: true, message: "Referral processed successfully" };
+        } else {
+          return { success: false, message: "Referrer has reached their limit" };
+        }
+      } else {
+        return { success: false, message: "Invalid referral code" };
+      }
+    } else {
+      return { success: false, message: "No referral code provided" };
+    }
+  }
+  
+  return { success: false, message: "Unable to process referral" };
 }
