@@ -247,11 +247,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     </div>
   );
   const renderUserPosition = useCallback(() => {
-    if (userPosition && userPosition > 10 ) {
+    if (lastWeekUserPosition && lastWeekUserPosition > 10 ) {
       return (
-        <div className="w-full max-w-md mx-auto mt-8 p-4 bg-yellow rounded-lg shadow-defined">
-          <h2 className="text-xl font-bold">You are ranked #{lastWeekUserPosition}!</h2>
-          <p className="text-lg">Keep going! You&apos;ve earned {lastWeekUserPoints} Beams this week.</p>
+        <div className="w-full max-w-sm mx-auto mt-8 p-4 bg-yellow rounded-lg shadow-defined">
+          <h2 className="text-lg mb-2 text-center md:text-xl font-bold">You are ranked #{lastWeekUserPosition}!</h2>
+          <p className="text-sm text-center">Keep going! You&apos;ve earned <span className='font-semibold'>{lastWeekUserPoints} Beams</span> previous week.</p>
         </div>
       );
     }
@@ -268,7 +268,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         backdrop="blur"
         className="bg-background"
         classNames={{
-          wrapper : 'z-[110]'
+          wrapper : 'z-[250]'
         }}
       >
         <ModalContent>

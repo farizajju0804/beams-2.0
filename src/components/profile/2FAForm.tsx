@@ -49,9 +49,8 @@ const TwoFactorAuthForm: React.FC<TwoFactorAuthFormProps> = ({ user }) => {
   };
 
   const modalContent = is2FAEnabled
-  ? "You are about to disable Two-Factor Authentication (2FA). This means you will no longer need to enter a 2FA code sent to your email when logging in. Are you sure you want to proceed?"
-  : "You are about to enable Two-Factor Authentication (2FA). This adds an extra layer of security by requiring a 2FA code sent to your email when logging in. Are you sure you want to enable 2FA?";
-
+  ? "Disable 2FA? You'll no longer need an email code to log in."
+  : "Enable 2FA? You'll need an email code for extra security when logging in.";
   return (
     <div className="w-full max-w-lg p-4 rounded-3xl bg-background shadow-lg">
       <Toaster position="top-center" />
@@ -72,7 +71,7 @@ const TwoFactorAuthForm: React.FC<TwoFactorAuthFormProps> = ({ user }) => {
 
       <Modal 
       classNames={{
-        wrapper : "z-[200]"
+        wrapper : "z-[250]"
       }}
       isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <ModalContent>

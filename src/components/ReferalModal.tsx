@@ -67,6 +67,11 @@ export const ReferFriendModal = () => {
       className="py-4 z-[250] shadow-defined"
       placement="center"
       size="2xl"
+      classNames={
+        {
+          wrapper: "z-[250]"
+        }
+      }
       
     >
       <ModalContent>
