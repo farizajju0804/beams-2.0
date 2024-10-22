@@ -26,10 +26,6 @@ export default async function Page({ searchParams }: PageProps) {
     return <div>User not found</div>;
   }
 
-  const page = parseInt(searchParams.page || '1');
-  const categoryIds = searchParams.categories?.split(',').filter(Boolean);
-  
- 
 
   // Fetch categories and completed topics
   const availableCategories = await getAllCategories();

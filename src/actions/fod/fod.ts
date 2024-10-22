@@ -4,6 +4,7 @@ import { currentUser } from "@/libs/auth";
 import { db } from "@/libs/db"; // Import the Prisma database instance.
 import { date } from "zod";
 import { generateNotification } from "../notifications/notifications";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -257,34 +258,137 @@ function getStreakMessage(streakDay: number, username: string): string {
 
 
 
+type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
+type FilterOption = "all" | "beamed" | "unbeamed";
 
-export const getTrendingFacts = async (clientDate: string) => {
+interface GetTrendingFactsParams {
+  clientDate: string;
+  page?: number;
+  limit?: number;
+  sortBy?: SortOption;
+  filterOption?: FilterOption;
+  userId?: string; // To check completed facts
+}
+
+interface PaginatedResponse {
+  facts: any[];
+  totalPages: number;
+  currentPage: number;
+}
+
+
+
+
+
+export const getTrendingFacts = async ({
+  clientDate,
+  page = 1,
+  limit = 3,
+  sortBy = "dateDesc",
+  filterOption = "all",
+  userId
+}: GetTrendingFactsParams): Promise<PaginatedResponse> => {
   const today = new Date(clientDate);
   today.setUTCHours(0, 0, 0, 0);
 
   try {
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+
+    // Define the sorting configuration
+    const orderBy: Prisma.FactOfThedayOrderByWithRelationInput = (() => {
+      switch (sortBy) {
+        case "nameAsc":
+          return { title: Prisma.SortOrder.asc };
+        case "nameDesc":
+          return { title: Prisma.SortOrder.desc };
+        case "dateAsc":
+          return { date: Prisma.SortOrder.asc };
+        case "dateDesc":
+        default:
+          return { date: Prisma.SortOrder.desc };
+      }
+    })();
+
+    // Build the where clause based on filter option
+    let whereClause: Prisma.FactOfThedayWhereInput = {
+      date: {
+        lt: today,
+      },
+    };
+
+    if (filterOption !== "all" && userId) {
+      const completedFactsCondition = {
+        completions: {
+          some: {
+            userId: userId,
+            completed: true
+          }
+        }
+      };
+
+      if (filterOption === "beamed") {
+        whereClause = {
+          ...whereClause,
+          ...completedFactsCondition
+        };
+      } else if (filterOption === "unbeamed") {
+        whereClause = {
+          ...whereClause,
+          NOT: completedFactsCondition
+        };
+      }
+    }
+
+    // Get total count for pagination
+    const totalCount = await db.factOfTheday.count({
+      where: whereClause,
+    });
+
+    // Fetch paginated and filtered data
     const trendingFacts = await db.factOfTheday.findMany({
-      where: {
-        date: {
-          lt: today, // Only select facts with a date before the provided client date
-        },
-      },
-      orderBy: {
-        date: 'desc', // Order the facts by date in descending order
-      },
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
       select: {
         id: true,
         finalImage: true,
         title: true,
         date: true,
+        completions: {
+          where: {
+            userId: userId,
+            completed: true
+          },
+          select: {
+            id: true
+          }
+        }
       },
     });
 
-    return trendingFacts;
+    // Transform the data
+    const transformedFacts = trendingFacts.map(fact => ({
+      id: fact.id,
+      finalImage: fact.finalImage,
+      title: fact.title,
+      date: fact.date,
+      isCompleted: fact.completions.length > 0
+    }));
+
+    return {
+      facts: transformedFacts,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    };
   } catch (error) {
     throw new Error(`Error fetching trending facts: ${(error as Error).message}`);
   }
 };
+
+
+
 
 
 

@@ -49,7 +49,7 @@ export default function SearchLoader() {
         className="text-center"
       >
         <Spinner/>
-        <p className="mx-4 text-lg font-medium text-[#a2a2a2]">{randomMessage}</p>
+        <p className="mx-4 text-sm font-medium text-[#a2a2a2]">{randomMessage}</p>
       </motion.div>
     </div>
   )

@@ -1,59 +1,83 @@
-'use client'
-import React, { useEffect, useState } from "react";
-import { BeamsToday } from "@/types/beamsToday";
+'use client';
+
+import React, { useState } from "react";
 import Loader from "@/components/Loader";
 import CustomPagination from "@/components/Pagination";
 import AnimatedImageCard from "./AnimatedImageCard";
 import { getTrendingFacts } from "@/actions/fod/fod";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
-import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup, Tooltip } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup } from "@nextui-org/react";
 import { InfoCircle } from "iconsax-react";
 
-export function TrendingFacts({ completedFacts, facts2 }: any) {
-  const [facts, setFacts] = useState<any>(facts2);
+interface Fact {
+  id: string;
+  title: string;
+  finalImage: string;
+  date: string;
+  isCompleted: boolean;
+}
+
+interface TrendingFactsProps {
+  initialData: {
+    facts: Fact[];
+    totalPages: number;
+    currentPage: number;
+  };
+  userId: string;
+  clientDate:string;
+}
+
+type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
+
+
+export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsProps) {
+  const [facts, setFacts] = useState<Fact[]>(initialData.facts);
+  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState("dateDesc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialData.currentPage);
+  const [totalPages, setTotalPages] = useState(initialData.totalPages);
   const [filterOption, setFilterOption] = useState("all");
-  const itemsPerPage = 3;
 
-  const filteredFacts = facts.filter((fact: any) => {
-    if (filterOption === "beamed") {
-      return completedFacts.includes(fact.id);
-    } else if (filterOption === "unbeamed") {
-      return !completedFacts.includes(fact.id);
+  const fetchData = async (
+    page: number,
+    sort: string,
+    filter: string
+  ) => {
+    setIsLoading(true);
+    try {
+      const result = await getTrendingFacts({
+        clientDate: clientDate,
+        page,
+        sortBy: sort as  "nameAsc" | "nameDesc" |  "dateAsc" | "dateDesc" ,
+        filterOption: filter as "all" | "beamed" | "unbeamed",
+        userId
+      });
+      
+      setFacts(result.facts);
+      setTotalPages(result.totalPages);
+      setCurrentPage(result.currentPage);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
-    return true;
-  });
-
-  const sortedFacts = [...filteredFacts].sort((a: any, b: any) => {
-    switch (sortBy) {
-      case "dateAsc":
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      case "nameAsc":
-        return a.title.localeCompare(b.title);
-      case "nameDesc":
-        return b.title.localeCompare(a.title);
-      case "dateDesc":
-      default:
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-  });
-
-  useEffect(() => {
-    setTotalPages(Math.ceil(sortedFacts.length / itemsPerPage));
-  }, [sortedFacts]);
-
-  const paginatedFacts = sortedFacts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
-  const InfoIcon = ({ content }:{content:string}) => (
+  const handleSortChange = async (newSortBy: string) => {
+    setSortBy(newSortBy);
+    await fetchData(1, newSortBy, filterOption);
+  };
+
+  const handleFilterChange = async (newFilter: string) => {
+    setFilterOption(newFilter);
+    await fetchData(1, sortBy, newFilter);
+  };
+
+  const handlePageChange = async (page: number) => {
+    await fetchData(page, sortBy, filterOption);
+  };
+
+  const InfoIcon = ({ content }: { content: string }) => (
     <Popover placement="top">
       <PopoverTrigger>
         <sup>
@@ -68,6 +92,10 @@ export function TrendingFacts({ completedFacts, facts2 }: any) {
     </Popover>
   );
 
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
+
   return (
     <>
       <div className="flex mt-4 flex-col w-full">
@@ -81,53 +109,66 @@ export function TrendingFacts({ completedFacts, facts2 }: any) {
           ></div>
         </div>
         <div className="flex flex-col md:flex-row items-start gap-6 md:justify-between mb-6 px-6 md:items-center w-full">
-          <SortByFilter sortBy={sortBy} setSortBy={setSortBy} />
+          <SortByFilter sortBy={sortBy} setSortBy={handleSortChange} />
 
           <RadioGroup
             orientation="horizontal"
             value={filterOption}
-            onValueChange={(value) => setFilterOption(value)}
-           
+            onValueChange={handleFilterChange}
             classNames={{
               wrapper: "gap-2",
             }}
           >
-            <Radio classNames={{
-              wrapper: "w-3 h-3",
-              control : "w-1 h-1",
-              label : "text-sm"
-            }} value="all" size="sm">All Facts</Radio>
-            <div className="flex items-center mx-1">
             <Radio 
-             classNames={{
-              wrapper: "w-3 h-3",
-              control : "w-1 h-1",
-              label : "text-sm"
-            }} 
-            value="beamed" size="sm">Beamed</Radio>
+              classNames={{
+                wrapper: "w-3 h-3",
+                control: "w-1 h-1",
+                label: "text-sm"
+              }} 
+              value="all" 
+              size="sm"
+            >
+              All Facts
+            </Radio>
+            <div className="flex items-center mx-1">
+              <Radio 
+                classNames={{
+                  wrapper: "w-3 h-3",
+                  control: "w-1 h-1",
+                  label: "text-sm"
+                }} 
+                value="beamed" 
+                size="sm"
+              >
+                Beamed
+              </Radio>
               <InfoIcon content="Beams facts that you have read" />
             </div>
             <div className="flex items-center mx-1">
-            <Radio
-             classNames={{
-              wrapper: "w-3 h-3",
-              control : "w-1 h-1",
-              label : "text-sm"
-            }} 
-            value="unbeamed" size="sm">Unbeamed</Radio> 
+              <Radio
+                classNames={{
+                  wrapper: "w-3 h-3",
+                  control: "w-1 h-1",
+                  label: "text-sm"
+                }} 
+                value="unbeamed" 
+                size="sm"
+              >
+                Unbeamed
+              </Radio>
               <InfoIcon content="Beams facts that you haven't read" />
             </div>
           </RadioGroup>
         </div>
 
-        {paginatedFacts.length === 0 && (
+        {facts.length === 0 && (
           <div className="text-center text-gray-500 mt-6">
             No facts found.
           </div>
         )}
 
         <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-12">
-          {paginatedFacts.map((fact: any, index: number) => (
+          {facts.map((fact) => (
             <AnimatedImageCard
               key={fact.id}
               imageUrl={fact.finalImage}

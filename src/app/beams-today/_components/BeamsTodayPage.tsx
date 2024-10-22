@@ -26,7 +26,11 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
   console.log("Client time:", clientTime);
   // Fetch the data on the server
   const topic: any = await getTopicOfTheDay(clientDate);
-  const allUploads = await getRecentUploads(clientDate);
+  const initialUploads = await getRecentUploads({
+    clientDate: clientDate,
+    page: 1,
+    sortBy: "dateDesc"
+  });
   
  const {minDateString,maxDateString}:any= await getMinAndMaxDate()
  console.log(minDateString,maxDateString)
@@ -52,7 +56,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
       /> */}
       <TopicSearch userId={user.id} categories={categories}  minDateString={minDateString} maxDateString={maxDateString}/>
       {/* <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} /> */}
-      <BeamsTodayRecents initialUploads={allUploads} />
+      <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} />
   
     </div>
     </>

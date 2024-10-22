@@ -327,7 +327,7 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
   }, [typingTimeout]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 px-4">
+    <div className="w-full max-w-5xl mx-auto space-y-6 px-6">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 max-w-2xl mx-auto w-full">
