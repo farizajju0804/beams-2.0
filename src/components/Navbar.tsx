@@ -48,7 +48,7 @@ export default function Nav() {
            <ThemeSwitcher />
         </NavbarItem> */}
         <NavbarItem>
-           <UserButton />
+           {/* <UserButton /> */}
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
