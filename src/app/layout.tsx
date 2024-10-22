@@ -25,21 +25,21 @@ export default function RootLayout({
     <html lang="en">
     <head>
           {/* Inline script for site behaviour */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              (function() {
-                var sbSiteSecret = "25321c10-c173-4498-a856-d07cfb1d6a4a";
-                window.sitebehaviourTrackingSecret = sbSiteSecret;
-                var scriptElement = document.createElement('script');
-                scriptElement.async = true;
-                scriptElement.id = "site-behaviour-script-v2";
-                scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
-                document.head.appendChild(scriptElement);
-              })();
-              `,
-            }}
-          />
+          <script type="text/javascript">
+          {`
+      (
+        function() {
+          var sbSiteSecret = "25321c10-c173-4498-a856-d07cfb1d6a4a";
+          window.sitebehaviourTrackingSecret = sbSiteSecret;
+          var scriptElement = document.createElement('script');
+          scriptElement.async = true;
+          scriptElement.id = "site-behaviour-script-v2";
+          scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
+          document.head.appendChild(scriptElement); 
+        }
+      )()
+      `}
+          </script>
         </head>
       <body className={quicksand.className}>
 
