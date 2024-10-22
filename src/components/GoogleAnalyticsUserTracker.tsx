@@ -26,7 +26,7 @@ export function GoogleAnalyticsUserTracker() {
       // Set user properties
       window.gtag('set', 'user_properties', {
         user_id: userId,
-        user_type: session.user.role || 'user',
+        user_type: session.user.userType,
         login_status: 'logged_in'
       });
 
