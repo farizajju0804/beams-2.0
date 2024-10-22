@@ -8,6 +8,7 @@ import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import { SessionValidator } from './SessionValidator';
 
 
 const PublicFooter: React.FC = () => {
@@ -91,6 +92,7 @@ const PublicFooter: React.FC = () => {
           </div>
         </div>
       </footer>
+      {/* <SessionValidator/> */}
       {/* <div className="w-full h-1 bg-brand"></div> */}
     </>
   );

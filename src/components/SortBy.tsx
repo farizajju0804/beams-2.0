@@ -42,6 +42,7 @@ const SortBy: React.FC<SortByProps> = ({ sortBy, setSortBy, options,disabled }) 
       variant="bordered"
       radius="lg"
       onChange={handleChange}
+      aria-label="Sort topics"
       fullWidth={false}
       classNames={{base : "w-[130px]"}}
      

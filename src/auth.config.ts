@@ -22,7 +22,7 @@ export default {
       },
       // Custom profile handler to structure the user's profile data after successful OAuth login
       profile: async (_profile) => {
-        const ip = getClientIp();
+        const ip = await getClientIp();
         return {
           id: _profile.sub,
           firstName: _profile.given_name,

@@ -1,22 +1,22 @@
 import React from "react";
 import { cookies } from 'next/headers';
-import TopicOfTheDayContainer from "./TopicsOfThedayContainer";
-import BeamsTodayListContainer from "./BeamsTodayListContainer";
-import SearchBar from "./SearchBar";
+
 
 import { BeamsTodayRecents } from "./BeamsTodayRecents";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
+import TopicSearch from "./SearchBarNew";
+import { getMinAndMaxDate } from "@/actions/beams-today/getMinAndMaxDate";
 
 interface BeamsTodayPageProps {
-  completedTopics: string[];
   user: any;
-  topics: any;
+  // topics: any;
   categories: any;
+ 
 }
 
-const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({ completedTopics, user, topics,  categories }) => {
+const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories }) => {
   const cookieStore = cookies();
   const timeZone = cookieStore.get('client_time_zone')?.value || 'UTC';
   const now = new Date();
@@ -28,7 +28,9 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({ completedTopics, u
   const topic: any = await getTopicOfTheDay(clientDate);
   const allUploads = await getRecentUploads(clientDate);
   
-
+ const {minDateString,maxDateString}:any= await getMinAndMaxDate()
+ console.log(minDateString,maxDateString)
+ 
   return (
     <>
   
@@ -39,8 +41,17 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({ completedTopics, u
      
        {/* <TopicOfTheDayContainer user={user} /> */}
 
+ 
       <TopicOfTheDay topic={topic} clientDate={clientDate} />
-      <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} />
+      {/* <SearchBarNew  
+        initialTopics={topics}
+        initialPagination={pagination}
+        categories={categories}
+        completedTopics={completedTopics}
+        userId={user.id}
+      /> */}
+      <TopicSearch userId={user.id} categories={categories}  minDateString={minDateString} maxDateString={maxDateString}/>
+      {/* <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} /> */}
       <BeamsTodayRecents initialUploads={allUploads} />
   
     </div>

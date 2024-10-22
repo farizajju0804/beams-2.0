@@ -131,17 +131,9 @@ export const generateNotificationForAllUsers = async (
         orderBy: { createdAt: 'desc' },
       });
   
-      // Update isShown for new notifications
-      const updatedNotifications = await db.$transaction(
-        notifications.map((notification) =>
-          db.notification.update({
-            where: { id: notification.id },
-            data: { isShown: true },
-          })
-        )
-      );
+   
   
-      return updatedNotifications;
+      return notifications;
     } catch (error) {
       console.error('Error fetching and updating notifications:', error);
       throw new Error(`Failed to fetch and update notifications: ${(error as Error).message}`);

@@ -12,41 +12,42 @@ import { ReferFriendModal } from "./ReferalModal";
 import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
 import { useReferralModalStore } from "@/store/referralStore";
 
+interface UserData {
+  id: string,
+  email: string | null,
+  firstName: string | null,
+  gender:string | null,
+  dob:Date | null,
+  schoolName:string | null,
+  lastName: string| null,
+  image: string | null,
+  grade:string | null,
+  userType: string,
+  isTwoFactorEnabled: boolean,
+  userFormCompleted: boolean,
+  onBoardingCompleted: boolean,
+}
+
+interface UserButtonProps {
+  initialUser: UserData | null;
+}
 // const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
 const getAvatarSrc = (user: any) => user?.image;
 
-export default function UserButton() {
+export default function UserButton({ initialUser }: UserButtonProps) {
   const searchParams = useSearchParams();
   const { user: storeUser, setUser: setStoreUser } = useUserStore();
-  const [isLoading, setIsLoading] = useState(true);
+
   const router = useRouter();
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [referralUrl, setReferralUrl] = useState<string | null>(null);
+
   const { openModal } = useReferralModalStore();
-  // useEffect(() => {
-  //   // Check for referral param and open modal
-  //   if (searchParams.get("referral") === "true") {
-  //     openReferralModal();
-  //   }
-  // }, [searchParams]);
   
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setIsLoading(true);
-        const userData = await getLatestUserData();
-        if (userData) {
-          setStoreUser(userData); 
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchUserData();
-  }, [setStoreUser]);
+
+  useState(() => {
+    if (initialUser && !storeUser) {
+      setStoreUser(initialUser);
+    }
+  });
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -59,16 +60,6 @@ export default function UserButton() {
     }
   };
 
-  // const openReferralModal = async () => {
-  //   // Fetch the referral code before opening the modal
-  //   const referralCode = await getOrCreateReferralCode();
-  //   setReferralUrl(`${window.location.origin}/auth/register?referral=${referralCode}`);
-  //   setIsModalOpen(true); // Open the modal after the URL is set
-  // };
-
-  if (isLoading) {
-    return null; 
-  }
 
   const user = storeUser;
 

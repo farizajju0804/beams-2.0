@@ -14,7 +14,7 @@ interface LoginPageProps {}
  * based on that IP.
  */
 const LoginPage: FC<LoginPageProps> = async ({}) => {
-  const ip = getClientIp(); // Fetch the client's IP address
+  const ip = await getClientIp(); // Fetch the client's IP address
   // const pendingEmail: any = await checkPendingVerification(ip); // Check if there's a pending email verification tied to the IP
 
   return (

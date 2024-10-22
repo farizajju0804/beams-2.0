@@ -1,3 +1,4 @@
+'use server'
 import { headers } from 'next/headers'; // Import the headers utility from Next.js to access request headers
 
 /**
@@ -10,7 +11,7 @@ import { headers } from 'next/headers'; // Import the headers utility from Next.
  * 
  * @returns {string} - The client's IP address or a fallback IP if none is available.
  */
-export function getClientIp() {
+export async function getClientIp() {
   const FALLBACK_IP_ADDRESS = '0.0.0.0'; // Fallback IP address in case no IP is found in the headers
   const forwardedFor = headers().get('x-forwarded-for'); // Retrieve the 'x-forwarded-for' header
 

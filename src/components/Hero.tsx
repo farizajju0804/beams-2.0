@@ -54,7 +54,7 @@ const HeroSection: React.FC = () => {
             ease: "easeInOut", // Smooth easing
           }}
         >
-          <Image priority src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1724913498/email%20images/hero_qeunij.webp" alt="Beams Hero Image" width={260} height={260} />
+          <Image priority src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1724913498/email%20images/hero_qeunij.webp" alt="Beams Hero Image" className='w-48 h-48 md:w-64 md:h-64' width={260} height={260} />
         </motion.div>
       </motion.div>
       

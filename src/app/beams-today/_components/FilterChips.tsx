@@ -4,12 +4,12 @@ import FormattedDate from './FormattedDate';
 
 interface FilterChipsProps {
   filters: { id: string; label: string; type: string }[];
-  removeFilter: (filter: { id: string; type: string }) => void;
+  removeFilter: (filter: { id: string; type: string, label:string }) => void;
 }
 
 const FilterChips: React.FC<FilterChipsProps> = ({ filters, removeFilter }) => {
   return (
-    <div className="flex flex-wrap gap-2 my-4">
+    <div className="flex flex-wrap gap-2">
       {filters.map(filter => (
         <Chip key={filter.id} onClose={() => removeFilter(filter)}>
           {filter.type === 'date' ? (

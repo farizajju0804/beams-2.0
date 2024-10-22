@@ -52,7 +52,7 @@ export const {
 
       // Skip validation if the provider is not credentials-based (e.g., Google OAuth)
       if (account?.provider === "google") {
-        const ip = getClientIp();
+        const ip = await getClientIp();
        
           const existingUser = await getUserByEmail2(user.email as string);
           if (existingUser) {
@@ -154,9 +154,9 @@ export const {
         }
       }
    
-      if (token.isSessionValid === false || token.isBanned === true) {
-        return null;
-      }
+      // if (token.isSessionValid === false || token.isBanned === true) {
+      //   return null;
+      // }
       return token;
     },
 

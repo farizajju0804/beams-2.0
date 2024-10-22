@@ -3,8 +3,21 @@ import { currentUser } from "@/libs/auth";
 import BeamsTodayPage from "./_components/BeamsTodayPage";
 import { getAllBeamsToday, getNewBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { getAllCategories } from "@/actions/beams-today/categoryActions";
+import { searchTopics } from "@/actions/beams-today/search";
 
-export default async function Page() {
+
+interface PageProps {
+  searchParams: {
+    query?: string;
+    page?: string;
+    date?: string;
+    categories?: string;
+    beamedStatus?: string;
+    sortBy?: string;
+  };
+}
+
+export default async function Page({ searchParams }: PageProps) {
   // Fetch the currently authenticated user
   const user:any = await currentUser();
   // console.log('beams today session',user)
@@ -13,26 +26,21 @@ export default async function Page() {
     return <div>User not found</div>;
   }
 
-  // Fetch completed topics for the user
-  const completedTopics = await getcompletedBeamsToday(user.id);
+  const page = parseInt(searchParams.page || '1');
+  const categoryIds = searchParams.categories?.split(',').filter(Boolean);
   
-  // Fetch all available Beams Today topics
-  const topics = await getAllBeamsToday();
-  // const newTopics = await getNewBeamsToday();
-  
-  // Extract the search query parameter, or default to an empty string
  
-  
-  // Fetch all available categories
-  const categories = await getAllCategories();
 
-  // Render the BeamsTodayPage component, passing all fetched data as props
+  // Fetch categories and completed topics
+  const availableCategories = await getAllCategories();
+
+
   return (
     <BeamsTodayPage
-      completedTopics={completedTopics}
+      // completedTopics={completedTopics}
       user={user}
-      topics={topics}
-      categories={categories}
+      
+      categories={availableCategories}
     />
     
   );

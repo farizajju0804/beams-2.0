@@ -14,6 +14,7 @@ import ThemeWatcher from "./ThemeWatcher";
 import TimeZoneSetter from "@/components/TimeZoneSetter";
 import { SessionValidator } from "@/components/SessionValidator";
 import Head from 'next/head';
+
 export default function RootLayout({
   children,
 }: {
@@ -47,8 +48,8 @@ export default function RootLayout({
         
       </GoogleAnalytics>
       <TimeZoneSetter />
-      {/* <SessionValidator/> */}
-
+      <SessionValidator/>
+     
       {/* <Navbar/> */}
       <Providers>
         {children}
