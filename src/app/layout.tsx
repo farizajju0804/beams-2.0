@@ -24,25 +24,6 @@ export default function RootLayout({
   return (
   <SessionProviders>
     <html lang="en">
-    <head>
-          {/* Inline script for site behaviour */}
-          <script type="text/javascript">
-          {`
-
-      (
-        function() {
-          var sbSiteSecret = "53621595-e2cc-41a3-8cac-e425bc749a9b";
-          window.sitebehaviourTrackingSecret = sbSiteSecret;
-          var scriptElement = document.createElement('script');
-          scriptElement.async = true;
-          scriptElement.id = "site-behaviour-script-v2";
-          scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
-          document.head.appendChild(scriptElement); 
-        }
-      )()
-      `}
-          </script>
-        </head>
       <body className={quicksand.className}>
 
       {/* <GoogleAnalytics gaId="G-W7VPHJY727">
@@ -56,6 +37,21 @@ export default function RootLayout({
       <Providers>
         {children}
         </Providers>
+        <script type="text/javascript">
+        {`
+      (
+        function() {
+          var sbSiteSecret = "53621595-e2cc-41a3-8cac-e425bc749a9b";
+          window.sitebehaviourTrackingSecret = sbSiteSecret;
+          var scriptElement = document.createElement('script');
+          scriptElement.async = true;
+          scriptElement.id = "site-behaviour-script-v2";
+          scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
+          document.head.appendChild(scriptElement); 
+        }
+      )()
+      `}
+</script>
       </body>
    
     </html>

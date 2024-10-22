@@ -48,30 +48,31 @@ export default function BottomNav() {
               <Link
                 key={item.label}
                 href={item.path}
-                prefetch={true}
+                prefetch
                 // onClick={() => handleNavigation(index)}
               >
-                <Button
+                {/* <Button
                  isIconOnly={!selected}
                  radius="full"
                 //  variant={selected === index ? "shadow" : 'light'}
                 //  color={selected === index ? "primary" : 'default'}
-                  className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent  text-[#94A3B8]"} flex text-xs min-w-0 py-1 px-3 h-auto flex-col items-center justify-center w-fit  relative`}
-                  startContent={
+                  startContent={ */}
                       
                     <item.icon
                     size={18}
                     variant={"Bold"}
+                  className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent  text-[#94A3B8]"} flex text-xs min-w-0 py-1 px-3 h-auto flex-col items-center justify-center w-fit  relative`}
+
                     // color={selected === index ? "#f96f2e" : "#94A3B8"}
                   />
-                  }
-                >
+                  {/* }
+                > */}
 
                   {selected === index && 
                      item.label}
          
                     
-                </Button>
+                {/* </Button> */}
               </Link>
             ))}
           </nav>
