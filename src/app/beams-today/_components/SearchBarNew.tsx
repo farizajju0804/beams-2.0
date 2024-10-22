@@ -65,7 +65,7 @@ const NoResultsState = ({ query }: { query: string }) => (
       Uh-oh! No results for &quot;<span className="font-semibold">{query}</span>&quot;
     </h3>
     <p className="text-grey-2 max-w-sm">
-      Try adjusting your filters or search terms to find what you're looking for!
+      Try adjusting your filters or search terms to find what you&apos;re looking for!
     </p>
   </div>
 );
@@ -425,7 +425,7 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
                 {query && (
                   <span>
                     {" "}
-                    for "<span className="font-medium text-text">{query}</span>"
+                    for &quot;<span className="font-medium text-text">{query}</span>&quot;
                   </span>
                 )}
               </p>
