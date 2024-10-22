@@ -13,7 +13,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import ThemeWatcher from "./ThemeWatcher";
 import TimeZoneSetter from "@/components/TimeZoneSetter";
 import { SessionValidator } from "@/components/SessionValidator";
-import { GoogleAnalyticsUserTracker } from "@/components/GoogleAnalyticsUserTracker";
+// import { GoogleAnalyticsUserTracker } from "@/components/GoogleAnalyticsUserTracker";
 
 export default function RootLayout({
   children,
@@ -26,11 +26,12 @@ export default function RootLayout({
     <html lang="en">
     <head>
           {/* Inline script for site behaviour */}
-          {/* <script type="text/javascript">
+          <script type="text/javascript">
           {`
+
       (
         function() {
-          var sbSiteSecret = "25321c10-c173-4498-a856-d07cfb1d6a4a";
+          var sbSiteSecret = "53621595-e2cc-41a3-8cac-e425bc749a9b";
           window.sitebehaviourTrackingSecret = sbSiteSecret;
           var scriptElement = document.createElement('script');
           scriptElement.async = true;
@@ -40,14 +41,14 @@ export default function RootLayout({
         }
       )()
       `}
-          </script> */}
+          </script>
         </head>
       <body className={quicksand.className}>
 
-      <GoogleAnalytics gaId="G-W7VPHJY727">
+      {/* <GoogleAnalytics gaId="G-W7VPHJY727">
         
-      </GoogleAnalytics>
-      <GoogleAnalyticsUserTracker />
+      </GoogleAnalytics> */}
+      {/* <GoogleAnalyticsUserTracker /> */}
       <TimeZoneSetter />
       <SessionValidator/>
      
