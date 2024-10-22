@@ -13,6 +13,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import ThemeWatcher from "./ThemeWatcher";
 import TimeZoneSetter from "@/components/TimeZoneSetter";
 import { SessionValidator } from "@/components/SessionValidator";
+import { GoogleAnalyticsUserTracker } from "@/components/GoogleAnalyticsUserTracker";
 
 export default function RootLayout({
   children,
@@ -25,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
     <head>
           {/* Inline script for site behaviour */}
-          <script type="text/javascript">
+          {/* <script type="text/javascript">
           {`
       (
         function() {
@@ -39,13 +40,14 @@ export default function RootLayout({
         }
       )()
       `}
-          </script>
+          </script> */}
         </head>
       <body className={quicksand.className}>
 
       <GoogleAnalytics gaId="G-W7VPHJY727">
         
       </GoogleAnalytics>
+      <GoogleAnalyticsUserTracker />
       <TimeZoneSetter />
       <SessionValidator/>
      

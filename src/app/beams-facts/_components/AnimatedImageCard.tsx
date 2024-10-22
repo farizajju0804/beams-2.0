@@ -28,7 +28,8 @@ export default function AnimatedImageCard({ imageUrl, name }: AnimatedImageCardP
             src={imageUrl}
             alt={name}
             layout="fill"
-            objectFit="cover"
+            className="object-cover"
+            // objectFit="cover"
           />
         </motion.div>
         <div className="p-4">

@@ -283,7 +283,7 @@ interface PaginatedResponse {
 export const getTrendingFacts = async ({
   clientDate,
   page = 1,
-  limit = 3,
+  limit = 9,
   sortBy = "dateDesc",
   filterOption = "all",
   userId

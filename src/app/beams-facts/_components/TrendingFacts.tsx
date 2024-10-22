@@ -8,6 +8,7 @@ import { getTrendingFacts } from "@/actions/fod/fod";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup } from "@nextui-org/react";
 import { InfoCircle } from "iconsax-react";
+import Image from "next/image";
 
 interface Fact {
   id: string;
@@ -162,9 +163,21 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
         </div>
 
         {facts.length === 0 && (
-          <div className="text-center text-gray-500 mt-6">
-            No facts found.
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="w-40 h-40 mb-6">
+            <Image
+              width={200} 
+              height={200} 
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729604854/achievements/empty-box-3d-6717ace7b4c8a_zkwzn0.webp" 
+              className="" 
+              alt="search"
+            />
           </div>
+          <h3 className="text-sm text-grey-4 mb-2">
+          It seems like your filters are a little too picky. Let&apos;s loosen them up for some juicy facts!
+          </h3>
+         
+        </div>
         )}
 
         <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-12">

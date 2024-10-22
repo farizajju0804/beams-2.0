@@ -72,8 +72,8 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges,color }) => {
                     src={badge.achievement.badgeImageUrl}
                     alt={`Badge ${badge.achievement.id}`}
                     layout="fill"
-                    objectFit="cover"
-                    className=""
+                    
+                    className="object-cover"
                   />
                 </div>
               </Link>
