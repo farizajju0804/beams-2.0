@@ -12,6 +12,7 @@ import FilterDrawer from './FilterDrawer';
 import FilterChips from './FilterChips';
 import Image from 'next/image';
 import SearchLoader from '@/components/SearchLoader';
+import { FaSearch } from 'react-icons/fa';
 
 interface Category {
   id: string;
@@ -349,14 +350,14 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
                     onClick={handleClearInput}
                   />
                 ) : (
-                  <SearchNormal1 size="20" className="text-grey-2 mr-2" />
+                  <FaSearch size="20" className="text-grey-2 mr-2" />
                 )
               }
             />
           </div>
         </div>
 
-        {((searchResults?.topics?.length ?? 0) > 0 || query || selectedCategories.length > 0 || beamedStatus !== "all") && (
+        {((searchResults?.topics?.length ?? 0) > 0 || selectedCategories.length > 0 || beamedStatus !== "all") && (
           <div className="flex mt-2 justify-between items-center">
             <Button
               className="bg-transparent"
