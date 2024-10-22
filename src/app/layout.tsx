@@ -38,7 +38,7 @@ export default function RootLayout({
       <Providers>
         {children}
         </Providers>
-        <Script type="text/javascript">
+        <Script id="site-behaviour" type="text/javascript">
         {`
       (
         function() {
