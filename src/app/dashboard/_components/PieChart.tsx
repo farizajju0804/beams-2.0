@@ -16,24 +16,26 @@ interface LevelBeamsProps {
 const sourceMap: { [key: string]: string } = {
   BEAMS_TODAY: 'Beams Today',
   POLL_PARTICIPATION: 'Poll',
-  SHARE: 'Share',
+
   ACHIEVEMENT: 'Victory Vault',
   REFERRAL: 'Referral',
-  REFERRAL_BONUS : 'Welcome Bonus'
-
+  REFERRAL_BONUS: 'Welcome Bonus',
+  NETWORK_POINTS: "Network Points",
 };
 
 const colorMap: { [key: string]: string } = {
-  BEAMS_TODAY: '#FF6B6B',
-  POLL_PARTICIPATION: '#4ECDC4',
-  SHARE: '#45B7D1',
-  ACHIEVEMENT: '#F7B731',
-  REFERRAL: '#6C5CE7'
+  BEAMS_TODAY: '#FF6B6B',        
+  POLL_PARTICIPATION: '#8A2BE2',  
+                
+  ACHIEVEMENT: '#1E90FF',          
+  REFERRAL: '#FF1493',            
+  REFERRAL_BONUS: '#FFA00F',       
+  NETWORK_POINTS: '#17cd92',       
 };
 
 const ScoreDisplay: React.FC<{ score: number }> = ({ score }) => (
   <motion.div
-    className="text-center p-4 rounded-xl bg-gradient-to-r from-purple via-pink-500 to-red-500 text-white shadow-lg"
+    className="text-center p-4 rounded-xl bg-gradient-to-r from-yellow to-brand text-white shadow-lg"
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -61,7 +63,10 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
     color: colorMap[source] || '#888888'
   }));
 
-  const totalPoints = pieChartData.reduce((sum, item) => sum + item.value, 0);
+  // Sort the data by value in descending order
+  const sortedPieChartData = pieChartData.sort((a, b) => b.value - a.value);
+
+  const totalPoints = sortedPieChartData.reduce((sum, item) => sum + item.value, 0);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 bg-background rounded-2xl shadow-defined">
@@ -74,7 +79,7 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {pieChartData.map((item, index) => {
+            {sortedPieChartData.map((item, index) => {
               const percentage = (item.value / totalPoints) * 100;
               const isShortBar = percentage < 10;
 
@@ -87,9 +92,10 @@ const VibrantBeamsBreakdown: React.FC<LevelBeamsProps> = ({ beams, accumulatedPo
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <div className="flex mb-2 items-center justify-between text-sm">
-                    <span className="font-semibold" style={{ color: item.color }}>{item.name}</span>
-                    <span className="font-semibold" style={{ color: item.color }}>{item.value}</span>
+                    <span className="font-bold" style={{ color: item.color }}>{item.name}</span>
+                    <span className="font-bold" style={{ color: item.color }}>{item.value}</span>
                   </div>
+                  {/* Uncomment the below code if you want to display progress bars */}
                   {/* <div className="h-10 w-full bg-grey-1 rounded-full overflow-hidden shadow-inner relative">
                     <motion.div
                       className="h-full rounded-full flex items-center justify-end pr-2 text-xs font-bold"

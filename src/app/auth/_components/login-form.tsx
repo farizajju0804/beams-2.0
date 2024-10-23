@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod"; // Resolver to integrate 
 import Link from "next/link"; // Link component for navigation
 import { useSession } from "next-auth/react"; // Hook to manage authentication session
 import { RiLoginCircleFill } from "react-icons/ri"; // Icon for login button
+import RedirectMessage from "@/components/Redirection";
 
 // Interface defining the expected props for the component
 interface LoginFormProps {
@@ -33,6 +34,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   const [error, setError] = useState<string | undefined>(''); // State for error messages
   const [success, setSuccess] = useState<string | undefined>(""); // State for success messages
   const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for form submission
+  const [isRedirecting, setIsRedirecting] = useState<boolean>(false); // Loading state for form submission
   const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
   const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false); // State to show two-factor authentication field
   const [isMobile, setIsMobile] = useState(false); // State to determine if the screen is mobile
@@ -106,6 +108,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
         setSuccess("Login successful!"); // Show success message
        
         setIsLoading(false);
+        setIsRedirecting(true)
         router.push("/beams-today"); // Redirect to the main page
       } else if (data?.twoFactor) {
         setShowTwoFactor(true); // Show two-factor authentication field if required
@@ -121,6 +124,12 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
   // Toggle password visibility
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+
+  if(isRedirecting){
+    return <RedirectMessage/>
+  }
+
+  
   return (
     <CardWrapper
       headerLabel="Login 🔓"

@@ -1,13 +1,13 @@
 "use server";
 import { db } from '@/libs/db';
 import { updateUserPointsAndLeaderboard } from './updateUserPointsAndLeaderboard';
-import { UserType } from '@prisma/client';
+import { PointsSource, UserType } from '@prisma/client';
 
 // This function calls the centralized action for updating points and updates hasGainedBeams
 export const handleUserPointsAndMarkGained = async (
   userId: string,
   points: number,
-  source: string,
+  source: PointsSource,
   description: string,
   userType: UserType,
   achievementId: string

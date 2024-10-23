@@ -4,15 +4,16 @@ import { validateSession } from '@/actions/auth/getSessionValid'
 import { signOutUser } from '@/actions/auth/signout'
 import { deleteAllCookies } from '@/utils/cloudinary'
 import { useCurrentUser } from '@/hooks/use-current-user'
+import { useSession } from 'next-auth/react'
 
 
 export const SessionValidator = () => {
   
- const user = useCurrentUser()
+  const {data : session} = useSession()
 
   useEffect(() => {
     const checkSession = async () => {
-      if(user){
+      if(session?.user){
       const sessionStatus = await validateSession()
       console.log("SessionValidator: Fetched session status", sessionStatus)
 

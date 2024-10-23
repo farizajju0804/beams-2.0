@@ -7,6 +7,9 @@ export const getAllAchievements = async (): Promise<Achievement[]> => {
     const achievements = await db.achievement.findMany({
       where : {
         published : true
+      },
+      orderBy : {
+        createdAt : "asc"
       }
     });
     return achievements;

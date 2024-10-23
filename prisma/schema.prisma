@@ -15,6 +15,16 @@ enum UserRole {
   USER // Regular user role
 }
 
+
+enum PointsSource {
+  BEAMS_TODAY
+  POLL_PARTICIPATION
+  ACHIEVEMENT
+  REFERRAL
+  REFERRAL_BONUS
+  NETWORK_POINTS
+}
+
 enum NotificationType {
   SYSTEM
   ACHIEVEMENT
@@ -423,7 +433,7 @@ model BeamPointsHistory {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
   userId      String   @db.ObjectId // Foreign key to the User model
   points      Int // Number of points earned
-  source      String // Source of the points (e.g., watching videos, completing quizzes)
+  source      PointsSource
   description String // Description or reason for the points (e.g., "Watched 3 videos")
   createdAt   DateTime @default(now()) // Timestamp of when points were earned
   user      User      @relation(fields: [userId], references: [id],onDelete: Cascade)

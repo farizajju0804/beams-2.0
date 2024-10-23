@@ -1,5 +1,6 @@
 import {BeamsTheatreFavorite,BeamsTheatreUserAnalytics}  from '@/types/beamsTheatre'
 import { BeamsTodayFavorite, BeamsTodayUserAnalytics, BeamsTodayUserNote } from './beamsToday';
+import { PointsSource } from '@prisma/client';
 
 export interface User {
     id: string;
@@ -64,19 +65,14 @@ export interface User {
     USER = 'USER'
   }
   
-  export enum BeamPointsSource {
-    POLL_PARTICIPATION = 'POLL_PARTICIPATION',
-    WATCHING_VIDEO = 'WATCHING_VIDEO',
-    COMPLETING_QUIZ = 'COMPLETING_QUIZ',
-    OTHER = 'OTHER'
-  }
+
 
 
   export interface UserBeamPoints {
     id: string;
     userId: string;
     points: number;
-    source: BeamPointsSource;
+    source: PointsSource;
     createdAt: Date;
     updatedAt: Date;
     user: User;

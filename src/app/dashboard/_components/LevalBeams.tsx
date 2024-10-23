@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import RecentActivity from './RecentActivity';
 import { Cup, Icon, InfoCircle, MessageQuestion, Share, TickCircle } from 'iconsax-react';
+import { PointsSource } from '@prisma/client';
 
 
 interface ActivityData {
@@ -20,7 +21,7 @@ interface Activity {
     text: string;
     points: number;
     createdAt : Date;
-    source : string;
+    source : PointsSource;
 }
 
 

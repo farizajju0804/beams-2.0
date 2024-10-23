@@ -5,10 +5,11 @@ import { db } from "@/libs/db" // Import the Prisma database connection
 import { auth } from "@/auth" // Import the authentication helper
 import { redirect } from 'next/navigation' // Import for redirection purposes (not used here)
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes' // Import the default redirect route
-import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
+import { updateUserPointsAndLeaderboard2 } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
 import { User } from "@prisma/client"
 import { REFERRAL_POINTS } from "@/constants/pointsConstants"
+import { referalBadgeName } from "@/constants/victoryConstants"
 
 /**
  * Updates the onboarding status of the authenticated user.
@@ -36,7 +37,7 @@ export async function updateOnboardingStatus(status: boolean) {
 
     if (existingUser.referredById) {
       const pointsAdded = REFERRAL_POINTS; 
-      await updateUserPointsAndLeaderboard(
+      await updateUserPointsAndLeaderboard2(
         existingUser?.id,
         pointsAdded,
         'REFERRAL_BONUS', 
@@ -49,7 +50,7 @@ export async function updateOnboardingStatus(status: boolean) {
       });
     if (referrer) {
       // Update points and leaderboard for the referrer
-      const updateResult = await updateUserPointsAndLeaderboard(
+      const updateResult = await updateUserPointsAndLeaderboard2(
         referrer.id,
         pointsAdded,
         'REFERRAL', // The source for referral points
@@ -58,7 +59,7 @@ export async function updateOnboardingStatus(status: boolean) {
       );
 
 
-      const achievementName = "Growth Ambassador";
+      const achievementName = referalBadgeName;
     const achievement = await db.achievement.findUnique({
       where: { name: achievementName },
     });
@@ -70,7 +71,7 @@ export async function updateOnboardingStatus(status: boolean) {
 
     if (userAchievement?.completionStatus) {
       // Achievement is already completed, so don't do anything
-      console.log(`'Growth Ambassador' already completed for user: ${referrer.id}`);
+      console.log(`${referalBadgeName} already completed for user: ${referrer.id}`);
       return true;
     }
 
@@ -104,8 +105,8 @@ export async function updateOnboardingStatus(status: boolean) {
         await generateNotification(
           referrer.id,
           'ACHIEVEMENT', // Assuming you have this enum value
-          `Congratulations! You've unlocked 'Growth Ambassador' badge!`,
-          `/achievements/#growth-ambassador` // Action URL for achievements
+          `Congratulations! You've unlocked ${referalBadgeName} badge!`,
+          `/achievements#${achievement.id}` // Action URL for achievements
         );
       }
     }

@@ -5,9 +5,7 @@ import { db } from "@/libs/db"; // Import the Prisma database instance.
 import { date } from "zod";
 import { generateNotification } from "../notifications/notifications";
 import { Prisma } from "@prisma/client";
-
-
-
+import { streakBadge } from "@/constants/victoryConstants"; 
 
 /**
  * Marks the fact as completed for a given user.
@@ -65,9 +63,9 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
     console.log(`[markFactAsCompleted] Fact marked as completed for userId: ${userId}, factId: ${factId}`);
     
     // Update achievement progress
-    const { streakDay } = await updateAchievementProgress(userId, 'Week Warrior', clientDate);
+    const { streakDay } = await updateAchievementProgress(userId, streakBadge, clientDate);
 
-    console.log(`[markFactAsCompleted] Achievement progress updated for userId: ${userId} for achievement 'Week Warrior'`);
+    console.log(`[markFactAsCompleted] Achievement progress updated for userId: ${userId} for achievement`);
 
     return {  streakDay };
   } catch (error) {
@@ -170,7 +168,7 @@ async function updateAchievementProgress(userId: string, achievementName: string
         await generateNotification(
           userId,
           'ACHIEVEMENT',
-          `Congratulations ${username}! You've unlocked the Week Warrior badge!`,
+          `Congratulations ${username}! You've unlocked the ${achievementName} badge!`,
           `/achievements#${achievement.id}`
         );
       }

@@ -5,8 +5,6 @@ import { getVerificationTokenByToken } from "@/actions/auth/getVerificationToken
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { signIn } from "@/auth";
-import { redirect } from "next/navigation";
-import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
 
 /**
  * Verifies the verification code for a user's email verification process.

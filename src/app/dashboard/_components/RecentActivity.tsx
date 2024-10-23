@@ -2,13 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { Icon } from 'iconsax-react';
 import { Select, SelectItem } from "@nextui-org/react";
 import { ArrowDown2 } from 'iconsax-react';
+import { PointsSource } from '@prisma/client';
 
 type Activity = {
   icon: Icon;
   text: string;
   points: number;
   createdAt: Date;
-  source: string;
+  source: PointsSource;
 };
 
 interface RecentActivityProps {

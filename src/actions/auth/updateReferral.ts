@@ -4,10 +4,11 @@ import { currentUser } from "@/libs/auth"
 import { getUserById2 } from "./getUserByEmail"
 import { getUserByReferralCode } from "./register"
 import { db } from "@/libs/db"
-import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard"
+import {  updateUserPointsAndLeaderboard2 } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
 import { REFERRAL_POINTS } from "@/constants/pointsConstants"
 import { getGrowthAmbassadorStatus } from "./getGrowthAmbassadorStatus"
+import { referalBadgeName } from "@/constants/victoryConstants"
 
 
 export const updateReferral = async (referralCode:string) => {
@@ -45,7 +46,7 @@ export const updateReferral = async (referralCode:string) => {
 
 
   const pointsAdded = REFERRAL_POINTS; 
-  await updateUserPointsAndLeaderboard(
+  await updateUserPointsAndLeaderboard2(
     existingUser?.id,
     pointsAdded,
     'REFERRAL_BONUS', 
@@ -60,7 +61,7 @@ export const updateReferral = async (referralCode:string) => {
 
   if (referrer) {
     // Update points and leaderboard for the referrer
-    await updateUserPointsAndLeaderboard(
+    await updateUserPointsAndLeaderboard2(
       referrer.id,
       pointsAdded,
       'REFERRAL', // The source for referral points
@@ -68,7 +69,7 @@ export const updateReferral = async (referralCode:string) => {
       referrer.userType // Referrer's user type
     );
 
-    const achievementName = "Growth Ambassador";
+    const achievementName = referalBadgeName;
     const achievement = await db.achievement.findUnique({
       where: { name: achievementName },
     });
@@ -80,7 +81,7 @@ export const updateReferral = async (referralCode:string) => {
 
     if (userAchievement?.completionStatus) {
       // Achievement is already completed, so don't do anything
-      console.log(`'Growth Ambassador' already completed for user: ${referrer.id}`);
+      console.log(`${referalBadgeName} already completed for user: ${referrer.id}`);
       return true;
     }
 
@@ -114,7 +115,7 @@ export const updateReferral = async (referralCode:string) => {
         await generateNotification(
           referrer.id,
           'ACHIEVEMENT', // Assuming you have this enum value
-          `Congratulations! You've unlocked 'Growth Ambassador' badge!`,
+          `Congratulations! You've unlocked ${referalBadgeName} badge!`,
           `/achievements/#${achievement.id}` // Action URL for achievements
         );
       }

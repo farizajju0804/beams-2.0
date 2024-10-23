@@ -234,6 +234,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
                   >
                     +{beamsToGain} Beams
                   </Chip>
+                  <div className='flex flex-col gap-2'>
                   {leveledUp && (
                     <div className="text-center my-2">
                       <h3 className="text-lg font-bold">Level Up!</h3>
@@ -248,7 +249,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
                    name={newLevel ? newLevel.name : currentLevel.name}
                    levelNumber={newLevel ? newLevel.levelNumber : currentLevel.levelNumber}
                   />
-  
+  </div>
                   <IconFillingEffect
                     icon={newLevel ? newLevel.icon : currentLevel.icon}
                     filledColor={newLevel ? newLevel.bgColor : currentLevel.bgColor}

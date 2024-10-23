@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { ArrowRight2 } from 'iconsax-react'
 import AchievementCompletionButton from './AchievementCompletionButton'
-import { Button, Chip } from '@nextui-org/react'
+import { Button, Chip, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { Level, UserType } from '@prisma/client'
 import { useReferralModalStore } from '@/store/referralStore'
 import { ReferFriendModal } from '@/components/ReferalModal'
@@ -52,7 +52,7 @@ export default function AchievementCard({
   const noProgress = completedCount === 0
   const cardColor = noProgress ? '#a2a2a2' : color
   const openReferralModal = useReferralModalStore(state => state.openModal)
-
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const MAX_VISIBLE_BARS = 10
   const progressPercentage = (completedCount / totalCount) * 100
   const visibleBars = totalCount > MAX_VISIBLE_BARS ? MAX_VISIBLE_BARS : totalCount
@@ -75,13 +75,14 @@ export default function AchievementCard({
       <div className="w-full bg-background rounded-2xl overflow-hidden shadow-defined">
         <div className="relative h-20" style={{ backgroundColor: color }}>
           <div className="absolute inset-0 flex items-center px-4">
-            <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center shadow-lg mr-4">
+            <div  onClick={onOpen} className="w-16 h-16 cursor-pointer bg-background rounded-full flex items-center justify-center shadow-lg mr-4">
               <Image
                 // src={noProgress ? FALLBACK_BADGE_IMAGE : badgeImageUrl}
                 src={badgeImageUrl}
                 alt={`${badgeName} Badge`}
                 width={400}
                 height={400}
+                priority
                 className="rounded-full w-16 h-12"
               />
             </div>
@@ -152,12 +153,44 @@ export default function AchievementCard({
               currentLevel={currentLevel}
               isCompleted={isCompleted}
             />}
-           {!isCompleted && ( <Button  onClick={handleAction}  size='sm' className="bg-text min-w-0 py-2 px-3 text-background" > 
+           {!isCompleted && ( <Button  onClick={handleAction} 
+            style={{ borderColor: color }}
+             size='sm' className={`bg-background font-medium border-2  min-w-0 py-2 px-3 text-text`} > 
             {personalizedMessage} </Button> )} 
           </div>
         </div>
       </div>
     </div>
+    <Modal 
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange}
+        size="md"
+        placement="center"
+        // hideCloseButton
+        className="bg-background"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex w-full items-center justify-center">
+                <span className="text-xl font-poppins text-center font-semibold">{badgeName}</span>
+               
+              </ModalHeader>
+              <ModalBody className="flex items-center justify-center pb-4 px-8">
+                <Image
+                  src={badgeImageUrl}
+                  alt={`${badgeName} Badge`}
+                  width={300}
+                  height={300}
+                  className="rounded-lg"
+                  priority
+                />
+              </ModalBody>
+            
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </section>
  
     

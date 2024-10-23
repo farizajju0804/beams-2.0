@@ -1,21 +1,22 @@
 "use server";
 
+import { referalBadgeName } from "@/constants/victoryConstants";
 import { db } from "@/libs/db";
 
 export async function getGrowthAmbassadorStatus(referrerId: string) {
   try {
    
-    // Find the Week Warrior achievement
+   
     const weekWarriorAchievement = await db.achievement.findUnique({
-      where: { name: "Growth Ambassador" },
+      where: { name: referalBadgeName},
     });
 
     if (!weekWarriorAchievement) {
-    //   console.error("[getWeekWarriorStatus] Week Warrior achievement not found");
-      throw new Error("Growth Ambassador achievement not found");
+ 
+      throw new Error(`${referalBadgeName} achievement not found`);
     }
 
-    // Find the user's progress for the Week Warrior achievement
+
     const userAchievement = await db.userAchievement.findUnique({
       where: {
         userId_achievementId: {
@@ -26,19 +27,19 @@ export async function getGrowthAmbassadorStatus(referrerId: string) {
     });
 
     if (!userAchievement) {
-      console.log(`[getGrowthAmbassadorStatus] No progress found for referrerId: ${referrerId}`);
+      console.log(`[ No progress found for referrerId: ${referrerId}`);
       return {
         completed: false,
       };
     }
 
-    console.log(`[getGrowthAmbassadorStatus] Status retrieved for referrerId: ${referrerId}`);
+    console.log(`Status retrieved for referrerId: ${referrerId}`);
     return {
       completed: userAchievement.completionStatus
     };
 
   } catch (error) {
-    console.error(`[getGrowthAmbassadorStatus] Error fetching Week Warrior status for referrerId: ${referrerId}:`, error);
-    throw new Error(`Error fetching Week Warrior status: ${(error as Error).message}`);
+    console.error(` Error fetching  status for referrerId: ${referrerId}:`, error);
+    throw new Error(`Error fetching  status: ${(error as Error).message}`);
   }
 }

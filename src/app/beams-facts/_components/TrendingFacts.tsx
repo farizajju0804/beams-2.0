@@ -174,7 +174,7 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
             />
           </div>
           <h3 className="text-sm text-grey-4 mb-2">
-          It seems like your filters are a little too picky. Let&apos;s loosen them up for some juicy facts!
+          Facts are looking a bit lonely here! Try tweaking your filters to find more facts.
           </h3>
          
         </div>
