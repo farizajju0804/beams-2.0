@@ -12,6 +12,7 @@ import { signOut } from "next-auth/react";
 import RedirectionMessage from "../RedirectionMessage";
 import { signOutUser } from "@/actions/auth/signout";
 import { useRouter } from "next/navigation";
+import RedirectMessage from "../Redirection";
 
 const ChangeEmailForm = ({ user }: { user: any }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -77,7 +78,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   return (
     <>
      {isRedirecting ? (
-        <RedirectionMessage/>
+        <RedirectMessage/>
       ) : (
     <div className="w-full max-w-lg p-4 rounded-3xl bg-background shadow-lg">
       <h2 className="text-base lg:text-2xl font-semibold mb-4 text-left">Change Email</h2>

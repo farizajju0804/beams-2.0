@@ -128,7 +128,7 @@ export default function AccessCodeComponent() {
           />
         </motion.div>
         <motion.h1 className="text-2xl md:text-3xl font-semibold text-center mb-6 text-text font-poppins">
-          Enter Magic Code
+          Enter Invitation Code
         </motion.h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <motion.div className="flex items-center justify-center gap-2 sm:gap-4">
@@ -136,7 +136,7 @@ export default function AccessCodeComponent() {
               name="accessCode"
               control={control}
               rules={{
-                required: 'Access code is required',
+                required: 'Invitation code is required',
                 pattern: {
                   value: /^[A-Z0-9]{6}$/,
                   message: 'Code must be exactly 6 alphanumeric characters',
@@ -186,7 +186,7 @@ export default function AccessCodeComponent() {
 
         {submitStatus === 'error' && (
           <motion.p className="mt-4 text-center text-red-600 font-semibold">
-            The magic code is incorrect. Try again!
+            The invitation code is incorrect. Try again!
           </motion.p>
         )}
 

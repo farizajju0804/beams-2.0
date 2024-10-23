@@ -25,11 +25,11 @@ const sourceMap: { [key: string]: string } = {
 
 const colorMap: { [key: string]: string } = {
   BEAMS_TODAY: '#FF6B6B',        
-  POLL_PARTICIPATION: '#8A2BE2',  
+  POLL_PARTICIPATION: '#FFA00F',  
                 
   ACHIEVEMENT: '#1E90FF',          
   REFERRAL: '#FF1493',            
-  REFERRAL_BONUS: '#FFA00F',       
+  REFERRAL_BONUS: '#7344EB',       
   NETWORK_POINTS: '#17cd92',       
 };
 

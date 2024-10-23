@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import RedirectionMessage from '../../../components/RedirectionMessage';
+import RedirectMessage from '@/components/Redirection';
 interface UserOnboardingProps {
   sessionData: any; 
 }
@@ -128,7 +129,7 @@ const UserOnboarding: React.FC<UserOnboardingProps>  = ({ sessionData }) => {
   return (
     <div className="min-h-screen w-[80%] md:w-auto flex items-center justify-center md:p-4">
       {isRedirecting ? (
-        <RedirectionMessage/>
+        <RedirectMessage/>
       ) : (
       <div className="w-full max-w-3xl md:p-4">
         <div className="mb-8">

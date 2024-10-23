@@ -13,6 +13,7 @@ import { Input, Button } from "@nextui-org/react"; // Input and Button component
 import { useRouter } from "next/navigation"; // Next.js router hook for navigation
 import RedirectionMessage from "@/components/RedirectionMessage"; // Component to show redirection messages
 import { Send2 } from "iconsax-react"; // Icon used in the button for visual feedback
+import RedirectMessage from "@/components/Redirection";
 
 // Zod schema for email validation
 const emailSchema = z.object({
@@ -105,7 +106,7 @@ const ChangeEmail = () => {
   return (
     <>
       {isRedirecting ? (
-        <RedirectionMessage /> 
+        <RedirectMessage /> 
       ) : (
         <CardWrapper 
           subMessage={!isTokenValid ? "" : "Ready for a change? Enter your new email below, and we'll keep you connected!"} 
