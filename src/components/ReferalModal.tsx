@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input, Spinner } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
