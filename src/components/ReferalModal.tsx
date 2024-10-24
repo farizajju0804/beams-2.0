@@ -48,11 +48,10 @@ export const ReferFriendModal = () => {
       navigator.clipboard.writeText(referralUrl);
       setCopied(true);
       setSuccessMessage(getRandomSuccessMessage());
-      setTimeout(() => {
-        setCopied(false);
+   
         setShowSuccessMessage(true);
-        setTimeout(() => setShowSuccessMessage(false), 5000);
-      }, 1000);
+
+     
     }
   };
 
@@ -64,18 +63,18 @@ export const ReferFriendModal = () => {
     {
       icon: <Gift variant="Bold" className="w-6 h-6 text-primary" />,
       title: "Get 20 Beams Each",
-      description: "You and your friend both receive 20 Beams on signup"
+      description: "You and your friend both receive 20 Beams when your friend signs up."
     },
     {
       icon: <PercentageSquare variant="Bold" className="w-6 h-6 text-primary" />,
       title: `Earn ${NETWORK_POINTS_PERCENTAGE*100}% Bonus`,
-      description: `Get ${NETWORK_POINTS_PERCENTAGE*100}%  of all Beams your friends earn from activities`
+      description: `Get ${NETWORK_POINTS_PERCENTAGE*100}%  of all Beams your friends earn.`
     },
-    {
-      icon: <People variant="Bold" className="w-6 h-6 text-primary" />,
-      title: "Referral Chain",
-      description: "Bonus doesn't apply to points from your friend's referrals"
-    }
+    // {
+    //   icon: <People variant="Bold" className="w-6 h-6 text-primary" />,
+    //   title: "Referral Chain",
+    //   description: "Bonus doesn't apply to points from your friend's referrals"
+    // }
   ];
 
   return (
@@ -112,8 +111,8 @@ export const ReferFriendModal = () => {
                   <Image
                     src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp"
                     alt="Referral illustration"
-                    width={150}
-                    height={150}
+                    width={125}
+                    height={125}
                     className="mx-auto"
                   />
                 </div>
@@ -178,7 +177,7 @@ export const ReferFriendModal = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="text-text font-medium text-xs text-center"
+                      className="text-secondary-2 mb-2 font-medium text-base text-center"
                     >
                       {successMessage}
                     </motion.div>

@@ -153,7 +153,7 @@ export default function AchievementCard({
               isCompleted={isCompleted}
             />}
            {!isCompleted && ( <Button  onClick={handleAction} 
-            style={{ borderColor: color }}
+            // style={{ borderColor: color }}
              size='sm' className={`bg-background font-medium border-2  min-w-0 py-2 px-3 text-text`} > 
             {personalizedMessage} </Button> )} 
           </div>

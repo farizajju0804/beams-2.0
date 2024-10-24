@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 
-import Nav from "@/components/Navbar";
+// import Nav from "@/components/Navbar";
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
     
       <body className={quicksand.className}>
-      <Nav/>
+      {/* <Nav/> */}
     
         {children}
       </body>
