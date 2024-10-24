@@ -13,7 +13,6 @@ import { getAccountByUserId } from "./actions/auth/account";
 import {  getUserByEmail as getUserByEmail2,getUserById2 } from "./actions/auth/getUserByEmail";
 import { UserRole, UserType } from "@prisma/client";
 import { getClientIp } from "./utils/getClientIp";
-import { getUserByEmail } from "./utils/user";
 
 // Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
