@@ -11,7 +11,7 @@ import Slide5 from './_components/Slide5';
 import Slide6 from './_components/Slide6';
 import Slide4 from './_components/Slide4';
 import { updateUserMetadata } from '@/actions/auth/register';  // Function to update user data
-import RedirectionMessage from '@/components/RedirectionMessage';  // Component to show redirection message
+
 import Image from 'next/image';
 import { Button } from '@nextui-org/react';  // Import Button from NextUI
 import RedirectMessage from '@/components/Redirection';

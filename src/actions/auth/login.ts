@@ -2,8 +2,7 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { LoginSchema } from "@/schema";
-import { auth, signIn,} from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { signIn,} from "@/auth";
 import { AuthError } from "next-auth";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getVerificationToken, getTwoFactorToken } from "@/libs/tokens";

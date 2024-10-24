@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod"; // Resolver for integrati
 import * as z from "zod"; // Zod for schema validation
 import { Input, Button } from "@nextui-org/react"; // Input and Button components from NextUI
 import { useRouter } from "next/navigation"; // Next.js router hook for navigation
-import RedirectionMessage from "@/components/RedirectionMessage"; // Component to show redirection messages
 import { Send2 } from "iconsax-react"; // Icon used in the button for visual feedback
 import RedirectMessage from "@/components/Redirection";
 

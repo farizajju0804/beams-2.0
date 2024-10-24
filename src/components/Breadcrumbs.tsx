@@ -7,7 +7,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home } from 'iconsax-react';
 
 type BreadcrumbItemProps = {
   name?: string;

@@ -1,4 +1,3 @@
-import ForgotEmailForm from '@/app/auth/_components/forgot-email-form'
 import React from 'react'
 import LoginSide from '../_components/LoginSide'
 import ChangeEmail from './changeEmail'

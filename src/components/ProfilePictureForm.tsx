@@ -1,7 +1,7 @@
 'use client'
 import React, { useRef, useState } from "react";
 import { Avatar, Spinner } from "@nextui-org/react";
-import { Edit2, Gallery } from "iconsax-react";
+import { Edit2} from "iconsax-react";
 import { Toaster, toast } from "react-hot-toast";
 import { changeProfileImage } from "@/actions/auth/user";
 import { useUserStore } from "@/store/userStore";

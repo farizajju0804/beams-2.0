@@ -1,11 +1,9 @@
 'use client';
 import React, { useState } from "react";
-import PersonalInfoForm from "@/components/profile/PersonalInfoForm";
-import ChangeEmailForm from "@/components/profile/ChangeEmailForm";
-import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
+import PersonalInfoForm from "@/app/my-profile/_components/PersonalInfoForm";
+import ChangeEmailForm from "@/app/my-profile/_components/ChangeEmailForm";
+import ChangePasswordForm from "@/app/my-profile/_components/ChangePasswordForm";
 import { motion } from 'framer-motion';
-import { currentUser } from "@/libs/auth";
-import { useTheme } from "next-themes";
 import TwoFactorAuthForm from "./2FAForm";
 
 const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {

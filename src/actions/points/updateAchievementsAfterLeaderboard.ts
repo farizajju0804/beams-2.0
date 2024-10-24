@@ -3,8 +3,9 @@
 import { db } from "@/libs/db";
 import { UserType } from "@prisma/client";
 
-import { getTop10EntriesForMostRecentWeek, getTop3EntriesForMostRecentWeek } from "./getPreviousLeaderboard";
+import { getTop10EntriesForMostRecentWeek} from "./getPreviousLeaderboard";
 import { generateNotification } from "../notifications/notifications";
+import { leaderboardBadgeTop1, leaderboardBadgeTop10 } from "@/constants/victoryConstants";
 
 // Update achievements only if there are at least 3 leaderboard entries for the previous week
 export const updateAchievementsAfterLeaderboard = async (userType: UserType) => {
@@ -25,10 +26,10 @@ export const updateAchievementsAfterLeaderboard = async (userType: UserType) => 
       // Check the rank and assign the corresponding achievement
       if (rank === 1) {
         // Top 1: Supreme Champion Achievement
-        await updateUserAchievement(userId, "Supreme Champion", `/achievements/#supreme-champion`);
+        await updateUserAchievement(userId, leaderboardBadgeTop1 );
       } else if (rank >= 2 && rank <= 10) {
         // Top 2-10: Elite Climber Achievement
-        await updateUserAchievement(userId, "Elite Climber", `/achievements/#elite-climber`);
+        await updateUserAchievement(userId, leaderboardBadgeTop10  );
       }
     }
   } catch (error) {
@@ -38,7 +39,7 @@ export const updateAchievementsAfterLeaderboard = async (userType: UserType) => 
 };
 
 // Update or create an achievement for a user
-const updateUserAchievement = async (userId: string, achievementName: string, notificationUrl: string) => {
+const updateUserAchievement = async (userId: string, achievementName: string) => {
   const achievement = await db.achievement.findUnique({
     where: { name: achievementName },
   });
@@ -88,7 +89,7 @@ const updateUserAchievement = async (userId: string, achievementName: string, no
         userId,
         "ACHIEVEMENT",
         `Congratulations! You've unlocked '${achievementName}' badge!`,
-        notificationUrl
+        `/achievements/#${achievement.id}`
       );
     }
   }

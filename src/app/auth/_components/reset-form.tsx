@@ -18,7 +18,6 @@ import { resendPasswordResetEmail, reset } from "@/actions/auth/reset"; // Actio
 import { useState, useTransition } from "react"; // Import necessary React hooks
 import { Send2 } from "iconsax-react"; // Import Send2 icon for button UI
 import FormError from "../../../components/form-error"; // Component to display form errors
-import Link from "next/link"; // Import Link component for navigation
 
 /**
  * ResetForm component provides a user interface for requesting a password reset.

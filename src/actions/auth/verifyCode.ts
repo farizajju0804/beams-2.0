@@ -50,46 +50,7 @@ export const verifyCode = async (code: string, email: string) => {
  * @param {string} code - The verification code.
  * @returns {Object} - Returns an error or success message with login details.
  */
-export const verifyCode2 = async (code: string) => {
-  
-  const existingToken = await getVerificationTokenByToken(code);
-  if (!existingToken) {
-    return { error: "Invalid or expired code." };
-  }
 
-  const hasExpired = new Date(existingToken.expires) < new Date();
-  if (hasExpired) {
-    return { error: "Code has expired." };
-  }
-
-  const existingUser = await getUserByEmail(existingToken.email);
-  if (!existingUser) {
-    return { error: "User not found." };
-  }
-
-  await db.user.update({
-    where: { email: existingToken.email },
-    data: { emailVerified: new Date()
-     },
-  });
-
- 
-
-  try {
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: existingUser.email,
-      password: existingUser.password, // Auto-login by using existing credentials.
-      isAutoLogin: true,
-    });
-
-    console.log("Login successful!");
-    return { success: "Login successful!", url: DEFAULT_LOGIN_REDIRECT };
-  } catch (error: any) {
-    console.error("Error during sign-in:", error.message);
-    throw new Error(`Something went wrong during sign-in: ${error.message}`);
-  }
-};
 
 /**
  * Verifies the code and changes the user's email.

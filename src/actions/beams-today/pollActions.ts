@@ -33,10 +33,7 @@ export const getPoll = async (beamsTodayId: string) => {
  * @throws Throws an error if the user is not authenticated or if the database operation fails.
  */
 
-import { startOfWeek, endOfWeek } from 'date-fns';
-import { updateUserPoints } from '../points/updateUserPoints';
-import { recordPointsHistory } from '../points/recordPointsHistory';
-import { updateLeaderboardEntry } from '../points/updateLeaderboardEntry';
+
 import { updateUserPointsAndLeaderboard } from '../points/updateUserPointsAndLeaderboard';
 import { POLL_POINTS } from '@/constants/pointsConstants';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure } from "@nextui-org/react";
 
 interface StatCardProps {
   title: string;

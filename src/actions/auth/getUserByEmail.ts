@@ -1,6 +1,5 @@
 'use server'
 import { db } from '@/libs/db'; // Import the database instance from the database library
-import { revalidatePath } from 'next/cache';
 
 /**
  * Fetch a user from the database by their email address.

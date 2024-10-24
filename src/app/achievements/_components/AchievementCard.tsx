@@ -1,12 +1,11 @@
 'use client'
 import React from 'react'
 import Image from 'next/image'
-import { ArrowRight2 } from 'iconsax-react'
 import AchievementCompletionButton from './AchievementCompletionButton'
 import { Button, Chip, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { Level, UserType } from '@prisma/client'
 import { useReferralModalStore } from '@/store/referralStore'
-import { ReferFriendModal } from '@/components/ReferalModal'
+
 
 interface AchievementCardProps {
   id: string

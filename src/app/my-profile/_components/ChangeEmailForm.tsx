@@ -9,10 +9,9 @@ import { Button, Modal, ModalBody, ModalHeader, ModalContent, Input } from "@nex
 import { settings } from "@/actions/auth/settings";
 import { Edit } from "iconsax-react";
 import { signOut } from "next-auth/react";
-import RedirectionMessage from "../RedirectionMessage";
 import { signOutUser } from "@/actions/auth/signout";
 import { useRouter } from "next/navigation";
-import RedirectMessage from "../Redirection";
+import RedirectMessage from "../../../components/Redirection";
 
 const ChangeEmailForm = ({ user }: { user: any }) => {
   const [error, setError] = useState<string | undefined>("");

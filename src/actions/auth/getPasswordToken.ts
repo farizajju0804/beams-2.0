@@ -1,3 +1,4 @@
+'use server'
 import { db } from '@/libs/db'; // Import the database instance from the db library
 
 /**

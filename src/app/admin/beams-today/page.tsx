@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries, toggleBeamsTodayPublish } from "@/actions/beams-today/admin/beamsTodayActions";
-import { getCategories, createCategory } from "@/actions/beams-today/admin/beamsTodayCategoryActions";
+import { createBeamsToday, updateBeamsToday, deleteBeamsToday, getBeamsTodayEntries, toggleBeamsTodayPublish } from "@/app/admin/beams-today/_actions/admin/beamsTodayActions";
+import { getCategories, createCategory } from "@/app/admin/beams-today/_actions/admin/beamsTodayCategoryActions";
 import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput, BeamsTodayCategory } from "@/types/beamsToday";
 import { Spinner, Button, Input, Textarea, Modal, ModalContent, ModalHeader, ModalFooter, ModalBody, Switch, Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 

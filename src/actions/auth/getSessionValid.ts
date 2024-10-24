@@ -1,7 +1,6 @@
 'use server'
 
 import { currentUser } from "@/libs/auth";
-import { getUserById } from "./getUserById";
 import { db } from "@/libs/db";
 
 

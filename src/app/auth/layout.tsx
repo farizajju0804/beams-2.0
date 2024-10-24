@@ -1,4 +1,4 @@
-import AuthNav from "@/components/AuthNav";
+
 import { Suspense, type FC } from "react";
 import { SessionProviders } from "../SessionProviders";
 

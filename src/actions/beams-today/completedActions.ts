@@ -3,12 +3,11 @@
 import { currentUser } from "@/libs/auth"; // Function to get the currently authenticated user.
 import { db } from "@/libs/db"; // Import the Prisma database instance.
 import { getBeamsTodayById } from "./getBeamsTodayById";
-import { updateLeaderboardEntry } from "../points/updateLeaderboardEntry";
-import { recordPointsHistory } from "../points/recordPointsHistory";
-import { updateUserPoints } from "../points/updateUserPoints";
+
 import { updateUserPointsAndLeaderboard } from "../points/updateUserPointsAndLeaderboard";
 import { Achievement } from "@prisma/client";
 import { BEAMS_TODAY_COMPLETION_POINTS } from "@/constants/pointsConstants";
+import { beamsTodayBadge10, beamsTodayBadge50 } from "@/constants/victoryConstants";
 
 /**
  * Marks a specific topic as completed by a user in a given format (video, audio, or text).
@@ -106,7 +105,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
       userBeamPoints = beams
 
       
-     achievementUpdate = await updateAchievementProgress(userId, ['Momentum Master', 'Perpetual Performer']);
+     achievementUpdate = await updateAchievementProgress(userId, [beamsTodayBadge10, beamsTodayBadge50]);
      console.log(`Progress Updated':`, achievementUpdate);
     
     }

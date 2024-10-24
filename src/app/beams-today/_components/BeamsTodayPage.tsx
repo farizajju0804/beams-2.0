@@ -43,17 +43,8 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
    
       <h1 className="font-poppins text-2xl md:text-4xl uppercase font-semibold bg-yellow text-purple p-2">Beams Today</h1>
      
-       {/* <TopicOfTheDayContainer user={user} /> */}
-
- 
       <TopicOfTheDay topic={topic} clientDate={clientDate} />
-      {/* <SearchBarNew  
-        initialTopics={topics}
-        initialPagination={pagination}
-        categories={categories}
-        completedTopics={completedTopics}
-        userId={user.id}
-      /> */}
+  
       <TopicSearch userId={user.id} categories={categories}  minDateString={minDateString} maxDateString={maxDateString}/>
       {/* <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} /> */}
       <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} />

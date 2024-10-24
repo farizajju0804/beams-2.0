@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { AiFillFire, AiFillRocket, AiFillTrophy, AiFillFlag, AiFillBulb, AiFillHeart, AiFillQuestionCircle } from 'react-icons/ai'
+import { AiFillFire, AiFillRocket,  AiFillHeart, AiFillQuestionCircle } from 'react-icons/ai'
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { FaFlag } from 'react-icons/fa'
 
@@ -56,16 +56,7 @@ const LevelsModal = () => {
                     title="Unlock Achievements"
                     description="Achieve special badges and milestones as you reach certain levels. These will be a mark of your hard work and dedication!"
                   />
-                  {/* <RuleItem 
-                    icon={<AiFillTrophy className="text-yellow" size={24} />}
-                    title="Reach Level Milestones"
-                    description="Hit specific beam goals to level up. Each level requires a certain number of beams."
-                  /> */}
-                  {/* <RuleItem 
-                    icon={<AiFillBulb className="text-purple" size={24} />}
-                    title="Exclusive Level Rewards"
-                    description="As you progress through the levels, you'll earn exclusive rewards like badges, titles, and even special content!"
-                  /> */}
+                  
                   <RuleItem 
                     icon={<AiFillHeart className="text-pink-500" size={24} />}
                     title="Stay Motivated"

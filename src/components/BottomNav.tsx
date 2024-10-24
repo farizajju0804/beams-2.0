@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Chart, BookSquare, Rank, Microscope, Cup, LampCharge } from "iconsax-react"
-import { Button, Spinner } from "@nextui-org/react"
+import { motion } from "framer-motion"
+import { Chart, Rank, Microscope, Cup } from "iconsax-react"
+import { Button } from "@nextui-org/react"
 import { FaLightbulb } from "react-icons/fa"
 
 
@@ -49,20 +49,19 @@ export default function BottomNav() {
                 key={item.label}
                 href={item.path}
                 prefetch={true}
-                // onClick={() => handleNavigation(index)}
+              
               >
                 <Button
                  isIconOnly={!selected}
                  radius="full"
-                //  variant={selected === index ? "shadow" : 'light'}
-                //  color={selected === index ? "primary" : 'default'}
+              
                   className={`${selected === index ? "text-brand font-medium bg-transparent gap-2-1" : "bg-transparent  text-[#94A3B8]"} flex text-xs min-w-0 py-1 px-3 h-auto flex-col items-center justify-center w-fit  relative`}
                   startContent={
                       
                     <item.icon
                     size={18}
                     variant={"Bold"}
-                    // color={selected === index ? "#f96f2e" : "#94A3B8"}
+                   
                   />
                   }
                 >

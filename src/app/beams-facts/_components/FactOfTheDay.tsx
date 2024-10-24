@@ -3,12 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ScratchCard from "@/components/ScratchCard";
+import ScratchCard from "@/app/beams-facts/_components/ScratchCard";
 import { markFactAsCompleted, getFactAndCompletionStatus } from "@/actions/fod/fod";
-import Loader from "@/components/Loader";
-import StreakModal from "./StreakModal";
+
 import DateComponent from "./DateComponent";
-import { FactOfTheday } from "@prisma/client";
 
 interface FactOfTheDayProps {
   userId: string;

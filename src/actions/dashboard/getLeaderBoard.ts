@@ -3,7 +3,6 @@ import { db } from '@/libs/db';
 import { getPreviousAndNextDates } from '@/utils/dateRange';
 import { UserType } from '@prisma/client';
 import { differenceInSeconds } from 'date-fns';
-import { generateNotificationForAllUsers } from '../notifications/notifications';
 
 export interface LeaderboardData {
   userPosition?: number | null;

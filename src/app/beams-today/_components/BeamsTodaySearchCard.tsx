@@ -1,9 +1,9 @@
 'use client'
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import FavoriteButton from './FavoriteButton';
+
 import FormattedDate from './FormattedDate';
-import { BeamsToday } from '@/types/beamsToday';
+
 import { Chip } from "@nextui-org/react";
 
 interface BeamsTodayCardProps {

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, DatePicker } from "@nextui-org/react";
-import { useState, useEffect, useRef } from "react";
+import { useState,  useRef } from "react";
 import * as z from 'zod';
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,7 +11,6 @@ import { Calendar } from "iconsax-react";
 import Image from "next/image";
 import BackButton from "./BackButton";
 import { parseDate, getLocalTimeZone, CalendarDate, today } from "@internationalized/date";
-import { differenceInCalendarDays } from "date-fns";
 
 
 // Date validation schema

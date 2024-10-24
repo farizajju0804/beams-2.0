@@ -1,7 +1,7 @@
 import React from 'react';
 import { getUserNotes } from '@/actions/beams-today/getUserNotes';
 import { getUserFavorites } from '@/actions/beams-today/getUserFavorites';
-import LibraryTabs from '@/app/beams-today/_components/libraryTabs';
+import LibraryTabs from '@/app/my-library/_components/libraryTabs';
 import { Toaster } from 'react-hot-toast';
 
 const MyLibraryPage = async () => {

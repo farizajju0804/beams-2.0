@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Tabs, Tab } from '@nextui-org/tabs'; // Importing Tabs and Tab components from NextUI
+import { Tabs, Tab } from '@nextui-org/react'; // Importing Tabs and Tab components from NextUI
 import { Book, Star1 } from 'iconsax-react'; // Icons for the tabs
-import NotesTab from '@/app/beams-today/_components/NotesTab'; // Component to render Notes
-import FavoritesTab from '@/app/beams-today/_components/FavoritesTab'; // Component to render Favorites
+import NotesTab from '@/app/my-library/_components/NotesTab'; // Component to render Notes
+import FavoritesTab from '@/app/my-library/_components/FavoritesTab'; // Component to render Favorites
 
 interface LibraryTabsProps {
   notes: any[]; // Array of user notes

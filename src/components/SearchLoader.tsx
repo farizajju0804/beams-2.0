@@ -1,13 +1,9 @@
 "use client"
 
-import { useCurrentUser } from "@/hooks/use-current-user"
 import { Spinner } from "@nextui-org/react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 
-// Mocking the user object for demonstration; replace it with the actual currentUser() call.
-
-// Predefined set of creative, fun messages.
 
 export default function SearchLoader() {
   const [randomMessage, setRandomMessage] = useState("")

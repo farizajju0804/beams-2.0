@@ -1,9 +1,8 @@
 // app/user-profile/page.tsx
 'use server'
 import { currentUser} from "@/libs/auth";
-import { settings } from "@/actions/auth/settings";
-import UserProfile from "@/components/profile/UserProfile";
-import Nav from "@/components/Navbar";
+import UserProfile from "@/app/my-profile/_components/UserProfile";
+
 import { getLatestUserData } from "@/actions/auth/getLatestUserData";
 
 export default async function UserProfilePage() {

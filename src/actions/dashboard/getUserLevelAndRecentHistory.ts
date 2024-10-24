@@ -1,6 +1,6 @@
 'use server';
 
-import { currentUser } from "@/libs/auth";
+
 import { db } from "@/libs/db";
 
 /**

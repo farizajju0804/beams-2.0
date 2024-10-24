@@ -3,8 +3,6 @@
 
 import { db } from "@/libs/db" // Import the Prisma database connection
 import { auth } from "@/auth" // Import the authentication helper
-import { redirect } from 'next/navigation' // Import for redirection purposes (not used here)
-import { DEFAULT_LOGIN_REDIRECT } from '@/routes' // Import the default redirect route
 import { updateUserPointsAndLeaderboard2 } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
 import { User } from "@prisma/client"

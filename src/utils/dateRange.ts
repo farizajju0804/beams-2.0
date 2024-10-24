@@ -58,9 +58,6 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
         console.log("End Date set to next occurrence:", endDate.toISOString());
     }
 
-    // // Convert to UTC
-    // const startDateUTC = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000);
-    // const endDateUTC = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000);
-
+   
     return { startDate: startDate, endDate: endDate };
 }

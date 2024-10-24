@@ -1,5 +1,5 @@
 "use server";
-import { redirect } from 'next/navigation';
+
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { RegisterSchema, SecuritySchema } from "@/schema";
@@ -9,7 +9,6 @@ import { getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
-import { getClientIp } from '@/utils/getClientIp';
 import { getGrowthAmbassadorStatus, } from './getGrowthAmbassadorStatus';
 
 /**
@@ -64,13 +63,7 @@ export const registerAndSendVerification = async (values: z.infer<typeof Registe
     isAccessible
   };
 
-  // if (referralCode && referredById) {
-  //   Object.assign(userData, {
-  //     referredById,
-  //     referralStatus: 'REGISTERED',
-  //     isAccessible: true
-  //   });
-  // }
+
   await db.user.create({
     data: userData
   });

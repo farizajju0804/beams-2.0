@@ -9,7 +9,6 @@ import Image from 'next/image'
 import ProgressDots from './ProgressDots'
 import Pagination from './Pagination'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
-import RedirectionMessage from '@/components/RedirectionMessage'
 import { motion } from 'framer-motion';
 import RedirectMessage from "@/components/Redirection";
 

@@ -230,40 +230,6 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
     }
   };
 
-//   const handleSearch = async () => {
-//     setIsLoading(true);
-//     try {
-//       // Check if a topic is completed before making the API call
-//       const getBeamedStatus = (status: string) => {
-//         if (status === 'beamed') {
-//           return completedTopicIds;
-//         } else if (status === 'unbeamed') {
-//           return completedTopicIds.length > 0 ? 'unbeamed' : undefined;
-//         }
-//         return undefined;
-//       };
-
-//       const response = await searchTopics({
-//         query: query.trim(),
-//         page: currentPage,
-//         sortBy,
-//         selectedDate: selectedDate?.toString(),
-//         categories: selectedCategories.length > 0 ? selectedCategories : undefined,
-//         beamedStatus: getBeamedStatus(beamedStatus),
-//         userId: undefined,
-//       });
-//       setSearchResults(response);
-//     } catch (error) {
-//       console.error("Search failed:", error);
-//       setSearchResults({
-//         topics: [],
-//         pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
-//       });
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
   const handleClearInput = () => {
     resetSearch();
   };

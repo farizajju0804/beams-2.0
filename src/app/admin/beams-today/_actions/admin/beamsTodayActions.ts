@@ -2,7 +2,6 @@
 'use server'
 import { db } from "@/libs/db";
 import { Prisma } from "@prisma/client";
-import { BeamsToday, BeamsTodayCreateInput, BeamsTodayUpdateInput } from "@/types/beamsToday";
 import { generateNotificationForAllUsers } from "@/actions/notifications/notifications";
 
 export const getBeamsTodayEntries = async (): Promise<any[]> => {

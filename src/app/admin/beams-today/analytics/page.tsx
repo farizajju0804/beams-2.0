@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getBeamsTodayAnalytics, getUserAnalytics } from '@/actions/beams-today/admin/analyticsActions';
+import { getBeamsTodayAnalytics, getUserAnalytics } from '@/app/admin/beams-today/_actions/admin/analyticsActions';
 import { BeamsToday } from '@/types/beamsToday';
 import { Card, CardHeader, CardBody, CardFooter, Image, Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar } from '@nextui-org/react';
 

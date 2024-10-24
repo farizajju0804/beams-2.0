@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { AiFillFire, AiFillRocket, AiFillTrophy, AiFillFlag, AiFillBulb, AiFillHeart, AiOutlineGift, AiOutlineStar, AiFillQuestionCircle, AiFillStar, AiFillGift } from 'react-icons/ai'
+import { AiFillFire,  AiFillTrophy,  AiFillHeart, AiFillQuestionCircle,  AiFillGift } from 'react-icons/ai'
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 
 const AchievementsModal = () => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalContent, ModalBody, useDisclosure, Chip, Spinner } from '@nextui-org/react';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
-import { ArrowRight2, Cup } from 'iconsax-react';
+import { Cup } from 'iconsax-react';
 import ShareButton from './ShareButton';
 import { Level, UserType } from '@prisma/client';
 import IconFillingEffect from '@/components/IconFillingEffect';

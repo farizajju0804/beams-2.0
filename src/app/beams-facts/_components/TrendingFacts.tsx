@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import Loader from "@/components/Loader";
+
 import CustomPagination from "@/components/Pagination";
 import AnimatedImageCard from "./AnimatedImageCard";
 import { getTrendingFacts } from "@/actions/fod/fod";

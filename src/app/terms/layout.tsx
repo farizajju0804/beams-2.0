@@ -1,17 +1,10 @@
-import type { Metadata } from "next";
-import { Quicksand } from "next/font/google";
-import { SessionProviders } from "../SessionProviders";
-import PublicNav from "@/components/PublicNav";
+import React from 'react';
+import Sidebar from "@/components/Sidebar";
+
 import PublicFooter from "@/components/PublicFooter";
-import { currentUser } from "@/libs/auth";
-import Nav from "@/components/Navbar";
-
-const quicksand = Quicksand({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Beams - Next-gen Learning Platform",
-  description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
-};
+import { SessionProviders } from "../SessionProviders";
+import BottomNav from '@/components/BottomNav';
+import { currentUser } from '@/libs/auth';
 
 export default async function Layout({
   children,
@@ -19,15 +12,26 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const user = await currentUser()
-
   return (
-  
-   
-      <div className={`relative bg-background ${quicksand.className}`}>
-         {user ? <Nav/> : <PublicNav/>}
-        {children}
-          <PublicFooter/>
+    <SessionProviders>
+      <div className="relative w-full h-screen overflow-hidden flex">
+        {user?.firstName && 
+        <div className="h-full">
+          <Sidebar />
+          <BottomNav />      
+        </div>
+}
+        <div className="flex flex-col flex-grow overflow-auto">
+          {/* <TopNav /> */}
+          <div className="flex-grow">
+            {children} 
+          </div>
+          <PublicFooter />
+        </div>
       </div>
-    
+    </SessionProviders>
   );
 }
+
+
+

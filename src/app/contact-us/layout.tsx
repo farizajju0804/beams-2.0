@@ -4,25 +4,22 @@ import TopNav from "@/components/TopNav";
 import PublicFooter from "@/components/PublicFooter";
 import { SessionProviders } from "../SessionProviders";
 import BottomNav from '@/components/BottomNav';
-import { currentUser } from '@/libs/auth';
 
-export default async function Layout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await currentUser()
   return (
     <SessionProviders>
       <div className="relative w-full h-screen overflow-hidden flex">
-        {user?.firstName && 
         <div className="h-full">
           <Sidebar />
-          <BottomNav />      
+          <BottomNav /> 
+
         </div>
-}
         <div className="flex flex-col flex-grow overflow-auto">
-          {/* <TopNav /> */}
+          <TopNav />
           <div className="flex-grow">
             {children} 
           </div>

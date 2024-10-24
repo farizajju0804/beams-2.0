@@ -2,8 +2,7 @@
 import { useEffect } from 'react'
 import { validateSession } from '@/actions/auth/getSessionValid'
 import { signOutUser } from '@/actions/auth/signout'
-import { deleteAllCookies } from '@/utils/cloudinary'
-import { useCurrentUser } from '@/hooks/use-current-user'
+import { deleteAllCookies } from '@/utils/cookies'
 import { useSession } from 'next-auth/react'
 
 

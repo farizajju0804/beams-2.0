@@ -11,8 +11,7 @@ import SortByFilter from './SortByFilter';
 import CustomPagination from '@/components/Pagination';
 import FormattedDate from "./FormattedDate";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
-import Loader from "@/components/Loader";
-import { BeamsToday } from "@prisma/client";
+
 
 interface Category {
   id: string;

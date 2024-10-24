@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Microscope } from 'iconsax-react';
 import { CoolMode } from './ui/cool-mode';
 import { useRouter } from 'next/navigation';
-import DailyProgress from './DailyProgress';
 
 const HeroSection: React.FC = () => {
   const router = useRouter();
@@ -65,13 +64,10 @@ const HeroSection: React.FC = () => {
         className="mt-8 mb-4"
       >
         <CoolMode
-          // options={{
-          //   particle:
-          //     "https://res.cloudinary.com/drlyyxqh9/image/upload/v1724914561/email%20images/futuristic-particle_hw4pmx.webp",
-          // }}
+
         >
           <Button
-            onClick={handleClick} // Add click handler with delay
+            onClick={handleClick} 
             className="bg-brand text-white text-lg gap-3 lg:text-xl py-6 px-8 font-semibold shadow-md"
           >
             Discover the Future Now  <Microscope variant='Bold'/>

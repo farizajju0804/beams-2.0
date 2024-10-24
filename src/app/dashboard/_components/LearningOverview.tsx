@@ -1,11 +1,4 @@
 'use client'
-// import React from 'react';
-// import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-// import Link from 'next/link';
-// import StatCard from './StatCard';
-// import FormattedDate from '@/app/beams-today/_components/FormattedDate';
-// import { Button } from '@nextui-org/react';
-// import Heading from './Heading';
 
 interface UserAnalytics {
   totalWatchTimeBeamsToday: number;

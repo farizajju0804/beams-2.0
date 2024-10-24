@@ -1,7 +1,5 @@
 'use client'
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { Check } from 'iconsax-react'
 import confetti from 'canvas-confetti'
 
 interface ScratchCardProps {

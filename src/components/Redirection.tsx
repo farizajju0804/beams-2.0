@@ -1,6 +1,5 @@
 "use client"
 
-import { useCurrentUser } from "@/hooks/use-current-user"
 import { Spinner } from "@nextui-org/react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"

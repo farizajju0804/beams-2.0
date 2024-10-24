@@ -23,6 +23,10 @@ export default auth(async (req) => {
   if (nextUrl.pathname.startsWith('/api/user')) {
     return; // Allow the cron job to run without redirecting
   }
+
+  if (nextUrl.pathname.startsWith('/beams-theatre')) {
+    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  }
   if (isPublicRoute) {
     return;
   }

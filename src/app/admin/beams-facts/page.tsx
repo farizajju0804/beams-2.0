@@ -21,7 +21,7 @@ import { FactOfTheday } from '@prisma/client';
 import { getFacts, createFact, updateFact, deleteFact } from './_actions/facts';
 import { toast, Toaster } from 'react-hot-toast';
 import { Calendar } from "@nextui-org/react";
-import { CalendarDate, DateValue } from "@internationalized/date";
+import { CalendarDate} from "@internationalized/date";
 
 interface FactFormProps {
   fact?: FactOfTheday;

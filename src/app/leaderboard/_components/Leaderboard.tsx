@@ -78,7 +78,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
   const [lastWeekUserPosition, setLastWeekUserPosition] = useState<number | undefined>(previous.userPosition);
   const [lastWeekUserPoints, setLastWeekUserPoints] = useState<number | undefined>(previous.userPoints);
-  // const [leaderboardMessage, setLeaderboardMessage] = useState<string | null>(initialData.message || null);
   const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(initialData.startDate);
   const [endDate, setEndDate] = useState(initialData.endDate);
@@ -137,7 +136,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       const [lastWeekData, nextWeekData]:any = await Promise.all([
         getTop3EntriesForMostRecentWeek(userType,userId),
         getLeaderboardData(userId, userType)
-        // getLeaderboardData(userId, userType)
+     
 
       ]);
 
@@ -145,11 +144,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
       setUserPosition(nextWeekData.userPosition);
       setUserPoints(nextWeekData.userPoints);
-      // setLeaderboardMessage(nextWeekData.message);
       setTimeRemaining(nextWeekData.remainingSeconds);
       setStartDate(nextWeekData.startDate);
       setEndDate(nextWeekData.endDate);
-      setLastWeekUserPosition(lastWeekData.userPosition);  // Update last week's user position
+      setLastWeekUserPosition(lastWeekData.userPosition); 
       setLastWeekUserPoints(lastWeekData.userPoints); 
       setIsTimerActive(true);
 
@@ -162,7 +160,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       }
     } catch (error) {
       console.error('Error updating leaderboard:', error);
-      // setLeaderboardMessage("An error occurred while updating the leaderboard.");
     } finally {
       setIsLoading(false);
     }
