@@ -113,7 +113,7 @@ const termsOfServiceData: TermsSection[] = [
   },
   {
     type: 'paragraph',
-    content: 'If you have any questions about these Terms, please contact us at info@beams.world.'
+    content: 'If you have any questions about these Terms, please contact us at contact@beams.world.'
   }
 ];
 

@@ -11,7 +11,7 @@ const privacyPolicyData = [
   },
   {
     type: 'paragraph',
-    content: 'This privacy statement applies to the main website www.beams.world, as well as any sub-domains. Please note that these websites may include links to websites of third parties whose privacy practices differ from those of Beams World. If you provide personal data to any of those websites, then your data is governed by their privacy statements.'
+    content: 'This privacy statement applies to the main website www.beams.world as well as any sub-domains. Please note that these websites may include links to websites of third parties whose privacy practices differ from those of Beams World. If you provide personal data to any of those websites, then your data is governed by their privacy statements.'
   },
   {
     type: 'subheader',
@@ -50,7 +50,7 @@ const privacyPolicyData = [
       },
       {
         term: 'Website',
-        definition: 'the website that you are currently using, www.beams.world, and any sub-domains of this site, unless excluded by their own terms.'
+        definition: 'the website that you are currently using, www.beams.world and any sub-domains of this site, unless excluded by their own terms.'
       }
     ]
   },
@@ -295,7 +295,7 @@ const privacyPolicyData = [
   },
   {
     type: 'paragraph',
-    content: 'To exercise these rights, please contact us at info@beams.world.'
+    content: 'To exercise these rights, please contact us at contact@beams.world.'
   },
   {
     type: 'subheader',
@@ -334,7 +334,7 @@ const privacyPolicyData = [
     items: [
       {
         term: 'By email',
-        definition: 'info@beams.world'
+        definition: 'contact@beams.world'
       },
       {
         term: 'By visiting this page on our website',

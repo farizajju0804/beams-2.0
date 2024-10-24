@@ -51,18 +51,22 @@ const ContactForm: React.FC = () => {
   const message = watch('message', ''); // Watch for changes in the message field
   const subject = watch('subject'); // Watch for changes in the subject field
 
-  React.useEffect(() => {
-    console.log('Form errors:', errors);
-    console.log('Selected subject:', subject);
-  }, [errors, subject]);
+
+
 
   // Handle form submission
   const onSubmit = async (data: FormData) => {
     try {
-      console.log('Form submitted with data:', data);
-      await saveContactFormResponse(data); // Save form data using server action
-      toast.success('Message sent successfully!'); // Show success toast
-      reset(); // Reset the form
+  
+      const result = await saveContactFormResponse(data); // Save form data using server action
+      if(result.success){
+        toast.success('Message sent successfully!'); // Show success toast
+        reset(); // Reset the form
+      }
+      if(result.error){
+        toast.error(result.error);
+      }
+      
     } catch (error) {
       console.error('Error submitting form:', error);
       toast.error('Failed to send message. Please try again later.'); // Show error toast
@@ -90,6 +94,7 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="First Name"
                       isRequired
+                      autoComplete='first-name'
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -114,6 +119,7 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Last Name"
                       isRequired
+                      autoComplete='last-name'
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -139,6 +145,8 @@ const ContactForm: React.FC = () => {
                       type="email"
                       label="Email"
                       isRequired
+                      autoComplete='email'
+                      errorMessage={errors.email?.message}
                       classNames={{
                         inputWrapper: inputClasses,
                         label: labelClasses,
@@ -162,6 +170,7 @@ const ContactForm: React.FC = () => {
                     <Select
                       label="Select Subject"
                       isRequired
+                      autoComplete='subject'
                       labelPlacement='outside'
                       variant='underlined'
                       classNames={{
@@ -196,6 +205,7 @@ const ContactForm: React.FC = () => {
                       {...field}
                       label="Message"
                       isRequired
+                      autoComplete='message'
                       variant="underlined"
                       classNames={{
                         inputWrapper: inputClasses,

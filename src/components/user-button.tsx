@@ -11,6 +11,7 @@ import { signOutUser } from "@/actions/auth/signout";
 import { ReferFriendModal } from "./ReferalModal";
 import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
 import { useReferralModalStore } from "@/store/referralStore";
+import { deleteAllCookies } from "@/utils/cookies";
 
 interface UserData {
   id: string,
@@ -54,8 +55,10 @@ export default function UserButton({ initialUser }: UserButtonProps) {
   };
 
   const handleSignOut = async () => {
+    
     const result = await signOutUser(); 
     if (result.success) {
+      await deleteAllCookies()  
       await signOut({ callbackUrl: '/auth/login' });
     }
   };

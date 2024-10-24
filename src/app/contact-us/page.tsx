@@ -6,7 +6,7 @@ import { currentUser } from '@/libs/auth'  // Import the currentUser function to
 
 // Asynchronous functional component for the Contact page
 const Contact = async () => {
-  const user = await currentUser();  // Fetch the current user's information
+
 
   return (
     <div className='w-full max-w-7xl mx-auto'>  {/* Main container for the page */}

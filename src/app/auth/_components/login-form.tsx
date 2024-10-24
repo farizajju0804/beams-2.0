@@ -238,6 +238,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
                       <FormControl>
                         <Input
                           isRequired
+                          autoComplete="current-password"
                           variant="underlined"
                           classNames={{
                             label: 'font-semibold text-text',

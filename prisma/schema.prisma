@@ -226,6 +226,8 @@ model ContactFormResponse {
   subject   String // Subject of the message
   message   String // The actual message content
   createdAt DateTime @default(now()) // Timestamp of form submission
+
+  @@index([email])
 }
 
 model FactOfTheday {

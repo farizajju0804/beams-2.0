@@ -25,6 +25,7 @@ const ContactSide: React.FC = () => {
           className='m-auto' 
           width={270} 
           height={340} 
+          
         />
       </div>
     </div>

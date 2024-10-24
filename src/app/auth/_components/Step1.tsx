@@ -156,6 +156,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                     <FormControl>
                       <Input
                         isRequired
+                        autoComplete="current-password"
                         classNames={{
                           label: 'font-semibold text-text',
                           mainWrapper: "w-full flex-1",

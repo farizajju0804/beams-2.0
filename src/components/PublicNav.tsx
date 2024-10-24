@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,8 +32,6 @@ const PublicNav: React.FC = () => {
           color='primary' 
           size='md'
           className='font-medium md:text-lg md:w-32 text-white md:px-4 '
-          as={'a'}
-          href='/auth/register'
         >
           Sign Up
         </Button>

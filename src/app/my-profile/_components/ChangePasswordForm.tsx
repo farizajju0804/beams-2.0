@@ -68,6 +68,7 @@ const ChangePasswordForm = () => {
                     <div className="relative">
                       <Input
                         label="Current Password"
+                        autoComplete="current-password"
                         type={showPassword ? "text" : "password"}
                         variant="underlined"
                         {...field}

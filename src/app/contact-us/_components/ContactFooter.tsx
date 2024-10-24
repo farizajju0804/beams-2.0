@@ -33,8 +33,8 @@ const ContactFooter = () => {
           <div className='bg-yellow w-8 h-8 flex rounded-full items-center justify-center text-purple'>
             <Sms variant='Bold' size={18} />
           </div>
-          <a href="mailto:info@beams.world" className='text-grey-2'>
-            info@beams.world
+          <a href="mailto:contact@beams.world" className='text-grey-2'>
+            contact@beams.world
           </a>
         </div>
       </div>

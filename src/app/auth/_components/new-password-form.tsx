@@ -108,6 +108,7 @@ const NewPasswordForm = () => {
                     <FormControl>
                       <Input
                         isRequired
+                        autoComplete="current-password"
                         classNames={{
                           label: "font-semibold text-text",
                           mainWrapper: "w-full flex-1",

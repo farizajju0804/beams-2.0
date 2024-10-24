@@ -24,15 +24,33 @@ export async function saveContactFormResponse(data: {
 }) {
   try {
     // Save the contact form data to the `contactFormResponse` table
-    const response = await db.contactFormResponse.create({
-      data, // Pass the entire form data to be stored
-    });
+    const count = await db.contactFormResponse.count(
+      {
+        where : {
+          email : data.email
+        }
+        
+      }
+    )
+  
+    if(count < 5){
+      const response = await db.contactFormResponse.create({
+        data, // Pass the entire form data to be stored
+      });
+  
+      // Send a confirmation email to the user after saving the response
+      await sendContactResponseEmail(data.email, data.firstName);
 
-    // Send a confirmation email to the user after saving the response
-    await sendContactResponseEmail(data.email, data.firstName);
+      return { success : response }
 
+    }
+
+    else{
+      
+     return { error : "You currently have more than 5 active queries. Please allow us some time to resolve them before submitting more."}
+    }
     // Return the saved response
-    return response;
+    
   } catch (error) {
     // Log the error and throw an appropriate message
     console.error('Failed to save contact form response:', error);

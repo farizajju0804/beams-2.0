@@ -14,10 +14,10 @@ export const SessionValidator = () => {
     const checkSession = async () => {
       if(session?.user){
       const sessionStatus = await validateSession()
-      console.log("SessionValidator: Fetched session status", sessionStatus)
+      // console.log("SessionValidator: Fetched session status", sessionStatus)
 
       if (!sessionStatus?.isSessionValid || sessionStatus?.isBanned) {
-        console.log("SessionValidator: Session invalid or user banned, signing out")
+        // console.log("SessionValidator: Session invalid or user banned, signing out")
         await signOutUser()
         await deleteAllCookies()  
       }
