@@ -32,6 +32,7 @@ const ResetForm = () => {
 
   // Set up form with Zod validation and default values
   const form = useForm<z.infer<typeof ResetSchema>>({
+    mode:"onBlur",
     resolver: zodResolver(ResetSchema),
     defaultValues: {
       email: "",
@@ -116,7 +117,7 @@ const ResetForm = () => {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => (
+          render={({ field ,fieldState }) => (
             <FormItem>
               <FormControl>
                 <Input
@@ -138,7 +139,9 @@ const ResetForm = () => {
                   disabled={isPending || isResending} // Disable input during submission or resending
                 ></Input>
               </FormControl>
-              <FormMessage />
+              <FormMessage>
+        {fieldState.error ? fieldState.error.message : null}
+      </FormMessage>
             </FormItem>
           )}
         />
