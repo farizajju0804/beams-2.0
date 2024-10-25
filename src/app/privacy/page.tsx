@@ -349,42 +349,96 @@ const privacyPolicyData = [
 ];
 
 const PrivacyPolicyPage = () => {
-  const renderContent = (item:any) => {
+  /**
+   * Renders different types of content based on the item type (header, subheader, paragraph, list).
+   */
+  const renderContent = (item: any) => {
     switch (item.type) {
       case 'header':
-        return <h1 className="text-3xl md:text-4xl font-poppins font-bold text-center text-text mb-6">{item.content}</h1>;
+        return (
+          <h1 className="text-3xl md:text-4xl font-poppins font-bold text-center text-text mb-6">
+            {item.content}
+          </h1>
+        );
+
       case 'subheader':
-        return <h2 className="text-xl md:text-2xl font-poppins font-semibold text-text mt-8 mb-4">{item.content}</h2>;
+        return (
+          <h2 className="text-xl md:text-2xl font-poppins font-semibold text-text mt-8 mb-4">
+            {item.content}
+          </h2>
+        );
+
       case 'paragraph':
+        // Splits the content by words, auto-linking URLs and email addresses
         return (
           <p className="text-grey-2 leading-relaxed mb-4">
-            {item.content.split(' ').map((word:any, index:any) => {
+            {item.content.split(' ').map((word: string, index: number) => {
               if (word.startsWith('www.') || word.startsWith('http')) {
-                return <a key={index} href={word.startsWith('www.') ? `https://${word}` : word} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">{word} </a>;
+                return (
+                  <a
+                    key={index}
+                    href={word.startsWith('www.') ? `https://${word}` : word}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand hover:underline"
+                  >
+                    {word}{' '}
+                  </a>
+                );
               } else if (word.includes('@')) {
-                return <a key={index} href={`mailto:${word}`} className="text-brand hover:underline">{word}</a>;
+                return (
+                  <a
+                    key={index}
+                    href={`mailto:${word}`}
+                    className="text-brand hover:underline"
+                  >
+                    {word}
+                  </a>
+                );
               }
               return `${word} `;
             })}
           </p>
         );
+
       case 'list':
+        // Renders a list of terms and definitions, with link parsing
         return (
           <ul className="list-disc list-inside mb-4">
-            {item.items.map((listItem:any, index:any) => (
+            {item.items.map((listItem: any, index: number) => (
               <li key={index} className="mb-2">
-                <strong className="font-semibold">{listItem.term}:</strong> {listItem.definition.split(' ').map((word:any, index:any) => {
-              if (word.startsWith('www.') || word.startsWith('http')) {
-                return <a key={index} href={word.startsWith('www.') ? `https://${word}` : word} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">{word} </a>;
-              } else if (word.includes('@')) {
-                return <a key={index} href={`mailto:${word}`} className="text-brand hover:underline">{word}</a>;
-              }
-              return `${word} `;
-            })}
+                <strong className="font-semibold">{listItem.term}:</strong>{' '}
+                {listItem.definition.split(' ').map((word: string, index: number) => {
+                  if (word.startsWith('www.') || word.startsWith('http')) {
+                    return (
+                      <a
+                        key={index}
+                        href={word.startsWith('www.') ? `https://${word}` : word}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand hover:underline"
+                      >
+                        {word}{' '}
+                      </a>
+                    );
+                  } else if (word.includes('@')) {
+                    return (
+                      <a
+                        key={index}
+                        href={`mailto:${word}`}
+                        className="text-brand hover:underline"
+                      >
+                        {word}
+                      </a>
+                    );
+                  }
+                  return `${word} `;
+                })}
               </li>
             ))}
           </ul>
         );
+
       default:
         return null;
     }
@@ -394,9 +448,7 @@ const PrivacyPolicyPage = () => {
     <div className="min-h-screen bg-background py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {privacyPolicyData.map((item, index) => (
-          <React.Fragment key={index}>
-            {renderContent(item)}
-          </React.Fragment>
+          <React.Fragment key={index}>{renderContent(item)}</React.Fragment>
         ))}
       </div>
     </div>

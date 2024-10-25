@@ -57,10 +57,10 @@ export default function UserButton({ initialUser }: UserButtonProps) {
   const handleSignOut = async () => {
     
     const result = await signOutUser(); 
-    if (result.success) {
-      await deleteAllCookies()  
-      await signOut({ callbackUrl: '/auth/login' });
-    }
+    // if (result.success) {
+    //   await deleteAllCookies()  
+    //   await signOut({ callbackUrl: '/auth/login' });
+    // }
   };
 
 
@@ -94,34 +94,34 @@ export default function UserButton({ initialUser }: UserButtonProps) {
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">
             <DropdownSection showDivider>
-              <DropdownItem key="profile" className="h-14 gap-2">
+              <DropdownItem  textValue={"profile"} key="profile" className="h-14 gap-2">
                 <p className="font-bold">Signed in as</p>
                 <p className="font-bold">{user.email}</p>
               </DropdownItem>
             </DropdownSection>
-            <DropdownSection title="Account" showDivider>
-              <DropdownItem key="library" onClick={() => handleNavigation("/my-library")}>
+            <DropdownSection  title="Account" showDivider>
+              <DropdownItem textValue={"library"} key="library" onClick={() => handleNavigation("/my-library")}>
                 My Library
               </DropdownItem>
-              <DropdownItem key="profile" onClick={() => handleNavigation("/my-profile")}>
+              <DropdownItem textValue={"profile"} key="profile" onClick={() => handleNavigation("/my-profile")}>
                 My Profile
               </DropdownItem>
             </DropdownSection>
             <DropdownSection title="Support" showDivider>
-              <DropdownItem key="FAQ" onClick={() => handleNavigation("/faq")}>
+              <DropdownItem textValue={"faq"} key="FAQ" onClick={() => handleNavigation("/faq")}>
                 FAQ
               </DropdownItem>
-              <DropdownItem key="contact" onClick={() => handleNavigation("/contact-us")}>
+              <DropdownItem textValue={"contact"} key="contact" onClick={() => handleNavigation("/contact-us")}>
                 Contact
               </DropdownItem>
             </DropdownSection>
             <DropdownItem className="cursor-auto" key="theme">
               <ThemeSwitcher />
             </DropdownItem>
-            <DropdownItem key="refer" onClick={openModal} startContent={<Gift className="text-green-500" variant="Bold" />}>
+            <DropdownItem  textValue={"refer"} key="refer" onClick={openModal} startContent={<Gift className="text-green-500" variant="Bold" />}>
               Refer A Friend
             </DropdownItem>
-            <DropdownItem onClick={handleSignOut} startContent={<Logout className="text-red-500" variant="Bold" />} key="logout" color="danger">
+            <DropdownItem  textValue={"logout"} onClick={handleSignOut} startContent={<Logout className="text-red-500" variant="Bold" />} key="logout" color="danger">
               Log Out
             </DropdownItem>
           </DropdownMenu>

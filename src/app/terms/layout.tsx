@@ -13,7 +13,7 @@ import TopNav from '@/components/TopNav';
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Beams",
+  title: "Terms of Service",
   description: "Read our terms of service to understand the rules, guidelines, and agreements for using Beams learning platform.",
   openGraph: {
     title: "Terms of Service | Beams",

@@ -1,6 +1,5 @@
 
 import { Suspense, type FC } from "react";
-import { SessionProviders } from "../SessionProviders";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -8,8 +7,20 @@ interface AuthLayoutProps {
 
 
 import type { Metadata } from "next";
+import { SessionProviders } from "@/app/SessionProviders";
 
-
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Access your Beams account. Log in to explore our next-gen learning platform and continue your educational journey.",
+  keywords: ["login", "Beams", "next-gen learning", "education platform", "online learning"],
+  authors: [{ name: "Beams" }],
+  creator: "Beams",
+  publisher: "Beams",
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 
 const AuthLayout: FC<Readonly<AuthLayoutProps>> = ({ children }) => {

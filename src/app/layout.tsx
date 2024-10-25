@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
-
 import { Providers } from "./providers";
-const quicksand = Quicksand({ subsets: ["latin"] });
 import { SessionProviders } from "./SessionProviders";
-
 import TimeZoneSetter from "@/components/TimeZoneSetter";
 import { SessionValidator } from "@/components/SessionValidator";
 import Script from "next/script";
 
-export  const metadata: Metadata = {
+// Import the Quicksand font from Google fonts
+const quicksand = Quicksand({ subsets: ["latin"] });
+
+// Metadata for the application
+export const metadata: Metadata = {
   title: {
     default: "Beams - Next-gen Learning Platform",
-    template: "%s | Beams"
+    template: "%s | Beams" // Dynamic title template
   },
   description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
   keywords: ["learning platform", "online education", "next-gen learning", "educational technology", "e-learning"],
@@ -25,9 +26,9 @@ export  const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://www.beams.world'), // Replace with your actual domain
+  metadataBase: new URL('https://www.beams.world'), // Base URL for the site
   alternates: {
-    canonical: '/',
+    canonical: '/', // Canonical URL
     languages: {
       'en-US': '/en-us',
     },
@@ -41,23 +42,24 @@ export  const metadata: Metadata = {
     siteName: 'Beams',
     images: [
       {
-        url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1724853253/Beams%20today/AI%20Headphones/ai-headphones-thumbnail-v7zzwd-66cf2bf769602_pj7aka.webp', // Add your OG image
+        url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1724853253/Beams%20today/AI%20Headphones/ai-headphones-thumbnail-v7zzwd-66cf2bf769602_pj7aka.webp', // Image for Open Graph
         width: 1200,
         height: 630,
         alt: 'Beams - Next-gen Learning Platform',
       },
     ],
   },
+  // Uncomment and customize the Twitter metadata if needed
   // twitter: {
   //   card: 'summary_large_image',
   //   title: 'Beams - Next-gen Learning Platform',
   //   description: 'Innovative next-gen learning platform for emerging topics',
-  //   creator: '@yourhandle', // Add your Twitter handle
-  //   images: ['/images/twitter-image.jpg'], // Add your Twitter card image
+  //   creator: '@yourhandle',
+  //   images: ['/images/twitter-image.jpg'],
   // },
   robots: {
-    index: true,
-    follow: true,
+    index: true, // Allow search engine indexing
+    follow: true, // Follow links
     googleBot: {
       index: true,
       follow: true,
@@ -68,14 +70,14 @@ export  const metadata: Metadata = {
   },
 };
 
-
+// Root layout component that wraps the application with essential providers and metadata
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
-
+  
+  // JSON-LD structured data for SEO (website schema)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -84,6 +86,7 @@ export default function RootLayout({
     url: 'https://www.beams.world',
   };
 
+  // Organization schema for structured data
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -98,56 +101,59 @@ export default function RootLayout({
   };
 
   return (
-  <SessionProviders>
-    <html lang="en" className="scroll-smooth">
+    <SessionProviders>
+      <html lang="en" className="scroll-smooth">
         <head>
+          {/* Favicon and Apple touch icon */}
           <link rel="icon" href="/favicon.ico" sizes="any" />
-          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-       
+          {/* <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> */}
+
+          {/* Preconnects for Google Fonts */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          
-          
+
+          {/* Insert JSON-LD schemas for website and organization */}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
-             <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema)
-          }}
-        />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(organizationSchema)
+            }}
+          />
         </head>
-      <body className={quicksand.className}>
+        
+        <body className={quicksand.className}>
+          {/* Initialize timezone and session validation components */}
+          <TimeZoneSetter />
+          <SessionValidator/>
+          
+          {/* Main Providers for application state and context */}
+          <Providers>
+            {children}
+          </Providers>
 
-     {/* <GoogleAnalytics gaId="G-W7VPHJY727"> */}
-
-      <TimeZoneSetter />
-      <SessionValidator/>
-     
-   
-      <Providers>
-        {children}
-        </Providers>
-        <Script id="site-behaviour" type="text/javascript">
-        {`
-      (
-        function() {
-          var sbSiteSecret = "53621595-e2cc-41a3-8cac-e425bc749a9b";
-          window.sitebehaviourTrackingSecret = sbSiteSecret;
-          var scriptElement = document.createElement('script');
-          scriptElement.async = true;
-          scriptElement.id = "site-behaviour-script-v2";
-          scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
-          document.head.appendChild(scriptElement); 
-        }
-      )()
-      `}
-</Script>
-      </body>
-   
-    </html>
+          {/* Site behavior tracking script with embedded secret */}
+          <Script id="site-behaviour" type="text/javascript">
+            {`
+             
+           (
+              function() {
+                var sbSiteSecret = "25321c10-c173-4498-a856-d07cfb1d6a4a";
+                window.sitebehaviourTrackingSecret = sbSiteSecret;
+                var scriptElement = document.createElement('script');
+                scriptElement.async = true;
+                scriptElement.id = "site-behaviour-script-v2";
+                scriptElement.src = "https://sitebehaviour-cdn.fra1.cdn.digitaloceanspaces.com/index.min.js?sitebehaviour-secret=" + sbSiteSecret;
+                document.head.appendChild(scriptElement); 
+              }
+             )()
+            `}
+          </Script>
+        </body>
+      </html>
     </SessionProviders>
   );
 }

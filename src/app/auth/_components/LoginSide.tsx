@@ -41,6 +41,7 @@ const LoginSide: FC<LoginSideProps> = ({ show }) => {
         src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725345826/authentication/charcater-login-2-dev_wrtei2.webp"
         alt="login"
         width={0} 
+        priority
         height={0} 
         sizes="60vw" 
         className={`${show ? "block" : "hidden"} md:block w-[300px] h-[400px]`}

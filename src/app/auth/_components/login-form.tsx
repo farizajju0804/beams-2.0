@@ -21,14 +21,13 @@ import RedirectMessage from "@/components/Redirection";
 // Interface defining the expected props for the component
 interface LoginFormProps {
   ip: string; // IP address of the client
-  pendingEmail?: any; // Optional pending email state
 }
 
 /**
  * LoginForm component handles the user login flow, including email, password,
  * and two-factor authentication handling.
  */
-const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
+const LoginForm: FC<LoginFormProps> = ({ ip }) => {
   const searchParams = useSearchParams(); // Hook to get query parameters from the URL
 
   const [error, setError] = useState<string | undefined>(''); // State for error messages
@@ -284,6 +283,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip, pendingEmail }) => {
               </>
             )}
             {/* Links for "Forgot password" and "Forgot email" */}
+            
             <div className="w-full flex justify-between lg:px-0">
               <Link className="font-medium text-gray-400 text-sm" href="/auth/reset">Forgot password?</Link>
               <Link className="font-medium text-gray-400 text-sm" href="/auth/forgot-identifiers">Forgot email?</Link>

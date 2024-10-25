@@ -13,9 +13,9 @@ export async function signOutUser() {
   console.log('clicked');
   
   // Calls the signOut function to log out the user
-  await signOut({ redirect: false });
+  await signOut({redirectTo : '/auth/login'});
   
-  console.log('signout called');
+  // console.log('signout called');
   
-  return { success: true }; // Return success confirmation
+  // return { success: true }; // Return success confirmation
 }

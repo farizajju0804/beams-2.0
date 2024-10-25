@@ -12,7 +12,7 @@ import TopNav from '@/components/TopNav';
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Beams",
+  title: "Privacy Policy",
   description: "Learn how Beams collects, uses, and protects your personal information. Our privacy policy outlines data handling practices.",
   openGraph: {
     title: "Privacy Policy | Beams",
