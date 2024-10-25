@@ -122,6 +122,7 @@ const ResetForm = () => {
               <FormControl>
                 <Input
                   isRequired
+                  aria-label="email"
                   variant="underlined"
                   classNames={{
                     label: "font-semibold text-text",
@@ -151,6 +152,7 @@ const ResetForm = () => {
       <Button
         type="submit"
         color="primary"
+        aria-label="send-email"
         endContent={<Send2 variant="Bold" />}
         className="w-full text-white text-lg py-6 md:text-xl font-semibold"
         isLoading={isPending || isResending} // Show loading state on the button

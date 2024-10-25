@@ -36,11 +36,9 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false); // Loading state for form submission
   const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
   const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false); // State to show two-factor authentication field
-  const [isMobile, setIsMobile] = useState(false); // State to determine if the screen is mobile
+
   const router = useRouter(); // Hook for navigation
-  const {  data: session,update } = useSession(); // Session hook for user authentication
-  const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false); // State to check if email input is focused
-  const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false); // State to check if password input is focused
+
   const [userEmail, setUserEmail] = useState<string>("");
   // Set up the form using React Hook Form with Zod schema for validation
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -70,16 +68,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
     }
   }, [searchParams, router]);
   // Hook to check if the screen is mobile
-  useEffect(() => {
-    const checkMobile: any = () => {
-      setIsMobile(window.innerWidth < 767); // Set mobile state if screen width is less than 767px
-    };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile); // Listen to window resize events
-
-    return () => window.removeEventListener('resize', checkMobile); // Clean up event listener
-  }, []);
 
   // Function to handle form submission
   const onSubmit: any = async (values: z.infer<typeof LoginSchema>) => {
@@ -212,16 +201,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
                           labelPlacement="outside"
                           placeholder="Enter your email"
                           disabled={isLoading}
-                          onFocus={() => setIsTypingEmail(true)}
-                          onBlur={() => {
-                            if (field.value.length === 0) {
-                              setIsTypingEmail(false);
-                            }
-                          }}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            if (e.target.value.length === 0) setIsTypingEmail(false);
-                          }}
+        
                         />
                       </FormControl>
                       <FormMessage />
@@ -262,18 +242,6 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
                               {showPassword ? <EyeSlash variant="Bold" size={18} /> : <Eye variant="Bold" size={18} />}
                             </span>
                           }
-                          onFocus={() => setIsTypingPassword(true)}
-                          onBlur={() => {
-                            if (field.value.length === 0) {
-                              setIsTypingPassword(false);
-                            }
-                          }}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            if (e.target.value.length === 0) {
-                              setIsTypingPassword(false);
-                            }
-                          }}
                         />
                       </FormControl>
                       <FormMessage />

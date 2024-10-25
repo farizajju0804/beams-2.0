@@ -53,7 +53,7 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
     return { success: "Email Sent!" };
   } catch (error) {
     console.error("Network or server error:", error);
-    return { error: "A network error occurred. Please try again later." };
+    return { error: "A network error occurred. Check ypur internet or try again later." };
   }
 };
 

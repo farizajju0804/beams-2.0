@@ -108,6 +108,7 @@ const NewPasswordForm = () => {
                     <FormControl>
                       <Input
                         isRequired
+                        aria-label="password"
                         autoComplete="current-password"
                         classNames={{
                           label: "font-semibold text-text",
@@ -150,6 +151,7 @@ const NewPasswordForm = () => {
             <Button
               type="submit"
               color="primary"
+              aria-label="submit"
               endContent={<Key variant="Bold"/>}
               className="w-full text-white text-lg mdtext-xl font-semibold py-6"
               isLoading={isPending} // Show loading state while form is submitting
