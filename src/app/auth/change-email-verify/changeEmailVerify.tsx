@@ -5,10 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form"; // Import hooks from R
 import { z } from "zod"; // Zod for schema validation
 import { zodResolver } from "@hookform/resolvers/zod"; // Zod resolver for React Hook Form
 import { verifyCodeAndChangeEmail } from "@/actions/auth/verifyCode"; // Action to verify the code and change the email
-import { Input, Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
+import {  Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
 import FormError from "@/components/form-error"; // Component for displaying form errors
 import CardWrapper from "@/app/auth/_components/card-wrapper"; // Wrapper component for consistent UI
-import { useRouter, useSearchParams } from "next/navigation"; // Next.js router hooks for navigation and reading URL params
+import { useSearchParams } from "next/navigation"; // Next.js router hooks for navigation and reading URL params
 import { resendVerificationCode3 } from "@/actions/auth/register"; // Action to resend the verification code
 import { useEmailStore } from "@/store/email"; // Zustand store for email state management
 import Image from "next/image"; // Next.js optimized image component

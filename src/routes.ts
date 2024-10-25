@@ -7,7 +7,6 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    "/auth/new-verification", // Route to request a new email verification
     "/privacy", // Privacy policy page
     "/terms", // Terms and conditions page
     "/contact-us", // Contact form page

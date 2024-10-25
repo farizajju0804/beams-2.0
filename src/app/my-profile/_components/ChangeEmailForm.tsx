@@ -53,9 +53,9 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   const handleSignOut = async () => {
     const result = await signOutUser(); 
     
-    if (result.success) {
-      router.push("/auth/login"); 
-    }
+    // if (result.success) {
+    //   router.push("/auth/login"); 
+    // }
   };
 
   const customSignOut = async () => {

@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form"; // React Hook Form uti
 import { z } from "zod"; // Zod for schema validation
 import { zodResolver } from "@hookform/resolvers/zod"; // Zod resolver for React Hook Form
 import { verifyCode } from "@/actions/auth/verifyCode"; // Action to verify the code
-import { Input, Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
+import { Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
 import FormError from "@/components/form-error"; // Import component for displaying form errors
 import CardWrapper from "@/app/auth/_components/card-wrapper"; // Card wrapper for consistent UI
 import { useSearchParams } from "next/navigation"; // Next.js hook to retrieve search params

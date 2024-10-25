@@ -1,6 +1,5 @@
 'use client'
 import BackButton from "@/app/auth/_components/back-button";
-import { Header } from "@/app/auth/_components/header";
 import { Card, CardFooter, CardHeader } from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";

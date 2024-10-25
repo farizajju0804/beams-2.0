@@ -65,6 +65,7 @@ const RegisterSide = () => {
         alt="login"
         width={200}
         height={200}
+        priority
         className="hidden md:block" // Image hidden on smaller screens
       />
     </div>

@@ -7,10 +7,6 @@ interface AuthLayoutProps {
 }
 
 
-import type { Metadata } from "next";
-
-
-
 
 const AuthLayout: FC<Readonly<AuthLayoutProps>> = ({ children }) => {
   return (
