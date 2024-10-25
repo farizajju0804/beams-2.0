@@ -20,10 +20,14 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
   }
 
   const { email } = validatedFields.data;
-  const existingUser: any = await getUserByEmail(email);
+  const existingUser:any = await getUserByEmail(email);
 
   if (!existingUser) {
-    return { error: "No account found" };
+    return { error: "No account found for this email" };
+  }
+
+  if (existingUser.isBanned) {
+    return { error: "Your account is banned." };
   }
 
   // Check if the account is linked to an external provider
