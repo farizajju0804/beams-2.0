@@ -1,6 +1,6 @@
 "use client"; // Ensures this component runs on the client side
 
-import React, { useEffect, useState, useTransition } from "react"; // Import necessary React hooks
+import React, { useState, useTransition } from "react"; // Import necessary React hooks
 import { useForm } from "react-hook-form"; // Import React Hook Form for form handling
 import * as z from "zod"; // Import Zod for schema validation
 import { zodResolver } from "@hookform/resolvers/zod"; // Integrates Zod with React Hook Form
@@ -31,34 +31,20 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
   const [success, setSuccess] = useState<string | undefined>(""); // State to track success messages
   const [isPending, startTransition] = useTransition(); // Transition hook to handle pending state
   const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
-  const [isTypingEmail, setIsTypingEmail] = useState<boolean>(false); // State to check if user is typing in the email field
-  const [isTypingPassword, setIsTypingPassword] = useState<boolean>(false); // State to check if user is typing in the password field
-  const [showPasswordStrength, setShowPasswordStrength] = useState(false); // State to show password strength indicator
-  const [isMobile, setIsMobile] = useState(false); // State to check if the screen is mobile
   const router = useRouter(); // Hook for handling navigation
   const searchParams = useSearchParams();
   const referralCode = searchParams.get('referral');
   // Set up form with Zod validation schema and default values
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
-    mode: "onSubmit",
+    mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  // Hook to check if the device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 767); // Set mobile state based on window width
-    };
 
-    checkMobile(); // Run the check on component mount
-    window.addEventListener("resize", checkMobile); // Listen for window resize events
-
-    return () => window.removeEventListener("resize", checkMobile); // Clean up event listener
-  }, []);
 
   // Function to handle form submission
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
@@ -113,6 +99,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                   <FormControl>
                     <Input
                       isRequired
+                      aria-label="email"
                       label="Email"
                       classNames={{
                         label: 'font-semibold text-text',
@@ -129,16 +116,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                       variant="underlined"
                       labelPlacement="outside"
                       placeholder="Enter your email"
-                      onFocus={() => setIsTypingEmail(true)}
-                      onBlur={() => {
-                        if (field.value.length === 0) {
-                          setIsTypingEmail(false);
-                        }
-                      }}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        if (e.target.value.length === 0) setIsTypingEmail(false);
-                      }}
+
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,6 +134,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                     <FormControl>
                       <Input
                         isRequired
+                        aria-label="password"
                         autoComplete="current-password"
                         classNames={{
                           label: 'font-semibold text-text',
@@ -180,23 +159,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                             {showPassword ? <EyeSlash variant="Bold" /> : <Eye variant="Bold" />}
                           </span>
                         }
-                        onFocus={() => {
-                          setIsTypingPassword(true);
-                          setShowPasswordStrength(true);
-                        }}
-                        onBlur={() => {
-                          if (field.value.length === 0) {
-                            setIsTypingPassword(false);
-                            setShowPasswordStrength(false);
-                          }
-                        }}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          if (e.target.value.length === 0) {
-                            setIsTypingPassword(false);
-                            setShowPasswordStrength(false);
-                          }
-                        }}
+                       
                       />
                     </FormControl>
                     <FormMessage />
@@ -207,7 +170,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
               {/* Password strength component */}
               <PasswordStrength
                 password={form.watch('password')}
-                onClose={() => setShowPasswordStrength(false)}
+               
               />
             </div>
 
@@ -223,6 +186,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
           <Button
             endContent={<User size={18} variant="Bold" />}
             type="submit"
+            aria-label="submit"
             color="primary"
             className="w-full py-6 text-lg md:text-xl text-white font-semibold"
             isLoading={isPending}

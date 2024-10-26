@@ -17,63 +17,70 @@ import { getGrowthAmbassadorStatus, } from './getGrowthAmbassadorStatus';
  * @param {string} ip - The IP address of the registering user.
  * @returns {Promise<Object>} A response indicating success or error.
  */
-export const registerAndSendVerification = async (values: z.infer<typeof RegisterSchema>, ip: string, referralCode?: string) => {
-  const validatedFields = RegisterSchema.safeParse(values);
-  if (!validatedFields.success) {
-    return { error: "Invalid Fields!" };
-  }
-
-  const { email, password } = validatedFields.data;
-  const existingUser: any = await getUserByEmail(email);
-
-  if (existingUser) {
-    if (!existingUser.emailVerified) {
-      const verificationToken = await getVerificationToken(existingUser.email);
-      await sendVerificationEmail(verificationToken.email, verificationToken.token);
-      return { error: "VERIFY_EMAIL" };
+export const registerAndSendVerification = async (
+  values: z.infer<typeof RegisterSchema>, 
+  ip: string, 
+  referralCode?: string
+) => {
+  try {
+    const validatedFields = RegisterSchema.safeParse(values);
+    if (!validatedFields.success) {
+      return { error: "Invalid Fields!" };
     }
-    return { error: "Account already exists. Try using a different email." };
-  }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  let referredById = null;
-  let isAccessible = false;
-  let referralStatus = null;
+    const { email, password } = validatedFields.data;
+    const existingUser: any = await getUserByEmail(email);
 
-  if (referralCode) {
-    const referrer = await getUserByReferralCode(referralCode);
-    if (referrer) {
-     
-      const referralLimit = await getGrowthAmbassadorStatus(referrer.userId)
-      console.log('referral limit status',referralLimit)
-      if(!referralLimit?.completed){
-      referredById = referrer.userId;
-      isAccessible = true;
-      referralStatus = 'REGISTERED';
+    if (existingUser) {
+      if (!existingUser.emailVerified) {
+        const verificationToken = await getVerificationToken(existingUser.email);
+        await sendVerificationEmail(verificationToken.email, verificationToken.token);
+        return { error: "VERIFY_EMAIL" };
+      }
+      return { error: "Account already exists. Try using a different email." };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let referredById = null;
+    let isAccessible = false;
+    let referralStatus = null;
+
+    if (referralCode) {
+      const referrer = await getUserByReferralCode(referralCode);
+      if (referrer) {
+        const referralLimit = await getGrowthAmbassadorStatus(referrer.userId);
+        console.log('referral limit status', referralLimit);
+        if (!referralLimit?.completed) {
+          referredById = referrer.userId;
+          isAccessible = true;
+          referralStatus = 'REGISTERED';
+        }
       }
     }
+
+    const userData: any = {
+      email,
+      password: hashedPassword,
+      lastLoginIp: ip,
+      lastLoginAt: new Date(),
+      referredById,
+      referralStatus,
+      isAccessible
+    };
+
+    await db.user.create({ data: userData });
+
+    const verificationToken = await getVerificationToken(email);
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+    console.log("Verification email sent. Please check your inbox.");
+
+    return { success: "Verification email sent. Please check your inbox." };
+  } catch (error) {
+    console.error("Network or server error:", error);
+    return { error: "Network or server error. Please Check your internet or try again later." };
   }
-  const userData:any = {
-    email,
-    password: hashedPassword,
-    lastLoginIp: ip,
-    lastLoginAt: new Date(),
-    referredById,
-    referralStatus,
-    isAccessible
-  };
-
-
-  await db.user.create({
-    data: userData
-  });
-
-  const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
-  console.log("Verification email sent. Please check your inbox.");
-
-  return { success: "Verification email sent. Please check your inbox." };
 };
+
 
 /**
  * Resends the verification code to the user's email.

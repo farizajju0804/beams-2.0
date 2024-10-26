@@ -144,7 +144,7 @@ const NewPasswordForm = () => {
               {/* Password strength component */}
               <PasswordStrength 
                   password={form.watch('password')} // Watch the password value to display strength
-                  onClose={() =>{}} // No close action needed for this use case
+                 
                 />
             </div>
             {/* Submit button */}

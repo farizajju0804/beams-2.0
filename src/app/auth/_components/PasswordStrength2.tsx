@@ -3,14 +3,13 @@ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 interface PasswordStrengthProps {
   password: string; // Password input from the user
-  onClose: () => void; // Optional function for closing the strength indicator
 }
 
 /**
  * PasswordStrength component evaluates the strength of a password
  * based on several rules (length, uppercase, lowercase, number, special character).
  */
-const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password, onClose }) => {
+const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password }) => {
   const [barColor, setBarColor] = useState('bg-gray-500'); // Initial color of the strength bar
 
   // Password validation rules
