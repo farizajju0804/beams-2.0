@@ -114,6 +114,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
                       type="email"
                       disabled={isPending}
                       variant="underlined"
+                      autoComplete="email"
                       labelPlacement="outside"
                       placeholder="Enter your email"
 

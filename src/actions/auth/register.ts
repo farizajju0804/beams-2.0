@@ -211,34 +211,6 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
 };
 
 
-/**
- * Checks if there is any pending email verification associated with the given IP address.
- * @param {string} ip - The user's IP address.
- * @returns {Promise<Object|null>} The pending verification information, if any.
- */
-export const checkPendingVerification = async (ip: string) => {
-  const res = await db.pendingVerification.findFirst({
-    where: { ip },
-    orderBy: { createdAt: 'desc' },
-    select: { email: true },
-  });
-  console.log(res);
-  return res;
-};
-
-/**
- * Deletes pending email verification by the given email.
- * @param {string} email - The email associated with the pending verification.
- * @returns {Promise<Object>} The result of the delete operation.
- */
-export const deletePendingVerification = async (email: string) => {
-  const res = await db.pendingVerification.delete({
-    where: { email },
-  });
-  console.log(res);
-  return res;
-};
-
 
 
 export const getUserByReferralCode = async (referralCode: string) => {

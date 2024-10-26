@@ -136,7 +136,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
         case "CredentialsSignin":
           return { error: "Invalid Credentials", success: undefined };
         default:
-          return { error: "Something went wrong! Let's try that again", success: undefined };
+          return { error: "Network or server error. Please Check your internet or try again later.", success: undefined };
       }
     }
     throw error;

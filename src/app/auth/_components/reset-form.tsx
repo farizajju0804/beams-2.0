@@ -122,6 +122,7 @@ const ResetForm = () => {
               <FormControl>
                 <Input
                   isRequired
+                  autoComplete="email"
                   aria-label="email"
                   variant="underlined"
                   classNames={{

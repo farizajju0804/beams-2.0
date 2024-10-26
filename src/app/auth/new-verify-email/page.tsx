@@ -105,7 +105,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     if (success) {
       const timer = setTimeout(() => {
         router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`); // Redirect after successful verification
-      }, 3000);
+      }, 2000);
 
       return () => clearTimeout(timer); // Clear timeout if component unmounts
     }
@@ -140,7 +140,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
           ) : (
             <>
               <div className="flex justify-center mb-4">
-                <Image src="/images/email.png" alt="Verification Illustration" width={250} height={200} /> {/* Email illustration */}
+                <Image priority src="/images/email.png" alt="Verification Illustration" width={250} height={200} /> {/* Email illustration */}
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -156,19 +156,23 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                       </>
                     )}
                   </p>
+                  {!resendMessage && (
                   <p className="text-left text-text text-sm">
                     Enter the code below to verify your account. If you can&apos;t find it,
                     check your spam or junk folder—sometimes magic hides there too! Be
                     sure to mark it as safe!
                   </p>
+                  )}
                   <div className="flex justify-center">
                     <input
                       {...register("code")} // Register input field for code with validation from Zod
                       type="text"
                       maxLength={6}
+                      autoComplete="code"
                       onChange={handleInputChange}
                       value={code}
                       ref={inputRef}
+                     aria-label="code"
                       placeholder="Enter the code"
                       className="w-full h-10 text-center border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-primary text-2xl tracking-widest"
                     />
@@ -178,7 +182,8 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
                 <Button
                   type="submit"
-                  color="primary"
+                color="primary"
+                 aria-label="submit"
                   endContent={<TickCircle variant="Bold" />} // Icon on the button
                   className="w-full font-semibold text-white py-6 text-lg md:text-xl"
                   isLoading={isLoading} // Show loading state during form submission
@@ -188,17 +193,19 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                 </Button>
                 {error && <FormError message={error} />} {/* Display form error if any */}
               </form>
-
+             {!resendMessage && (
               <div className="my-4 flex flex-col items-center gap-2 text-center">
                 <p className="text-sm text-grey-2">Didn&apos;t receive the code? Click below</p>
                 <button
                   type="button"
+                aria-label="resend"
                   className="text-primary font-semibold hover:underline focus:outline-none"
                   onClick={handleResendCode} // Resend the verification code
                 >
                   Resend Code
                 </button>
               </div>
+              )}
             </>
           )}
         </CardWrapper>

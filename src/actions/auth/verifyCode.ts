@@ -13,37 +13,42 @@ import { signIn } from "@/auth";
  * @returns {Object} - Returns an error or success message.
  */
 export const verifyCode = async (code: string, email: string) => {
-  const existingUser = await getUserByEmail(email);
-  if (!existingUser) {
-    return { error: "User not found." };
+  try {
+    const existingUser = await getUserByEmail(email);
+    if (!existingUser) {
+      return { error: "Invalid Link" };
+    }
+
+    if (existingUser.emailVerified) {
+      return { success: "Email already verified. Try logging in with your credentials." };
+    }
+
+    const existingToken = await getVerificationTokenByToken(code);
+    if (!existingToken) {
+      return { error: "No account exists with this code." };
+    }
+
+    const hasExpired = new Date(existingToken.expires) < new Date();
+    if (hasExpired) {
+      return { error: "Code has expired." };
+    }
+
+    await db.user.update({
+      where: { email: existingToken.email },
+      data: {
+        emailVerified: new Date(),  
+      },
+    });
+
+    await db.verificationToken.delete({ where: { id: existingToken.id } });
+
+    return { success: "Email verified successfully!" };
+  } catch (error) {
+    console.error("Network or server error:", error);
+    return { error: "Network or server error. Check your internet or try again later." };
   }
-
-  if (existingUser.emailVerified) {
-    return { success: "Email already verified. Try logging in with your credentials." };
-  }
-
-  const existingToken = await getVerificationTokenByToken(code);
-  if (!existingToken) {
-    return { error: "Invalid or expired code." };
-  }
-
-  const hasExpired = new Date(existingToken.expires) < new Date();
-  if (hasExpired) {
-    return { error: "Code has expired." };
-  }
-
-  await db.user.update({
-    where: { email: existingToken.email },
-    data: { emailVerified: new Date(),
-      referralStatus: existingUser.referredById ? 'VERIFIED' : null,
-     },
-  });
-
-  await db.verificationToken.delete({ where: { id: existingToken.id } });
-
-
-  return { success: "Email verified successfully!" };
 };
+
 
 /**
  * Verifies the code and signs in the user.

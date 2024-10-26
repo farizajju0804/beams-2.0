@@ -238,6 +238,7 @@ const ForgotEmailForm = () => {
                         <Input
                           {...field}
                           isRequired
+                      autoComplete="name"
                           aria-label="first-name"
                           className="mt-4"
                           placeholder="Enter your first name"
@@ -282,7 +283,8 @@ const ForgotEmailForm = () => {
                             <Input
                               {...field}
                               isRequired
-                          aria-label="answer"
+                              aria-label="answer"
+                              autoComplete="answer"
                               placeholder="Enter your answer"
                               variant="underlined"
                               classNames={{

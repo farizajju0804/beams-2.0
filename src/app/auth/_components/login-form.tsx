@@ -151,6 +151,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
                         <Input
                           isRequired
                           variant="underlined"
+                      autoComplete="code"
                           label="Verification Code"
                           classNames={{
                             label: 'font-semibold text-text',
@@ -186,6 +187,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
                         <Input
                           isRequired
                           label="Email Address"
+                      autoComplete="email"
                           classNames={{
                             label: 'font-semibold  text-text',
                             mainWrapper: "w-full flex-1",

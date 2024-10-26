@@ -1,4 +1,3 @@
-import { checkPendingVerification } from "@/actions/auth/register"; // Import function to check for pending email verification
 import Step1Form from "@/app/auth/_components/Step1"; // Importing the step 1 form for registration
 import { getClientIp } from "@/utils/getClientIp"; // Utility function to get the client's IP address
 import { Suspense } from "react"; // Importing Suspense for handling lazy loading of components
@@ -10,7 +9,6 @@ import RegisterSide from "../_components/RegisterSide"; // Component for the reg
  */
 const Page = async () => {
   const ip = await getClientIp(); // Fetch the client's IP address
-  // const pendingEmail: any = await checkPendingVerification(ip); // Check if there's a pending email verification tied to the IP
 
   return (
     // Wrapping the main content in Suspense for potential lazy loading

@@ -109,7 +109,7 @@ const NewPasswordForm = () => {
                       <Input
                         isRequired
                         aria-label="password"
-                        autoComplete="current-password"
+                        autoComplete="password"
                         classNames={{
                           label: "font-semibold text-text",
                           mainWrapper: "w-full flex-1",

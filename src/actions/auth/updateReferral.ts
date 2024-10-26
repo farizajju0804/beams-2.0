@@ -152,7 +152,7 @@ export const updateAccessibleStatus = async (referralCode: string) => {
             data: {
               isAccessible: true,
               referredById: referrer.userId,
-              referralStatus: 'VERIFIED'
+              referralStatus: 'REGISTERED'
             }
           });
           return { success: true, message: "Referral processed successfully" };

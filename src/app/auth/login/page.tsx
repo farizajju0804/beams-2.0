@@ -2,7 +2,7 @@ import type { FC } from "react"; // Importing React's FC (Function Component) ty
 import LoginForm from "@/app/auth/_components/login-form"; // Importing the login form component
 import { Suspense } from 'react'; // Importing Suspense for handling lazy loading of components
 import { getClientIp } from "@/utils/getClientIp"; // Utility to fetch the client's IP address
-import { checkPendingVerification } from "@/actions/auth/register"; // Action to check if there's a pending verification for the IP
+
 import LoginSide from "../_components/LoginSide"; // Importing a side component, possibly a UI element on the login page
 
 // Defining the props for the LoginPage component, although no props are used in this case
@@ -15,7 +15,6 @@ interface LoginPageProps {}
  */
 const LoginPage: FC<LoginPageProps> = async ({}) => {
   const ip = await getClientIp(); // Fetch the client's IP address
-  // const pendingEmail: any = await checkPendingVerification(ip); // Check if there's a pending email verification tied to the IP
 
   return (
     // Wrapping the main content in Suspense for potential lazy loading

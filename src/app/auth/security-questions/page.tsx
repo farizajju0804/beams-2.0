@@ -84,7 +84,7 @@ const Step3Form: React.FC = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
               {/* Map through the security questions and render input fields */}
               {securityQuestions.map((question, index) => (
-                <>
+                <div key={index}>
                   <div className="flex w-full items-center justify-between">
                     <h1 className="text-left font-semibold text-xl">{question.question}</h1>
                     <Image src={question.image} alt="question" width={100} height={100} /> {/* Display question image */}
@@ -113,7 +113,7 @@ const Step3Form: React.FC = () => {
                       </FormItem>
                     )}
                   />
-                </>
+                </div>
               ))}
               {/* Submit button */}
               <FormError message={error} />
