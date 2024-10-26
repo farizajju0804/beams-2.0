@@ -8,9 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { FaChevronRight } from "react-icons/fa6";
 import BackButton from "./BackButton";
 
-// Validation schema for the grade selection
 const GradeSchema = z.object({
-  grade: z.string().nonempty("Grade selection is required"), // Validate the grade selection
+  grade: z.string().nonempty("Grade selection is required"),
 });
 
 type GradeData = z.infer<typeof GradeSchema>;
@@ -21,7 +20,6 @@ interface Slide5Props {
   handleBack: () => void;
 }
 
-// Define the grades and feedback messages
 const grades = ['Grade 4','Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'] as const;
 type Grade = typeof grades[number];
 
@@ -30,40 +28,44 @@ const feedbackMessages: Record<Grade, string> = {
   'Grade 5': "[Name], you're officially a Grade 5 legend! 🎒 Ready to unlock the mysteries of the future.",
   'Grade 6': "Watch out, world—[Name] is in Grade 6! 📚 Time to show everyone that you're the boss of middle school madness!",
   'Grade 7': "Grade 7 just got a whole lot cooler with [Name] around! 🔥 Get ready to master the art of being awesome (and acing those tests)!",
-  'Grade 8': "[Name], you've leveled up to Grade 8! 🧠 The final boss of middle school doesn’t stand a chance against you!",
+  'Grade 8': "[Name], you've leveled up to Grade 8! 🧠 The final boss of middle school doesn't stand a chance against you!",
   'Grade 9': "High school, beware—[Name] is here! 🏆 Grade 9 is just the beginning of your epic rise to fame and glory!"
 };
 
 const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
-  const [ctaText, setCtaText] = useState("Onward!"); // Default CTA text
-  const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState(""); // Feedback message template
+  const [ctaText, setCtaText] = useState("Onward!");
+  const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState("");
 
   const form = useForm<GradeData>({
     resolver: zodResolver(GradeSchema),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
+    mode: 'onChange',
     defaultValues: {
-      grade: formData.grade, // Prefill the grade if available
+      grade: formData.grade,
     },
   });
 
-  const selectedGrade: Grade | undefined = form.watch("grade") as Grade; // Watch the selected grade and define its type
+  const selectedGrade = form.watch("grade");
 
   useEffect(() => {
     if (formData.firstName) {
-      setCtaText(`Onward, ${formData.firstName}`); // Dynamically set the CTA text
+      setCtaText(`Onward, ${formData.firstName}`);
     }
   }, [formData.firstName]);
 
   useEffect(() => {
-    if (selectedGrade) {
-      const feedbackMessage = feedbackMessages[selectedGrade].replace("[Name]", formData.firstName);
-      setFeedbackMessageTemplate(feedbackMessage); // Always update the feedback message on grade selection
+    if (selectedGrade && selectedGrade in feedbackMessages) {
+      // Type assertion after verification
+      const grade = selectedGrade as Grade;
+      const feedbackMessage = feedbackMessages[grade].replace("[Name]", formData.firstName || "");
+      setFeedbackMessageTemplate(feedbackMessage);
+      form.clearErrors("grade");
+    } else {
+      setFeedbackMessageTemplate("");
     }
-  }, [selectedGrade, formData.firstName]); // Removed the condition checking `feedbackMessageTemplate`
+  }, [selectedGrade, formData.firstName, form]);
 
   const onSubmit = (data: { grade: string }) => {
-    onNext({ grade: data.grade }); // Pass the selected grade to the next step
+    onNext({ grade: data.grade });
   };
 
   return (
@@ -78,6 +80,7 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
         src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725454914/authentication/grade-3d-1_yriu5r.webp"
         alt="grade"
         width={240}
+        priority
         height={200}
         className="mx-auto mb-4"
       />
@@ -92,10 +95,18 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
                   <FormControl>
                     <Select
                       placeholder="Select your grade"
-                      {...field}
                       className="w-full"
                       aria-label="Grade"
+                      autoComplete="grade"
                       defaultSelectedKeys={formData.grade ? [formData.grade] : []}
+                      onSelectionChange={(keys) => {
+                        const selectedValue = Array.from(keys)[0]?.toString();
+                        if (selectedValue) {
+                          field.onChange(selectedValue);
+                          form.clearErrors("grade");
+                        }
+                      }}
+                      selectedKeys={field.value ? [field.value] : []}
                     >
                       {grades.map((grade) => (
                         <SelectItem key={grade} value={grade}>
@@ -111,7 +122,7 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
 
             {feedbackMessageTemplate && (
               <p className="font-medium text-text mt-4 text-left">
-                {feedbackMessageTemplate} {/* Display the feedback message dynamically */}
+                {feedbackMessageTemplate}
               </p>
             )}
 

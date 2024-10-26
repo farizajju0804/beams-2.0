@@ -4,7 +4,7 @@ import { FaChevronRight } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form,  FormField, FormMessage } from "@/components/ui/form";
 
 // Define the schema using Zod
 const UserTypeSchema = z.object({
@@ -73,6 +73,7 @@ const MainSlide: React.FC<MainSlideProps> = ({ onNext }) => {
           <Button
             type="submit"
             color="primary"
+            aria-label='submit'
             endContent={<FaChevronRight />}
             className="w-full font-semibold text-lg py-6 md:text-xl text-white"
           >

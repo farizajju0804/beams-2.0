@@ -33,6 +33,7 @@ const Social = () => {
       {/* Google sign-in button */}
       <Button
         size="lg" // Large button size
+        aria-label="google"
         className="w-full bg-transparent font-medium text-text" // Full-width button with transparent background and styled text
         onClick={handleSocialSignIn} // Handle click for Google sign-in
         variant="bordered" // Bordered button variant

@@ -97,7 +97,7 @@ const Page = () => {
           },
         });
         setIsRedirecting(true);
-        router.push('/onboarding');  // Redirect after submission
+        router.push('/onboarding');  
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -117,6 +117,7 @@ const Page = () => {
               src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725629881/authentication/welcome_jdqwjj.webp"
               alt="Welcome image"
               width={150}
+              priority
               height={150}
               className="mx-auto mb-4"
             />

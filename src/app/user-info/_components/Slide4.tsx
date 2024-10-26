@@ -113,7 +113,15 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
       : [...selectedTopics, topicName]; // Add to the selected topics
 
     setSelectedTopics(updatedTopics);
-    form.setValue('topics', updatedTopics);  // Set the form value with updated topics
+    form.setValue('topics', updatedTopics, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true
+    });
+
+    if (updatedTopics.length >= 3) {
+      form.clearErrors('topics');
+    }
   };
 
   const onSubmit = (data: TopicsData) => {
@@ -154,6 +162,8 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
                     {/* Hidden input to store the selected topics */}
                     <input
                       {...field}
+                      aria-label="topics"
+                      autoComplete="topics"
                       type="hidden"
                       value={selectedTopics.join(',')} // Join selected topics as a string
                     />
@@ -175,6 +185,7 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
               <Button
                 type="submit"
                 color="primary"
+                aria-label="submit"
                 isLoading={isLoading}
                 endContent={<FaChevronRight />}
                 className="w-full font-semibold text-lg py-6 md:text-xl text-white"

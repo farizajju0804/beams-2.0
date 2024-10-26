@@ -167,6 +167,8 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
                     {/* Hidden input to store the selected gender */}
                     <input
                       required
+                      autoComplete="gender"
+                      aria-label="gender"
                       {...field}
                       type="hidden"
                       value={selectedGender}

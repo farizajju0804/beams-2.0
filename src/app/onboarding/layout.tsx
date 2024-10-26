@@ -5,8 +5,41 @@ import { SessionProviders } from "../SessionProviders";
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Beams - Next-gen Learning Platform",
-  description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
+  title: 'Welcome to Beams',
+  description: 'Discover the powerful features and benefits of Beams. Learn how our platform can help you connect and grow.',
+  keywords: [
+    'product onboarding',
+    'getting started',
+    'welcome',
+    'product features',
+    'product benefits',
+    'user guide',
+    'welcome tour',
+    'beams platform'
+  ],
+  authors: [
+    {
+      name: 'Beams',
+      url: 'https://www.beams.world',
+    },
+  ],
+  openGraph: {
+    title: 'Welcome to Beams',
+    description: 'Discover how Beams can transform your experience.',
+    type: 'website',
+    url: 'https://www.beams.world/onboarding',
+    siteName: 'Beams',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: true,
+    },
+  },
 };
 
 export default function Layout({

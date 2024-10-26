@@ -1,13 +1,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, DatePicker } from "@nextui-org/react";
-import { useState,  useRef } from "react";
+import { useState } from "react";
 import * as z from 'zod';
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { FaChevronRight } from "react-icons/fa6";
-import { Calendar } from "iconsax-react";
+
 import Image from "next/image";
 import BackButton from "./BackButton";
 import { parseDate, getLocalTimeZone, CalendarDate, today } from "@internationalized/date";
@@ -46,9 +45,6 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
     },
   });
   
-  const datePickerRef = useRef<ReactDatePicker>(null);
-  const years = Array.from({ length: 100 }, (_, index) => new Date().getFullYear() - index);
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const calculateDaysUntilBirthday = (dob: CalendarDate) => {
     const now = today(getLocalTimeZone());
@@ -92,7 +88,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
   
       // Convert to ISO format with the time set to 00:00 UTC
       const isoString = utcDate.toISOString();
-      console.log(isoString)
+   
       // Store the date as ISO string
       onNext({ dob: isoString });
     }
@@ -111,6 +107,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
         src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725454912/authentication/birthday-3d-1_rewxti.webp"
         alt="name"
         width={140}
+        priority
         height={200}
         className="mx-auto mb-4"
       />
@@ -126,6 +123,7 @@ const Slide3: React.FC<Slide3Props> = ({ onNext, formData, handleBack }) => {
                       <DatePicker
                         label="Birth Date"
                         calendarWidth={256}
+                        aria-label="dob"
                         minValue={minDate}
                         maxValue={maxDate}
                         value={field.value || undefined}

@@ -11,11 +11,23 @@ const NameSchema = z.object({
   firstName: z
     .string()
     .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters"),
+    .min(2, "First name must be at least 2 characters")
+    .max(20, "First name cannot exceed 20 characters")
+    .trim()
+    .refine(
+      (val) => /^[a-zA-Z0-9\s]+$/.test(val),
+      "First name can only contain letters, numbers and spaces"
+    ),
   lastName: z
     .string()
     .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters"),
+    .min(2, "Last name must be at least 2 characters")
+    .max(20, "Last name cannot exceed 20 characters")
+    .trim()
+    .refine(
+      (val) => /^[a-zA-Z0-9\s]+$/.test(val),
+      "Last name can only contain letters, numbers and spaces"
+    )
 });
 
 type NameData = z.infer<typeof NameSchema>;
@@ -85,6 +97,7 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
         src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725454911/authentication/name-3d-1_bwmorc.webp"
         alt="name"
         width={150}
+        priority
         height={200}
         className="mx-auto mb-4"
       />
@@ -103,9 +116,12 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
                         label="First Name"
                         placeholder="Enter your first name"
                         isRequired
+                        aria-label="first-name"
+                        autoComplete="first-name"
                         variant="underlined"
                         labelPlacement="outside"
                         className="w-full"
+                        maxLength={20}
                         classNames={{
                           label: 'font-semibold text-text',
                           mainWrapper: "w-full flex-1",
@@ -131,6 +147,9 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
                         label="Last Name"
                         variant="underlined"
                         labelPlacement="outside"
+                        aria-label="last-name"
+                         maxLength={20}
+                        autoComplete="last-name"
                         placeholder="Enter your last name"
                         isRequired
                         className="w-full"
@@ -159,6 +178,7 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
             <Button
               type="submit"
               color="primary"
+              aria-label="submit"
               endContent={<FaChevronRight />}
               className="w-full font-semibold text-lg py-6 md:text-xl text-white"
             >

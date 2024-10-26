@@ -95,6 +95,7 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
         alt="school"
         width={310}
         height={200}
+        priority
         className="mx-auto mb-4"
       />
       <div className="w-full max-w-md">
@@ -111,6 +112,19 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
                       {...field}
                       className="w-full"
                       aria-label="School"
+                      autoComplete="school"
+                      onSelectionChange={(keys) => {
+                        const selectedValue = Array.from(keys)[0]?.toString();
+                        if (selectedValue) {
+                          field.onChange(selectedValue);
+                          form.setValue('schoolName', selectedValue, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                            shouldTouch: true
+                          });
+                          form.clearErrors('schoolName');
+                        }
+                      }}
                       defaultSelectedKeys={formData.schoolName ? [formData.schoolName] : []} // Set default selection
                     >
                       {schools.map((school) => (
@@ -135,6 +149,7 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
               <BackButton handleBack={handleBack} />
               <Button
                 type="submit"
+                aria-label="submit"
                 color="primary"
                 isLoading={isLoading}
                 endContent={<FaChevronRight />}

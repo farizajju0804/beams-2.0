@@ -4,9 +4,44 @@ import { SessionProviders } from "../SessionProviders";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
+
 export const metadata: Metadata = {
-  title: "Beams - Next-gen Learning Platform",
-  description: "Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.",
+  title: 'User Information',
+  description: 'Update your personal information.',
+  keywords: [
+    'user profile',
+    'account settings',
+    'personal information',
+    'update profile',
+    'user details',
+    'account management'
+  ],
+  authors: [
+    {
+      name: 'Beams',
+      url: 'https://www.beams.world',
+    },
+  ],
+  openGraph: {
+    title: 'User Information',
+    description: 'Update your personal information.',
+    type: 'website',
+    url: 'https://www.beams.world/user-info',
+    siteName: 'Beams',
+
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: true,
+    },
+  },
+
 };
 
 export default function Layout({
