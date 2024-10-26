@@ -10,6 +10,8 @@ import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 }
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
 import { getGrowthAmbassadorStatus, } from './getGrowthAmbassadorStatus';
+import { getClient } from "@sentry/nextjs";
+import { getClientIp } from "@/utils/getClientIp";
 
 /**
  * Registers a new user and sends a verification email.
@@ -61,8 +63,6 @@ export const registerAndSendVerification = async (
     const userData: any = {
       email,
       password: hashedPassword,
-      lastLoginIp: ip,
-      lastLoginAt: new Date(),
       referredById,
       referralStatus,
       isAccessible
@@ -148,13 +148,15 @@ export const updateUserMetadata = async (email: string, values: {
  * @returns {Promise<Object>} A response indicating success or error.
  */
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
-
+  
   if(!email){
     return { error: "Invalid Link" };
     
   } 
   console.log("Starting submitSecurityAnswers with email:", email);
 
+
+  
   // Validate the input values against the schema
   const validatedFields = SecuritySchema.safeParse(values);
   if (!validatedFields.success) {
@@ -179,6 +181,7 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
   const { securityAnswer1, securityAnswer2 } = validatedFields.data;
 
   try {
+    const ip = await getClientIp()
     // Update the user's security questions and answers in the database
     console.log("Updating security questions and answers for user:", email);
     await db.user.update({
@@ -189,6 +192,8 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
         securityQuestion2: "What is your mother's maiden name?",
         securityAnswer2,
         isSessionValid: true,
+        lastLoginIp: ip,
+        lastLoginAt: new Date(),
       },
     });
 
