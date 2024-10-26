@@ -24,7 +24,7 @@ export default function AccessCodeComponent() {
   const [isReferralProcessed, setIsReferralProcessed] = useState(false);
 
   const { data: session, update } = useSession();
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | string>('idle');
   const router = useRouter();
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -90,10 +90,10 @@ export default function AccessCodeComponent() {
         setIsRedirecting(true);
         router.push('/user-info');
       } else {
-        setSubmitStatus('error');
+        setSubmitStatus(result.message || 'Unknown error occurred');
       }
     } catch (error: any) {
-      setSubmitStatus('error');
+      setSubmitStatus('Network or server error. Please Check your internet or try again later.');
       console.error('Error verifying access code:', error.message);
     } finally {
       setIsSubmitting(false);
@@ -124,6 +124,7 @@ export default function AccessCodeComponent() {
             alt="Decorative lock icon"
             width={200}
             height={400}
+            priority
             className="rounded-lg p-4"
           />
         </motion.div>
@@ -147,9 +148,11 @@ export default function AccessCodeComponent() {
                   {...field}
                   type="text"
                   maxLength={6}
+                  autoComplete='code'
+                  aria-label='code'
                   variant='bordered'
                   color='primary'
-                  placeholder='Enter 6 Digit Magic code'
+                  placeholder='Enter 6 Digit Invitation code'
                   className="text-center max-w-xs w-60 text-2xl md:text-3xl font-bold uppercase"
                   classNames={{
                     input: "text-center font-semibold",
@@ -175,6 +178,7 @@ export default function AccessCodeComponent() {
               type="submit"
               color="primary"
               size="md"
+              aria-label='submit'
               className="w-40 text-white text-lg font-semibold"
               isLoading={isSubmitting}
               startContent={!isSubmitting && <BsFillUnlockFill size={20} />}
@@ -183,10 +187,9 @@ export default function AccessCodeComponent() {
             </Button>
           </motion.div>
         </form>
-
-        {submitStatus === 'error' && (
+        {submitStatus !== 'idle' && submitStatus !== 'success' && (
           <motion.p className="mt-4 text-center text-red-600 font-semibold">
-            The invitation code is incorrect. Try again!
+            {submitStatus}
           </motion.p>
         )}
 

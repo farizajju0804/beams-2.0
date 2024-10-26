@@ -28,7 +28,7 @@ export const forgotEmail = async (values: z.infer<typeof ForgotEmailSchema>, fir
   const users = await getUserBySecurityAnswers(securityAnswer1, securityAnswer2);
 
   if (!users || users.length === 0) {
-    return { error: "Incorrect security answers", success: undefined };
+    return { error: "No account found for your combination of security answers", success: undefined };
   }
 
   // If there's only one user, proceed with the masking process

@@ -22,7 +22,7 @@ export const updateAccessStatus = async (submittedCode: string) => {
     // If no access code is found, return error status
     if (!accessCode) {
         console.log('Invalid access code')
-        return { status: 'error', message: 'Invalid access code' }
+        return { status: 'error', message: 'The Invitation Code is incorrect.' }
     }
 
     try {
@@ -41,6 +41,6 @@ export const updateAccessStatus = async (submittedCode: string) => {
         return { status: 'success' }
     } catch (error) {
         console.error("Error updating user or deleting access code:", error)
-        return { status: 'error', message: 'Database update failed' }
+        return { status: 'error', message: 'Network or server error. Please Check your internet or try again later.' }
     }
 }
