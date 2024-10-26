@@ -65,7 +65,7 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
         } else if (result?.error) {
           setError(result.error); // Set error message if registration fails
         } else if (result?.success) {
-          setSuccess(result.success); // Show success message
+          // setSuccess(result.success); // Show success message
           router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`); // Redirect to verification page
         }
       } catch (err) {
