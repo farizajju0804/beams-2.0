@@ -148,6 +148,11 @@ export const updateUserMetadata = async (email: string, values: {
  * @returns {Promise<Object>} A response indicating success or error.
  */
 export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchema>, email: string) => {
+
+  if(!email){
+    return { error: "Invalid Link" };
+    
+  } 
   console.log("Starting submitSecurityAnswers with email:", email);
 
   // Validate the input values against the schema
@@ -161,7 +166,7 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
   const existingUser = await getUserByEmail(email);
   if (!existingUser) {
     console.log("User not found for email:", email);
-    return { error: "User not found." };
+    return { error: "No account found for your email address" };
   }
 
   // Check if security answers already exist
@@ -206,7 +211,7 @@ export const submitSecurityAnswers = async (values: z.infer<typeof SecuritySchem
     return { success: "Saved Successfully" };
   } catch (error) {
     console.error("Error during sign-in:", error);
-    return { error: "An unexpected error occurred during sign-in." };
+    return { error: "Network or server error. Please Check your internet or try again later." };
   }
 };
 
@@ -219,3 +224,24 @@ export const getUserByReferralCode = async (referralCode: string) => {
     include: { user: true }, // Include the user who referred
   });
 };
+
+
+export const getSecurityAnswerStatus = async (email:string) => {
+  const res = await db.user.findUnique(
+    {
+      where : {
+        email :  email
+      },
+      select : {
+        securityAnswer1 : true,
+        securityAnswer2 :  true
+      }
+    }
+  )
+
+  if( res?.securityAnswer1 && res.securityAnswer2){
+    return true
+  }
+
+  return false
+}

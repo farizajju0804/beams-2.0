@@ -24,15 +24,23 @@ import { RiLoginCircleFill } from "react-icons/ri";
 // Validation schemas remain the same
 const ForgotEmailSchema = z.object({
   securityAnswer1: z.string()
-    .min(1, "Answer must be at least 1 character")
-    .max(20, "Answer cannot exceed 20 characters")
-    .trim()
-    .refine((val) => val.length > 0, "Security answer is required"),
-  securityAnswer2: z.string()
-    .min(1, "Answer must be at least 1 character")
-    .max(20, "Answer cannot exceed 20 characters")
-    .trim()
-    .refine((val) => val.length > 0, "Security answer is required"),
+  .min(1, "Answer must be at least 1 character")
+  .max(20, "Answer cannot exceed 20 characters")
+  .trim()
+  .refine((val) => val.length > 0, "Security answer is required")
+  .refine(
+  (val) => /^[a-zA-Z0-9\s]+$/.test(val), 
+  "Answer cannot contain special characters"
+  ),
+securityAnswer2: z.string()
+  .min(1, "Answer must be at least 1 character")
+  .max(20, "Answer cannot exceed 20 characters")
+  .trim()
+  .refine((val) => val.length > 0, "Security answer is required")
+  .refine(
+  (val) => /^[a-zA-Z0-9\s]+$/.test(val),
+  "Answer cannot contain special characters"
+  ),
 });
 
 const FirstNameSchema = z.object({

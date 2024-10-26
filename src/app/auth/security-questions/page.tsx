@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form"; // Custom Form components
 import { Button } from "@nextui-org/react"; // Import Button component from NextUI
 import { submitSecurityAnswers } from "@/actions/auth/register"; // Action to submit security answers
-import { useEmailStore } from "@/store/email"; // Zustand store for managing email
 import { useRouter, useSearchParams } from "next/navigation"; // Import hooks for router and query parameters
 import CardWrapper from "@/app/auth/_components/card-wrapper"; // Card wrapper for UI consistency
 import RegisterSide from "../_components/RegisterSide"; // Import RegisterSide for UI
@@ -46,16 +45,15 @@ const Step3Form: React.FC = () => {
   // Initialize form with Zod schema and react-hook-form integration
   const form = useForm<z.infer<typeof SecuritySchema>>({
     resolver: zodResolver(SecuritySchema), // Using Zod as the form validation schema
-    mode: "onSubmit", // Validate only on form submission
-    reValidateMode: "onSubmit", // Re-validate only on submit
+    mode: "onBlur", // Validate only on form submission
   });
 
   // Function to handle form submission
   const onSubmit = async (values: z.infer<typeof SecuritySchema>) => {
-    if (!email) {
-      console.error("Email not found. Please go back and enter your email.");
-      return; // Stop if email is not found
-    }
+    // if (!email) {
+    //   console.error("Email not found. Please go back and enter your email.");
+    //   return; // Stop if email is not found
+    // }
 
     startTransition(async () => {
       try {
@@ -68,7 +66,7 @@ const Step3Form: React.FC = () => {
         }
       } catch (err) {
         console.error("Error submitting security answers:", err); // Log error on failure
-        setError("An unexpected error occurred. Please try again."); // Set a generic error message
+        setError("Network or server error. Please Check your internet or try again later."); // Set a generic error message
       }
     });
   };
@@ -87,7 +85,7 @@ const Step3Form: React.FC = () => {
                 <div key={index}>
                   <div className="flex w-full items-center justify-between">
                     <h1 className="text-left font-semibold text-xl">{question.question}</h1>
-                    <Image src={question.image} alt="question" width={100} height={100} /> {/* Display question image */}
+                    <Image priority src={question.image} alt="question" width={100} height={100} /> {/* Display question image */}
                   </div>
                   <FormField
                     key={index}
@@ -99,6 +97,8 @@ const Step3Form: React.FC = () => {
                           <Input
                             {...field} // Spread form field props
                             isRequired
+                            autoComplete="answer"
+                            aria-label="answer"
                             placeholder={'Enter your answer'}
                             variant="underlined" // Underlined input variant
                             classNames={{
@@ -120,6 +120,7 @@ const Step3Form: React.FC = () => {
               <Button
                 type="submit"
                 color="primary"
+                aria-label="submit"
                 endContent={<ShieldTick variant="Bold"/>} // Button end icon
                 className="w-full text-white font-semibold py-6 text-lg md:text-xl"
                 isLoading={isPending} // Show loading state while submitting
