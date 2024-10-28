@@ -119,7 +119,7 @@ export const updateUserMetadata = async (email: string, values: {
   lastName?: string,
   dob?: Date,
   grade?: string,
-  schoolName?: string,
+  schoolId?: string,
   interests?: string[],
   gender?: string,
   userType?: "STUDENT" | "NON_STUDENT",

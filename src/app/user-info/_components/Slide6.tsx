@@ -7,10 +7,12 @@ import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { FaChevronRight } from "react-icons/fa6";
 import BackButton from "./BackButton";
+import { getSchools } from "@/actions/auth/onboarding";
+import { School } from "@prisma/client";
 
 // Validation schema for the school selection
 const SchoolSchema = z.object({
-  schoolName: z.string().nonempty("School selection is required"), // Validate the school selection
+  schoolId: z.string().nonempty("School selection is required"),
 });
 
 type SchoolData = z.infer<typeof SchoolSchema>;
@@ -22,15 +24,7 @@ interface Slide6Props {
   isLoading?: boolean;
 }
 
-// List of random schools in San Francisco
-const schools = [
-  'Lowell High School',
-  'Washington High School',
-  'Galileo Academy',
-  'Balboa High School',
-  'Mission High School'
-] as const;
-type School = typeof schools[number];
+
 
 const feedbackMessages = [
   "Nice choice, [Name]! 🏫 Your school just gained an extra dose of awesome with you on board!",
@@ -41,31 +35,38 @@ const feedbackMessages = [
 ];
 
 const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading }) => {
-  const [ctaText, setCtaText] = useState("Finish"); // Default CTA text
-  const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState<string | null>(null); // Fixed feedback message template
+  const [schools, setSchools] = useState<School[]>([]);
+  const [ctaText, setCtaText] = useState("Finish");
+  const [feedbackMessageTemplate, setFeedbackMessageTemplate] = useState<string | null>(null);
 
   const form = useForm<SchoolData>({
     resolver: zodResolver(SchoolSchema),
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      schoolName: formData.schoolName, // Prefill the school name if available
+      schoolId: formData.schoolId,
     },
   });
 
-  const selectedSchool: School | undefined = form.watch("schoolName") as School;
-
+  // Fetch schools on component mount
   useEffect(() => {
-    if (formData.firstName) {
-      setCtaText("Finish"); // CTA is always "Finish"
-    }
-  }, [formData.firstName]);
+    const loadSchools = async () => {
+      try {
+        const schoolData: School[] = await getSchools();
+        setSchools(schoolData);
+      } catch (error) {
+        console.error("Error loading schools:", error);
+      }
+    };
+    loadSchools();
+  }, []);
+
+  const selectedSchool = schools.find(school => school.id === form.watch("schoolId"));
 
   useEffect(() => {
     if (!feedbackMessageTemplate) {
-      // Randomly pick a feedback message and set it only once
       const randomMessage = feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)];
-      setFeedbackMessageTemplate(randomMessage); // Set the feedback message only once
+      setFeedbackMessageTemplate(randomMessage);
     }
   }, [feedbackMessageTemplate]);
 
@@ -73,13 +74,17 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
     if (feedbackMessageTemplate && selectedSchool) {
       return feedbackMessageTemplate
         .replace("[Name]", formData.firstName)
-        .replace("[School Name]", selectedSchool);
+        .replace("[School Name]", selectedSchool.name);
     }
     return "";
   };
 
-  const onSubmit = (data: { schoolName: string }) => {
-    onNext({ schoolName: data.schoolName }); // Pass the selected school to the next step
+  const onSubmit = (data: SchoolData) => {
+    const selectedSchool = schools.find(school => school.id === data.schoolId);
+    onNext({ 
+      schoolId: data.schoolId,
+      schoolName: selectedSchool?.name // Include school name for display purposes if needed
+    });
   };
 
   return (
@@ -103,7 +108,7 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="schoolName"
+              name="schoolId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -117,19 +122,19 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
                         const selectedValue = Array.from(keys)[0]?.toString();
                         if (selectedValue) {
                           field.onChange(selectedValue);
-                          form.setValue('schoolName', selectedValue, {
+                          form.setValue('schoolId', selectedValue, {
                             shouldValidate: true,
                             shouldDirty: true,
                             shouldTouch: true
                           });
-                          form.clearErrors('schoolName');
+                          form.clearErrors('schoolId');
                         }
                       }}
-                      defaultSelectedKeys={formData.schoolName ? [formData.schoolName] : []} // Set default selection
+                      defaultSelectedKeys={formData.schoolId ? [formData.schoolId] : []}
                     >
                       {schools.map((school) => (
-                        <SelectItem key={school} value={school}>
-                          {school}
+                        <SelectItem key={school.id} value={school.id}>
+                          {school.name}
                         </SelectItem>
                       ))}
                     </Select>
@@ -141,7 +146,7 @@ const Slide6: React.FC<Slide6Props> = ({ onNext, formData, handleBack, isLoading
 
             {getFormattedMessage() && (
               <p className="font-medium text-text mt-4 text-left">
-                {getFormattedMessage()} {/* Display the feedback message */}
+                {getFormattedMessage()}
               </p>
             )}
 

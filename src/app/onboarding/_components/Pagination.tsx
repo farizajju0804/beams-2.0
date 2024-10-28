@@ -44,6 +44,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         size="sm"
         isIconOnly
+
         onClick={handlePrevClick}
         disabled={isFirstSlide} // Disable if it's the first slide
         className={`w-fit rounded-full transition-all duration-300 ${
@@ -63,6 +64,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={onComplete}
           className="px-6 py-2 bg-brand text-lg text-white font-medium"
           isLoading={isPending} // Show loading state when pending
+        aria-label="Submit"
         >
           {completeBtnText}
         </Button>

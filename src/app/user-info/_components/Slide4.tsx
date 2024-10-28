@@ -71,22 +71,23 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
   const form = useForm<TopicsData>({
     resolver: zodResolver(TopicsSchema),
     mode: 'onSubmit',
-    reValidateMode: 'onChange',
+    reValidateMode: 'onSubmit', 
     defaultValues: {
       topics: formData.topics || [], 
     },
   });
 
   const topics = [
-    { title: 'Art', name: 'ART', emoji: '🎨' },
-    { title: 'Maths', name: 'MATHS', emoji: '📐' },
-    { title: 'Science', name: 'SCIENCE', emoji: '🔬' },
-    { title: 'Music', name: 'MUSIC', emoji: '🎵' },
-    { title: 'Computer Science', name: 'COMPUTER_SCIENCE', emoji: '💻' },
-    { title: 'Physical Education', name: 'PHYSICAL_EDUCATION', emoji: '🏃' },
-    { title: 'Geography', name: 'GEOGRAPHY', emoji: '🌍' },
+    { title: 'AI & Robotics', name: 'AI_ROBOTICS', emoji: '🤖' },
+    { title: 'Medical Innovation', name: 'MEDICAL_INNOVATION', emoji: '🧬' },
+    { title: 'Space Science', name: 'SPACE_SCIENCE', emoji: '🚀' },
+    { title: 'AR & VR', name: 'VIRTUAL_REALITY', emoji: '🕶️' },
+    { title: 'Sustainable Energy', name: 'SUSTAINABLE_ENERGY', emoji: '🌞' },
+    { title: 'Materials Science', name: 'MATERIALS_SCIENCE', emoji: '🧪' },
+    { title: 'Environmental Science', name: 'ENVIRONMENTAL_SCIENCE', emoji: '🌱' },
     { title: 'Others', name: 'OTHERS', emoji: '💡' }
   ];
+  
 
   const feedbackMessages = [
     "Fantastic picks, [Name]! 🎨 Your journey just got a whole lot more interesting!",
@@ -114,9 +115,9 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
 
     setSelectedTopics(updatedTopics);
     form.setValue('topics', updatedTopics, {
-      shouldValidate: true,
+      shouldValidate: false,  
       shouldDirty: true,
-      shouldTouch: true
+      shouldTouch: false
     });
 
     if (updatedTopics.length >= 3) {

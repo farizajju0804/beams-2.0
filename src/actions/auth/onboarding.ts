@@ -5,9 +5,10 @@ import { db } from "@/libs/db" // Import the Prisma database connection
 import { auth } from "@/auth" // Import the authentication helper
 import { updateUserPointsAndLeaderboard2 } from "../points/updateUserPointsAndLeaderboard"
 import { generateNotification } from "../notifications/notifications"
-import { User } from "@prisma/client"
+import { School, User } from "@prisma/client"
 import { REFERRAL_POINTS } from "@/constants/pointsConstants"
 import { referalBadgeName } from "@/constants/victoryConstants"
+import { getGrowthAmbassadorStatus } from "./getGrowthAmbassadorStatus"
 
 /**
  * Updates the onboarding status of the authenticated user.
@@ -29,11 +30,45 @@ export async function updateOnboardingStatus(status: boolean) {
     // Update the `onBoardingCompleted` field in the database for the authenticated user
     const existingUser:User = await db.user.update({
       where: { id: session.user.id }, // Locate the user by their ID
-      data: { onBoardingCompleted: status }, // Set the new onboarding status
+      data: {
+         onBoardingCompleted: status ,
+        }, // Set the new onboarding status
+
     })
     
 
     if (existingUser.referredById) {
+     
+      const referrer = await db.user.findUnique({
+        where: { id: existingUser.referredById },
+      });
+
+
+      
+    if (referrer) {
+  
+      const referralLimit = await getGrowthAmbassadorStatus(referrer.id);
+     
+      if(referralLimit.completed){
+
+        await db.user.update({
+          where: { id: existingUser.id }, // Locate the user by their ID
+          data: {
+             referralStatus : null,
+             referredById : null,
+             isAccessible : false
+            }
+        })
+      }
+     if(!referralLimit.completed){
+
+      const updated =  await db.user.update({
+        where: { id: existingUser.id }, // Locate the user by their ID
+        data: {
+           referralStatus : "VERIFIED"
+          }
+      })
+      
       const pointsAdded = REFERRAL_POINTS; 
       await updateUserPointsAndLeaderboard2(
         existingUser?.id,
@@ -42,12 +77,8 @@ export async function updateOnboardingStatus(status: boolean) {
         `Welcome bonus"`, 
         existingUser?.userType // Referrer's user type
       );
-      
-      const referrer = await db.user.findUnique({
-        where: { id: existingUser.referredById },
-      });
-    if (referrer) {
-      // Update points and leaderboard for the referrer
+
+
       const updateResult = await updateUserPointsAndLeaderboard2(
         referrer.id,
         pointsAdded,
@@ -110,13 +141,35 @@ export async function updateOnboardingStatus(status: boolean) {
     }
   }
     }
-
+  }
     
-    }
+  }
     return existingUser // Return the updated user data
   } catch (error) {
     // Log any error that occurs and return it
     console.error("Error updating onboarding status:", error);
     return error
+  }
+};
+
+
+
+
+export const getSchools = async (): Promise<School []> => {
+  try {
+    const schools = await db.school.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        name: 'asc'
+      }
+    });
+    
+    return schools;
+  } catch (error) {
+    console.error("Error fetching schools:", error);
+    throw new Error("Failed to fetch schools");
   }
 };

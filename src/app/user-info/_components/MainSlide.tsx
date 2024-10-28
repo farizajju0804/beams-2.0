@@ -31,7 +31,6 @@ const MainSlide: React.FC<MainSlideProps> = ({ onNext }) => {
   };
 
   const onSubmit = (data: UserTypeData) => {
-    console.log("Selected Path:", data);
     onNext(data); // Pass selected data to the parent component
   };
 

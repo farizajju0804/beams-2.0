@@ -77,6 +77,8 @@ model User {
   notificationPreference Boolean                @default(false)
   isSessionValid          Boolean             @default(true)
   isBanned                Boolean              @default(false)
+  schoolId    String?   @db.ObjectId
+  school      School?   @relation(fields: [schoolId], references: [id])
   referralStatus            ReferralStatus?    
   referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
   lastLoginAt               DateTime? // Timestamp of the last login (optional)
@@ -170,6 +172,12 @@ model AccessCode {
   updatedAt DateTime @updatedAt // Timestamp of last update
 }
 
+
+model School {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  users       User[]    // Relation to User model
+}
 
 // Model for pending verification requests (e.g., email verification)
 model PendingVerification {

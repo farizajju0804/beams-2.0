@@ -11,13 +11,13 @@ import Pagination from './Pagination'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { motion } from 'framer-motion';
 import RedirectMessage from "@/components/Redirection";
+import toast, { Toaster } from "react-hot-toast";
 
 const OnboardingPage = () => {
   const [isPending, startTransition] = useTransition()
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true); // First modal state
-  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // Second modal state
+  // const [isModalOpen, setIsModalOpen] = useState(true);
   const { data: session, update } = useSession();
   const router = useRouter();
   
@@ -50,7 +50,7 @@ const OnboardingPage = () => {
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/ready_tgikcv.png',
       title: 'Ready to Dive In?',
-      content: 'Your journey to tomorrow starts here. Explore today’s innovation and stay ahead of the curve.',
+      content: "Your journey to tomorrow starts here. Explore today's innovation and stay ahead of the curve.",
     },
   ];
 
@@ -71,9 +71,8 @@ const OnboardingPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-
-  const handleEndClick = () => {
-    const end = Date.now() + 3 * 1000; // 3 seconds
+  const triggerConfetti = () => {
+    const end = Date.now() + 2 * 1000; // 3 seconds
     const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
  
     const frame = () => {
@@ -100,10 +99,8 @@ const OnboardingPage = () => {
     };
  
     frame();
-    setTimeout(() => {
-      handleFinalSubmit(); 
-    }, 3000);
   };
+
   const backgroundImage = isEvenSlide 
     ? isMobile 
         ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png'
@@ -124,45 +121,50 @@ const OnboardingPage = () => {
     setCurrentSlide((prev) => Math.min(totalSlides - 1, prev + 1));
   };
 
-  const handleAction = () => {
+  const handleCompletion = () => {
     startTransition(async () => {
-      const updatedUser: any = await updateOnboardingStatus(true);
-      
-      if (updatedUser) {
-        // Show the completion modal before updating session
-        setIsCompletionModalOpen(true);
-      }
-      if(updatedUser.referredById){
-        localStorage.removeItem('referral');
-      }
-      
-    });
-  };
+      try {
+        const updatedUser: any = await updateOnboardingStatus(true);
+        
+        if (updatedUser) {
+          // Trigger confetti
+          triggerConfetti();
+          
+          if(updatedUser.referredById){
+            localStorage.removeItem('referral');
+          }
 
-  const handleFinalSubmit = async () => {
-    setIsCompletionModalOpen(false); 
-    const updated = await update({
-      ...session,
-      user: {
-        ...session?.user,
-        onBoardingCompleted: true,
-      },
+          // Update session and redirect after a delay
+          setTimeout(async () => {
+            await update({
+              ...session,
+              user: {
+                ...session?.user,
+                onBoardingCompleted: true,
+              },
+            });
+            setIsRedirecting(true);
+            router.push(DEFAULT_LOGIN_REDIRECT);
+          }, 3000);
+        }
+      } catch (error) {
+        // Display a toast error message on network error
+        toast.error("Network or server error. Please Check your internet or try again later");
+        console.error("Error completing onboarding:", error);
+      }
     });
-    console.log("updated",updated)
-    setIsRedirecting(true);
-    router.push(DEFAULT_LOGIN_REDIRECT);
   };
 
   return (
-    <div className="flex flex-col items-center gap-0 justify-between bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
+    <div className="flex relative flex-col items-center gap-0 justify-around bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
     style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
     >
+      <Toaster position="top-center"/>
       {isRedirecting ? (
-               <RedirectMessage/>
-
+        <RedirectMessage/>
       ) : (
         <>
-          <div className="w-full flex justify-between items-center px-6 lg:py-2">
+          <div className="absolute top-4 left-0 right-0 w-full flex justify-between items-center px-6 lg:py-2">
             <ProgressDots
               totalDots={totalSlides}
               activeDot={currentSlide}
@@ -171,8 +173,9 @@ const OnboardingPage = () => {
               onDotClick={handleDotClick}
             />
             <Button
-              onClick={() => handleAction()}
+              onClick={handleCompletion}
               size='sm'
+              aria-label="skip"
               className="w-fit text-sm bg-white text-black rounded-full"
               isLoading={isPending}
             >
@@ -189,13 +192,16 @@ const OnboardingPage = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="mb-8 lg:mb-8 h-72 w-72 lg:h-80 md:w-full md:h-[40vh] lg:w-full relative">
+            className="w-full">
             <Image
               src={slides[currentSlide].mainImage}
               alt="Onboarding illustration"
-              layout="fill"
+              // layout="fill"
               priority
-              objectFit="contain"
+              width={300}
+              height={300}
+              // objectFit="contain"
+              className="object-cover mb-8 h-72 w-72 md:h-80 md:w-80 mx-auto"
             />
           </motion.div>
 
@@ -217,7 +223,7 @@ const OnboardingPage = () => {
               totalSlides={totalSlides}
               onPrev={handlePrev}
               onNext={handleNext}
-              onComplete={() => handleAction()}
+              onComplete={handleCompletion}
               completeBtnText="Yes I'm Ready"
               isPending={isPending}
             />
@@ -225,7 +231,7 @@ const OnboardingPage = () => {
         </>
       )}
 
-      {/* First Modal: Initial Welcome Modal */}
+      {/* Welcome Modal
       {isModalOpen && (
         <div className="fixed inset-0 flex z-[100] items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
@@ -234,40 +240,22 @@ const OnboardingPage = () => {
               alt="Welcome image"
               width={100}
               height={100}
+              priority
               className="mx-auto mb-4"
             />
             <h2 className="font-bold text-black font-poppins text-2xl mb-4">Beam-tastic! 🎉</h2>
             <p className="text-black font-medium mb-4">
               Let&apos;s take a quick spin through Beams and unlock all its potential. You&apos;re going to love what&apos;s in store!
             </p>
-            <Button className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
+            <Button 
+              aria-label="submit"
+          
+            className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
               Show Me Around!
             </Button>
           </div>
         </div>
-      )}
-
-      {/* Second Modal: Completion Modal */}
-      {isCompletionModalOpen && (
-        <div className="fixed inset-0 flex z-[100] items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
-            <Image
-              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725632820/authentication/product-popup_wmd7kl.webp"
-              alt="Completion image"
-              width={100}
-              height={100}
-              className="mx-auto mb-4"
-            />
-            <h2 className="font-bold text-black font-poppins text-2xl mb-4">Brace for Blastoff! 🚀</h2>
-            <p className="text-black font-medium mb-4">
-              Tour complete! Now it&apos;s time to journey into a world full of learning and discovery.
-            </p>
-            <Button className='font-semibold text-lg text-white' color="primary" onClick={handleEndClick}>
-              Let&apos;s Get Started!
-            </Button>
-          </div>
-        </div>
-      )}
+      )} */}
     </div>
   )
 }

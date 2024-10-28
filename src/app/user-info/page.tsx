@@ -30,7 +30,7 @@ const Page = () => {
     gender?: string;
     dob?: Date;
     grade?: string;
-    schoolName?: string;
+    schoolId?: string;
     topics?: string[];
   }>({
     firstName: session?.user.firstName,  // Pre-fill first name if available
@@ -79,7 +79,7 @@ const Page = () => {
         gender: formData.gender || data.gender, 
         ...(formData.userType === 'STUDENT' && {  // Additional fields for students
           grade: formData.grade || data.grade,
-          schoolName: formData.schoolName || data.schoolName,
+          schoolId: formData.schoolId || data.schoolId, 
         }),
         dob: formData.dob || data.dob,
         userType: formData.userType,
