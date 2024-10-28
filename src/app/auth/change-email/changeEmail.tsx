@@ -13,7 +13,6 @@ import { Input, Button } from "@nextui-org/react"; // Input and Button component
 import { useRouter } from "next/navigation"; // Next.js router hook for navigation
 import { Send2 } from "iconsax-react"; // Icon used in the button for visual feedback
 import RedirectMessage from "@/components/Redirection";
-import { useChangeEmailStore } from "@/store/chnageEmail";
 import { v4 as uuidv4 } from 'uuid'
 // Zod schema for email validation
 const emailSchema = z.object({
