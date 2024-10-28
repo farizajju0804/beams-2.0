@@ -27,7 +27,7 @@ const verifyEmailSchema = z.object({
 
 type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>
 
-export default function Component({ initialEmail = '' }: { initialEmail?: string }) {
+export default function Page() {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<VerifyEmailFormData>({
     defaultValues: { code: "" },
     resolver: zodResolver(verifyEmailSchema),
@@ -43,7 +43,7 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
   const searchParams = useSearchParams()
   const router = useRouter()
   const emailFromUrl = searchParams.get("email")
-  const email = emailFromUrl || initialEmail
+  const email = emailFromUrl
 
   const code = watch("code")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -59,6 +59,7 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
     setSuccess(false)
     setIsLoading(true)
     try {
+      if(email){
       const result = await verifyCode(data.code, email)
       if (result?.success) {
         setSuccess(true)
@@ -67,6 +68,7 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
         setError(result?.error || "Verification failed.")
         toast.error(result?.error || "Verification failed.")
       }
+    }
     } catch (err) {
       console.error("Error:", err)
       setError("An unexpected error occurred.")
@@ -81,6 +83,9 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
     setError("")
     setIsResending(true)
     try {
+      if(email){
+
+    
       const result = await resendVerificationCode(email)
       if (result?.success) {
         toast.success(`A new verification code has been sent to ${email}`)
@@ -90,6 +95,7 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
         toast.error("Failed to resend verification code. Please try again later.")
         setShowResend(true)
       }
+    }
     } catch (err) {
       console.error("Error resending the verification code:", err)
       setError("An unexpected error occurred.")
@@ -101,7 +107,7 @@ export default function Component({ initialEmail = '' }: { initialEmail?: string
   }
 
   useEffect(() => {
-    if (success) {
+    if (success && email) {
       const timer = setTimeout(() => {
         router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`)
       }, 2000)
