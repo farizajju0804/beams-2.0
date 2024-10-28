@@ -6,38 +6,50 @@ import ChangePasswordForm from "@/app/my-profile/_components/ChangePasswordForm"
 import { motion } from 'framer-motion';
 import TwoFactorAuthForm from "./2FAForm";
 
-const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
+// Main component definition
+const UserProfile = ({ user, isOAuth }: { user: any, isOAuth: any }) => {
+  // State to track the selected tab
   const [selectedTab, setSelectedTab] = useState("Personal Info");
 
+  // Array defining each tab and its respective component
   const tabs = [
     { name: "Personal Info", component: <PersonalInfoForm user={user} isOAuth={isOAuth} /> },
     ...(!isOAuth ? [
-      { name: "Security", component: (
-        <div className="w-full flex items-center gap-8 justify-center flex-col">
-          <ChangeEmailForm user={user} />
-          <ChangePasswordForm />
-          <TwoFactorAuthForm user={user}/>
-        </div>
-      ) },
+      {
+        name: "Security",
+        component: (
+          <div className="w-full flex items-center gap-8 justify-center flex-col">
+            <ChangeEmailForm user={user} />
+            <ChangePasswordForm />
+            <TwoFactorAuthForm user={user} />
+          </div>
+        ),
+      },
     ] : []),
   ];
 
   return (
     <div className="flex flex-col items-center justify-start p-4">
+      {/* Wrapper with animation for fade-in effect */}
       <motion.div 
         className="w-full max-w-3xl rounded-lg overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className=" text-text flex items-center justify-start lg:justify-center pb-4 px-6">
+        {/* Header Section */}
+        <div className="text-text flex items-center justify-start lg:justify-center pb-4 px-6">
           <h1 className="text-2xl w-fit font-poppins font-semibold text-left">Your Account</h1>
         </div>
+
+        {/* Tabs and Content Area */}
         <div className="flex flex-col">
-          <div className="flex justify-start lg:justify-center p-4 lg:px-8 ">
+          {/* Tabs for switching views */}
+          <div className="flex justify-start lg:justify-center p-4 lg:px-8">
             {tabs.map((tab) => (
               <button
                 key={tab.name}
+                aria-label={tab.name}
                 onClick={() => setSelectedTab(tab.name)}
                 className={`text-center mx-2 mb-2 py-1 ${selectedTab === tab.name ? 'text-text font-bold border-b border-brand' : 'text-grey-2'}`}
               >
@@ -45,6 +57,8 @@ const UserProfile = ({ user,isOAuth }: { user: any, isOAuth : any }) => {
               </button>
             ))}
           </div>
+
+          {/* Tab Content with Animation */}
           <motion.div
             className="px-4 pb-4 flex items-center justify-center"
             key={selectedTab}

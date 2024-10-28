@@ -59,7 +59,6 @@ model User {
   userType               UserType               @default(NON_STUDENT) // Type of user, default is NON_STUDENT
   grade                  String? // Grade of the student (optional)
   gender                 String? // Gender of the user (optional)
-  schoolName             String? // Name of the user's school (optional)
   interests              String[]               @default([]) // List of user interests (default is an empty array)
   securityQuestion1      String? // First security question (optional)
   securityAnswer1        String? // First security answer (optional)

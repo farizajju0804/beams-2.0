@@ -15,6 +15,7 @@ import LevelDetails from './_components/LevelDetails';
 import AccordionMenu from './_components/AccordionMenu';
 import { Activity, Book, Coin, Coin1, Gift, User } from 'iconsax-react';
 import VibrantBeamsBreakdown from './_components/PieChart';
+import { getReferralStatus } from '@/actions/auth/getLatestUserData';
 
 
 const DashboardPage = async () => {
@@ -26,23 +27,29 @@ const DashboardPage = async () => {
     watchedData,
     { userLevel, beams, recentActivities, top20RecentActivities ,accumulatedPoints },
     referred,
-    completed
+    completed,
+    referralStatus
   ]: any = await Promise.all([
     getUserAnalyticsById(user?.id),
     getPollDataByUserId(user?.id),
     getWatchedBeamsTodayContent(user?.id),
     getUserLevelAndHistory(user?.id),
     getReferredUsers(user?.id),
-    getCompletedAchievements(user?.id)
+    getCompletedAchievements(user?.id),
+    getReferralStatus()
   ]);
 
   // Construct the menuItems array and pass components with plain props
   const menuItems = [
-    {
-      title: "My Referrals",
-      icon: <User variant="Bold" className="h-5 w-5 text-grey-2" />,
-      content: <ReferralSection referrals={referred} />,
-    },
+    ...(referralStatus?.referredById == null && referralStatus?.referralStatus == null
+      ? [
+          {
+            title: "My Referrals",
+            icon: <User variant="Bold" className="h-5 w-5 text-grey-2" />,
+            content: <ReferralSection referrals={referred} />,
+          },
+        ]
+      : []),
     {
       title: "My Learning",
       icon: <Book variant="Bold" className="h-5 w-5 text-grey-2" />,

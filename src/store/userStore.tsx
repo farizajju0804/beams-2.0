@@ -1,4 +1,5 @@
 // Importing the `create` function from Zustand to create the store
+import { ReferralStatus } from '@prisma/client';
 import { create } from 'zustand';
 
 // Defining the interface for the user's data
@@ -15,6 +16,8 @@ interface User {
   beams?: number;  // Total points (beams)
   level?: number;  // User's current level
   levelName?: string;  // Name of the current level
+  referredById?: string | null,
+  referralStatus?: ReferralStatus | null,
 }
 
 // Defining the interface for the user's state and actions in the store

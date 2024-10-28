@@ -6,7 +6,7 @@ import { Card, CardHeader, CardBody, CardFooter, Button } from "@nextui-org/reac
 import { Trash, Heart, Microscope } from 'iconsax-react';
 import Image from 'next/image';
 import { removeFavorite } from '@/actions/beams-today/removeFavorite';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 interface FavoritesTabProps {
   favorites: any[]; // Array of user's favorite topics
@@ -41,6 +41,7 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
             alt="No favorites"
             width={300}
             height={300}
+            priority
             className="object-contain"
           />
         </div>
@@ -51,6 +52,7 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
           className='text-white font-semibold'
           startContent={<Microscope variant='Bold'  />}
           onClick={() => router.push('/beams-today')}
+          aria-label='beams-today'
         >
           Explore Beams Today
         </Button>
@@ -62,7 +64,7 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
     <div className="mt-4 min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {favorites.map((favorite) => (
         <div key={favorite.id} className="cursor-pointer" onClick={(e) => handleCardClick(e, favorite.beamsTodayId)}>
-          <Card className="max-w-xs">
+          <Card aria-label='favorite-card' className="max-w-xs">
             <CardHeader>
               <p className="text-lg font-bold">{favorite.beamsToday.title}</p>
             </CardHeader>
@@ -78,6 +80,7 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
             </CardBody>
             <CardFooter>
               <Button
+              aria-label='delete'
                 color="danger"
                 startContent={<Trash className="w-4 h-4" />}
                 onClick={(e) => handleRemove(e, favorite.id)}

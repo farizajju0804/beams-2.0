@@ -54,6 +54,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
             alt="No Notes"
             width={300}
             height={300}
+            priority
             className="object-contain"
           />
         </div>
@@ -62,6 +63,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
         <Button
           color="primary"
           className='text-white font-semibold'
+          aria-label='beams-today'
           startContent={<Microscope variant='Bold'  />}
           onClick={() => router.push('/beams-today')}
         >
@@ -78,7 +80,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
           
           {notes.map((note) => (
             <div key={note.id} className="mb-4 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
-              <Card>
+              <Card aria-label='notes-card'>
                 <CardHeader>
                   <p className="text-lg font-bold">{note.beamsToday.title}</p>
                 </CardHeader>
@@ -88,6 +90,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
                 <CardFooter>
                   <Button
                     color="danger"
+                    aria-label='delete'
                     startContent={<Trash size="20" />}
                     onClick={(e) => handleButtonClick(e, note.id)} // Trigger delete confirmation
                   >
@@ -100,7 +103,14 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
         }
 
         {/* Confirmation modal for deleting the note */}
-        <Modal placement='center' isOpen={selectedNote !== null} className='z-[1100]' onClose={() => setSelectedNote(null)}>
+        <Modal placement='center' isOpen={selectedNote !== null} 
+        classNames={
+          {
+            wrapper : "z-[250]"
+          }
+        }
+        aria-label='delete-modal'
+        onClose={() => setSelectedNote(null)}>
           <ModalContent>
             <ModalHeader>Delete Note</ModalHeader>
             <ModalBody>

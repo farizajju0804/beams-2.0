@@ -1,6 +1,7 @@
 'use server'
 import { db } from "@/libs/db";
 import { auth } from "@/auth";
+import { currentUser } from "@/libs/auth";
 
 export async function getLatestUserData() {
   const session = await auth();
@@ -18,7 +19,7 @@ export async function getLatestUserData() {
       firstName: true,
       gender:true,
       dob:true,
-      schoolName:true,
+      schoolId:true,
       lastName: true,
       image: true,
       grade:true,
@@ -26,6 +27,8 @@ export async function getLatestUserData() {
       isTwoFactorEnabled: true,
       userFormCompleted: true,
       onBoardingCompleted: true,
+      referralStatus : true,
+      referredById : true
     },
   });
 
@@ -57,4 +60,24 @@ export async function getLatestUserData() {
     level: userBeamPoints?.level?.levelNumber || levelDefault?.levelNumber,  // Default to level 1
     levelName: userBeamPoints?.level?.name || levelDefault?.name  // Default to 'Newbie'
   };
+}
+
+
+
+
+export async function getReferralStatus() {
+  const user:any = await currentUser()
+  const res = await db.user.findUnique({
+    where : {
+      id : user.id
+    },
+    select : {
+      referredById : true,
+      referralStatus : true
+    }
+  })
+
+
+  return res
+
 }

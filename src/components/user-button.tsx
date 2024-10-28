@@ -12,37 +12,38 @@ import { ReferFriendModal } from "./ReferalModal";
 import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
 import { useReferralModalStore } from "@/store/referralStore";
 import { deleteAllCookies } from "@/utils/cookies";
+import { ReferralStatus } from "@prisma/client";
 
 interface UserData {
   id: string,
   email: string | null,
   firstName: string | null,
-  gender:string | null,
-  dob:Date | null,
-  schoolName:string | null,
-  lastName: string| null,
+  gender: string | null,
+  dob: Date | null,
+  schoolName: string | null,
+  lastName: string | null,
   image: string | null,
-  grade:string | null,
+  grade: string | null,
   userType: string,
   isTwoFactorEnabled: boolean,
   userFormCompleted: boolean,
   onBoardingCompleted: boolean,
+  referredById?: string | null,
+  referralStatus?: ReferralStatus | null,
+  level?: number,
+  levelName?: string
 }
 
 interface UserButtonProps {
   initialUser: UserData | null;
 }
-// const getAvatarSrc = (user: any) => user?.image || `https://avatar.iran.liara.run/username?username=${encodeURIComponent(`${user?.firstName || ''} ${user?.lastName || ''}`)}`;
+
 const getAvatarSrc = (user: any) => user?.image;
 
 export default function UserButton({ initialUser }: UserButtonProps) {
-  const searchParams = useSearchParams();
   const { user: storeUser, setUser: setStoreUser } = useUserStore();
-
   const router = useRouter();
-
   const { openModal } = useReferralModalStore();
-  
 
   useState(() => {
     if (initialUser && !storeUser) {
@@ -55,20 +56,92 @@ export default function UserButton({ initialUser }: UserButtonProps) {
   };
 
   const handleSignOut = async () => {
-    
-    const result = await signOutUser(); 
-    // if (result.success) {
-    //   await deleteAllCookies()  
-    //   await signOut({ callbackUrl: '/auth/login' });
-    // }
+    // const result = await signOutUser();
+    await signOut()
   };
-
 
   const user = storeUser;
 
   if (!user) {
-    return null; 
+    return null;
   }
+
+  // Define all possible menu items
+  const menuItems = [
+    // Profile Section
+    <DropdownSection key="profile-section" title="Profile" showDivider>
+      <DropdownItem
+        key="signed-in"
+        className="h-14 gap-2"
+      >
+        <div className="flex flex-col">
+          <p className="font-semibold">Signed in as</p>
+          <p className="font-semibold">{user.email}</p>
+        </div>
+      </DropdownItem>
+    </DropdownSection>,
+
+    // Account Section
+    <DropdownSection key="account-section" title="Account" showDivider>
+      <DropdownItem
+        key="library"
+        onClick={() => handleNavigation("/my-library")}
+      >
+        My Library
+      </DropdownItem>
+      <DropdownItem
+        key="profile"
+        onClick={() => handleNavigation("/my-profile")}
+      >
+        My Profile
+      </DropdownItem>
+    </DropdownSection>,
+
+    // Support Section
+    <DropdownSection key="support-section" title="Support" showDivider>
+      <DropdownItem
+        key="faq"
+        onClick={() => handleNavigation("/faq")}
+      >
+        FAQ
+      </DropdownItem>
+      <DropdownItem
+        key="contact"
+        onClick={() => handleNavigation("/contact-us")}
+      >
+        Contact
+      </DropdownItem>
+    </DropdownSection>,
+
+    // Theme Switcher
+    <DropdownItem
+      key="theme"
+      className="cursor-auto"
+    >
+      <ThemeSwitcher />
+    </DropdownItem>,
+
+    // Conditionally add Refer A Friend item
+    ...(user.referredById === null && user.referralStatus === null ? [
+      <DropdownItem
+        key="refer"
+        onClick={openModal}
+        startContent={<Gift className="text-green-500" variant="Bold" />}
+      >
+        Refer A Friend
+      </DropdownItem>
+    ] : []),
+
+    // Logout Item
+    <DropdownItem
+      key="logout"
+      onClick={handleSignOut}
+      startContent={<Logout className="text-red-500" variant="Bold" />}
+      color="danger"
+    >
+      Log Out
+    </DropdownItem>
+  ];
 
   return (
     <>
@@ -92,43 +165,18 @@ export default function UserButton({ initialUser }: UserButtonProps) {
               <ArrowDown2 size={16} />
             </div>
           </DropdownTrigger>
-          <DropdownMenu aria-label="User Actions" variant="flat">
-            <DropdownSection showDivider>
-              <DropdownItem  textValue={"profile"} key="profile" className="h-14 gap-2">
-                <p className="font-bold">Signed in as</p>
-                <p className="font-bold">{user.email}</p>
-              </DropdownItem>
-            </DropdownSection>
-            <DropdownSection  title="Account" showDivider>
-              <DropdownItem textValue={"library"} key="library" onClick={() => handleNavigation("/my-library")}>
-                My Library
-              </DropdownItem>
-              <DropdownItem textValue={"profile"} key="profile" onClick={() => handleNavigation("/my-profile")}>
-                My Profile
-              </DropdownItem>
-            </DropdownSection>
-            <DropdownSection title="Support" showDivider>
-              <DropdownItem textValue={"faq"} key="FAQ" onClick={() => handleNavigation("/faq")}>
-                FAQ
-              </DropdownItem>
-              <DropdownItem textValue={"contact"} key="contact" onClick={() => handleNavigation("/contact-us")}>
-                Contact
-              </DropdownItem>
-            </DropdownSection>
-            <DropdownItem className="cursor-auto" key="theme">
-              <ThemeSwitcher />
-            </DropdownItem>
-            <DropdownItem  textValue={"refer"} key="refer" onClick={openModal} startContent={<Gift className="text-green-500" variant="Bold" />}>
-              Refer A Friend
-            </DropdownItem>
-            <DropdownItem  textValue={"logout"} onClick={handleSignOut} startContent={<Logout className="text-red-500" variant="Bold" />} key="logout" color="danger">
-              Log Out
-            </DropdownItem>
+          <DropdownMenu 
+            aria-label="User Actions" 
+            variant="flat" 
+            itemClasses={{
+              base: "gap-4",
+            }}
+          >
+            {menuItems}
           </DropdownMenu>
         </Dropdown>
       </div>
-      <ReferFriendModal
-      />
+      <ReferFriendModal />
     </>
   );
 }
