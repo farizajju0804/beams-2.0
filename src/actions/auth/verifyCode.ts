@@ -93,6 +93,6 @@ export const verifyCodeAndChangeEmail = async (code: string, oldEmail: string) =
     return { success: true };
   } catch (error) {
     console.error("Error updating user or deleting token:", error);
-    return { error: "Failed to update email. Please try again." };
+    return { error: "Network Error. Check your internet or try again later." };
   }
 };

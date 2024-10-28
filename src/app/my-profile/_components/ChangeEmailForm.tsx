@@ -11,7 +11,7 @@ import { settings } from "@/actions/auth/settings"; // Import action to update e
 import { Edit } from "iconsax-react"; // Icon component for the edit button
 import { signOut } from "next-auth/react"; // Import sign-out function from next-auth
 
-import { useRouter } from "next/navigation"; // Import for routing and redirects
+
 import RedirectMessage from "../../../components/Redirection"; // Custom component to show redirect message
 
 // Component for changing the user's email address
@@ -28,7 +28,6 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   
-  const router = useRouter(); // Router instance for navigation
 
   // Initialize form handling with validation schema and default values
   const form = useForm<z.infer<typeof ChangeEmailSchema>>({
@@ -168,7 +167,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
                 <p id="success-modal-description" className="text-center">
                   {success}
                 </p>
-                <p className="text-center mt-4">
+                <p className="text-center mb-4">
                   You will be signed out automatically.
                 </p>
               </ModalBody>

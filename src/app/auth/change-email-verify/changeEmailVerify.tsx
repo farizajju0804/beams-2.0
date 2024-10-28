@@ -1,16 +1,16 @@
 "use client"; // Ensures this component runs on the client side
 
-import React, { useState, useRef } from "react"; // Import React hooks for state management and lifecycle
+import React, { useState, useRef, useEffect } from "react"; // Import React hooks for state management and lifecycle
 import { useForm, SubmitHandler } from "react-hook-form"; // Import hooks from React Hook Form for form handling
 import { z } from "zod"; // Zod for schema validation
 import { zodResolver } from "@hookform/resolvers/zod"; // Zod resolver for React Hook Form
 import { verifyCodeAndChangeEmail } from "@/actions/auth/verifyCode"; // Action to verify the code and change the email
-import {  Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
+import { Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
 import FormError from "@/components/form-error"; // Component for displaying form errors
 import CardWrapper from "@/app/auth/_components/card-wrapper"; // Wrapper component for consistent UI
 import { useSearchParams } from "next/navigation"; // Next.js router hooks for navigation and reading URL params
 import { resendVerificationCode3 } from "@/actions/auth/register"; // Action to resend the verification code
-import { useEmailStore } from "@/store/email"; // Zustand store for email state management
+
 import Image from "next/image"; // Next.js optimized image component
 import Link from "next/link"; // Link component for navigation
 import { Sms } from "iconsax-react"; // Icon used in the button
@@ -51,16 +51,33 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
+  const [isResending, setIsResending] = useState(false); // State for managing resend action
+  const [countdown, setCountdown] = useState(30); // Countdown timer for 30 seconds
+  const [showResend, setShowResend] = useState(true)
 
-  // Fetching email and old email from Zustand store and URL search params
-  const emailFromStore = useEmailStore((state: any) => state.email);
   const searchParams = useSearchParams();
   const oldEmail: any = searchParams.get("oldEmail");
   const emailFromUrl = searchParams.get("email");
+  const uuidFromUrl = searchParams.get("uuid");
+  const [uuidFromLocal,setUuidFromLocal] = useState("")
   const email: any = emailFromUrl;
-
   const code = watch("code"); // Watch the form field for changes
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the input field
+
+
+  useEffect(() => {
+    const storedUuid = localStorage.getItem("changeEmailToken");
+ 
+    if (uuidFromUrl && storedUuid) {
+      if (storedUuid !== uuidFromUrl) {
+        setShowResend(false);
+        setError("Invalid Link");
+      } else {
+        setShowResend(true);
+      }
+    }
+  }, [uuidFromUrl])
+
 
   // Handles input changes, ensuring only numeric values are allowed
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +93,8 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     try {
       const result = await verifyCodeAndChangeEmail(data.code, oldEmail); // Verify the code and change email
       if (result?.success) {
-        setSuccess(true); // Set success state if successful
+        setSuccess(true);
+        localStorage.removeItem("changeEmailToken")
       } else {
         setError(result?.error || "Verification failed."); // Set error if verification fails
       }
@@ -90,8 +108,12 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
   // Handles the resend verification code action
   const handleResendCode = async () => {
+    if (isResending) return; // Prevent multiple resends
+
     setResendMessage("");
     setError("");
+    setIsResending(true); // Set resending state to true
+    setCountdown(30); // Reset countdown to 30 seconds
     try {
       const resend = await resendVerificationCode3(email, oldEmail); // Resend the verification code
       if (resend?.success) {
@@ -102,8 +124,26 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     } catch (err) {
       console.error("Error resending the verification code:", err);
       setError("An unexpected error occurred."); // Handle unexpected errors
+    } finally {
+      setIsResending(false); // Reset resending state
     }
   };
+
+  // Countdown effect for the resend button
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   return (
     <CardWrapper
@@ -141,6 +181,8 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                   maxLength={6} // Limit input to 6 digits
                   onChange={handleInputChange}
                   value={code}
+                  autoComplete="code"
+                  aria-label="code"
                   placeholder="Enter the Code"
                   ref={inputRef}
                   className="w-48 h-10 text-center border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-primary text-2xl tracking-widest"
@@ -155,28 +197,43 @@ const VerifyEmail: React.FC<{}> = ({}) => {
               type="submit"
               endContent={<Sms variant="Bold" />} // Icon for the button
               color="primary"
-              className="w-full font-semibold text-white text-lg lg:text-xl py-6"
-              isLoading={isLoading} // Show loading state during form submission
-              disabled={isLoading} // Disable the button while loading
+              aria-label="submit"
+              className="w-full font-semibold text-lg text-white"
+              isLoading={isLoading} // Show loading state on button
+              isDisabled={isLoading || isResending} // Disable button if loading or resending
             >
-              {isLoading ? "Changing..." : "Change My Email"} {/* Button label changes based on loading state */}
+              Verify
             </Button>
-          </form>
 
-          {/* Resend code section */}
-          <div className="my-4 flex flex-col items-center gap-1 text-center">
-            <p className="text-sm text-grey-2">Didn&apos;t receive the code? Click below</p>
-            <button
-              type="button"
-              className="text-primary text-sm font-semibold hover:underline focus:outline-none"
-              onClick={handleResendCode} // Resend code handler
-            >
-              Resend Code
-            </button>
-          </div>
+            <div className="flex justify-center flex-col gap-2 items-center">
+              {/* <Link href="/auth/login" className="text-text text-sm">
+                Back to Login
+              </Link> */}
+              {showResend && (
+              <div>
+                {isResending ? (
+                  <p className="text-sm text-text">
+                    Resending...  
+                  </p>
+                ) : countdown > 0 ? (
+                  <p className="text-sm text-text">Resend code in {countdown} seconds</p> // Countdown display
+                ) : (
+                  <Button
+                    onClick={handleResendCode} // Resend code action
+                    variant="light"
+                    color="primary"
+                    aria-label="resend"
+                    className="text-sm font-semibold"
+                  >
+                    Resend Code
+                  </Button>
+                )}
+              </div>
+              )}
+            </div>
+          </form>
         </>
       ) : (
-        // Success message and redirect to login
         <div className="text-left w-full">
           <Image
             className="mx-auto mb-6"
@@ -194,7 +251,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
           </p>
           <Link href="/auth/login" passHref>
             <Button color="primary" endContent={<RiLoginCircleFill />} className="w-full font-semibold text-white text-lg py-6 md:text-xl mb-4">
-              Go to Login {/* Redirect to login button */}
+              Go to Login
             </Button>
           </Link>
         </div>
@@ -203,4 +260,4 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   );
 };
 
-export default VerifyEmail; // Export the VerifyEmail component
+export default VerifyEmail; // Export the component

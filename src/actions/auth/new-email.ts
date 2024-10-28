@@ -13,18 +13,26 @@ import { sendVerificationEmail2 } from "@/libs/mail";
  * @returns {Object} - Returns success if valid, or an error if invalid or expired.
  */
 export const verifyToken = async (token: string) => {
-  const existingToken = await getVerificationTokenByToken(token);
 
-  if (!existingToken) {
-    return { error: "Invalid Link!" };
+  try{
+    const existingToken = await getVerificationTokenByToken(token);
+
+    if (!existingToken) {
+      return { error: "Invalid Link!" };
+    }
+  
+    const hasExpired = new Date(existingToken.expires) < new Date();
+    if (hasExpired) {
+      return { error: "Link has expired!" };
+    }
+  
+    return { success: true };
+  }
+  catch (error) {
+    console.error("Error updating user or deleting token:", error);
+    return { error: "Network Error. Check your internet or try again later." };
   }
 
-  const hasExpired = new Date(existingToken.expires) < new Date();
-  if (hasExpired) {
-    return { error: "Link has expired!" };
-  }
-
-  return { success: true };
 };
 
 /**

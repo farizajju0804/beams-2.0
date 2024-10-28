@@ -1,217 +1,217 @@
-"use client"; // Ensures this component runs on the client side
+'use client'
 
-import React, { useState, useEffect, useRef } from "react"; // Import React hooks for managing state, lifecycle, and refs
-import { useForm, SubmitHandler } from "react-hook-form"; // React Hook Form utilities for form handling
-import { z } from "zod"; // Zod for schema validation
-import { zodResolver } from "@hookform/resolvers/zod"; // Zod resolver for React Hook Form
-import { verifyCode } from "@/actions/auth/verifyCode"; // Action to verify the code
-import { Button } from "@nextui-org/react"; // Import Input and Button components from NextUI
-import FormError from "@/components/form-error"; // Import component for displaying form errors
-import CardWrapper from "@/app/auth/_components/card-wrapper"; // Card wrapper for consistent UI
-import { useSearchParams } from "next/navigation"; // Next.js hook to retrieve search params
-import { resendVerificationCode } from "@/actions/auth/register"; // Action to resend the verification code
-import Image from "next/image"; // Next.js optimized Image component
-import { useRouter } from "next/navigation"; // Next.js router hook for navigation
-import RegisterSide from "../_components/RegisterSide"; // Side UI component for the registration page
-import { TickCircle } from "iconsax-react"; // Icon for visual feedback
+import React, { useState, useEffect, useRef } from "react"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { verifyCode } from "@/actions/auth/verifyCode"
 
-// Define the Zod schema for validation
+import FormError from "@/components/form-error"
+import CardWrapper from "@/app/auth/_components/card-wrapper"
+import { useSearchParams } from "next/navigation"
+import { resendVerificationCode } from "@/actions/auth/register"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import RegisterSide from "../_components/RegisterSide"
+import toast, { Toaster } from 'react-hot-toast'
+import { Button, Spinner } from "@nextui-org/react"
+
 const verifyEmailSchema = z.object({
   code: z
     .string()
     .min(1, { message: "Code required." })
     .min(6, { message: "Code must be exactly 6 digits." })
     .max(6, { message: "Code must be exactly 6 digits." })
-    .regex(/^\d{6}$/, { message: "Code must contain only numbers." }), // Ensure the code is numeric
-});
+    .regex(/^\d{6}$/, { message: "Code must contain only numbers." }),
+})
 
-// TypeScript interface for form data based on Zod schema
-type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
+type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>
 
-/**
- * VerifyEmail is a React functional component for verifying a user's email
- * by entering a 6-digit code sent to their email. It handles form submission,
- * error handling, and the ability to resend the verification code.
- */
-const VerifyEmail: React.FC<{}> = ({}) => {
-  // Initialize form handling with default value for the code and Zod schema
+export default function Component({ initialEmail = '' }: { initialEmail?: string }) {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<VerifyEmailFormData>({
     defaultValues: { code: "" },
-    resolver: zodResolver(verifyEmailSchema), // Zod schema resolver
-  });
+    resolver: zodResolver(verifyEmailSchema),
+  })
 
-  // State management for error, success, loading, and resend message
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [resendMessage, setResendMessage] = useState("");
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isResending, setIsResending] = useState(false)
+  const [countdown, setCountdown] = useState(30)  // Start with 30 seconds
+  const [showResend, setShowResend] = useState(false)  // Start with resend hidden
 
-  const searchParams = useSearchParams(); // Get search parameters from URL
-  const router = useRouter(); // Hook for navigation
-  const emailFromUrl = searchParams.get("email"); // Extract email from the URL
-  const email: any = emailFromUrl; // Typecast email
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const emailFromUrl = searchParams.get("email")
+  const email = emailFromUrl || initialEmail
 
-  const code = watch("code"); // Watch the code field for changes
-  const inputRef = useRef<HTMLInputElement>(null); // Reference to the input field
+  const code = watch("code")
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  // Handle input changes, allowing only numeric values and limiting to 6 digits
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const numericValue = value.replace(/\D/g, "").slice(0, 6); // Remove non-digit characters
-    setValue("code", numericValue); // Set value in form state
-  };
+    const { value } = e.target
+    const numericValue = value.replace(/\D/g, "").slice(0, 6)
+    setValue("code", numericValue)
+  }
 
-  // Form submission handler
   const onSubmit: SubmitHandler<VerifyEmailFormData> = async (data) => {
-    setError(""); // Reset error state
-    setSuccess(false); // Reset success state
-    setIsLoading(true); // Set loading state to true
+    setError("")
+    setSuccess(false)
+    setIsLoading(true)
     try {
-      const result = await verifyCode(data.code, email); // Verify the code
+      const result = await verifyCode(data.code, email)
       if (result?.success) {
-        setSuccess(true); // Set success state if the result is successful
+        setSuccess(true)
+        toast.success('Email verified successfully!')
       } else {
-        setError(result?.error || "Verification failed."); // Set error if verification fails
+        setError(result?.error || "Verification failed.")
+        toast.error(result?.error || "Verification failed.")
       }
     } catch (err) {
-      console.error("Error:", err);
-      setError("An unexpected error occurred."); // Handle unexpected errors
+      console.error("Error:", err)
+      setError("An unexpected error occurred.")
+      toast.error("An unexpected error occurred.")
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false)
     }
-  };
+  }
 
-  // Handle resend code action
   const handleResendCode = async () => {
-    setResendMessage(""); // Reset resend message
-    setError(""); // Reset error state
+    setShowResend(false)
+    setError("")
+    setIsResending(true)
     try {
-      const result = await resendVerificationCode(email); // Resend verification code
+      const result = await resendVerificationCode(email)
       if (result?.success) {
-        setResendMessage(
-          `A new 6-digit verification code has been sent to <strong class="text-secondary-2">${email}</strong>. Please check your inbox, including your spam folder.`
-        ); // Display success message
+        toast.success(`A new verification code has been sent to ${email}`)
+        setCountdown(30)
       } else {
-        setError("Failed to resend verification code. Please try again later."); // Handle resend failure
+        setError("Failed to resend verification code. Please try again later.")
+        toast.error("Failed to resend verification code. Please try again later.")
+        setShowResend(true)
       }
     } catch (err) {
-      console.error("Error resending the verification code:", err);
-      setError("An unexpected error occurred."); // Handle unexpected errors
+      console.error("Error resending the verification code:", err)
+      setError("An unexpected error occurred.")
+      toast.error("An unexpected error occurred.")
+      setShowResend(true)
+    } finally {
+      setIsResending(false)
     }
-  };
+  }
 
-  // Redirect to security questions page on successful verification after 3 seconds
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
-        router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`); // Redirect after successful verification
-      }, 2000);
+        router.push(`/auth/security-questions?email=${encodeURIComponent(email)}`)
+      }, 2000)
 
-      return () => clearTimeout(timer); // Clear timeout if component unmounts
+      return () => clearTimeout(timer)
     }
-  }, [success, router]);
+  }, [success, router, email])
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            setShowResend(true)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [countdown])
 
   return (
     <div className="md:min-h-screen w-full grid grid-cols-1 lg:grid-cols-2">
-      <RegisterSide /> {/* Side component for registration UI */}
+      <RegisterSide />
       <div className="w-full md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
-        <CardWrapper
-          headerLabel={success ? "Email Verified Successfully!" : "Verify Your Email"} // Change header label based on success state
-        >
+        {
+          isResending ? (
+            <Spinner />
+          ) : (
+        <CardWrapper headerLabel={success ? "Email Verified Successfully!" : "Verify Your Email"}>
           {success ? (
             <div className="text-center space-y-6">
               <Image
                 className="mx-auto"
                 priority
                 alt="Verification success"
-                src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725379939/authentication/email-verify-3d_ukbke4.webp" // Success image
+                src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725379939/authentication/email-verify-3d_ukbke4.webp"
                 width={200}
                 height={200}
               />
               <p className="text-lg text-text mb-6">You&apos;re Ready to Rock and Roll!</p>
-              <Button
-                color="primary"
-                className="w-full font-semibold py-6 mb-4 text-white md:text-xl text-lg"
-                isLoading={true} // Keep the button in loading state
-              >
-                Redirecting
+              <Button color="primary" className="w-full font-semibold text-white text-lg" disabled>
+                Redirecting...
               </Button>
             </div>
           ) : (
             <>
               <div className="flex justify-center mb-4">
-                <Image priority src="/images/email.png" alt="Verification Illustration" width={250} height={200} /> {/* Email illustration */}
+                <Image priority src="/images/email.png" alt="Verification Illustration" width={250} height={200} />
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
                   <p className="text-left text-text text-sm">
-                    {resendMessage ? (
-                      <span dangerouslySetInnerHTML={{ __html: resendMessage }} /> // Display resend message if available
-                    ) : (
-                      <>
-                        We have sent a{" "}
-                        <strong className="text-secondary-2">6-digit verification code</strong>{" "}
-                        to: <strong className="text-secondary-2">{email}</strong>
-                      </>
-                    )}
+                    We have sent a <strong className="text-secondary-2">6-digit verification code</strong> to:{" "}
+                    <strong className="text-secondary-2">{email}</strong>
                   </p>
-                  {!resendMessage && (
                   <p className="text-left text-text text-sm">
-                    Enter the code below to verify your account. If you can&apos;t find it,
-                    check your spam or junk folder—sometimes magic hides there too! Be
-                    sure to mark it as safe!
+                    Enter the code below to verify your account. If you can&apos;t find it, check your spam or junk folder.
                   </p>
-                  )}
                   <div className="flex justify-center">
                     <input
-                      {...register("code")} // Register input field for code with validation from Zod
+                      {...register("code")}
                       type="text"
                       maxLength={6}
                       autoComplete="code"
                       onChange={handleInputChange}
                       value={code}
                       ref={inputRef}
-                     aria-label="code"
+                      aria-label="code"
                       placeholder="Enter the code"
                       className="w-full h-10 text-center border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-primary text-2xl tracking-widest"
                     />
                   </div>
-                  {errors.code && <p className="text-red-500 text-sm font-medium text-left">{errors.code.message}</p>} {/* Display Zod validation error */}
+                  {errors.code && <p className="text-red-500 text-sm font-medium text-left">{errors.code.message}</p>}
                 </div>
 
-                <Button
-                  type="submit"
-                color="primary"
-                 aria-label="submit"
-                  endContent={<TickCircle variant="Bold" />} // Icon on the button
-                  className="w-full font-semibold text-white py-6 text-lg md:text-xl"
-                  isLoading={isLoading} // Show loading state during form submission
-                  disabled={isLoading} // Disable button while loading
-                >
-                  {isLoading ? "Verifying You..." : "Verify Me"} {/* Dynamic button text */}
+                <Button type="submit" color="primary" className="w-full text-lg font-semibold text-white" disabled={isLoading}>
+                  {isLoading ? "Verifying..." : "Verify Me"}
                 </Button>
-                {error && <FormError message={error} />} {/* Display form error if any */}
+                {error && <FormError message={error} />}
               </form>
-             {!resendMessage && (
               <div className="my-4 flex flex-col items-center gap-2 text-center">
-                <p className="text-sm text-grey-2">Didn&apos;t receive the code? Click below</p>
-                <button
-                  type="button"
-                aria-label="resend"
-                  className="text-primary font-semibold hover:underline focus:outline-none"
-                  onClick={handleResendCode} // Resend the verification code
-                >
-                  Resend Code
-                </button>
+                <p className="text-sm text-muted-foreground">Didn&apos;t receive the code?</p>
+                {countdown > 0 ? (
+                  <p className="text-text font-semibold">Resend available in {countdown}s</p>
+                ) : (
+                  showResend &&  (
+                    <Button
+                      variant="light"
+                      onClick={handleResendCode}
+                      isDisabled={isResending}
+                      color="primary"
+                      className="text-primary font-semibold  focus:outline-none"
+                    >
+                      {isResending ? "Resending..." : "Resend Code"}
+                    </Button>
+                  )
+                )}
               </div>
-              )}
             </>
           )}
         </CardWrapper>
+        )
+        }
       </div>
+      <Toaster position="top-center" />
     </div>
-  );
-};
-
-export default VerifyEmail; // Export the VerifyEmail component
+  )
+}

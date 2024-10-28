@@ -20,7 +20,6 @@ interface UserData {
   firstName: string | null,
   gender: string | null,
   dob: Date | null,
-  schoolName: string | null,
   lastName: string | null,
   image: string | null,
   grade: string | null,
