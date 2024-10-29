@@ -94,7 +94,7 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
               onClick={() => scroll('left')} // Scroll left on click
               className="absolute -left-10 top-1/2 transform -translate-y-1/2 bg-grey-2 bg-opacity-75 rounded-full p-1 shadow-md" // Button styling
             >
-              <ArrowLeft2 size={16} className="text-grey-1" /> // Left arrow icon
+              <ArrowLeft2 size={16} className="text-grey-1" /> 
             </button>
           )}
           {showRightShadow && (
@@ -102,7 +102,7 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
               onClick={() => scroll('right')} // Scroll right on click
               className="absolute -right-10 top-1/2 transform -translate-y-1/2 bg-grey-2 bg-opacity-75 rounded-full p-1 shadow-md" // Button styling
             >
-              <ArrowRight2 size={16} className="text-grey-1" /> // Right arrow icon
+              <ArrowRight2 size={16} className="text-grey-1" /> 
             </button>
           )}
         </div>
@@ -115,7 +115,7 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
           style={{ color: color }} // Dynamic color for link text
           className="text-sm underline font-medium" // Link styling
         >
-          {badges.length === 0 ? "Explore Badges" : "View My Badges"} // Conditional link text
+          {badges.length === 0 ? "Explore Badges" : "View My Badges"} 
         </Link>
       </div>
     </div>

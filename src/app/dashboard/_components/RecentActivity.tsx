@@ -101,7 +101,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({
                   >
                     {sources.map((source) => (
                       <SelectItem key={source} value={source}>
-                        {source === 'all' ? 'All Sources' : source} // Display 'All Sources' for the all option
+                        {source === 'all' ? 'All Sources' : source}
                       </SelectItem>
                     ))}
                   </Select>
@@ -115,7 +115,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({
                       <div className="text-text rounded-full flex items-center justify-center mr-2">
                         <activity.icon size={18} variant="Bold" /> {/* Render activity icon */}
                       </div>
-                      <span className='text-xs md:text-sm w-5/6'>{activity.text}</span> {/* Activity text */}
+                      <span className='text-xs md:text-sm w-5/6'>{activity.text}</span> 
                     </div>
                     <span className="w-fit text-xs md:text-sm font-semibold text-brand">+{activity.points}</span> {/* Points earned */}
                   </div>
