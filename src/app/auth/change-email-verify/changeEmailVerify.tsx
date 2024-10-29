@@ -59,7 +59,6 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const oldEmail: any = searchParams.get("oldEmail");
   const emailFromUrl = searchParams.get("email");
   const uuidFromUrl = searchParams.get("uuid");
-  const [uuidFromLocal,setUuidFromLocal] = useState("")
   const email: any = emailFromUrl;
   const code = watch("code"); // Watch the form field for changes
   const inputRef = useRef<HTMLInputElement>(null); // Ref for the input field
@@ -115,12 +114,14 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setIsResending(true); // Set resending state to true
     setCountdown(30); // Reset countdown to 30 seconds
     try {
-      const resend = await resendVerificationCode3(email, oldEmail); // Resend the verification code
+      if(uuidFromUrl){
+        const resend = await resendVerificationCode3(email, oldEmail,uuidFromUrl); // Resend the verification code
       if (resend?.success) {
         setResendMessage(`A new 6-digit verification code has been sent to <strong class="text-secondary-2">${email}</strong>. Please check your inbox, including your spam folder.`); // Show success message
       } else {
         setError("Failed to resend verification code. Please try again later."); // Handle resend failure
       }
+    }
     } catch (err) {
       console.error("Error resending the verification code:", err);
       setError("An unexpected error occurred."); // Handle unexpected errors

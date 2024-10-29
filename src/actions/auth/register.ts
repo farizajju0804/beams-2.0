@@ -100,10 +100,10 @@ export const resendVerificationCode = async (email: string) => {
  * @param {string} oldEmail - The old email address.
  * @returns {Promise<Object>} A response indicating success.
  */
-export const resendVerificationCode3 = async (email: string, oldEmail: string) => {
+export const resendVerificationCode3 = async (email: string, oldEmail: string,uuid:string) => {
   const user: any = await currentUser();
   const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail2(verificationToken.email, oldEmail, user?.firstName, verificationToken.token);
+  await sendVerificationEmail2(verificationToken.email, oldEmail, user?.firstName, verificationToken.token, uuid);
   console.log("Verification email sent. Please check your inbox.");
   return { success: "Verification email sent. Please check your inbox." };
 };
