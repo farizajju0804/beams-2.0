@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { TickCircle } from 'iconsax-react'; 
 import { useTheme } from "next-themes"; 
 import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
+import Image from "next/image";
 
 // Type definitions for the options and poll structure
 type VoteType = {
@@ -53,10 +54,13 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [userResponse, setUserResponse] = useState<string | null>(null);
-  const { theme }: any = useTheme();
-  const lightBg = '/images/beams-today/poll-bg.png';
-  const darkBg = '/images/beams-today/poll-bg-dark.png';
-
+  const { theme } = useTheme();
+  
+  const lightBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215590/onboarding/poll-bg_fw00ys.webp';
+  const darkBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215290/onboarding/poll-bg-dark_mvffah.webp';
+  const imageSrc = theme === "light" ? lightBg : darkBg;
+  console.log("theme",theme)
+  console.log("image Src",imageSrc)
   // New states for RewardsModal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pointsAdded, setPointsAdded] = useState(0);
@@ -111,15 +115,17 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   const user: any = useCurrentUser();
 
   return (
-    <section
-      className="bg-brand/10 p-6 mb-10 lg:mb-12 rounded-3xl"
-      style={{
-        transformOrigin: "top center",
-        backgroundImage: `url(${theme === "dark" ? darkBg : lightBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <section className="relative bg-background shadow-defined p-6 mb-10 lg:mb-12 rounded-3xl overflow-hidden">
+    {/* Next.js Image component */}
+    {/* <Image
+      src={imageSrc} // Image source based on theme
+      alt="Background Image" // Alt text for accessibility
+      layout="fill" // Makes the image fill the parent container
+      objectFit="cover" // Maintains aspect ratio while covering the container
+      className="absolute inset-0 z-0" // Positions the image absolutely and fills the section
+    /> */}
+    
+    <div className="relative z-10"> {/* Wrap the content to ensure it's above the background image */}
       {showResults ? (
         <Results votes={votes} poll={poll} optionLabels={optionLabels} userResponse={userResponse} />
       ) : (
@@ -132,17 +138,19 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
           optionLabels={optionLabels}
         />
       )}
-
+    
       {/* Rewards Modal */}
       <RewardsModal
-       levelUp={levelUp}
-       beams={currentPoints}
-       isOpen={isModalOpen}
-       onClose={()=>{setIsModalOpen(false)}}
-       currentLevel={currentLevel}
-       pointsAdded={pointsAdded}
+        levelUp={levelUp}
+        beams={currentPoints}
+        isOpen={isModalOpen}
+        onClose={() => { setIsModalOpen(false); }}
+        currentLevel={currentLevel}
+        pointsAdded={pointsAdded}
       />
-    </section>
+    </div>
+  </section>
+  
   );
 };
 
