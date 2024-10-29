@@ -187,4 +187,5 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
   );
 });
 
+AudioPlayer.displayName = 'AudioPlayerComponent';
 export default AudioPlayer; // Export the AudioPlayer component
