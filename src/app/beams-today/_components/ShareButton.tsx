@@ -1,8 +1,8 @@
-'use client'; // Ensures that the component is rendered on the client side in a Next.js environment.
+'use client';
 
-import React from 'react';
-import { Popover, PopoverTrigger, PopoverContent, Button } from '@nextui-org/react'; // Import UI components from NextUI.
-import { Share } from 'iconsax-react'; // Import the Share icon from iconsax-react.
+import React, { useState, useEffect } from 'react';
+import { Popover, PopoverTrigger, PopoverContent, Button } from '@nextui-org/react';
+import { Share } from 'iconsax-react';
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -12,19 +12,38 @@ import {
   TwitterIcon,
   LinkedinIcon,
   WhatsappIcon,
-} from 'react-share'; // Import share buttons and icons for social platforms from react-share.
-import { BeamsToday } from '@/types/beamsToday'; // Import the BeamsToday type for type checking the props.
+} from 'react-share';
+import { BeamsToday } from '@/types/beamsToday';
 
 interface ShareButtonProps {
-  data: BeamsToday; // The data prop contains information about the content being shared (e.g., title, description).
+  data: BeamsToday;
 }
 
 const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
-  const shareUrl = window.location.href; // Use the current page URL as the share URL.
-  const shareTitle = `Hey, Check out this fascinating content on Beams! ${data?.title}`; // The share title using the content's title.
-  const shareText = `Hey, Check out this fascinating content on Beams! ${data?.title}\n\n${data?.shortDesc}`; // The share text combining title and description.
+  // Create a state to store the share URL
+  const [shareUrl, setShareUrl] = useState<string>('');
+  
+  // Create states to track feature availability
+  const [hasShareAPI, setHasShareAPI] = useState<boolean>(false);
+  const [hasClipboard, setHasClipboard] = useState<boolean>(false);
 
-  // Function to handle native device sharing or copying the share link to clipboard.
+  // Initialize browser-dependent values after component mounts
+  useEffect(() => {
+    // Set the share URL from window.location after component mounts
+    setShareUrl(window.location.href);
+    
+    // Check for Web Share API availability
+    setHasShareAPI('share' in navigator);
+    
+    // Check for Clipboard API availability
+    setHasClipboard('clipboard' in navigator);
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Prepare share content - moved outside of render to avoid recreation on each render
+  const shareTitle = `Hey, Check out this fascinating content on Beams! ${data?.title}`;
+  const shareText = `Hey, Check out this fascinating content on Beams! ${data?.title}\n\n${data?.shortDesc}`;
+
+  // Handle native sharing with try-catch for better error handling
   const handleNativeShare = async () => {
     const shareData = {
       title: shareTitle,
@@ -32,54 +51,74 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
       url: shareUrl,
     };
 
-    if (navigator.share) { // Check if the native share API is available.
-      try {
-        await navigator.share(shareData); // Use the native share functionality if supported.
+    try {
+      if (hasShareAPI) {
+        // Use Web Share API if available
+        await navigator.share(shareData);
         console.log('Successfully shared');
-      } catch (error) {
-        console.error('Error sharing:', error); // Handle any errors during sharing.
-      }
-    } else if (navigator.clipboard) { // Fallback to copying to clipboard if native share is not available.
-      try {
+      } else if (hasClipboard) {
+        // Fallback to clipboard
         await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
-        alert('Content copied to clipboard. You can now paste it to share.'); // Notify the user that content was copied.
-      } catch (error) {
-        console.error('Error copying to clipboard:', error); // Handle any errors during clipboard copying.
+        alert('Content copied to clipboard. You can now paste it to share.');
+      } else {
+        // Final fallback if neither is available
+        alert('Sharing not supported on your browser. Please copy the link manually.');
       }
-    } else {
-      alert('Sharing not supported on your browser. Please copy the link manually.'); // Inform the user if neither option is available.
+    } catch (error) {
+      // Comprehensive error handling
+      console.error('Error during share operation:', error);
+      if (error instanceof Error) {
+        // If user aborted the share operation, don't show error
+        if (error.name === 'AbortError') return;
+        
+        // Show user-friendly error message
+        alert(`Unable to share: ${error.message}`);
+      }
     }
   };
 
+  // Don't render share buttons until we have the URL (prevents hydration mismatch)
+  if (!shareUrl) {
+    return (
+      <Button size="sm" isIconOnly startContent={<Share size={20} className="text-grey-2" />} className="bg-grey-1">
+        {/* Loading state button */}
+      </Button>
+    );
+  }
+
   return (
-    <Popover placement="top"> {/* Display the popover with social share options at the top of the button */}
+    <Popover placement="top">
       <PopoverTrigger>
-        <Button size={"sm"} isIconOnly startContent={<Share size={20} className='text-grey-2' />} className='bg-grey-1'>
-          {/* The Share button with an icon to trigger the popover */}
-        </Button>
+        <Button 
+          size="sm" 
+          isIconOnly 
+          startContent={<Share size={20} className="text-grey-2" />} 
+          className="bg-grey-1"
+        />
       </PopoverTrigger>
       <PopoverContent>
         <div className="p-2">
-          <div className="mb-2 font-bold">Share this content</div> {/* Header text inside the popover */}
-          <div className="flex gap-2"> {/* Container for the social share buttons */}
-            {/* WhatsApp share button with icon */}
+          <div className="mb-2 font-bold">Share this content</div>
+          <div className="flex gap-2">
+            {/* Only render social share buttons if we have a URL */}
             <WhatsappShareButton url={shareUrl} title={shareTitle}>
-              <WhatsappIcon size={32} round /> {/* Rounded WhatsApp icon */}
+              <WhatsappIcon size={32} round />
             </WhatsappShareButton>
-            {/* Facebook share button with icon */}
             <FacebookShareButton url={shareUrl} title={shareTitle}>
-              <FacebookIcon size={32} round /> {/* Rounded Facebook icon */}
+              <FacebookIcon size={32} round />
             </FacebookShareButton>
-            {/* Twitter share button with icon */}
             <TwitterShareButton url={shareUrl} title={shareTitle}>
-              <TwitterIcon size={32} round /> {/* Rounded Twitter icon */}
+              <TwitterIcon size={32} round />
             </TwitterShareButton>
-            {/* LinkedIn share button with icon */}
             <LinkedinShareButton url={shareUrl} title={shareTitle} summary={shareText}>
-              <LinkedinIcon size={32} round /> {/* Rounded LinkedIn icon */}
+              <LinkedinIcon size={32} round />
             </LinkedinShareButton>
-            {/* Button to trigger native sharing or fallback to clipboard */}
-            <Button size="sm" color="warning" onClick={handleNativeShare}>
+            <Button 
+              size="sm" 
+              color="warning" 
+              onClick={handleNativeShare}
+              disabled={!hasShareAPI && !hasClipboard}
+            >
               Others
             </Button>
           </div>
@@ -89,4 +128,4 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   );
 };
 
-export default ShareButton; // Export the ShareButton component for use in other parts of the application.
+export default ShareButton;

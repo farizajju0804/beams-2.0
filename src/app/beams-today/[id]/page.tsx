@@ -8,13 +8,46 @@ import { fetchCategoryRelatedTopics } from '@/actions/beams-today/categoryAction
 import { BeamsToday } from '@/types/beamsToday';
 import BarPoll from "@/app/beams-today/_components/BarPoll";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { Home } from "iconsax-react";
 import BottomNavigation from "../_components/BottomNavigation"; // Ensure correct import
 import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
+import { Metadata } from "next";
 
 interface BeamsTodayPlayerPageProps {
   params: { id: string };
 }
+
+export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): Promise<Metadata> {
+  const { id } = params;
+  
+  // Fetch Beams Today topic data by ID for metadata
+  const beamsToday = await getBeamsTodayById(id);
+
+  // Generate metadata dynamically
+  return {
+    title: `${beamsToday.title} | Beams Today`,
+    description: beamsToday.shortDesc || 'Learn about futuristic tech in 2 minutes with audio, text, and video formats.',
+    keywords: [
+      'tech learning',
+      'futuristic technology',
+      'Beams Today',
+      beamsToday.category.name,
+      beamsToday.title,
+    ],
+    openGraph: {
+      title: `${beamsToday.title} | Beams Today`,
+      description: beamsToday.shortDesc || 'Quick learning in audio, text, and video formats about the latest in futuristic technology.',
+      type: 'website',
+      url: `https://www.beams.world/beams-today/${id}`,
+      siteName: 'Beams',
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+    },
+  };
+}
+
 
 const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   // Destructure the topic ID from params

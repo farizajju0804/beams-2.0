@@ -85,7 +85,7 @@ const ChangeEmail = () => {
 
     setIsSubmitting(true);
     try {
-      const result: any = await newEmail(token, data.email); // Submit the new email
+      const result: any = await newEmail(token, data.email, uuid); // Submit the new email
       if (result.error) {
         setError(result.error); // Display error if email change fails
       } else {

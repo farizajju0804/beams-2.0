@@ -72,8 +72,8 @@ export const sendVerificationEmail3: any = async (email: string, firstName: stri
  * @param {string} token - Verification token for email change.
  * @returns {Promise<any>} - A promise that resolves when the email is sent.
  */
-export const sendVerificationEmail2 = async (email: string, oldEmail: string, firstName: string, token: string) => {
-  const link = `${process.env.URL}/auth/change-email-verify?email=${email}&oldEmail=${oldEmail}`;
+export const sendVerificationEmail2 = async (email: string, oldEmail: string, firstName: string, token: string, uuid: string) => {
+  const link = `${process.env.URL}/auth/change-email-verify?email=${email}&oldEmail=${oldEmail}&uuid=${uuid}}`;
 
   const payload = {
     sender: {
@@ -86,8 +86,10 @@ export const sendVerificationEmail2 = async (email: string, oldEmail: string, fi
       },
     ],
     subject: "Confirmation Code",
-    templateId: 13,
+    templateId: 17,
     params: {
+      oldEmail : oldEmail,
+      email : email,
       token: token,
       firstName: firstName,
       link: link,

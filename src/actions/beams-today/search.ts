@@ -22,8 +22,13 @@ interface SearchResult {
   };
 }
 
-
-
+/**
+ * Searches for topics based on provided filters, pagination, and sorting options.
+ *
+ * @param {SearchParams} params - The parameters for the search.
+ * @returns {Promise<SearchResult>} A promise that resolves to the search result, including topics and pagination data.
+ * @throws {Error} Throws an error if the search operation fails.
+ */
 export async function searchTopics({
   query,
   page,
@@ -36,12 +41,12 @@ export async function searchTopics({
   const itemsPerPage = 9;
 
   try {
-    // Base query conditions
+    // Base query conditions for fetching topics
     let whereClause: any = {
       published: true,
     };
 
-    // Search query
+    // Search query to filter by title, short description, or script
     if (query) {
       whereClause.OR = [
         { title: { contains: query, mode: 'insensitive' } },
@@ -50,7 +55,7 @@ export async function searchTopics({
       ];
     }
 
-    // Date filter
+    // Date filter to get topics published on the selected date
     if (selectedDate) {
       whereClause.date = {
         gte: new Date(`${selectedDate}T00:00:00.000Z`),
@@ -58,14 +63,14 @@ export async function searchTopics({
       };
     }
 
-    // Category filter
+    // Category filter to include topics in specified categories
     if (categories && categories.length > 0) {
       whereClause.categoryId = {
         in: categories,
       };
     }
 
-    // Beamed status filter
+    // Beamed status filter to show only 'beamed' or 'unbeamed' topics for the user
     if (beamedStatus && userId) {
       const completedTopics = await db.beamsTodayWatchedContent.findUnique({
         where: { userId },
@@ -81,13 +86,13 @@ export async function searchTopics({
       }
     }
 
-    // Sort configuration
+    // Configure sorting order based on sortBy parameter
     let orderBy: any = {};
     switch (sortBy) {
-      case 'titleAsc':
+      case 'nameAsc':
         orderBy = { title: 'asc' };
         break;
-      case 'titleDesc':
+      case 'nameDesc':
         orderBy = { title: 'desc' };
         break;
       case 'dateAsc':
@@ -99,11 +104,11 @@ export async function searchTopics({
         break;
     }
 
-    // Execute count query for pagination
+    // Execute count query to get total items for pagination
     const totalItems = await db.beamsToday.count({ where: whereClause });
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // Execute main query with pagination
+    // Execute main query with pagination, sorting, and category inclusion
     const topics = await db.beamsToday.findMany({
       where: whereClause,
       orderBy,
@@ -114,6 +119,7 @@ export async function searchTopics({
       },
     });
 
+    // Return search results and pagination info
     return {
       topics,
       pagination: {

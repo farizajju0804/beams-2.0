@@ -1,17 +1,14 @@
 import React from "react";
 import { cookies } from 'next/headers';
-
-
 import { BeamsTodayRecents } from "./BeamsTodayRecents";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
 import TopicSearch from "./SearchBarNew";
-import { getMinAndMaxDate } from "@/actions/beams-today/getMinAndMaxDate";
+import { getMinAndMaxDate } from "@/libs/getMinAndMaxDate";
 
 interface BeamsTodayPageProps {
   user: any;
-  // topics: any;
   categories: any;
  
 }
@@ -21,10 +18,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
   const timeZone = cookieStore.get('client_time_zone')?.value || 'UTC';
   const now = new Date();
   const clientDate = now.toLocaleDateString('en-CA', { timeZone });
-  const clientTime = now.toLocaleTimeString('en-US', { timeZone });
-  console.log("Client date:", clientDate);
-  console.log("Client time:", clientTime);
-  // Fetch the data on the server
+
   const topic: any = await getTopicOfTheDay(clientDate);
   const initialUploads = await getRecentUploads({
     clientDate: clientDate,
@@ -33,7 +27,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
   });
   
  const {minDateString,maxDateString}:any= await getMinAndMaxDate()
- console.log(minDateString,maxDateString)
+
  
   return (
     <>
@@ -46,7 +40,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
       <TopicOfTheDay topic={topic} clientDate={clientDate} />
   
       <TopicSearch userId={user.id} categories={categories}  minDateString={minDateString} maxDateString={maxDateString}/>
-      {/* <SearchBar completedTopics={completedTopics} topics={topics} categories={categories} /> */}
+
       <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} />
   
     </div>

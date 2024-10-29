@@ -56,7 +56,7 @@ export default function UserButton({ initialUser }: UserButtonProps) {
 
   const handleSignOut = async () => {
     // const result = await signOutUser();
-    await signOut()
+    await signOut({redirectTo : "/auth/login"})
   };
 
   const user = storeUser;

@@ -43,7 +43,7 @@ export const verifyToken = async (token: string) => {
  * @param {string} newEmail - The new email address.
  * @returns {Object} - Returns success with message, or an error if validation fails.
  */
-export const newEmail = async (token: string, newEmail: string) => {
+export const newEmail = async (token: string, newEmail: string, uuid :string) => {
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
@@ -85,7 +85,8 @@ export const newEmail = async (token: string, newEmail: string) => {
     verificationToken.email,
     existingToken.email,
     user.firstName,
-    verificationToken.token
+    verificationToken.token,
+    uuid
   );
 
   return {

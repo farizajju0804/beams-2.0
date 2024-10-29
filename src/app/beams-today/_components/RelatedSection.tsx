@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { BeamsToday } from '@/types/beamsToday'; // Import the BeamsToday type to type-check the topics.
-import BeamsTodayCard from './BeamsTodayCard'; // Component that displays individual topic information (check if path is correct).
 import BeamsTodaySearchCard from './BeamsTodaySearchCard'; // Component that displays search-related topic information (ensure correct path).
 
 // Define the props for the RelatedSection component.

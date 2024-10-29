@@ -63,7 +63,7 @@ const ChangeEmailForm = ({ user }: { user: any }) => {
 
   // Standard sign-out function
   const handleSignOut = async () => {
-    const result = await signOut(); 
+    await signOut({redirectTo : "/auth/login"})
   };
 
   // Custom sign-out function to clear cookies

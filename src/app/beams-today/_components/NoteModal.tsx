@@ -1,120 +1,194 @@
-'use client'; // Ensure the component is rendered on the client side in a Next.js environment.
+'use client'; // Mark as client component for Next.js
 
 import React, { useState, useEffect } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Textarea, Chip } from '@nextui-org/react'; // Import UI components from NextUI.
-import { Edit2, Note } from 'iconsax-react'; // Icons for editing and note creation.
-import { useCurrentUser } from '@/hooks/use-current-user'; // Custom hook to fetch the current user information.
-import { getNote, saveNote } from '@/actions/beams-today/saveUserNote'; // Actions to fetch and save user notes.
-import { toast, Toaster } from 'react-hot-toast'; // Toast notifications for user feedback.
-import FormattedDate from './FormattedDate'; // Component to format and display the current date.
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Textarea, Chip } from '@nextui-org/react';
+import { Edit2, Note } from 'iconsax-react';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { getNote, saveNote } from '@/actions/beams-today/saveUserNote';
+import { toast, Toaster } from 'react-hot-toast';
+import FormattedDate from './FormattedDate';
 
+// Interface defining the required props for the NoteModal component
 interface NoteModalProps {
-  id: string; // Unique identifier for the note or topic.
-  title: string; // Title of the note/topic to display in the modal header.
+  id: string;    // Unique identifier for the note
+  title: string; // Title to display in the modal header
 }
 
 const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
-  const user = useCurrentUser(); // Retrieve the current user information.
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal control hooks.
+  // Custom hook to get the current user's information
+  const user = useCurrentUser();
   
-  const [note, setNote] = useState(''); // State to store the user's note.
-  const [charCount, setCharCount] = useState(0); // State to track the number of characters in the note.
-  const [isExistingNote, setIsExistingNote] = useState(false); // State to track if a note already exists.
+  // NextUI hook to handle modal open/close state
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  
+  // State management for the note component
+  const [note, setNote] = useState('');                           // Stores the current note content
+  const [charCount, setCharCount] = useState(0);                  // Tracks the character count of the note
+  const [isExistingNote, setIsExistingNote] = useState(false);   // Indicates if we're editing an existing note
+  const [isSaving, setIsSaving] = useState(false);               // Tracks the saving state for UI feedback
 
-  // Effect to fetch an existing note when the modal opens.
+  // Effect hook to fetch existing note when modal opens
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true; // Flag to prevent state updates after component unmount
 
+    // Async function to fetch the note data
     const fetchNote = async () => {
-      if (user) { // Only proceed if a user is logged in.
-        const existingNote = await getNote(id); // Fetch the note using the provided ID.
-        if (isMounted && existingNote) {
-          setNote(existingNote.note); // Set the fetched note in the state.
-          setCharCount(existingNote.note.length); // Update the character count based on the note length.
-          setIsExistingNote(true); // Mark that an existing note was found.
+      if (user) {
+        try {
+          // Attempt to fetch the existing note using the provided ID
+          const existingNote = await getNote(id);
+          
+          // Only update state if the component is still mounted and we have data
+          if (isMounted && existingNote) {
+            setNote(existingNote.note);
+            setCharCount(existingNote.note.length);
+            setIsExistingNote(true);
+          }
+        } catch (error) {
+          // Handle network-related errors when loading the note
+          if (!navigator.onLine || error instanceof TypeError) {
+            toast.error('Unable to load note. Please check your internet connection.');
+          } else {
+            // Handle other types of errors
+            toast.error('Failed to load note. Please try again later.');
+          }
         }
       }
     };
 
-    if (isOpen) { // Only fetch the note when the modal is open.
+    // Only fetch the note when the modal is opened
+    if (isOpen) {
       fetchNote();
     }
 
+    // Cleanup function to prevent memory leaks
     return () => {
-      isMounted = false; // Cleanup to avoid state updates after unmount.
+      isMounted = false;
     };
-  }, [id, user, isOpen]); // Dependencies to trigger the effect.
+  }, [id, user, isOpen]); // Dependencies that trigger the effect
 
-  // Handler for text area input changes, limiting the character count to 1000.
+  // Handler for note content changes
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
+    // Enforce 1000 character limit
     if (value.length <= 1000) {
-      setNote(value); // Update the note state with the new value.
-      setCharCount(value.length); // Update the character count.
+      setNote(value);
+      setCharCount(value.length);
     }
   };
 
-  // Handler to save the note.
+  // Helper function to determine if an error is network-related
+  const isNetworkError = (error: unknown): boolean => {
+    if (error instanceof TypeError) {
+      // Network errors typically manifest as TypeErrors
+      return true;
+    }
+    return false;
+  };
+
+  // Handler for saving the note
   const handleSaveNote = async () => {
-    if (user) { // Ensure a user is logged in before saving.
-      await saveNote(id, note); // Save the note via the API or action.
-      toast.success('Note saved successfully!'); // Show success toast notification.
-      onClose(); // Close the modal after saving.
+    if (!user) return; // Exit if no user is logged in
+    
+    setIsSaving(true); // Start the saving process
+    try {
+      // Check internet connectivity before attempting to save
+      if (!navigator.onLine) {
+        toast.error('Unable to save note. Please check your internet connection.');
+        return;
+      }
+
+      // Attempt to save the note
+      await saveNote(id, note);
+      toast.success('Note saved successfully!');
+      onClose(); // Close the modal on successful save
+    } catch (error) {
+      // Handle different types of errors
+      if (isNetworkError(error) || !navigator.onLine) {
+        toast.error('Unable to save note. Please check your internet connection.');
+      } else {
+        toast.error('Failed to save note. Please try again later.');
+      }
+    } finally {
+      setIsSaving(false); // Reset saving state regardless of outcome
     }
   };
 
-  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in the YYYY-MM-DD format.
+  // Get current date for display
+  const currentDate = new Date().toISOString().split('T')[0];
 
   return (
     <>
-      <Toaster position="top-center" /> {/* For displaying toast notifications */}
+      {/* Toast container for notifications */}
+      <Toaster position="top-center" />
+
+      {/* Button to open the modal */}
       <Button
         size="sm"
         isIconOnly
-        startContent={isExistingNote ? <Edit2 size={20} className='text-gray-2' /> : <Note size={20} className='text-grey-2' />} // Display Edit icon if note exists, otherwise Note icon.
+        startContent={isExistingNote ? <Edit2 size={20} className='text-gray-2' /> : <Note size={20} className='text-grey-2' />}
         className='bg-grey-1'
-        onPress={onOpen} // Open the modal when the button is clicked.
+        onPress={onOpen}
       />
+
+      {/* Modal component */}
       <Modal isOpen={isOpen} onClose={onClose} size='3xl' placement="top-center" hideCloseButton>
         <ModalContent className='py-2 px-2 md:px-6'>
           <>
+            {/* Modal Header */}
             <ModalHeader className="flex justify-start items-center">
               <div className="flex flex-col">
-                <span className="text-xl font-bold">{title}</span> {/* Display the title in the modal header */}
+                <span className="text-xl font-bold">{title}</span>
               </div>
             </ModalHeader>
+
+            {/* Modal Body */}
             <ModalBody className="bg-brand-100 rounded-3xl w-full flex flex-col justify-between pb-4 px-2 md:px-4 flex-grow">
-              {/* Text area for writing or editing the note */}
+              {/* Note textarea */}
               <Textarea
-                value={note} // Bind the note value to the text area.
+                value={note}
                 color={'secondary'}
-                onChange={(e) => handleNoteChange(e as unknown as React.ChangeEvent<HTMLTextAreaElement>)} // Handle text input changes.
+                onChange={(e) => handleNoteChange(e as unknown as React.ChangeEvent<HTMLTextAreaElement>)}
                 placeholder="Type your note here..."
-                width="100%" // Full width text area.
-                maxLength={1000} // Limit the note to 1000 characters.
-                minRows={120} // Minimum height for the text area.
+                width="100%"
+                maxLength={1000}
+                minRows={120}
                 size='lg'
-                classNames={{ base: 'border-none', input: 'text-text' }} // Custom styles.
+                classNames={{ base: 'border-none', input: 'text-text' }}
                 className="bg-transparent w-full rounded-md border-none flex-grow"
               />
+
+              {/* Footer information */}
               <div className='flex items-center justify-between w-full mt-4'>
-                {/* Display the current date in the modal */}
+                {/* Current date display */}
                 <Chip className="text-sm bg-text text-background py-1 px-3">
-                  <FormattedDate date={currentDate} /> {/* Formatted date component */}
+                  <FormattedDate date={currentDate} />
                 </Chip>
-                {/* Display the remaining character count */}
+                {/* Character count display */}
                 <Chip size='sm' className="text-right bg-background text-sm mt-2">
                   {1000 - charCount} Remaining
                 </Chip>
               </div>
             </ModalBody>
+
+            {/* Modal Footer */}
             <ModalFooter className="flex justify-between">
-              {/* Cancel button to close the modal without saving */}
-              <Button variant="light" onPress={onClose}>
+              {/* Cancel button */}
+              <Button 
+                variant="light" 
+                onPress={onClose}
+                isDisabled={isSaving}
+              >
                 Cancel
               </Button>
-              {/* Save button to save the note */}
-              <Button color="primary" className='text-white' onPress={handleSaveNote}>
+              {/* Save button */}
+              <Button 
+                color="primary" 
+                className='text-white' 
+                onPress={handleSaveNote}
+                isLoading={isSaving}
+                isDisabled={isSaving}
+              >
                 Save
               </Button>
             </ModalFooter>
@@ -125,4 +199,4 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   );
 };
 
-export default NoteModal; // Export the NoteModal component for use elsewhere.
+export default NoteModal;

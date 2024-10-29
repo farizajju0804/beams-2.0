@@ -6,6 +6,7 @@ import { SessionProviders } from "./SessionProviders";
 import TimeZoneSetter from "@/components/TimeZoneSetter";
 import { SessionValidator } from "@/components/SessionValidator";
 import Script from "next/script";
+import OnlineStatus from "@/components/OnlineStatus";
 
 // Import the Quicksand font from Google fonts
 const quicksand = Quicksand({ subsets: ["latin"] });
@@ -129,7 +130,7 @@ export default function RootLayout({
           {/* Initialize timezone and session validation components */}
           <TimeZoneSetter />
           <SessionValidator/>
-          
+          <OnlineStatus/>
           {/* Main Providers for application state and context */}
           <Providers>
             {children}

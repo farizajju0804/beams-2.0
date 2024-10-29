@@ -17,23 +17,31 @@ interface PaginatedResponse {
   totalPages: number;
   currentPage: number;
 }
-
+/**
+ * Fetch recent uploads based on the provided parameters.
+ *
+ * @param {GetRecentUploadsParams} params - The parameters for fetching uploads.
+ * @returns {Promise<PaginatedResponse>} The paginated response containing uploads and pagination info.
+ * @throws {Error} Throws an error if fetching uploads fails.
+ */
 export const getRecentUploads = async ({
   clientDate,
   page = 1,
   limit = 9,
   sortBy = "dateDesc"
 }: GetRecentUploadsParams): Promise<PaginatedResponse> => {
+  // Normalize the client date to the start of the day in UTC
   const today = new Date(clientDate);
   today.setUTCHours(0, 0, 0, 0);
 
   try {
+    // Get the topic of the day based on the client date
     const topicOfTheDay = await getTopicOfTheDay(clientDate);
 
-    // Calculate the number of items to skip
+    // Calculate how many items to skip for pagination
     const skip = (page - 1) * limit;
 
-    // Define the sorting configuration based on sortBy
+    // Determine the order by configuration based on the sortBy parameter
     const orderBy: Prisma.BeamsTodayOrderByWithRelationInput = (() => {
       switch (sortBy) {
         case "nameAsc":
@@ -48,7 +56,7 @@ export const getRecentUploads = async ({
       }
     })();
 
-    // Get total count for pagination
+    // Count the total number of records for pagination
     const totalCount = await db.beamsToday.count({
       where: {
         AND: [
@@ -69,7 +77,7 @@ export const getRecentUploads = async ({
       },
     });
 
-    // Fetch paginated and sorted data
+    // Fetch the paginated and sorted recent uploads
     const recentVideos = await db.beamsToday.findMany({
       where: {
         AND: [
@@ -91,19 +99,12 @@ export const getRecentUploads = async ({
       orderBy,
       skip,
       take: limit,
-      // select: {
-      //   id: true,
-      //   thumbnailUrl: true,
-      //   title: true,
-      //   date: true,
-      //   category: true,
-      //   shortDesc: true,
-      // },
       include: {
-        category : true
+        category: true // Include category information in the result
       }
     });
 
+    // Return the uploads along with pagination info
     return {
       uploads: recentVideos,
       totalPages: Math.ceil(totalCount / limit),

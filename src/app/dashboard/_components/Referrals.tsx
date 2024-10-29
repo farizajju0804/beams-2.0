@@ -1,68 +1,86 @@
-'use client'
-import React from 'react';
-import { Button, Card, CardBody, User } from "@nextui-org/react";
-import { Gift, Profile2User } from "iconsax-react";
-import { User as Users } from '@prisma/client';
-import Image from 'next/image';
-import { useReferralModalStore } from '@/store/referralStore';
-import { ReferFriendModal } from '@/components/ReferalModal';
+'use client' // This indicates that the component should be rendered on the client side.
+import React from 'react'; // Import React
+import { Button, Card, CardBody, User } from "@nextui-org/react"; // Import components from NextUI
+import { Gift } from "iconsax-react"; // Import icon for referral
+import { User as Users } from '@prisma/client'; // Import User type from Prisma client
+import Image from 'next/image'; // Import Next.js Image component for optimized images
+import { useReferralModalStore } from '@/store/referralStore'; // Import custom hook for managing modal state
+import { ReferFriendModal } from '@/components/ReferalModal'; // Import the referral modal component
 
+// Define the interface for the component props
 interface Referral {
-  referrals: Users[]
+  referrals: Users[]; // Array of user referrals
 }
 
+// Helper function to get the avatar source from a user object
 const getAvatarSrc = (user: any) => user?.image;
 
 export default function ReferralSection({ referrals }: Referral) {
-  const openReferralModal = useReferralModalStore(state => state.openModal)
+  // Get the function to open the referral modal from the store
+  const openReferralModal = useReferralModalStore(state => state.openModal);
 
   return (
     <>
-    <Card className="w-full bg-transparent max-w-md shadow-none border-none outline-none">
-      
-    
-        {referrals.length > 0 ? (
+      {/* Main card container for referrals */}
+      <Card className="w-full bg-transparent max-w-md shadow-none border-none outline-none">
+        {referrals.length > 0 ? ( // Conditional rendering based on referrals array
           <CardBody className="outline-none p-0">
-          <div className="space-y-4">
-            {referrals.map((referral) => (
-              <div
-                key={referral.id}
-                className="flex bg-background items-center justify-between p-3 rounded-lg transition-all duration-300 ease-in-out"
-              >
-                <User
-                  name={`${referral.firstName} ${referral.lastName}`}
-                  avatarProps={{
-                    src: getAvatarSrc(referral),
-                    showFallback: true,
-                    name: "",
-                    alt: `${referral.firstName} ${referral.lastName}`,
-                  }}
-                />
-                <div className="flex items-center space-x-2">
-                  <span className="text-brand font-semibold">+20</span>
-                  <span className="text-sm text-grey-2">Beams</span>
+            <div className="space-y-4"> {/* Spacing between each referral */}
+              {referrals.map((referral) => ( // Map through each referral
+                <div
+                  key={referral.id} // Unique key for each referral
+                  className="flex bg-background items-center justify-between p-3 rounded-lg transition-all duration-300 ease-in-out"
+                >
+                  {/* User component to display the referral's name and avatar */}
+                  <User
+                    name={`${referral.firstName} ${referral.lastName}`} // Full name of the referral
+                    avatarProps={{
+                      src: getAvatarSrc(referral), // Avatar source
+                      showFallback: true, // Show fallback if no image is available
+                      name: "", // Placeholder for name
+                      alt: `${referral.firstName} ${referral.lastName}`, // Alt text for accessibility
+                    }}
+                  />
+                  {/* Display Beams earned from the referral */}
+                  <div className="flex items-center space-x-2">
+                    <span className="text-brand font-semibold">+20</span> {/* Amount of Beams earned */}
+                    <span className="text-sm text-grey-2">Beams</span> {/* Label for Beams */}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-      </CardBody>
-
+              ))}
+            </div>
+          </CardBody>
         ) : (
+          // Rendered when there are no referrals
           <CardBody className="outline-none p-0 w-full">
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            {/* <Profile2User size="48" className="text-grey-2 mb-4" /> */}
-            <Image className='mb-4'  src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" alt="referraal" width={100} height={100} />
-            <h3 className="text-lg md:text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That! </h3>
-            <p className="text-grey-2 mb-4">
-             More friends, more Beams, more fun.
-            </p>
-            <Button onClick={openReferralModal} className="text-white font-semibold"  color={"primary"} startContent={<Gift  variant="Bold" />} >Refer a Friend</Button>
-          </div>
-      </CardBody>
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              {/* Placeholder image when no referrals are present */}
+              <Image 
+                className='mb-4' 
+                src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp" 
+                alt="referraal" 
+                width={100} 
+                height={100} 
+              />
+              <h3 className="text-lg md:text-xl font-semibold mb-2">No Referrals Yet? Let&apos;s Change That!</h3> {/* Encouraging message */}
+              <p className="text-grey-2 mb-4">
+                More friends, more Beams, more fun. {/* Description encouraging referrals */}
+              </p>
+              {/* Button to open the referral modal */}
+              <Button 
+                onClick={openReferralModal} // Open modal on click
+                className="text-white font-semibold"  
+                color={"primary"} 
+                startContent={<Gift variant="Bold" />} // Icon before button text
+              >
+                Refer a Friend {/* Button label */}
+              </Button>
+            </div>
+          </CardBody>
         )}
-    </Card>
-       <ReferFriendModal
-       />
-       </>
+      </Card>
+      {/* Referral modal component */}
+      <ReferFriendModal />
+    </>
   );
 }

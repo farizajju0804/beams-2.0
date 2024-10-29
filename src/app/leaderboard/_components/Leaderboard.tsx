@@ -8,7 +8,7 @@ import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardE
 import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
-import { AiFillQuestionCircle, AiFillTrophy, AiFillClockCircle, AiFillStar, AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
+import { AiFillQuestionCircle, AiFillClockCircle,  AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
 
 
 import Image from 'next/image';

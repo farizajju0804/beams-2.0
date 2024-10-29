@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-
 import CustomPagination from "@/components/Pagination";
 import AnimatedImageCard from "./AnimatedImageCard";
 import { getTrendingFacts } from "@/actions/fod/fod";
@@ -10,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup } from "@nex
 import { InfoCircle } from "iconsax-react";
 import Image from "next/image";
 
+// Define the structure of a Fact object
 interface Fact {
   id: string;
   title: string;
@@ -18,6 +18,7 @@ interface Fact {
   isCompleted: boolean;
 }
 
+// Define the props for the TrendingFacts component
 interface TrendingFactsProps {
   initialData: {
     facts: Fact[];
@@ -25,59 +26,57 @@ interface TrendingFactsProps {
     currentPage: number;
   };
   userId: string;
-  clientDate:string;
+  clientDate: string;
 }
 
+// Define the sort options available
 type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
 
+// TrendingFacts component definition
+export function TrendingFacts({ initialData, userId, clientDate }: TrendingFactsProps) {
+  const [facts, setFacts] = useState<Fact[]>(initialData.facts); // State for the list of facts
+  const [sortBy, setSortBy] = useState("dateDesc"); // State for sorting option
+  const [currentPage, setCurrentPage] = useState(initialData.currentPage); // State for the current page
+  const [totalPages, setTotalPages] = useState(initialData.totalPages); // State for total pages
+  const [filterOption, setFilterOption] = useState("all"); // State for filter option
 
-export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsProps) {
-  const [facts, setFacts] = useState<Fact[]>(initialData.facts);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState("dateDesc");
-  const [currentPage, setCurrentPage] = useState(initialData.currentPage);
-  const [totalPages, setTotalPages] = useState(initialData.totalPages);
-  const [filterOption, setFilterOption] = useState("all");
-
-  const fetchData = async (
-    page: number,
-    sort: string,
-    filter: string
-  ) => {
-    setIsLoading(true);
+  // Function to fetch data based on page, sort, and filter
+  const fetchData = async (page: number, sort: string, filter: string) => {
     try {
       const result = await getTrendingFacts({
         clientDate: clientDate,
         page,
-        sortBy: sort as  "nameAsc" | "nameDesc" |  "dateAsc" | "dateDesc" ,
+        sortBy: sort as "nameAsc" | "nameDesc" | "dateAsc" | "dateDesc",
         filterOption: filter as "all" | "beamed" | "unbeamed",
         userId
       });
-      
-      setFacts(result.facts);
-      setTotalPages(result.totalPages);
-      setCurrentPage(result.currentPage);
+
+      setFacts(result.facts); // Update the facts state with fetched data
+      setTotalPages(result.totalPages); // Update the total pages state
+      setCurrentPage(result.currentPage); // Update the current page state
     } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error fetching data:', error); // Log any errors encountered
     }
   };
 
+  // Handle change in sorting option
   const handleSortChange = async (newSortBy: string) => {
-    setSortBy(newSortBy);
-    await fetchData(1, newSortBy, filterOption);
+    setSortBy(newSortBy); // Update the sorting state
+    await fetchData(1, newSortBy, filterOption); // Fetch data for the first page with new sort option
   };
 
+  // Handle change in filter option
   const handleFilterChange = async (newFilter: string) => {
-    setFilterOption(newFilter);
-    await fetchData(1, sortBy, newFilter);
+    setFilterOption(newFilter); // Update the filter state
+    await fetchData(1, sortBy, newFilter); // Fetch data for the first page with new filter option
   };
 
+  // Handle page change
   const handlePageChange = async (page: number) => {
-    await fetchData(page, sortBy, filterOption);
+    await fetchData(page, sortBy, filterOption); // Fetch data for the selected page
   };
 
+  // InfoIcon component for displaying popover information
   const InfoIcon = ({ content }: { content: string }) => (
     <Popover placement="top">
       <PopoverTrigger>
@@ -93,10 +92,6 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
     </Popover>
   );
 
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
-
   return (
     <>
       <div className="flex mt-4 flex-col w-full">
@@ -109,6 +104,7 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
             style={{ maxWidth: "13%" }}
           ></div>
         </div>
+
         <div className="flex flex-col md:flex-row items-start gap-6 md:justify-between mb-6 px-6 md:items-center w-full">
           <SortByFilter sortBy={sortBy} setSortBy={handleSortChange} />
 
@@ -116,9 +112,7 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
             orientation="horizontal"
             value={filterOption}
             onValueChange={handleFilterChange}
-            classNames={{
-              wrapper: "gap-2",
-            }}
+            classNames={{ wrapper: "gap-2" }}
           >
             <Radio 
               classNames={{
@@ -164,20 +158,18 @@ export function TrendingFacts({ initialData, userId,clientDate }: TrendingFactsP
 
         {facts.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="w-40 h-40 mb-6">
-            <Image
-              width={200} 
-              height={200} 
-              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729604854/achievements/empty-box-3d-6717ace7b4c8a_zkwzn0.webp" 
-              className="" 
-              alt="search"
-            />
+            <div className="w-40 h-40 mb-6">
+              <Image
+                width={200} 
+                height={200} 
+                src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729604854/achievements/empty-box-3d-6717ace7b4c8a_zkwzn0.webp" 
+                alt="search"
+              />
+            </div>
+            <h3 className="text-sm text-grey-4 mb-2">
+              Facts are looking a bit lonely here! Try tweaking your filters to find more facts.
+            </h3>
           </div>
-          <h3 className="text-sm text-grey-4 mb-2">
-          Facts are looking a bit lonely here! Try tweaking your filters to find more facts.
-          </h3>
-         
-        </div>
         )}
 
         <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-12">

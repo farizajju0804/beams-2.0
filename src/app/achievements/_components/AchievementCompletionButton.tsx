@@ -52,15 +52,17 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
   userType,
   achievementId
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [animatedBeams, setAnimatedBeams] = useState(currentBeams);
-  const [leveledUp, setLeveledUp] = useState(false);
-  const [newLevel, setNewLevel] = useState<Level | null>(null);
-  const [levelCaption, setLevelCaption] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // For showing loader
-  const [hasGainedBeams, setHasGainedBeams] = useState(false); // Fetch from server
+  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal control hooks
+  const [showConfetti, setShowConfetti] = useState(false); // State to trigger confetti animation
+  const [animatedBeams, setAnimatedBeams] = useState(currentBeams); // Beams count for animation
+  const [leveledUp, setLeveledUp] = useState(false); // Track if the user leveled up
+  const [newLevel, setNewLevel] = useState<Level | null>(null); // Store the new level object
+  const [levelCaption, setLevelCaption] = useState<string | null>(null); // Caption for the level up message
+  const [loading, setLoading] = useState(false); // State for loading status
+  const [hasGainedBeams, setHasGainedBeams] = useState(false); // Status to check if beams were gained
 
+
+   // Function to get a random inspiring message, personalizing it with user info
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * INSPIRING_MESSAGES.length);
     return INSPIRING_MESSAGES[randomIndex]
@@ -68,8 +70,10 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
       .replace(/{badgeName}/g, badgeName);
   };
 
-  const [inspiringMessage] = useState(getRandomMessage());
+    // State for storing the randomly chosen inspiring message
+    const [inspiringMessage] = useState(getRandomMessage());
 
+      // Function to trigger confetti animation
   const triggerConfetti = () => {
     const defaults = {
       spread: 360,
@@ -80,6 +84,8 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
       colors: [color],
     };
 
+    
+     // Function to shoot confetti particles
     const shoot = () => {
       confetti({
         ...defaults,
@@ -96,30 +102,23 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
       });
     };
 
+     // Delay for shooting confetti multiple times
     setTimeout(shoot, 0);
     setTimeout(shoot, 100);
     setTimeout(shoot, 300);
   };
 
+  // useEffect to trigger confetti when the modal opens
   useEffect(() => {
     if (isOpen && showConfetti) {
-      triggerConfetti();
-      setShowConfetti(false);
+      triggerConfetti(); // Call the confetti trigger function
+      setShowConfetti(false); // Reset the confetti state
     }
   }, [isOpen, showConfetti]);
 
-  // Fetch hasGainedBeams status on component mount
-  // useEffect(() => {
-  //   const fetchHasGainedStatus = async () => {
-  //     setLoading(true);
-  //     const status = await getHasGainedBeamsStatus(userId, achievementId);
-  //     setHasGainedBeams(status);
-  //     setLoading(false);
-  //   };
 
-  //   fetchHasGainedStatus();
-  // }, [userId, achievementId]);
 
+  // Function to handle opening the modal and processing the achievement claim
   const handleOpenModal = async () => {
     // If hasGainedBeams is true, we don't want to run any backend actions
 
@@ -169,12 +168,14 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
     setShowConfetti(true);
   };
 
+   // Data for sharing on social platforms
   const shareData = {
     title: `${userFirstName} just unlocked the ${badgeName} badge!`,
     shortDesc: `I'm excited to share that I earned the ${badgeName} badge and gained ${beamsToGain} Beams!`,
     url: window.location.href, // Current page URL to be shared
   };
 
+    // If loading, show a spinner overlay
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[250]">
@@ -196,7 +197,7 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
         isDisabled={!isCompleted}
       >
         Claim Badge
-        {/* {`${personalizedMessage}`} */}
+      
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center">
@@ -235,13 +236,13 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
                     +{beamsToGain} Beams
                   </Chip>
                   <div className='flex flex-col gap-2'>
-                  {leveledUp && (
+                  {/* {leveledUp && (
                     <div className="text-center my-2">
                       <h3 className="text-lg font-bold">Level Up!</h3>
                       <p className="text-sm">{levelCaption}</p>
                       
                     </div>
-                  )}
+                  )} */}
 
                   <LevelName
                    minPoints={newLevel ? newLevel.minPoints : currentLevel.minPoints}

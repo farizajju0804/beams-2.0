@@ -14,11 +14,16 @@ import { beamsTodayBadge10, beamsTodayBadge50 } from "@/constants/victoryConstan
  * This function also increments the view count for the content.
  * 
  * @param beamsTodayId - The ID of the topic being marked as completed.
- * @param format - The format of the completed content ('video', 'audio', or 'text'). Default is 'video'.
+ * @param format - The format of the completed content ('video', 'audio', or 'text').
  * @throws Throws an error if the topic could not be marked as completed.
+ * @returns {Promise<Object>} A promise that resolves to an object containing:
+ *                            - success: boolean indicating if it was the first completion,
+ *                            - leveledUp: boolean indicating if the user leveled up,
+ *                            - beams: user's current beam points,
+ *                            - newLevel: the user's new level,
+ *                            - pointsAdded: points added for completion,
+ *                            - achievementUpdate: updates related to achievements.
  */
-
-
 export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video' | 'audio' | 'text') => {
   console.log(`[markTopicAsCompleted] Starting for beamsTodayId: ${beamsTodayId}, format: ${format}`);
 
@@ -72,7 +77,7 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
     let userBeamPoints = null;
     let leveledUp = false;
     let newLevel = null;
-    let achievementUpdate =null;
+    let achievementUpdate = null;
 
     if (isFirstCompletion) {
       console.log(`[markTopicAsCompleted] Processing first-time completion for beamsTodayId: ${beamsTodayId}`);
@@ -99,15 +104,13 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
         `Completed beams today, "${beamsToday.title}"`, 
         user.userType
       );
-      const {  userBeamPoints : beams , leveledUp: leveledUpFlag, newLevel: updatedLevel, levelCaption: caption } = updateResult;
+      const { userBeamPoints: beams, leveledUp: leveledUpFlag, newLevel: updatedLevel, levelCaption: caption } = updateResult;
       leveledUp = leveledUpFlag;
       newLevel = updatedLevel;
-      userBeamPoints = beams
+      userBeamPoints = beams;
 
-      
-     achievementUpdate = await updateAchievementProgress(userId, [beamsTodayBadge10, beamsTodayBadge50]);
-     console.log(`Progress Updated':`, achievementUpdate);
-    
+      achievementUpdate = await updateAchievementProgress(userId, [beamsTodayBadge10, beamsTodayBadge50]);
+      console.log(`Progress Updated:`, achievementUpdate);
     }
 
     console.log(`[markTopicAsCompleted] Updating watched content`);
@@ -118,9 +121,6 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
 
     console.log(`[markTopicAsCompleted] Operation completed successfully`);
 
-    
-
- 
     return {
       success: isFirstCompletion,
       leveledUp,
@@ -135,8 +135,15 @@ export const markTopicAsCompleted = async (beamsTodayId: string, format: 'video'
   }
 };
 
-
-
+/**
+ * Updates the achievement progress for a user based on completed achievements.
+ *
+ * @param userId - The ID of the user whose achievements are being updated.
+ * @param achievements - An array of achievement names to update progress for.
+ * @returns {Promise<Object>} A promise that resolves to an object containing:
+ *                            - achievementUpdates: an object mapping achievement names to progress updates.
+ * @throws Throws an error if updating achievement progress fails.
+ */
 async function updateAchievementProgress(
   userId: string,
   achievements: string[]
@@ -144,7 +151,7 @@ async function updateAchievementProgress(
   try {
     console.log(`[updateAchievementProgress] Processing achievements for userId: ${userId}, achievements: ${achievements.join(", ")}`);
 
-    const achievementUpdates: { [key: string]: { progress: number; isFirstTimeCompletion: boolean,achievement: Achievement } } = {};
+    const achievementUpdates: { [key: string]: { progress: number; isFirstTimeCompletion: boolean, achievement: Achievement } } = {};
 
     for (const achievementName of achievements) {
       // Find the achievement by name
@@ -166,7 +173,7 @@ async function updateAchievementProgress(
       // If the achievement is already completed, skip it
       if (userAchievement && userAchievement.completionStatus) {
         console.log(`[updateAchievementProgress] Achievement already completed for userId: ${userId}, achievement: ${achievementName}`);
-        achievementUpdates[achievementName] = { progress: userAchievement.progress, isFirstTimeCompletion: false,achievement: userAchievement.achievement };
+        achievementUpdates[achievementName] = { progress: userAchievement.progress, isFirstTimeCompletion: false, achievement: userAchievement.achievement };
         continue;
       }
 
@@ -204,7 +211,7 @@ async function updateAchievementProgress(
         });
       }
 
-      achievementUpdates[achievementName] = { progress: newProgress, isFirstTimeCompletion: isNowCompleted,achievement: userAchievement.achievement };
+      achievementUpdates[achievementName] = { progress: newProgress, isFirstTimeCompletion: isNowCompleted, achievement: userAchievement.achievement };
     }
 
     return {
@@ -215,9 +222,6 @@ async function updateAchievementProgress(
     throw new Error(`Error updating achievement progress: ${(error as Error).message}`);
   }
 }
-
-
-
 
 
 
