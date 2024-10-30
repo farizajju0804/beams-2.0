@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation"; // Next.js router hook for navigati
 import { Send2 } from "iconsax-react"; // Icon used in the button for visual feedback
 import RedirectMessage from "@/components/Redirection";
 import { v4 as uuidv4 } from 'uuid'
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 // Zod schema for email validation
 const emailSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -35,8 +36,9 @@ const ChangeEmail = () => {
   const router = useRouter(); // Next.js router hook for navigation
 
   // React Hook Form setup with Zod schema validation
-  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof emailSchema>>({
+  const form = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
+    mode: "onBlur"
   });
 
   // Callback function to verify the token
@@ -117,31 +119,45 @@ const ChangeEmail = () => {
       ) : (
         <CardWrapper 
           subMessage={!isTokenValid ? "" : "Ready for a change? Enter your new email below, and we'll keep you connected!"} 
-          headerLabel={isTokenValid ? "Change Your Email" : "Identity Verification Failed"}
+          headerLabel={isTokenValid ? "Change Your Email" : error ? error : "Verification failed"}
         >
           {isTokenValid && ( // If the token is valid, render the form
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-4">
-              <Input
-                {...register("email")} // Register the input field with React Hook Form
-                type="email"
-                autoComplete="email"
-                aria-label="email"
-                variant="underlined"
-                labelPlacement="outside"
-                label="New Email Address"
-                classNames={{
-                  label: 'font-semibold text-text', // Label styling
-                  mainWrapper: "w-full flex-1",
-                  inputWrapper: "h-12",
-                  input: [
-                    "placeholder:text-grey-2", // Input placeholder styling
-                    'w-full flex-1 font-medium',
-                  ],
-                }}
-                placeholder="Enter your new email" // Input placeholder
-                disabled={isSubmitting} // Disable input while submitting
-              />
-              
+           <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}  className="space-y-4 pb-4">
+            <FormField
+                control={form.control}
+                name="email"
+                render={({ field}) => (
+                  <FormItem>
+                    <FormControl>
+                        <Input
+                         // Register the input field with React Hook Form
+                          type="email"
+                          autoComplete="email"
+                          isRequired
+                          aria-label="email"
+                          variant="underlined"
+                          labelPlacement="outside"
+                          label="New Email Address"
+                          {...field}
+                          classNames={{
+                            label: 'font-semibold text-text', // Label styling
+                            mainWrapper: "w-full flex-1",
+                            inputWrapper: "h-12",
+                            input: [
+                              "placeholder:text-grey-2", // Input placeholder styling
+                              'w-full flex-1 font-medium',
+                            ],
+                          }}
+                          placeholder="Enter your new email" // Input placeholder
+                          disabled={isSubmitting} // Disable input while submitting
+                        />
+                  </FormControl>
+                    <FormMessage></FormMessage>
+                  </FormItem>
+                     )}
+                     />
+                
               <Button 
                 type="submit" 
                 aria-label="submit"
@@ -153,7 +169,9 @@ const ChangeEmail = () => {
               </Button>
               {error && <FormError message={error} />} {/* Display form errors if any */}
             </form>
+            </Form>
           )}
+
         </CardWrapper>
       )}
     </>
