@@ -4,37 +4,38 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@nextui-org/react';
 import { Heart } from 'iconsax-react';
 import { motion } from 'framer-motion';
-import { useFavoritesStore } from '@/store/favoritesStore';
-import { toast, Toaster } from 'react-hot-toast'; // Import toast for error notifications
+import { toast, Toaster } from 'react-hot-toast';
+import { toggleFavorite } from '@/actions/beams-today/favoriteActions';
+import { isFavoriteBeamsToday } from '@/actions/beams-today/favoriteActions'; // Import your favorite check action
 
-// Define the props interface for the FavoriteButton component
 interface FavoriteButtonProps {
   beamsTodayId: string; // Unique identifier for the beam item
 }
 
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
-  // Destructure required methods from the favorites store
-  const { toggleFavorite, initializeFavorites, isFavorite } = useFavoritesStore();
-
   // Local state management
   const [isAnimating, setIsAnimating] = useState(false);         // Controls heart animation
   const [isFavoriteState, setIsFavoriteState] = useState(false); // Tracks favorite status
   const [isProcessing, setIsProcessing] = useState(false);       // Prevents double-clicks
 
-  // Initialize favorites data when component mounts
+  // Fetch initial favorite status on component mount
   useEffect(() => {
-    try {
-      initializeFavorites();
-    } catch (error) {
-      console.error('Failed to initialize favorites:', error);
-      toast.error('Failed to load favorites. Please try again later.');
-    }
-  }, []);
+    const fetchFavoriteStatus = async () => {
+      try {
+        // Check if the item is already favorited and set the initial state
+        setIsProcessing(true);
+        const favoriteStatus = await isFavoriteBeamsToday(beamsTodayId);
+        setIsFavoriteState(favoriteStatus);
+        setIsProcessing(false);
+      } catch (error) {
+        console.error("Failed to fetch favorite status:", error);
+        // Display error notification if fetching fails
+        toast.error("Failed to load favorite status. Please try again later.");
+      }
+    };
 
-  // Update local favorite state when beamsTodayId or isFavorite changes
-  useEffect(() => {
-    setIsFavoriteState(isFavorite(beamsTodayId));
-  }, [beamsTodayId, isFavorite]);
+    fetchFavoriteStatus();
+  }, [beamsTodayId]); // Dependency array includes beamsTodayId to re-fetch if it changes
 
   // Helper function to check for network connectivity
   const checkNetworkConnection = (): boolean => {
@@ -57,19 +58,19 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
     // Check internet connectivity
     if (!checkNetworkConnection()) return;
 
-    setIsProcessing(true);
+    setIsProcessing(true); // Lock the button while processing
 
     try {
       // Attempt to toggle the favorite status
       await toggleFavorite(beamsTodayId);
-      
-      // Update local state to reflect the new favorite status
-      setIsFavoriteState(isFavorite(beamsTodayId));
-      
+
+      // Toggle local favorite state
+      setIsFavoriteState(!isFavoriteState);
+
       // Trigger heart animation
       setIsAnimating(true);
-      
-      // Show success message
+
+      // Show success message based on the new favorite state
       toast.success(isFavoriteState ? 'Removed from favorites' : 'Added to favorites');
 
       // Reset animation after 500ms
@@ -85,10 +86,13 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
         toast.error('Failed to update favorite. Please try again later.');
       }
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false); // Unlock the button after processing
     }
   };
 
+  // if(isProcessing){
+  //   return null
+  // }
   return (
     <>
       {/* Toast container for notifications */}
@@ -98,7 +102,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
       <Button
         size="sm"
         isIconOnly
-        className={isFavoriteState ? 'bg-red-600' : 'bg-grey-1'}
+        className={ `hover:bg-none hover:opacity-none  ${isFavoriteState ? 'bg-red-600' : 'bg-grey-1'}`}
         aria-label={isFavoriteState ? "Unlike" : "Like"}
         onClick={handleFavoriteToggle}
         isDisabled={isProcessing} // Disable button while processing

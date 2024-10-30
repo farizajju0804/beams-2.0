@@ -79,7 +79,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ notes }) => {
       <div className="mt-4 min-h-[80vh]">
           
           {notes.map((note) => (
-            <div key={note.id} className="mb-4 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
+            <div key={note.id} className="mb-8 cursor-pointer" onClick={(e) => handleCardClick(e, note.beamsTodayId)}>
               <Card aria-label='notes-card'>
                 <CardHeader>
                   <p className="text-lg font-bold">{note.beamsToday.title}</p>

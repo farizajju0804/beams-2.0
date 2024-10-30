@@ -7,14 +7,16 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { getNote, saveNote } from '@/actions/beams-today/saveUserNote';
 import { toast, Toaster } from 'react-hot-toast';
 import FormattedDate from './FormattedDate';
+import { BeamsTodayUserNote } from '@prisma/client';
 
 // Interface defining the required props for the NoteModal component
 interface NoteModalProps {
   id: string;    // Unique identifier for the note
   title: string; // Title to display in the modal header
+  existingNote : BeamsTodayUserNote | null;
 }
 
-const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
+const NoteModal: React.FC<NoteModalProps> = ({ id, title, existingNote }) => {
   // Custom hook to get the current user's information
   const user = useCurrentUser();
   
@@ -22,50 +24,50 @@ const NoteModal: React.FC<NoteModalProps> = ({ id, title }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   
   // State management for the note component
-  const [note, setNote] = useState('');                           // Stores the current note content
-  const [charCount, setCharCount] = useState(0);                  // Tracks the character count of the note
-  const [isExistingNote, setIsExistingNote] = useState(false);   // Indicates if we're editing an existing note
+  const [note, setNote] = useState(existingNote ? existingNote.note :'');                           // Stores the current note content
+  const [charCount, setCharCount] = useState(existingNote ? existingNote.note.length : 0 );                  // Tracks the character count of the note
+  const [isExistingNote, setIsExistingNote] = useState( existingNote ? true : false);   // Indicates if we're editing an existing note
   const [isSaving, setIsSaving] = useState(false);               // Tracks the saving state for UI feedback
 
   // Effect hook to fetch existing note when modal opens
-  useEffect(() => {
-    let isMounted = true; // Flag to prevent state updates after component unmount
+  // useEffect(() => {
+  //   let isMounted = true; // Flag to prevent state updates after component unmount
 
-    // Async function to fetch the note data
-    const fetchNote = async () => {
-      if (user) {
-        try {
-          // Attempt to fetch the existing note using the provided ID
-          const existingNote = await getNote(id);
+  //   // Async function to fetch the note data
+  //   const fetchNote = async () => {
+  //     if (user) {
+  //       try {
+  //         // Attempt to fetch the existing note using the provided ID
+  //         const existingNote = await getNote(id);
           
-          // Only update state if the component is still mounted and we have data
-          if (isMounted && existingNote) {
-            setNote(existingNote.note);
-            setCharCount(existingNote.note.length);
-            setIsExistingNote(true);
-          }
-        } catch (error) {
-          // Handle network-related errors when loading the note
-          if (!navigator.onLine || error instanceof TypeError) {
-            toast.error('Unable to load note. Please check your internet connection.');
-          } else {
-            // Handle other types of errors
-            toast.error('Failed to load note. Please try again later.');
-          }
-        }
-      }
-    };
+  //         // Only update state if the component is still mounted and we have data
+  //         if (isMounted && existingNote) {
+  //           setNote(existingNote.note);
+  //           setCharCount(existingNote.note.length);
+  //           setIsExistingNote(true);
+  //         }
+  //       } catch (error) {
+  //         // Handle network-related errors when loading the note
+  //         if (!navigator.onLine || error instanceof TypeError) {
+  //           toast.error('Unable to load note. Please check your internet connection.');
+  //         } else {
+  //           // Handle other types of errors
+  //           toast.error('Failed to load note. Please try again later.');
+  //         }
+  //       }
+  //     }
+  //   };
 
-    // Only fetch the note when the modal is opened
-    if (isOpen) {
-      fetchNote();
-    }
+  //   // Only fetch the note when the modal is opened
+  //   if (isOpen) {
+  //     fetchNote();
+  //   }
 
-    // Cleanup function to prevent memory leaks
-    return () => {
-      isMounted = false;
-    };
-  }, [id, user, isOpen]); // Dependencies that trigger the effect
+  //   // Cleanup function to prevent memory leaks
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [id, user, isOpen]); // Dependencies that trigger the effect
 
   // Handler for note content changes
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

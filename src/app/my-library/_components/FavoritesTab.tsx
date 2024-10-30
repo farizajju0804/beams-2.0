@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardBody, CardFooter, Button } from "@nextui-org/react";
-import { Trash, Heart, Microscope } from 'iconsax-react';
+import { Trash, Microscope } from 'iconsax-react';
 import Image from 'next/image';
 import { removeFavorite } from '@/actions/beams-today/removeFavorite';
 import { toast } from 'react-hot-toast';
+import { getUserFavorites } from '@/actions/beams-today/getUserFavorites';
 
 interface FavoritesTabProps {
   favorites: any[]; // Array of user's favorite topics
@@ -14,14 +15,16 @@ interface FavoritesTabProps {
 
 export default function FavoritesTab({ favorites }: FavoritesTabProps) {
   const router = useRouter();
-
+  const [favoritesAll, setFavoritesAll] = useState(favorites) 
   const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>, favoriteId: string) => {
     e.preventDefault();
     e.stopPropagation();
     try {
       await removeFavorite(favoriteId);
       toast.success('Removed from favorites');
-      router.refresh();
+      const newFavorites = await getUserFavorites();
+      setFavoritesAll(newFavorites)
+      // router.refresh();
     } catch (error) {
       toast.error('Failed to remove from favorites');
     }
@@ -32,7 +35,7 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
     router.push(`/beams-today/${favoriteId}`);
   };
 
-  if (favorites.length === 0) {
+  if (favoritesAll.length === 0) {
     return (
       <div className="flex flex-col mt-4 items-center justtify-center md:justify-start md:min-h-[60vh] text-center">
         <div className="w-40 h-40 mb-8">
@@ -61,12 +64,12 @@ export default function FavoritesTab({ favorites }: FavoritesTabProps) {
   }
 
   return (
-    <div className="mt-4 min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {favorites.map((favorite) => (
-        <div key={favorite.id} className="cursor-pointer" onClick={(e) => handleCardClick(e, favorite.beamsTodayId)}>
-          <Card aria-label='favorite-card' className="max-w-xs">
+    <div className="mt-4   grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+      {favoritesAll.map((favorite) => (
+        <div key={favorite.id} className="cursor-pointer h-fit" onClick={(e) => handleCardClick(e, favorite.beamsTodayId)}>
+          <Card aria-label='favorite-card' className="max-w-sm">
             <CardHeader>
-              <p className="text-lg font-bold">{favorite.beamsToday.title}</p>
+              <p className="text-lg  font-bold">{favorite.beamsToday.title}</p>
             </CardHeader>
             <CardBody>
               <Image

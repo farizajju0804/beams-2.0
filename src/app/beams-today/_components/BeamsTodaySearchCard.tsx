@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'; // Importing the Next.js router for
 import FormattedDate from './FormattedDate'; // Importing the FormattedDate component
 
 import { Chip } from "@nextui-org/react"; // Importing the Chip component from NextUI
+import Image from 'next/image';
 
 // Define the props for the BeamsTodayCard component
 interface BeamsTodayCardProps {
@@ -26,14 +27,21 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
   return (
     <div
       className={`cursor-pointer relative aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
-      style={{ 
-        backgroundImage: `url(${topic.thumbnailUrl})`, // Sets the background image to the topic thumbnail
-        backgroundSize: 'cover', // Covers the entire div with the background image
-        backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
-        backgroundPosition: 'center' // Centers the background image
-      }}
+      // style={{ 
+      //   backgroundImage: `url(${topic.thumbnailUrl})`, // Sets the background image to the topic thumbnail
+      //   backgroundSize: 'cover', // Covers the entire div with the background image
+      //   backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
+      //   backgroundPosition: 'center' // Centers the background image
+      // }}
       onClick={handleCardClick} // Attaches the click handler to the card
     >
+        <Image
+      src={topic.thumbnailUrl} // Image source based on theme
+      alt="Background Image" // Alt text for accessibility
+      layout="fill" // Makes the image fill the parent container
+      priority
+      className="absolute rounded-3xl object-cover inset-0 z-0" // Positions the image absolutely and fills the section
+    />
       <div className="flex flex-row items-center justify-between py-0 px-1">
         {/* Renders a Chip component if the topic has a category */}
         {topic?.category && (

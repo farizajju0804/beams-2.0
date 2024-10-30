@@ -223,7 +223,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                       </Chip>
                     )}
                     <div 
-                      className="[backdrop-filter:blur(5px)] rounded-2xl bg-text flex flex-row items-start justify-start"
+                      className="rounded-2xl flex flex-row items-start justify-start"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <FavoriteButton beamsTodayId={topic.id} />
