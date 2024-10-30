@@ -29,8 +29,26 @@ const grades = ['Grade 4','Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9']
 
 // Zod schema for form validation
 export const SettingsSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters long"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters long"),
+  firstName: z
+    .string()
+    .min(1, "First name is required")
+    .min(2, "First name must be at least 2 characters")
+    .max(20, "First name cannot exceed 20 characters")
+    .trim()
+    .refine(
+      (val) => /^[a-zA-Z0-9\s]+$/.test(val),
+      "First name can only contain letters, numbers and spaces"
+    ),
+  lastName: z
+    .string()
+    .min(1, "Last name is required")
+    .min(2, "Last name must be at least 2 characters")
+    .max(20, "Last name cannot exceed 20 characters")
+    .trim()
+    .refine(
+      (val) => /^[a-zA-Z0-9\s]+$/.test(val),
+      "Last name can only contain letters, numbers and spaces"
+    ),
   gender: z.enum(['MALE', 'FEMALE', 'TRANSGENDER', 'BISEXUAL', 'PREFER_NOT_TO_SAY']),
   dob: z.instanceof(CalendarDate).nullable().optional(),
   grade: z.string().optional().nullable(),

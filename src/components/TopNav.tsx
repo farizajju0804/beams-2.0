@@ -6,12 +6,11 @@ import { currentUser } from '@/libs/auth'
 import ClientTopNav from './ClientTopNav'
 
 const TopNav = async () => {
-  const user = await currentUser()
 
   return (
     <div className='w-full md:px-8 px-4 py-4 flex items-center justify-between'>
       <div className='hidden md:flex flex-col items-start'>
-        <h3 className='font-poppins text-lg mb-1'>Welcome Back, {user?.firstName}</h3>
+        <h3 className='font-poppins text-lg mb-1'>Welcome Back</h3>
         <p className='text-[#a8a8a8] text-sm'>Don&apos;t forget to smile today 😊</p>
       </div>
       <div className="md:hidden flex items-center">

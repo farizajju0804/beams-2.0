@@ -19,7 +19,7 @@ const RelatedSection: React.FC<RelatedSectionProps> = ({ topics, categoryName })
     <div className="p-4 mb-6"> {/* Padding and margin styling for the section container */}
       {/* Section heading with a bottom border */}
       <div className="flex justify-between flex-col items-start mb-4">
-        <h1 className="text-lg md:text-3xl font-display font-bold mb-[1px]">Recommended For You</h1>
+        <h1 className="text-lg md:text-3xl font-poppins font-semibold mb-[1px]">Recommended For You</h1>
         <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
       </div>
 

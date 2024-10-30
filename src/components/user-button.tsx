@@ -159,7 +159,7 @@ export default function UserButton({ initialUser }: UserButtonProps) {
                   name: "",
                   isBordered: true,
                 }}
-                classNames={{ name: "font-medium" }}
+                classNames={{ name: "font-medium max-w-24 truncate" }}
               />
               <ArrowDown2 size={16} />
             </div>

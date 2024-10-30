@@ -88,12 +88,10 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
             (achievementKey) => achievementUpdate.achievementUpdates[achievementKey].isFirstTimeCompletion
           );
 
-          console.log("First-time achievements found:", firstTimeAchievements);
-          
+
           // Show the first achievement found
           if (firstTimeAchievements.length > 0) {
             const firstAchievement = achievementUpdate.achievementUpdates[firstTimeAchievements[0]];
-            console.log("First achievement to show:", firstAchievement);
             setAchievementToShow(firstAchievement); // Set the achievement to show in the popup
           }
         }
@@ -107,12 +105,11 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
 
   // Effect to log when the completion state changes
   useEffect(() => {
-    console.log('useEffect running, completed:', completed);
   }, [completed]);
 
   // Render nothing if no article URL is provided
   if (!articleUrl) {
-    console.log('No article URL provided');
+
     return <div>No article available</div>;
   }
 
