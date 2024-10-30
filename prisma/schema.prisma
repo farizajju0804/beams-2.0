@@ -132,6 +132,17 @@ model VerificationToken {
   @@index([email]) // Index for faster queries on email
 }
 
+// Model for storing chnage email tokens used for new  email verification
+model ChangeToken {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  email   String // Email address associated with the token
+  token   String   @unique // Unique verification token
+  uuid    String   @unique
+  expires DateTime // Expiration time for the token
+  @@unique([email, token,uuid]) // Ensures unique combination of email and token
+  @@index([email]) // Index for faster queries on email
+}
+
 // Model for storing password reset tokens
 model PasswordResetToken {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId

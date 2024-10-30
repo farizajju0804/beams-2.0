@@ -56,8 +56,7 @@ const ChangeEmail = () => {
         } else {
           setIsTokenValid(true); // Set token as valid if successful
         
-            const uuidNew = uuidv4(); // Generate a new UUID if not already in localStorage
-            localStorage.setItem("changeEmailToken", uuidNew); // Store the UUID in localStorage
+            const uuidNew = uuidv4();
             setUuid(uuidNew)  
         }
       })

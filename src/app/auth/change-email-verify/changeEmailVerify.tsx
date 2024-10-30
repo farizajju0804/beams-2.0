@@ -15,6 +15,7 @@ import Image from "next/image"; // Next.js optimized image component
 import Link from "next/link"; // Link component for navigation
 import { Sms } from "iconsax-react"; // Icon used in the button
 import { RiLoginCircleFill } from "react-icons/ri"; // Icon for login button
+import { getUuidVerifyStatus } from "@/actions/auth/new-email";
 
 // Define the Zod schema for validation
 const verifyEmailSchema = z.object({
@@ -53,7 +54,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
   const [resendMessage, setResendMessage] = useState("");
   const [isResending, setIsResending] = useState(false); // State for managing resend action
   const [countdown, setCountdown] = useState(30); // Countdown timer for 30 seconds
-  const [showResend, setShowResend] = useState(true)
+  const [alternate, setAlternate] = useState(false)
 
   const searchParams = useSearchParams();
   const oldEmail: any = searchParams.get("oldEmail");
@@ -65,17 +66,26 @@ const VerifyEmail: React.FC<{}> = ({}) => {
 
 
   useEffect(() => {
-    const storedUuid = localStorage.getItem("changeEmailToken");
- 
-    if (uuidFromUrl && storedUuid) {
-      if (storedUuid !== uuidFromUrl) {
-        setShowResend(false);
-        setError("Invalid Link");
-      } else {
-        setShowResend(true);
+    const checkUuidStatus = async () => {
+      if (!uuidFromUrl || !emailFromUrl || !oldEmail) {
+        setAlternate(true);
+        return;
       }
-    }
-  }, [uuidFromUrl])
+
+      try {
+        const verifyUuid = await getUuidVerifyStatus(email, uuidFromUrl);
+        if (!verifyUuid) {
+          setAlternate(true);
+        }
+      } catch (error) {
+        console.error("Error verifying UUID:", error);
+        setAlternate(true); // Set alternate state in case of an error
+      }
+    };
+  
+    checkUuidStatus();
+  }, [uuidFromUrl]);
+  
 
 
   // Handles input changes, ensuring only numeric values are allowed
@@ -90,13 +100,14 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     setError("");
     setIsLoading(true);
     try {
-      const result = await verifyCodeAndChangeEmail(data.code, oldEmail); // Verify the code and change email
+      if(uuidFromUrl){
+      const result = await verifyCodeAndChangeEmail(data.code, oldEmail,uuidFromUrl);
       if (result?.success) {
         setSuccess(true);
-        localStorage.removeItem("changeEmailToken")
       } else {
         setError(result?.error || "Verification failed."); // Set error if verification fails
       }
+    }
     } catch (err) {
       console.error("Error:", err);
       setError("An unexpected error occurred."); // Handle unexpected errors
@@ -146,6 +157,16 @@ const VerifyEmail: React.FC<{}> = ({}) => {
     return () => clearInterval(timer);
   }, [countdown]);
 
+
+  if(alternate){
+    return (
+      <CardWrapper
+      headerLabel={ "Invalid Link"}
+      >
+        <></>
+        </CardWrapper>
+    )
+  }
   return (
     <CardWrapper
       headerLabel={success ? "Email Updated Successfully" : "Verify Your New Email"} // Header label changes based on success state
@@ -210,7 +231,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
               {/* <Link href="/auth/login" className="text-text text-sm">
                 Back to Login
               </Link> */}
-              {showResend && (
+        
               <div>
                 {isResending ? (
                   <p className="text-sm text-text">
@@ -230,7 +251,7 @@ const VerifyEmail: React.FC<{}> = ({}) => {
                   </Button>
                 )}
               </div>
-              )}
+          
             </div>
           </form>
         </>

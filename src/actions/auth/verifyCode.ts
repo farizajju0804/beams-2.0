@@ -1,10 +1,8 @@
 "use server";
 
 import { db } from "@/libs/db";
-import { getVerificationTokenByToken } from "@/actions/auth/getVerificationToken";
+import { getChangeTokenByToken, getVerificationTokenByToken } from "@/actions/auth/getVerificationToken";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { signIn } from "@/auth";
 
 /**
  * Verifies the verification code for a user's email verification process.
@@ -50,21 +48,17 @@ export const verifyCode = async (code: string, email: string) => {
 };
 
 
-/**
- * Verifies the code and signs in the user.
- * @param {string} code - The verification code.
- * @returns {Object} - Returns an error or success message with login details.
- */
 
 
 /**
  * Verifies the code and changes the user's email.
  * @param {string} code - The verification code.
  * @param {string} oldEmail - The user's old email.
+ *  @param {string} uuid - The user's uuid created.
  * @returns {Object} - Returns an error or success message.
  */
-export const verifyCodeAndChangeEmail = async (code: string, oldEmail: string) => {
-  const existingToken = await getVerificationTokenByToken(code);
+export const verifyCodeAndChangeEmail = async (code: string, oldEmail: string,uuid:string) => {
+  const existingToken = await getChangeTokenByToken(code,uuid);
   if (!existingToken) {
     return { error: "Invalid or expired code." };
   }
@@ -88,7 +82,7 @@ export const verifyCodeAndChangeEmail = async (code: string, oldEmail: string) =
       },
     });
 
-    await db.verificationToken.delete({ where: { id: existingToken.id } });
+    await db.changeToken.delete({ where: { id: existingToken.id } });
 
     return { success: true };
   } catch (error) {

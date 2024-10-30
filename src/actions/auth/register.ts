@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { RegisterSchema, SecuritySchema } from "@/schema";
 import { db } from "@/libs/db";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
-import { getVerificationToken } from "@/libs/tokens";
+import { getChangeEmailToken, getVerificationToken } from "@/libs/tokens";
 import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
@@ -102,8 +102,9 @@ export const resendVerificationCode = async (email: string) => {
  */
 export const resendVerificationCode3 = async (email: string, oldEmail: string,uuid:string) => {
   const user: any = await currentUser();
-  const verificationToken = await getVerificationToken(email);
-  await sendVerificationEmail2(verificationToken.email, oldEmail, user?.firstName, verificationToken.token, uuid);
+  // const verificationToken = await getVerificationToken(email);
+  const changeToken = await getChangeEmailToken(email,uuid);
+  await sendVerificationEmail2(changeToken.email, oldEmail, user?.firstName, changeToken.token, uuid);
   console.log("Verification email sent. Please check your inbox.");
   return { success: "Verification email sent. Please check your inbox." };
 };

@@ -3,7 +3,7 @@
 import { db } from "@/libs/db";
 import { getVerificationTokenByToken } from "@/actions/auth/getVerificationToken";
 import { getUserByEmail } from "./getUserByEmail";
-import { getVerificationToken } from "@/libs/tokens";
+import { getChangeEmailToken } from "@/libs/tokens";
 import { sendVerificationEmail2 } from "@/libs/mail";
 
 /**
@@ -73,20 +73,20 @@ export const newEmail = async (token: string, newEmail: string, uuid :string) =>
     return { error: "Email already in use!" };
   }
 
-  // Delete the used verification token
-  await db.verificationToken.delete({
-    where: { id: existingToken.id },
-  });
+  // // Delete the used verification token
+  // await db.verificationToken.delete({
+  //   where: { id: existingToken.id },
+  // });
 
   // Generate a new verification token for the new email
-  const verificationToken = await getVerificationToken(newEmail);
+  const changeToken = await getChangeEmailToken(newEmail,uuid);
 
   // Send a verification email to the new address
   await sendVerificationEmail2(
-    verificationToken.email,
+    changeToken.email,
     existingToken.email,
     user.firstName,
-    verificationToken.token,
+    changeToken.token,
     uuid
   );
 
@@ -102,3 +102,16 @@ export const newEmail = async (token: string, newEmail: string, uuid :string) =>
     return { error: "Network Or Server Error. Check your internet or try again later." };
   }
 };
+
+
+export const getUuidVerifyStatus = async (email: string, uuid :string) => {
+const status = await db.changeToken.findFirst({
+  where : {
+    email : email,
+    uuid : uuid
+  }
+})
+
+return status
+
+}
