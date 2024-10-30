@@ -55,13 +55,10 @@ const ChangeEmail = () => {
           setError(data.error); // Display error if token verification fails
         } else {
           setIsTokenValid(true); // Set token as valid if successful
-          const uuidFromLocal = localStorage.getItem("changeEmailToken");
         
-          if (!uuidFromLocal) {
             const uuidNew = uuidv4(); // Generate a new UUID if not already in localStorage
             localStorage.setItem("changeEmailToken", uuidNew); // Store the UUID in localStorage
-            setUuid(uuidNew)
-          }
+            setUuid(uuidNew)  
         }
       })
       .catch(() => {

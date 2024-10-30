@@ -44,6 +44,7 @@ export const verifyToken = async (token: string) => {
  * @returns {Object} - Returns success with message, or an error if validation fails.
  */
 export const newEmail = async (token: string, newEmail: string, uuid :string) => {
+  try{
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
@@ -93,4 +94,11 @@ export const newEmail = async (token: string, newEmail: string, uuid :string) =>
     success: "Verification email sent. Please check your inbox.",
     oldEmail: existingToken.email,
   };
+
+
+}
+  catch (error) {
+    console.error("Error Sending email:", error);
+    return { error: "Network Or Server Error. Check your internet or try again later." };
+  }
 };
