@@ -10,6 +10,7 @@ import FormSuccess from "@/components/form-success";
 import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 import { Eye, EyeSlash } from "iconsax-react";
 import { settings } from "@/actions/auth/settings";
+import PasswordStrength from "@/app/auth/_components/PasswordStrength2";
 
 // Main component definition
 const ChangePasswordForm = () => {
@@ -45,6 +46,9 @@ const ChangePasswordForm = () => {
             setError(data.error); // Set error message if API returns an error
           } else if (data.success) {
             setSuccess(data.success); // Set success message if password update succeeds
+            form.reset(); // Reset form only on success
+            setShowPassword(false); // Reset password visibility
+            setShowNewPassword(false); // Reset new password visibility
             setError(""); // Clear any previous errors
           }
         })
@@ -125,6 +129,11 @@ const ChangePasswordForm = () => {
                 </FormItem>
               )}
             />
+              {/* Password strength component */}
+              <PasswordStrength
+                  password={form.watch('newPassword')} // Watch the password value to display strength
+                 
+                />
           </div>
 
           {/* Submit button */}

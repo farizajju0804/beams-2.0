@@ -108,20 +108,25 @@ export const ChangeEmailSchema = z.object({
 });
 
 export const ChangePasswordSchema = z.object({
-  password: z.string()
-    .min(8, { message: 'Password must have at least 8 characters' })
-    .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
-    .regex(/[a-z]/, { message: "Must include a lowercase letter" })
-    .regex(/[0-9]/, { message: "Must include a number" })
-    .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" }),
-  newPassword: z.string()
-    .min(8, { message: 'Password must have at least 8 characters' })
-    .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
-    .regex(/[a-z]/, { message: "Must include a lowercase letter" })
-    .regex(/[0-9]/, { message: "Must include a number" })
-    .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" }),
-});
-
+	password: z.string()
+	  .min(8, { message: 'Password must have at least 8 characters' })
+	  .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
+	  .regex(/[a-z]/, { message: "Must include a lowercase letter" })
+	  .regex(/[0-9]/, { message: "Must include a number" })
+	  .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" }),
+	newPassword: z.string()
+	  .min(8, { message: 'Password must have at least 8 characters' })
+	  .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
+	  .regex(/[a-z]/, { message: "Must include a lowercase letter" })
+	  .regex(/[0-9]/, { message: "Must include a number" })
+	  .regex(/[^a-zA-Z0-9]/, { message: "Must include a special character" })
+  }).refine(
+	(data) => data.password !== data.newPassword,
+	{
+	  message: "New password must be different from current password",
+	  path: ["newPassword"] // This shows the error on the newPassword field
+	}
+  );
 
 
 
