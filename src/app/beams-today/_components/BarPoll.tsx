@@ -34,10 +34,11 @@ interface Poll {
 
 interface PollComponentProps {
   poll: Poll;
+  pollResponse : any
 }
 
 // BarPoll component
-const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
+const BarPoll: React.FC<PollComponentProps> = ({ poll, pollResponse }) => {
   const colors = ["bg-[#F9D42E]", "bg-[#620097]", "bg-[#f96f2e]", "bg-[#370075]"];
   const textcolors = ["text-black", "text-white", "text-white", "text-white"];
 
@@ -51,16 +52,16 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
     }))
   );
 
-  const [hasVoted, setHasVoted] = useState<boolean>(false);
-  const [showResults, setShowResults] = useState<boolean>(false);
-  const [userResponse, setUserResponse] = useState<string | null>(null);
-  const { theme } = useTheme();
+  const [hasVoted, setHasVoted] = useState<boolean>(pollResponse ? true : false);
+  const [showResults, setShowResults] = useState<boolean>(pollResponse ? true : false);
+  const [userResponse, setUserResponse] = useState<string | null>(pollResponse ? pollResponse.pollOptionId :null);
+  // const { theme } = useTheme();
   
-  const lightBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215590/onboarding/poll-bg_fw00ys.webp';
-  const darkBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215290/onboarding/poll-bg-dark_mvffah.webp';
-  const imageSrc = theme === "light" ? lightBg : darkBg;
-  console.log("theme",theme)
-  console.log("image Src",imageSrc)
+  // const lightBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215590/onboarding/poll-bg_fw00ys.webp';
+  // const darkBg = 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1730215290/onboarding/poll-bg-dark_mvffah.webp';
+  // const imageSrc = theme === "light" ? lightBg : darkBg;
+  // console.log("theme",theme)
+  // console.log("image Src",imageSrc)
   // New states for RewardsModal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pointsAdded, setPointsAdded] = useState(0);
@@ -69,22 +70,24 @@ const BarPoll: React.FC<PollComponentProps> = ({ poll }) => {
   const [levelUp, setLevelUp] = useState(false);
  
 
-  useEffect(() => {
-    const checkUserResponse = async () => {
-      try {
-        const response = await getUserPollResponse(poll.id);
-        if (response) {
-          setHasVoted(true);
-          setShowResults(true);
-          setUserResponse(response.pollOptionId);
-        }
-      } catch (error) {
-        console.error("Error checking user response:", error);
-      }
-    };
 
-    checkUserResponse();
-  }, [poll.id]);
+
+  // useEffect(() => {
+  //   const checkUserResponse = async () => {
+  //     try {
+  //       // const response = await getUserPollResponse(poll.id);
+  //       if(pollResponse){
+  //         setHasVoted(true);
+  //         setShowResults(true);
+  //         setUserResponse(pollResponse.pollOptionId);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error checking user response:", error);
+  //     }
+  //   };
+
+  //   checkUserResponse();
+  // }, [poll.id]);
 
   // Handle voting and trigger RewardsModal on success
   const handleIncrementVote = async (vote: VoteType) => {

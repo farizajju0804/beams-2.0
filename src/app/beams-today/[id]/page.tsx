@@ -1,6 +1,6 @@
 import React from "react";
 import { getBeamsTodayById } from "@/actions/beams-today/getBeamsTodayById";
-import { getPoll } from "@/actions/beams-today/pollActions";
+import { getPoll, getUserPollResponse } from "@/actions/beams-today/pollActions";
 import BeamsTodayTabs from "../_components/BeamsTodayTabs";
 import BeamsTodayDetails from "@/app/beams-today/_components/BeamsTodayDetails";
 import RelatedSection from "../_components/RelatedSection";
@@ -57,8 +57,8 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   const beamsToday: any = await getBeamsTodayById(id);
   
   // Fetch the poll associated with the topic
-  const poll: any = await getPoll(id);
-  
+  const poll:any = await getPoll(id);
+  const pollResponse = await getUserPollResponse(poll?.id)
   // Fetch related topics within the same category, excluding the current topic
   const relatedTopics = await fetchCategoryRelatedTopics(beamsToday.category.id);
   const filteredRelatedTopics: any = relatedTopics.filter(topic => topic.id !== beamsToday.id);
@@ -93,7 +93,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
       <BeamsTodayDetails data={beamsToday} />
       
       {/* Render the poll component for user interaction */}
-      <BarPoll poll={poll} />
+      <BarPoll poll={poll} pollResponse={pollResponse} />
       
       {/* Display related topics if available */}
       {filteredRelatedTopics.length > 0 && (
