@@ -30,7 +30,7 @@ const UserProfile = ({ user, isOAuth }: { user: any, isOAuth: any }) => {
     <div className="flex flex-col items-center justify-start p-4">
       <div className="w-full max-w-lg rounded-lg overflow-hidden">
         {/* Header Section */}
-        <div className="text-text flex items-center justify-start lg:justify-center pb-4 px-6">
+        <div className="text-text flex items-center justify-start md:justify-center pb-4 px-6">
           <h1 className="text-2xl w-fit font-poppins font-semibold text-left">
             Your Account
           </h1>
@@ -50,7 +50,7 @@ const UserProfile = ({ user, isOAuth }: { user: any, isOAuth: any }) => {
               title={tab.label}
               className="font-semibold"
             >
-              <div className="px-4 pb-4 flex items-center justify-center">
+              <div className="pb-4 flex items-center justify-center">
                 {tab.content}
               </div>
             </Tab>
