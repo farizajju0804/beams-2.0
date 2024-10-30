@@ -73,10 +73,10 @@ export const newEmail = async (token: string, newEmail: string, uuid :string) =>
     return { error: "Email already in use!" };
   }
 
-  // // Delete the used verification token
-  // await db.verificationToken.delete({
-  //   where: { id: existingToken.id },
-  // });
+  // Delete the used verification token
+  await db.verificationToken.delete({
+    where: { id: existingToken.id },
+  });
 
   // Generate a new verification token for the new email
   const changeToken = await getChangeEmailToken(newEmail,uuid);
