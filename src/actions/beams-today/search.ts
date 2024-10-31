@@ -2,6 +2,7 @@
 'use server';
 
 import { db } from '@/libs/db';
+import { Prisma } from '@prisma/client';
 
 interface SearchParams {
   query?: string;
@@ -13,14 +14,14 @@ interface SearchParams {
   userId?: string;
 }
 
-interface SearchResult {
-  topics: any[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-  };
-}
+// interface SearchResult {
+//   topics: any[];
+//   pagination: {
+//     currentPage: number;
+//     totalPages: number;
+//     totalItems: number;
+//   };
+// }
 
 /**
  * Searches for topics based on provided filters, pagination, and sorting options.
@@ -29,6 +30,114 @@ interface SearchResult {
  * @returns {Promise<SearchResult>} A promise that resolves to the search result, including topics and pagination data.
  * @throws {Error} Throws an error if the search operation fails.
  */
+// app/actions/beams-today/search.ts
+interface SearchParams {
+  query?: string;
+  page: number;
+  selectedDate?: string;
+  sortBy: string;
+  categories?: string[];
+  beamedStatus?: 'beamed' | 'unbeamed' | undefined;
+  userId?: string;
+}
+
+interface SearchResult {
+  topics: TransformedBeamsToday[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+  };
+}
+
+// Interface for MongoDB BSON types
+interface MongoDBDocument {
+  _id: { $oid: string };
+  date: { $date: string };
+  title: string;
+  shortDesc: string;
+  viewCount: number;
+  completionCount: number;
+  totalWatchTime: number;
+  videoViewCount: number;
+  audioViewCount: number;
+  textViewCount: number;
+  totalVideoWatchTime: number;
+  totalAudioListenTime: number;
+  totalTextSpentTime: number;
+  videoUrl?: string;
+  script?: string;
+  thumbnailUrl?: string;
+  articleUrl?: string;
+  audioUrl?: string;
+  published: boolean;
+  categoryId: { $oid: string };
+  category: {
+    _id: { $oid: string };
+    name: string;
+    // Add other category fields as needed
+  };
+  [key: string]: any;
+}
+
+// Interface for transformed document matching Prisma types
+export interface TransformedBeamsToday {
+  id: string;
+  date: Date;
+  title: string;
+  shortDesc: string;
+  viewCount: number;
+  completionCount: number;
+  totalWatchTime: number;
+  videoViewCount: number;
+  audioViewCount: number;
+  textViewCount: number;
+  totalVideoWatchTime: number;
+  totalAudioListenTime: number;
+  totalTextSpentTime: number;
+  videoUrl?: string | null;
+  script?: string | null;
+  thumbnailUrl?: string | null;
+  articleUrl?: string | null;
+  audioUrl?: string | null;
+  published: boolean;
+  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+    // Add other category fields as needed
+  };
+}
+
+function transformMongoDocument(doc: MongoDBDocument): TransformedBeamsToday {
+  return {
+    id: doc._id.$oid,
+    date: new Date(doc.date.$date),
+    title: doc.title,
+    shortDesc: doc.shortDesc,
+    viewCount: doc.viewCount,
+    completionCount: doc.completionCount,
+    totalWatchTime: doc.totalWatchTime,
+    videoViewCount: doc.videoViewCount,
+    audioViewCount: doc.audioViewCount,
+    textViewCount: doc.textViewCount,
+    totalVideoWatchTime: doc.totalVideoWatchTime,
+    totalAudioListenTime: doc.totalAudioListenTime,
+    totalTextSpentTime: doc.totalTextSpentTime,
+    videoUrl: doc.videoUrl || null,
+    script: doc.script || null,
+    thumbnailUrl: doc.thumbnailUrl || null,
+    articleUrl: doc.articleUrl || null,
+    audioUrl: doc.audioUrl || null,
+    published: doc.published,
+    categoryId: doc.categoryId.$oid,
+    category: {
+      id: doc.category._id.$oid,
+      name: doc.category.name,
+    }
+  };
+}
+
 export async function searchTopics({
   query,
   page,
@@ -38,24 +147,100 @@ export async function searchTopics({
   beamedStatus,
   userId
 }: SearchParams): Promise<SearchResult> {
-  const itemsPerPage = 9;
+  const itemsPerPage = 9; // Constant page size
 
   try {
-    // Base query conditions for fetching topics
-    let whereClause: any = {
+    if (query) {
+      const pipeline = [
+        {
+          $search: {
+            index: "searchIndex",
+            text: {
+              query: query,
+              path: {
+                wildcard: "*"
+              },
+              fuzzy: {
+                maxEdits: 1,
+                prefixLength: 3
+              }
+            }
+          }
+        },
+        {
+          $match: {
+            published: true,
+            ...(selectedDate && {
+              date: {
+                $gte: new Date(`${selectedDate}T00:00:00.000Z`),
+                $lt: new Date(`${selectedDate}T23:59:59.999Z`)
+              }
+            }),
+            ...(categories?.length && {
+              categoryId: {
+                $in: categories.map(id => ({ $oid: id }))
+              }
+            })
+          }
+        },
+        {
+          $lookup: {
+            from: "BeamsTodayCategory",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "category"
+          }
+        },
+        {
+          $unwind: "$category"
+        },
+        {
+          $sort: getSortOrder(sortBy, true)
+        }
+      ];
+
+      // Get all results first
+      const allResults: any = await db.$runCommandRaw({
+        aggregate: "BeamsToday",
+        pipeline: pipeline,
+        cursor: {}
+      });
+
+      let allTopics = (allResults.cursor?.firstBatch || []).map((doc: MongoDBDocument) => 
+        transformMongoDocument(doc)
+      );
+
+      if (beamedStatus && userId) {
+        const watchedContent = await db.beamsTodayWatchedContent.findUnique({
+          where: { userId },
+          select: { completedBeamsToday: true },
+        });
+
+        const completedIds = watchedContent?.completedBeamsToday || [];
+        allTopics = beamedStatus === 'beamed'
+          ? allTopics.filter((topic:any) => completedIds.includes(topic.id))
+          : allTopics.filter((topic:any) => !completedIds.includes(topic.id));
+      }
+
+      const totalItems = allTopics.length;
+      const startIndex = (page - 1) * itemsPerPage;
+      const topics = allTopics.slice(startIndex, startIndex + itemsPerPage);
+
+      return {
+        topics,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalItems / itemsPerPage),
+          totalItems,
+        },
+      };
+    }
+
+    // Non-search query logic
+    const whereClause: any = {
       published: true,
     };
 
-    // Search query to filter by title, short description, or script
-    if (query) {
-      whereClause.OR = [
-        { title: { contains: query, mode: 'insensitive' } },
-        { shortDesc: { contains: query, mode: 'insensitive' } },
-        { script: { contains: query, mode: 'insensitive' } },
-      ];
-    }
-
-    // Date filter to get topics published on the selected date
     if (selectedDate) {
       whereClause.date = {
         gte: new Date(`${selectedDate}T00:00:00.000Z`),
@@ -63,73 +248,82 @@ export async function searchTopics({
       };
     }
 
-    // Category filter to include topics in specified categories
-    if (categories && categories.length > 0) {
+    if (categories?.length) {
       whereClause.categoryId = {
         in: categories,
       };
     }
 
-    // Beamed status filter to show only 'beamed' or 'unbeamed' topics for the user
-    if (beamedStatus && userId) {
-      const completedTopics = await db.beamsTodayWatchedContent.findUnique({
-        where: { userId },
-        select: { completedBeamsToday: true },
-      });
-
-      const completedIds = completedTopics?.completedBeamsToday || [];
-
-      if (beamedStatus === 'beamed') {
-        whereClause.id = { in: completedIds };
-      } else if (beamedStatus === 'unbeamed') {
-        whereClause.id = { notIn: completedIds };
-      }
-    }
-
-    // Configure sorting order based on sortBy parameter
-    let orderBy: any = {};
-    switch (sortBy) {
-      case 'nameAsc':
-        orderBy = { title: 'asc' };
-        break;
-      case 'nameDesc':
-        orderBy = { title: 'desc' };
-        break;
-      case 'dateAsc':
-        orderBy = { date: 'asc' };
-        break;
-      case 'dateDesc':
-      default:
-        orderBy = { date: 'desc' };
-        break;
-    }
-
-    // Execute count query to get total items for pagination
-    const totalItems = await db.beamsToday.count({ where: whereClause });
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Execute main query with pagination, sorting, and category inclusion
-    const topics = await db.beamsToday.findMany({
+    // Get all results for consistent pagination
+    const allTopics = await db.beamsToday.findMany({
       where: whereClause,
-      orderBy,
-      skip: (page - 1) * itemsPerPage,
-      take: itemsPerPage,
+      orderBy: getSortOrder(sortBy),
       include: {
         category: true,
       },
     });
 
-    // Return search results and pagination info
+    let filteredTopics = allTopics;
+    if (beamedStatus && userId) {
+      const watchedContent = await db.beamsTodayWatchedContent.findUnique({
+        where: { userId },
+        select: { completedBeamsToday: true },
+      });
+
+      const completedIds = watchedContent?.completedBeamsToday || [];
+      filteredTopics = beamedStatus === 'beamed'
+        ? allTopics.filter(topic => completedIds.includes(topic.id))
+        : allTopics.filter(topic => !completedIds.includes(topic.id));
+    }
+
+    const totalItems = filteredTopics.length;
+    const startIndex = (page - 1) * itemsPerPage;
+    const topics = filteredTopics.slice(startIndex, startIndex + itemsPerPage);
+
     return {
       topics,
       pagination: {
         currentPage: page,
-        totalPages,
+        totalPages: Math.ceil(totalItems / itemsPerPage),
         totalItems,
       },
     };
+
   } catch (error) {
     console.error('Search error:', error);
     throw new Error('Failed to search topics');
+  }
+}
+
+
+function getSortOrder(sortBy: string, isMongoDb: boolean = false): any {
+  const { asc, desc } = Prisma.SortOrder;
+
+  if (isMongoDb) {
+    // MongoDB sort format
+    switch (sortBy) {
+      case 'nameAsc':
+        return { title: 1 };
+      case 'nameDesc':
+        return { title: -1 };
+      case 'dateAsc':
+        return { date: 1 };
+      case 'dateDesc':
+      default:
+        return { date: -1 };
+    }
+  }
+
+  // Prisma sort format
+  switch (sortBy) {
+    case 'nameAsc':
+      return { title: asc };
+    case 'nameDesc':
+      return { title: desc };
+    case 'dateAsc':
+      return { date: asc };
+    case 'dateDesc':
+    default:
+      return { date: desc };
   }
 }

@@ -5,7 +5,7 @@ import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
 import TopicSearch from "./SearchBarNew";
-import { getMinAndMaxDate } from "@/libs/getMinAndMaxDate";
+// import { getMinAndMaxDate } from "@/libs/getMinAndMaxDate";
 
 interface BeamsTodayPageProps {
   user: any;
@@ -26,7 +26,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
     sortBy: "dateDesc"
   });
   
- const {minDateString,maxDateString}:any= await getMinAndMaxDate()
+//  const {minDateString,maxDateString}:any= await getMinAndMaxDate()
 
  
   return (
@@ -39,7 +39,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
      
       <TopicOfTheDay topic={topic} clientDate={clientDate} />
   
-      <TopicSearch userId={user.id} categories={categories}  minDateString={minDateString} maxDateString={maxDateString}/>
+      <TopicSearch userId={user.id} categories={categories} />
 
       <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} />
   

@@ -26,7 +26,7 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
 
   return (
     <div
-      className={`cursor-pointer relative aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
+      className={`cursor-pointer max-w-sm mx-auto w-full relative aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal] ${className}`}
       // style={{ 
       //   backgroundImage: `url(${topic.thumbnailUrl})`, // Sets the background image to the topic thumbnail
       //   backgroundSize: 'cover', // Covers the entire div with the background image
@@ -58,7 +58,7 @@ const BeamsTodaySearchCard: React.FC<BeamsTodayCardProps> = ({ topic, className 
           <FormattedDate date={topic.date.toISOString().split('T')[0]} /> {/* Formats and displays the date */}
         </div>
       </div>
-    </div>
+    </div>  
   );
 };
 

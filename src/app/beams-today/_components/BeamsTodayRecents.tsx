@@ -136,8 +136,8 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                   <motion.div layoutId={`image-${active.title}-${id}`}>
                     <Image
                       priority
-                      width={200}
-                      height={200}
+                      width={600}
+                      height={600}
                       src={active.thumbnailUrl as string}
                       alt={active.title}
                       className="w-full h-60 lg:h-60 object-cover object-center"
@@ -205,7 +205,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                   layoutId={`card-${topic.title}-${id}`}
                   key={topic.id}
                   onClick={() => setActive(topic)}
-                  className="cursor-pointer relative h-[260px] w-full md:h-[280px] aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]"
+                  className="cursor-pointer relative max-w-sm w-full mx-auto aspect-square rounded-3xl flex flex-col justify-between px-4 py-6 box-border leading-[normal] tracking-[normal]"
                   style={{ 
                     backgroundImage: `url(${topic.thumbnailUrl})`,
                     backgroundSize: 'cover', 

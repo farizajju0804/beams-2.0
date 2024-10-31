@@ -1,12 +1,14 @@
 // Generator block to specify the Prisma Client generator configuration
 generator client {
   provider = "prisma-client-js" // Specifies that Prisma will generate the Prisma Client for JavaScript
+  previewFeatures = ["fullTextSearch","fullTextIndex"]
 }
 
 // Data source configuration block for MongoDB connection
 datasource db {
   provider = "mongodb" // Specifies MongoDB as the database provider
   url      = env("DATABASE_URL") // Database connection URL, sourced from an environment variable
+  
 }
 
 // Enum for defining different user roles
@@ -301,6 +303,11 @@ model BeamsToday {
   userNotes             BeamsTodayUserNote[] // Relationship to user notes
   favourites            BeamsTodayFavorite[] // Relationship to user favorites
 
+ @@index([published, date]) // For filtering published content and sorting by date
+  @@index([published, categoryId]) // For filtering by category and published status
+  
+  // Full-text search index
+  @@fulltext([title, shortDesc, script]) // For text search across these fields
   @@index([categoryId]) // Index for faster queries on categoryId
 }
 

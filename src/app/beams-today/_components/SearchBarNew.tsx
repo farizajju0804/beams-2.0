@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button } from '@nextui-org/react';
 import { CloseCircle, Filter } from 'iconsax-react';
-import { searchTopics } from '@/actions/beams-today/search';
+import { searchTopics, TransformedBeamsToday } from '@/actions/beams-today/search';
 import BeamsTodaySearchCard from './BeamsTodaySearchCard';
-import { DateValue, parseDate } from '@internationalized/date';
+import { DateValue } from '@internationalized/date';
 import CustomPagination from '@/components/Pagination';
 import SortByFilter from './SortByFilter';
 import FilterDrawer from './FilterDrawer';
@@ -29,7 +29,7 @@ interface Topic {
 }
 
 interface SearchResponse {
-  topics: Topic[];
+  topics: TransformedBeamsToday[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -38,8 +38,8 @@ interface SearchResponse {
 }
 
 interface TopicSearchProps {
-  minDateString: string;
-  maxDateString: string;
+  // minDateString: string;
+  // maxDateString: string;
   categories: Category[];
   userId: string;
 }
@@ -132,7 +132,7 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
    * @param currentPageItems Number of items on current page
    * @returns Formatted string showing results range
    */
-  const getResultsRange = (currentPage: number, totalItems: number, currentPageItems: number) => {
+const getResultsRange = (currentPage: number, totalItems: number, currentPageItems: number) => {
     if (totalItems === 0) return "0 of 0";
     const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
     const end = start + currentPageItems - 1;
@@ -217,6 +217,7 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
           : undefined,
         userId: userId,
       });
+      // console.log(response)
       setSearchResults(response);
       setCurrentPage(page);
     } catch (error) {
@@ -424,8 +425,8 @@ const TopicSearch: React.FC<TopicSearchProps> = ({
 
           {/* Results grid */}
           {(searchResults.topics?.length ?? 0) > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {searchResults.topics.map((topic: Topic) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {searchResults.topics.map((topic: TransformedBeamsToday) => (
                 <BeamsTodaySearchCard 
                   key={topic.id} 
                   topic={topic}

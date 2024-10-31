@@ -35,7 +35,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
           </div>
 
           {/* Category Chip */}
-          <Chip size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">
+          <Chip  size="sm" className="mb-2 absolute top-4 left-4 z-[3] bg-white text-black">
             {topic.category.name}
           </Chip>
 

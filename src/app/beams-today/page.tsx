@@ -1,9 +1,9 @@
-import { getcompletedBeamsToday } from "@/actions/beams-today/completedActions";
+// import { getcompletedBeamsToday } from "@/actions/beams-today/completedActions";
 import { currentUser } from "@/libs/auth";
 import BeamsTodayPage from "./_components/BeamsTodayPage";
-import { getAllBeamsToday, getNewBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
+// import { getAllBeamsToday, getNewBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { getAllCategories } from "@/actions/beams-today/categoryActions";
-import { searchTopics } from "@/actions/beams-today/search";
+// import { searchTopics } from "@/actions/beams-today/search";
 
 
 interface PageProps {
