@@ -157,12 +157,11 @@ export async function searchTopics({
             index: "searchIndex",
             text: {
               query: query,
-              path: {
-                wildcard: "*"
-              },
+              path: ["title","shortDesc"],
               fuzzy: {
-                maxEdits: 1,
-                prefixLength: 3
+                maxEdits: 2,
+                prefixLength: 0,
+                maxExpansions: 50
               }
             }
           }
