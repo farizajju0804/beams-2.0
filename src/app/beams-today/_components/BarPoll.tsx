@@ -1,13 +1,12 @@
 'use client'; 
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { motion } from "framer-motion"; 
-import { recordPollResponse, getUserPollResponse } from "@/actions/beams-today/pollActions"; 
+import { recordPollResponse } from "@/actions/beams-today/pollActions"; 
 import { Chip } from "@nextui-org/react"; 
 import { useCurrentUser } from "@/hooks/use-current-user"; 
 import { TickCircle } from 'iconsax-react'; 
-import { useTheme } from "next-themes"; 
+
 import RewardsModal from '@/components/Rewards'; // Import the RewardsModal
-import Image from "next/image";
 
 // Type definitions for the options and poll structure
 type VoteType = {

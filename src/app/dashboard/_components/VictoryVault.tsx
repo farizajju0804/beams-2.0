@@ -28,9 +28,12 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
     }
   }
 
-  // Effect to handle initial scroll state
+  // Effect to handle initial scroll state and window resizing
   useEffect(() => {
     handleScroll()
+    // Add resize event listener to handle window resizing
+    window.addEventListener('resize', handleScroll)
+    return () => window.removeEventListener('resize', handleScroll)
   }, [])
 
   // Function to scroll left or right by a specified amount
@@ -42,84 +45,97 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
   }
 
   return (
-    <div className="w-full bg-background gap-3 text-text pb-4 rounded-3xl shadow-defined flex flex-col items-center justify-center max-w-md">
-      {/* Header section with title and icon */}
-      <div className="flex items-center bg-yellow w-full justify-center py-2 rounded-t-3xl">
-        <Award variant='Bold' size={20} className="mr-2 text-purple" />
-        <h2 className="text-sm text-purple md:text-lg font-poppins font-semibold">My Victory Vault</h2>
-      </div>
-      
-      {/* Conditional rendering based on the presence of badges */}
-      {badges.length === 0 ? (
-        // Display message when no badges are present
-        <div className='px-4 flex flex-col items-center'>
-          <p className="text-center text-xs mb-3 md:text-sm text-grey-2">Start unlocking badges to fill your Victory Vault!</p>
-          <Image
-            src={"https://res.cloudinary.com/drlyyxqh9/image/upload/v1729337158/achievements/badge-fallback-group_rejblk.webp"}
-            alt={`Badge`}
-            width={1000}
-            height={100}
-            className="w-72 object-cover h-14" // Image styling
-          />
+    <div className="relative max-w-md w-full">
+      <div className="w-full bg-background rounded-3xl shadow-defined flex flex-col items-center justify-center max-w-md relative overflow-hidden">
+        {/* Header section with title and icon */}
+        <div className="flex items-center bg-yellow w-full justify-center py-2 rounded-t-3xl">
+          <Award variant='Bold' size={20} className="mr-2 text-purple" />
+          <h2 className="text-sm text-purple md:text-lg font-poppins font-semibold">My Victory Vault</h2>
         </div>
-      ) : (
-        // Display the list of badges if available
-        <div className="relative px-4">
-          <div
-            ref={scrollRef} // Attach scroll ref to the div
-            className="flex items-center justify-center space-x-6 overflow-x-auto scrollbar-hide" // Flexbox for layout with horizontal scrolling
-            onScroll={handleScroll} // Handle scroll events
-          >
-            {/* Map through badges to display each badge as a link */}
-            {badges.map((badge: any) => (
-              <Link
-                key={badge.id} // Unique key for each badge
-                href={`/achievements/#${badge.achievementId}`} // Link to achievement section
-                className="flex-shrink-0" // Prevent badge from shrinking
-              >
-                <div className="w-16 h-12 relative">
-                  <Image
-                    src={badge.achievement.badgeImageUrl} // Badge image source
-                    alt={`Badge ${badge.achievement.id}`} // Alt text for accessibility
-                    layout="fill" // Fill parent div
-                    className="object-cover" // Image styling
-                  />
-                </div>
-              </Link>
-            ))}
+        
+        {/* Conditional rendering based on the presence of badges */}
+        {badges.length === 0 ? (
+          <div className="px-4 flex flex-col items-center py-4">
+            <p className="text-center text-sm mb-3 text-gray-600">
+              Start unlocking badges to fill your Victory Vault!
+            </p>
+            <Image
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729337158/achievements/badge-fallback-group_rejblk.webp"
+              alt="Badge"
+              width={1000}
+              height={100}
+              className="w-72 object-cover h-14"
+            />
           </div>
-          {/* Conditional buttons for scrolling left and right */}
-          {showLeftShadow && (
-            <button
-              onClick={() => scroll('left')} // Scroll left on click
-              className="absolute -left-10 top-1/2 transform -translate-y-1/2 bg-grey-2 bg-opacity-75 rounded-full p-1 shadow-md" // Button styling
+        ) : (
+          // Display the list of badges if available
+          <div className="relative w-full px-4 py-4">
+            {/* Left shadow gradient */}
+            {showLeftShadow && (
+              <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-background to-transparent z-10" />
+            )}
+            
+            {/* Right shadow gradient */}
+            {showRightShadow && (
+              <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-background to-transparent z-10" />
+            )}
+            
+            <div
+              ref={scrollRef}
+              className="flex items-center space-x-6 overflow-x-auto scrollbar-hide relative"
+              onScroll={handleScroll}
             >
-              <ArrowLeft2 size={16} className="text-grey-1" /> 
-            </button>
-          )}
-          {showRightShadow && (
-            <button
-              onClick={() => scroll('right')} // Scroll right on click
-              className="absolute -right-10 top-1/2 transform -translate-y-1/2 bg-grey-2 bg-opacity-75 rounded-full p-1 shadow-md" // Button styling
-            >
-              <ArrowRight2 size={16} className="text-grey-1" /> 
-            </button>
-          )}
+              {/* Map through badges to display each badge as a link */}
+              {badges.map((badge: any) => (
+                <Link
+                  key={badge.id}
+                  href={`/achievements/#${badge.achievementId}`}
+                  className="flex-shrink-0"
+                >
+                  <div className="w-16 h-16 relative">
+                    <Image
+                      src={badge.achievement.badgeImageUrl}
+                      alt={`Badge ${badge.achievement.id}`}
+                      layout="fill"
+                      className="object-cover"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <div className="text-center pb-4">
+          <Link
+            href="/achievements/#victory"
+            style={{ color }}
+            className="text-sm underline font-medium hover:opacity-80"
+          >
+            {badges.length === 0 ? "Explore Badges" : "View My Badges"}
+          </Link>
         </div>
-      )}
-      
-      {/* Link to explore badges or view collected badges */}
-      <div className="text-center">
-        <Link
-          href="/achievements/#victory" // Link to the victory section of achievements
-          style={{ color: color }} // Dynamic color for link text
-          className="text-sm underline font-medium" // Link styling
-        >
-          {badges.length === 0 ? "Explore Badges" : "View My Badges"} 
-        </Link>
       </div>
+
+      {/* Scroll buttons positioned half outside */}
+      {showLeftShadow && (
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background rounded-full p-2 shadow-lg z-20"
+        >
+          <ArrowLeft2 size={20} className="text-grey-4" />
+        </button>
+      )}
+      {showRightShadow && (
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 bg-background rounded-full p-2 shadow-lg z-20"
+        >
+          <ArrowRight2 size={20} className="text-grey-4" />
+        </button>
+      )}
     </div>
   )
 }
 
-export default VictoryVault; // Export the component for use in other parts of the application
+export default VictoryVault

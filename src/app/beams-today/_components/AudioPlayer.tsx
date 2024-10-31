@@ -44,7 +44,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
   const handlePlay = () => {
     setIsPlaying(true); // Set playing state
     lastTimeRef.current = new Date().getTime() / 1000; // Track start time in seconds
-    console.log('Playing audio'); // Debugging log
+    
   };
 
   // Handle pause event
@@ -52,7 +52,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
     setIsPlaying(false); // Set paused state
     const currentTime = new Date().getTime() / 1000;
     playTimeRef.current += currentTime - lastTimeRef.current; // Calculate playtime in seconds
-    console.log('Paused audio, playTime (seconds):', playTimeRef.current); // Debugging log
+ 
   };
 
   // Handle seeking through audio
@@ -60,7 +60,7 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
     if (isPlaying) {
       const currentTime = new Date().getTime() / 1000;
       playTimeRef.current += currentTime - lastTimeRef.current; // Adjust playtime on seek in seconds
-      console.log('Seeked audio, playTime (seconds):', playTimeRef.current); // Debugging log
+
     }
     lastTimeRef.current = new Date().getTime() / 1000; // Update last time reference
   };
@@ -74,7 +74,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
 
       const totalDuration = audioElementRef.current.duration || 0; // Get total audio duration
       const listenedPercentage = (playTimeRef.current / totalDuration) * 100; // Calculate listened percentage
-      console.log(`Listened Percentage: ${listenedPercentage.toFixed(2)}%, Duration: ${totalDuration}, PlayTime (seconds): ${playTimeRef.current}`); // Debugging log
     }
   };
 
@@ -102,11 +101,10 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
               (achievementKey) => achievementUpdate.achievementUpdates[achievementKey].isFirstTimeCompletion
             );
 
-            console.log("First-time achievements found:", firstTimeAchievements); // Debugging log
+
 
             if (firstTimeAchievements.length > 0) {
               const firstAchievement = achievementUpdate.achievementUpdates[firstTimeAchievements[0]]; // Get the first achievement to show
-              console.log("First achievement to show:", firstAchievement); // Debugging log
               setAchievementToShow(firstAchievement); // Set the achievement to display
             }
           }
@@ -124,7 +122,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
     const audioElement = document.querySelector('audio');
     if (audioElement) {
       audioElementRef.current = audioElement as HTMLAudioElement; // Update ref to the audio element
-      console.log('Audio element initialized', audioElement); // Debugging log
     }
   }, []);
 
@@ -166,7 +163,6 @@ const AudioPlayer = forwardRef<any, AudioPlayerProps>(({ beamsTodayId, audioUrl,
           setIsModalOpen(false); // Close modal
           if (achievementToShow) {
             setShowAchievementPopup(true); // Show achievement popup if applicable
-            console.log("Showing achievement popup for:", achievementToShow); // Debugging log
           }
         }}
         currentLevel={newLevel}

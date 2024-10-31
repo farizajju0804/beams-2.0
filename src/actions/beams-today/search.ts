@@ -159,10 +159,10 @@ export async function searchTopics({
               query: query,
               path: ["title","shortDesc"],
               fuzzy: {
-                maxEdits: 2,
-                prefixLength: 0,
-                maxExpansions: 50
-              }
+          maxEdits: 2,
+          prefixLength: 0,
+          maxExpansions: 50
+        }
             }
           }
         },

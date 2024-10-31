@@ -4,7 +4,7 @@ import TabsComponent from "@/components/TabsComponent"; // Component to handle t
 import VideoPlayer from "./VideoPlayer"; // Video player component
 import ArticleComponent from "@/app/beams-today/_components/Article"; // Article component for displaying text format
 import { Book1, VideoPlay, Headphone } from 'iconsax-react'; // Icons for each tab (Video, Audio, Text)
-import { incrementViewCount, markTopicAsCompleted } from "@/actions/beams-today/completedActions"; // Action to mark topic as completed
+import { incrementViewCount } from "@/actions/beams-today/completedActions"; // Action to mark topic as completed
 import AudioPlayer from "@/app/beams-today/_components/AudioPlayer"; // Audio player component
 import { updateWatchTime } from '@/actions/beams-today/analytics/updateWatchTime'; // Action to update watch time for analytics
 

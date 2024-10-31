@@ -6,6 +6,7 @@ import { User as Users } from '@prisma/client'; // Import User type from Prisma 
 import Image from 'next/image'; // Import Next.js Image component for optimized images
 import { useReferralModalStore } from '@/store/referralStore'; // Import custom hook for managing modal state
 import { ReferFriendModal } from '@/components/ReferalModal'; // Import the referral modal component
+import { REFERRAL_POINTS } from '@/constants/pointsConstants';
 
 // Define the interface for the component props
 interface Referral {
@@ -43,7 +44,7 @@ export default function ReferralSection({ referrals }: Referral) {
                   />
                   {/* Display Beams earned from the referral */}
                   <div className="flex items-center space-x-2">
-                    <span className="text-brand font-semibold">+20</span> {/* Amount of Beams earned */}
+                    <span className="text-brand font-semibold">+{REFERRAL_POINTS}</span> {/* Amount of Beams earned */}
                     <span className="text-sm text-grey-2">Beams</span> {/* Label for Beams */}
                   </div>
                 </div>

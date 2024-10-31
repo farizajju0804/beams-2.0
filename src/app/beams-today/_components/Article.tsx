@@ -22,7 +22,7 @@ interface ArticleProps {
  * @returns {JSX.Element} The rendered component.
  */
 const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsTodayId }, ref) => {
-  console.log('ArticleComponent rendered');
+ 
 
   const { theme } = useTheme(); // Get the current theme from Next.js themes
   const [completed, setCompleted] = useState(false); // State to track if the article is completed
@@ -46,14 +46,14 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
 
   // Handler for when the PDF document is loaded
   const handleDocumentLoad = (e: any) => {
-    console.log('Document loaded', e);
+
     setTotalPages(e.doc.numPages); // Set the total number of pages
-    console.log(`Number of pages: ${e.doc.numPages}`);
+    
   };
 
   // Handler for page change events
   const handlePageChange = (e: any) => {
-    console.log('Page changed', e);
+ 
     setCurrentPage(e.currentPage); // Update current page state
     
     // Mark as scrolled if the user has gone past the first page
@@ -63,7 +63,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
     
     // Check if we've reached the last page and user has scrolled
     if (e.currentPage === totalPages - 1 && hasScrolled && !completed) {
-      console.log('Reached last page after scrolling, marking as completed');
+      
       setCompleted(true); // Mark article as completed
       markCompleted(); // Call the function to handle completion logic
     }
@@ -71,7 +71,7 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
 
   // Function to mark the topic as completed
   const markCompleted = async () => {
-    console.log('Marking as completed');
+   
     try {
       // Call the API to mark the topic as completed
       const { success, leveledUp, beams, newLevel, pointsAdded, achievementUpdate } = await markTopicAsCompleted(beamsTodayId, 'text');
@@ -137,7 +137,6 @@ const ArticleComponent = forwardRef<any, ArticleProps>(({ articleUrl, beamsToday
           setIsModalOpen(false); // Close the modal
           if (achievementToShow) {
             setShowAchievementPopup(true); // Show achievement popup if applicable
-            console.log("Showing achievement popup for:", achievementToShow);
           }
         }}
         currentLevel={newLevel} // Current level after completion

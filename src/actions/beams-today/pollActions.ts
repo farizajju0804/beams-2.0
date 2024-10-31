@@ -57,7 +57,14 @@ export const recordPollResponse = async (pollOptionId: string) => {
       console.error('Poll or Beams Today content not found');
       throw new Error('Poll or Beams Today content not found');
     }
+    
 
+    const pollResponse = await getUserPollResponse(pollOption.pollId)
+    if (pollResponse) {
+      console.error('You have already voted in this poll');
+      throw new Error('You have already voted in this poll');
+    }
+    
     const beamsTodayTitle = pollOption.poll.beamsToday.title;
     console.log(`Poll found: "${beamsTodayTitle}"`);
 
