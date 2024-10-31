@@ -24,7 +24,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
 
   // Get the current date in 'en-CA' format
   const clientDate = new Date().toLocaleDateString("en-CA");
-
+  console.log("fod",clientDate)
   // Ref to prevent multiple reveals
   const revealLock = useRef(false);
 
@@ -70,30 +70,39 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
               <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
             </div>
           </div>
-          <div className="relative w-full max-w-md shadow-defined-top mx-auto h-[390px] rounded-lg">
+          <div className="w-full relative max-w-md shadow-defined-top mx-auto h-[390px] rounded-lg">
             {isCompleted ? ( // Check if the fact is completed
-              <div className="relative">
+              <div className="max-w-md w-full h-full relative">
                 <Image
                   src={fact.finalImage} // Show the final image of the fact
                   alt="fact" // Alternative text for the image
                   priority={true} // Load image with priority
-                  width={400} // Image width
-                  height={400} // Image height
+                  layout="fill"
                   style={{ objectFit: "cover" }} // Cover the area of the container
-                  className="z-2 aspect-auto max-w-sm lg:rounded-lg" // Additional styling
+                  className="z-2 w-full h-full aspect-auto lg:rounded-lg" // Additional styling
                 />
-                {fact?.date && ( // If a date is available, display it
-                  <div className="absolute top-2 right-2 z-10">
-                    <DateComponent date={fact.date.toISOString().split('T')[0]} /> {/* Format and display date */}
+        
+              {fact?.date && ( 
+                  <div className="absolute top-2  right-2 z-10">
+                    <DateComponent date={fact.date.toISOString().split('T')[0]} /> 
                   </div>
                 )}
+            
               </div>
+              
             ) : ( // If the fact is not completed, show the ScratchCard
+               <div className="max-w-md w-full h-full relative">
               <ScratchCard
                 scratchImage={fact.scratchImage ? fact.scratchImage : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1727699559/fact%20of%20the%20day/wrap_zd7veo.png'} // Use the provided scratch image or a default one
                 finalImage={fact.finalImage} // Image to show after revealing
                 onReveal={handleReveal} // Function to call when revealed
               />
+              {fact?.date && ( 
+                <div className="absolute top-2  right-20 -z-10">
+                  <DateComponent date={fact.date.toISOString().split('T')[0]} /> 
+                </div>
+              )}
+              </div>
             )}
           </div>
         </>

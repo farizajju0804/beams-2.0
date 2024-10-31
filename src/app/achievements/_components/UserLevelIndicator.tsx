@@ -50,7 +50,7 @@ export default function UserLevelIndicator({ beams = 0, levels }: UserLevelIndic
                     <p className={`text-xs md:text-base text-grey-2 relative ${isWithinLevelRange || isAboveLevel ? 'font-bold' : ''}`}>
                       Level {config.levelNumber}
                       <sup className="absolute -top-1 -right-3">
-                        <InfoCircle size={10} color="#808080" /> {/* Info icon */}
+                        <InfoCircle size={10} className="text-grey-2" /> {/* Info icon */}
                       </sup>
                     </p>
                     {/* Level name display */}

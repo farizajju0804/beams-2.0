@@ -136,7 +136,7 @@ const CompletionButton: React.FC<AchievementCompletionButtonProps> = ({
       await handleUserPointsAndMarkGained(userId, beamsToGain, 'ACHIEVEMENT', `${badgeName} Badge Unlocked!`, userType, achievementId);
 
     if (!userBeamPoints) {
-      console.log('Beams already gained or error occurred.');
+      // console.log('Beams already gained or error occurred.');
       setLoading(false);
       return;
     }

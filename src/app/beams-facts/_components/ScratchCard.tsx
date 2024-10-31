@@ -19,6 +19,21 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
   const [isScratching, setIsScratching] = useState(false); // State to track if the user is currently scratching
   const [scratchPercentage, setScratchPercentage] = useState(0); // Percentage of the card scratched off
   const [isScratchImageLoaded, setIsScratchImageLoaded] = useState(false); // State to check if the scratch image is loaded
+  const [isOnline, setIsOnline] = useState(navigator.onLine); 
+
+  useEffect(() => {
+    // Handler to update online status
+    const handleOnlineStatus = () => setIsOnline(navigator.onLine);
+    
+    // Listen for online/offline events
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOnlineStatus);
+    
+    return () => {
+      window.removeEventListener('online', handleOnlineStatus);
+      window.removeEventListener('offline', handleOnlineStatus);
+    };
+  }, []);
 
   // Initialize the canvas by drawing the scratch image on it
   const initCanvas = useCallback(() => {
@@ -93,7 +108,7 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
 
   // Handle scratching event to remove pixels from the canvas
   const handleScratch = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isScratching) return; // Do nothing if not scratching
+    if (!isScratching || !isOnline) return; // Do nothing if not scratching
 
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
@@ -146,7 +161,8 @@ const useScratchCard = (scratchImage: string, finalImage: string, threshold: num
     handleScratch,
     setIsScratching,
     revealAll,
-    isScratchImageLoaded
+    isScratchImageLoaded,
+    isOnline 
   }
 }
 
@@ -159,7 +175,8 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ scratchImage, finalImage, onR
     scratchPercentage, 
     handleScratch, 
     setIsScratching,
-    isScratchImageLoaded
+    isScratchImageLoaded,
+    isOnline
   } = useScratchCard(scratchImage, finalImage, SCRATCH_THRESHOLD, onReveal);
 
   return (
@@ -189,7 +206,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({ scratchImage, finalImage, onR
       {/* Show a message to scratch the card if it is not revealed */}
       {!isRevealed && scratchPercentage === 0 && isScratchImageLoaded && (
         <div className="absolute z-[10] inset-0 flex items-center justify-center pointer-events-none">
-          <p className="text-text bg-background p-2 text-lg font-semibold">Scratch here!</p>
+          <p className="text-text bg-background p-2 text-lg font-semibold"> {isOnline ? 'Scratch here!' : 'No internet connection'}</p>
         </div>
       )}
       {/* Show the scratch percentage at the bottom of the card */}
