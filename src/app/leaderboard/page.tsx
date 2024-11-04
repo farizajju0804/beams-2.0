@@ -20,8 +20,8 @@ const Page = async () => {
     leaderboardData,
     previousWeekTop3
   ]: any = await Promise.all([
-    getLeaderboardData(user?.id, user?.userType), // Fetch leaderboard data based on user ID and user type
-    getTop3EntriesForMostRecentWeek(user?.userType, user?.id) // Fetch top 3 entries for the most recent week
+    getLeaderboardData(user?.id, user?.userType,'2024-11-04T14:00:00.000+00:00'), // Fetch leaderboard data based on user ID and user type
+    getTop3EntriesForMostRecentWeek(user?.userType, user?.id,'2024-11-04T00:00:00.000+00:00') // Fetch top 3 entries for the most recent week
   ]);
 
 

@@ -23,7 +23,7 @@ interface User {
 // Defining the interface for the user's state and actions in the store
 interface UserState {
   user: User | null;
-  setUser: (user: Partial<User>) => void;
+  setUser: (user: Partial<User> | null) => void;
   updateUserImage: (image: string) => void;
 }
 
@@ -36,7 +36,7 @@ export const useUserStore = create<UserState>((set) => ({
     user: {
       ...state.user,
       ...user,
-      email: user.email || state.user?.email || '',
+      email: user?.email || state.user?.email || '',
     } as User,
   })),
   

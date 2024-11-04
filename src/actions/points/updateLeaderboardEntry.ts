@@ -84,7 +84,7 @@ export const recalculateLeaderboardRanks = async (startDate: Date, endDate: Date
     },
     orderBy: [
       { points: 'desc' }, // Order by points descending
-      { createdAt: 'asc' }, // Order by createdAt ascending (earliest first)
+      // { createdAt: 'asc' }, 
     ],
   });
 
@@ -97,4 +97,214 @@ export const recalculateLeaderboardRanks = async (startDate: Date, endDate: Date
       })
     )
   );
+};
+
+
+/**
+ * Recalculates ranks for the leaderboard with tie handling
+ */
+export const recalculateLeaderboardRanks2 = async (
+  startDate: Date,
+  endDate: Date,
+  userType: UserType,
+  tx: any = db // Default to main db instance if no transaction provided
+) => {
+  console.log('\n[Rank Recalculation] Starting rank recalculation...');
+  console.log(`Date Range: ${startDate.toISOString()} to ${endDate.toISOString()}`);
+  console.log(`User Type: ${userType}`);
+
+  try {
+    // Fetch all entries for ranking
+    console.log('\n[Ranking] Fetching all entries...');
+    const entries = await tx.leaderboard.findMany({
+      where: {
+        startDate,
+        endDate,
+        userType,
+      },
+      orderBy: [
+        { points: 'desc' },
+        { createdAt: 'asc' }, // Secondary sort by creation time for consistent ordering
+      ],
+      select: {
+        id: true,
+        userId: true,
+        points: true,
+        rank: true,
+        createdAt: true,
+      }
+    });
+
+    console.log(`[Ranking] Found ${entries.length} entries to rank`);
+
+    // Calculate ranks with tie handling
+    let currentRank = 1;
+    let currentPoints = -1;
+    let tieCount = 0;
+
+    const rankedEntries = entries.map((entry:any, index:any) => {
+      if (entry.points !== currentPoints) {
+        // New points value, reset tie tracking
+        currentRank = index + 1;
+        currentPoints = entry.points;
+        tieCount = 0;
+      } else {
+        // Same points as previous, maintain rank for tie
+        tieCount++;
+      }
+
+      return {
+        id: entry.id,
+        userId: entry.userId,
+        points: entry.points,
+        oldRank: entry.rank,
+        newRank: currentRank,
+      };
+    });
+
+    console.log('\n[Ranking] Calculated ranks with ties:', 
+      rankedEntries.map((e:any) => ({
+        userId: e.userId,
+        points: e.points,
+        oldRank: e.oldRank,
+        newRank: e.newRank,
+      }))
+    );
+
+    // Perform bulk update
+    console.log('\n[Bulk Update] Performing bulk rank update...');
+    if(rankedEntries.length < 0){
+    const bulkUpdateOp = await tx.$runCommandRaw({
+      update: "Leaderboard",
+      updates: rankedEntries.map((entry:any) => ({
+        q: { _id: { $oid: entry.id } },
+        u: { $set: { rank: entry.newRank } }
+      })),
+      ordered: false
+    });
+    console.log('[Bulk Update] Bulk update completed:', bulkUpdateOp);
+
+  }
+
+    // Return the updated rankings
+    return {
+      totalParticipants: entries.length,
+      updatedRanks: rankedEntries,
+      success: true
+    };
+
+  } catch (error) {
+    console.error('\n[ERROR] Error in rank recalculation:', {
+      error,
+      startDate,
+      endDate,
+      userType
+    });
+    throw error;
+  }
+};
+
+/**
+ * Updates leaderboard entry and recalculates ranks
+ */
+export const updateLeaderboardEntry2 = async (
+  userId: string,
+  points: number,
+  userType: UserType
+) => {
+  console.log(`\n[${new Date().toISOString()}] Starting leaderboard update:`);
+  console.log(` User: ${userId}`);
+  console.log(` Points to add: ${points}`);
+  console.log(` User Type: ${userType}`);
+
+  const { startDate, endDate } = getPreviousAndNextDates(6);
+  console.log(` Date Range: ${startDate.toISOString()} to ${endDate.toISOString()}`);
+
+  try {
+    return await db.$transaction(async (tx) => {
+      console.log(`\n[Transaction] Starting transaction`);
+
+      // Check if entry exists
+      const existingEntry = await tx.leaderboard.findFirst({
+        where: {
+          userId,
+          startDate,
+          endDate,
+        },
+        select: {
+          id: true,
+          points: true,
+          rank: true,
+        }
+      });
+
+      console.log('\n[Existing Entry Check]', existingEntry
+        ? `Found existing entry - Current Points: ${existingEntry.points}, Rank: ${existingEntry.rank}`
+        : ' No existing entry found');
+
+      // Perform upsert
+      console.log('\n[Upsert] 📝 Performing upsert operation...');
+      const upsertResult = await tx.leaderboard.upsert({
+        where: {
+          userId_startDate_endDate_userType: {
+            userId,
+            startDate,
+            endDate,
+            userType
+          }
+        },
+        update: {
+          points: {
+            increment: points
+          }
+        },
+        create: {
+          userId,
+          points,
+          startDate,
+          endDate,
+          rank: 1,
+          userType,
+        },
+        select: {
+          id: true,
+          points: true,
+          rank: true,
+        }
+      });
+
+      console.log('[Upsert] Upsert completed:', {
+        id: upsertResult.id,
+        newPoints: upsertResult.points,
+        currentRank: upsertResult.rank
+      });
+
+      // Recalculate ranks using the new function
+      await recalculateLeaderboardRanks2(startDate, endDate, userType, tx);
+
+      // Get final state of updated entry
+      const finalEntry = await tx.leaderboard.findUnique({
+        where: { id: upsertResult.id },
+        select: {
+          points: true,
+          rank: true,
+        }
+      });
+
+      console.log('\n[Final State] Update complete:', {
+        finalPoints: finalEntry?.points,
+        finalRank: finalEntry?.rank
+      });
+
+      return finalEntry;
+    });
+  } catch (error) {
+    console.error('\n[ERROR] Error in leaderboard update:', {
+      error,
+      userId,
+      points,
+      userType
+    });
+    throw error;
+  }
 };

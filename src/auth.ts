@@ -23,6 +23,7 @@ export const {
 } = NextAuth({
   pages: {
     signIn: "/auth/login", // Custom sign-in page
+    signOut: '/auth/login',
     error: "/auth/error", // Custom error page
   },
   
@@ -37,6 +38,10 @@ export const {
           isSessionValid: true
          }, // Set emailVerified to the current date
       });
+    },
+    async signOut() {
+    
+      return;
     },
   },
 
@@ -95,6 +100,8 @@ export const {
       });
       return true; // Allow login if all conditions are satisfied
     },
+
+    
 
     // Callback to customize session data
     async session({ token, session }) {
@@ -161,11 +168,17 @@ export const {
 
     // Redirect callback to control redirects after authentication actions
     async redirect({ url, baseUrl }) {
-      // Handle internal redirects or external redirects to the base URL
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Handle sign-out redirect
+      if (url.startsWith('/auth/login')) {
+        return `${baseUrl}/auth/login`;
+      }
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url;
-      return `${baseUrl}`;
-    }
+      return baseUrl;
+    },
+    
   },
 
   // Use the Prisma adapter for connecting NextAuth to the database

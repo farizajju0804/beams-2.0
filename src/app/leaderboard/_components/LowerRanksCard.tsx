@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Avatar, TableHeader, TableBody, TableRow, TableCell, TableColumn } from "@nextui-org/react";
+import { useSession } from 'next-auth/react';
 
 // Interface for the props that LowerRanksTable will accept
 interface LowerRanksTableProps {
@@ -11,7 +12,7 @@ interface LowerRanksTableProps {
 const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }) => {
   // Slicing the users array to get the lower-ranked users (positions 4 to 10)
   const lowerRankedUsers = users.slice(3, 10);
-
+  const user2 = useSession()
   // Define the columns for the table
   const columns = [
     { key: "rank", label: "RANK" },
@@ -40,7 +41,7 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
               className="w-8 h-8 mr-2 flex-shrink-0" // Avatar styling
             />
             <span className='text-wrap flex-grow font-medium text-sm md:text-base'>
-              {`${user.user?.firstName} ${user.user?.lastName} ${user.rank === userPosition ? '(You)' : ''}`} {/* Display user name and highlight if it's the current user */}
+              {`${user.user?.firstName} ${user.user?.lastName} ${user.user.id === user2.data?.user.id ? '(You)' : ''}`} {/* Display user name and highlight if it's the current user */}
             </span>
           </div>
         );
@@ -54,7 +55,7 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
   return (
     <Table
       aria-label="Lower Ranks Table"
-      className="max-w-2xl mx-auto px-0 mt-10" // Table styling
+      className="max-w-lg mx-auto px-0 mt-10" // Table styling
       selectionMode="none" // Disable row selection
       classNames={{
         wrapper: "p-0 pb-2",
@@ -77,11 +78,11 @@ const LowerRanksTable: React.FC<LowerRanksTableProps> = ({ users, userPosition }
         {(user) => (
           <TableRow 
             key={user.id} // Unique key for each row
-            className={`my-2 ${user.rank === userPosition ? "font-bold font-poppins" : ""}`} // Highlight current user row
+            className={`my-2 ${user.id === user2.data?.user.id  ? "font-bold font-poppins" : ""}`} // Highlight current user row
           >
             {(columnKey) => (
               <TableCell className={`py-4 ${columnKey === "points" ? "text-center" : ""}`}> {/* Cell styling */}
-                <span className={user.rank === userPosition ? "text-secondary-2" : ""}> {/* Highlight text if it's the current user */}
+                <span className={user.id === user2.data?.user.id  ? "text-secondary-2" : ""}> {/* Highlight text if it's the current user */}
                   {renderCell(user, columnKey)} {/* Render cell content */}
                 </span>
               </TableCell>

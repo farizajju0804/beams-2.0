@@ -481,7 +481,7 @@ model Leaderboard {
 
   @@index([userId]) // Index for quick user lookups
   @@index([userType, startDate, endDate]) // Composite index for efficient queries based on user type and date range
-  @@index([userId, startDate, endDate]) // Composite index for efficient queries based on userId and date range
+  @@unique([userId, startDate, endDate,userType])   // Composite index for efficient queries based on userId and date range
 }
 
 model LeaderboardAnnouncement {

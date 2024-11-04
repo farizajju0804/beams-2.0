@@ -55,8 +55,26 @@ export default function UserButton({ initialUser }: UserButtonProps) {
   };
 
   const handleSignOut = async () => {
-    // const result = await signOutUser();
-    await signOut({redirectTo : "/auth/login"})
+    try {
+      // Clear your user store
+      setStoreUser(null);
+      
+      // Clear any local storage or cookies if needed
+      deleteAllCookies();
+      
+      // Use signOut with specific configuration
+      const result = await signOutUser()
+      console.log(result)
+      // await signOut({
+      //   redirect: true,
+      //   callbackUrl: '/auth/login'
+      // });
+
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Fallback redirect
+      router.push('/auth/login');
+    }
   };
 
   const user = storeUser;
@@ -134,7 +152,11 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     // Logout Item
     <DropdownItem
       key="logout"
-      onClick={handleSignOut}
+      // onClick={handleSignOut}
+      onClick={async() => await signOut({
+        callbackUrl: '/auth/login',
+        redirect: true
+      })}
       startContent={<Logout className="text-red-500" variant="Bold" />}
       color="danger"
     >

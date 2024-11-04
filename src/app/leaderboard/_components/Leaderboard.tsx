@@ -4,7 +4,7 @@ import UserStatus from './UserStatus';
 import {  getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
-import { recalculateLeaderboardRanks } from '@/actions/points/updateLeaderboardEntry';
+import { recalculateLeaderboardRanks2 } from '@/actions/points/updateLeaderboardEntry';
 import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
@@ -129,14 +129,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     setIsTimerActive(false);
 
     if (startDate && endDate) {
-      await recalculateLeaderboardRanks(new Date(startDate), new Date(endDate), userType);
+      await recalculateLeaderboardRanks2(new Date(startDate), new Date(endDate), userType);
     }
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType,userId),
-        getLeaderboardData(userId, userType)
-     
+        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-04T18:00:00.000+00:00'),
+        getLeaderboardData(userId, userType, '2024-11-04T18:00:00.000+00:00')
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
@@ -208,7 +207,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-30px] md:top-[-40px]" />
               )}
               <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-3" />
-              <div className={`text-center text-text text-sm md:text-lg mb-3 text-wrap w-full ${user.isYou ? 'font-bold' : 'font-medium'}`}>
+              <div className={`text-center text-text text-sm md:text-lg mb-3 text-wrap truncate max-w-20 w-full ${user.isYou ? 'font-bold' : 'font-medium'}`}>
                 {`${user?.user?.firstName} ${user?.user?.lastName} ${user.isYou ? '(You)' : ''}`}
               </div>
               <div className="text-center  font-medium p-1 bg-text text-background text-xs md:text-sm">{user?.points} Beams</div>
@@ -278,7 +277,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
             <RuleItem 
               icon={<AiFillClockCircle className="text-blue-500" size={24} />}
               title="Weekly Competition"
-              description="Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM."
+              description={`Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM (US Pacific Time).`}
             />
             <RuleItem 
                   icon={<PiNumberCircleThreeDuotone className="text-green-500 text-2xl" />}

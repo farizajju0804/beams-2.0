@@ -31,18 +31,20 @@ export interface LeaderboardData {
  *          the user's position, points, relevant dates, and remaining time.
  */
 export const getLeaderboardData = async (userId: string, userType: UserType, start?: string): Promise<LeaderboardData> => {
-  const { startDate, endDate } = getPreviousAndNextDates(6, start);
+  const { startDate, endDate } = getPreviousAndNextDates(1, start);
   const now = new Date();
 
   console.log(`Fetching leaderboard data from ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
-  const userEntry = await db.leaderboard.findFirst({
+  const userEntry = await db.leaderboard.findUnique({
     where: {
-      userId,
-      startDate,
-      endDate,
-      userType,
-    }
+      userId_startDate_endDate_userType: {
+        userId,
+        startDate,
+        endDate,
+        userType
+      }
+    },
   });
 
   const userPosition = userEntry && userEntry.rank; // Get user rank if entry exists.

@@ -1,7 +1,7 @@
 "use server"; // Indicates this module is a server-side module
 
 import { db } from '@/libs/db'; // Importing the database instance
-import { updateLeaderboardEntry } from './updateLeaderboardEntry'; // Importing leaderboard update function
+import { updateLeaderboardEntry2 } from './updateLeaderboardEntry'; // Importing leaderboard update function
 import { recordPointsHistory } from './recordPointsHistory'; // Importing points history recording function
 import { PointsSource, User, UserType } from '@prisma/client'; // Importing Prisma client types
 import { NETWORK_POINTS_PERCENTAGE } from '@/constants/pointsConstants'; // Importing points constants
@@ -80,7 +80,7 @@ export const updateUserPointsAndLeaderboard = async (
     await recordPointsHistory(userId, points, source, description);
 
     // Step 4: Update leaderboard entry for the user
-    await updateLeaderboardEntry(userId, points, userType);
+    await updateLeaderboardEntry2(userId, points, userType);
 
     // Fetch user information to check for referrer
     const user = await db.user.findUnique({
@@ -140,7 +140,7 @@ export const updateUserPointsAndLeaderboard = async (
         );
 
         // Update leaderboard entry for the referrer
-        await updateLeaderboardEntry(referrer.id, referrerPoints, referrer.userType);
+        await updateLeaderboardEntry2(referrer.id, referrerPoints, referrer.userType);
       }
     }
 
@@ -227,7 +227,7 @@ export const updateUserPointsAndLeaderboard2 = async (
     await recordPointsHistory(userId, points, source, description);
 
     // Step 4: Update leaderboard entry for the user
-    await updateLeaderboardEntry(userId, points, userType);
+    await updateLeaderboardEntry2(userId, points, userType);
 
     // Return updated userBeamPoints and leveling information
     return {
