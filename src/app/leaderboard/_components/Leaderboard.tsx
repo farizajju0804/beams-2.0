@@ -9,7 +9,7 @@ import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeade
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
 import { AiFillQuestionCircle, AiFillClockCircle,  AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
-
+import { PiNumberCircleThreeDuotone } from "react-icons/pi";
 
 import Image from 'next/image';
 import LowerRanksTable from './LowerRanksCard';
@@ -137,7 +137,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         getTop3EntriesForMostRecentWeek(userType,userId),
         getLeaderboardData(userId, userType)
      
-
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
@@ -282,6 +281,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               description="Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM."
             />
             <RuleItem 
+                  icon={<PiNumberCircleThreeDuotone className="text-green-500 text-2xl" />}
+                  title="Minimum Participation"
+                  description="Leaderboard results will only be announced when there are at least 3 entries in the current week."
+                />
+            <RuleItem 
               icon={<AiFillFire className="text-red-500" size={24} />}
               title="Point Accumulation"
               description="Only beams accumulated during the competition period will count."
@@ -296,11 +300,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               title="Leaderboard Display"
               description="The top 10 users will be featured on the leaderboard each week."
             />
-            <RuleItem 
+            {/* <RuleItem 
               icon={<AiFillGift className="text-pink-500" size={24} />}
               title="Special Recognition"
               description="The top 3 users will earn special badges!"
-            />
+            /> */}
           </div>
                
              
@@ -352,7 +356,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           {(userPosition && userPoints) ? (
             <UserStatus rank={userPosition} score={userPoints} />
           ) : (
-            <p className="w-full mt-4 text-center mx-auto">Your current position will be shown here as you start gaining beams.</p>
+            <p className="w-fit mt-4 text-center p-3 font-semibold rounded-2xl bg-yellow text-black mx-auto">Your current position will be shown here as you start gaining beams.</p>
           )}
           {lastWeekUsers.length >= 3 && (
             <>

@@ -24,8 +24,7 @@ const Page = async () => {
     getTop3EntriesForMostRecentWeek(user?.userType, user?.id) // Fetch top 3 entries for the most recent week
   ]);
 
-  // Logging previous week's top 3 entries for debugging purposes
-  console.log("previous", previousWeekTop3);
+
 
   return (
     <div className='flex flex-col md:px-8 gap-12 py-4'>
