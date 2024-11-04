@@ -1,6 +1,7 @@
 import { UserType } from "@prisma/client";
 import { generateNotification } from "../notifications/notifications";
 import { db } from "@/libs/db";
+import { updateAchievementsAfterLeaderboard } from "../points/updateAchievementsAfterLeaderboard";
 
 /**
  * Represents a user in the system.
@@ -103,6 +104,11 @@ const getLeaderboardEntries = async (userType: UserType): Promise<LeaderboardRes
  * @throws Will throw an error if there is an issue fetching leaderboard entries or sending notifications.
  */
 export const generateLeaderboardNotifications = async () => {
+  try {
+  console.log('Updating leaderboard achivement for student  entries...')
+  const studentAchivement = await updateAchievementsAfterLeaderboard('STUDENT')
+  console.log('Updating leaderboard achivement for non-student  entries...')
+  const nonStudentAchivement = await updateAchievementsAfterLeaderboard('NON_STUDENT')
   console.log('Fetching student leaderboard entries...');
   const studentResults = await getLeaderboardEntries('STUDENT');
   console.log(`Fetched ${studentResults.entries.length} student entries.`);
@@ -120,36 +126,63 @@ export const generateLeaderboardNotifications = async () => {
     return; // Don't generate notifications if neither has 3 or more entries
   }
   
-  console.log('Combining leaderboard entries from both groups...');
-  const leaderboardResults = [...studentResults.entries, ...nonStudentResults.entries];
-  console.log(`Total combined entries: ${leaderboardResults.length}`);
-  
+  if (hasStudentEntries) {
+    console.log('Generating notifications for student leaderboard...');
+    await generateNotificationsForGroup(studentResults.entries);
+  }
+
+  // Process notifications for non-students if they meet the minimum requirement
+  if (hasNonStudentEntries) {
+    console.log('Generating notifications for non-student leaderboard...');
+    await generateNotificationsForGroup(nonStudentResults.entries);
+  }
+
+  console.log('All notifications have been sent successfully.');
+} catch (error) {
+  console.error('Error in generateLeaderboardNotifications:', error);
+  throw error;
+}
+};
+ 
+/**
+ * Helper function to generate notifications for a specific group of users
+ */
+async function generateNotificationsForGroup(
+  entries: LeaderboardEntry[]
+) {
   await Promise.all(
-    leaderboardResults.map(async (entry, index) => {
-      const rank = index + 1;
-      const userName = entry.user?.firstName ?? "User"; // Fallback if no firstName available
-  
-      // Custom message for top 10
+    entries.map(async (entry) => {
+      const userName = entry.user?.firstName ?? "User";
+      const userRank = entry.rank; // Use the actual rank from the database
+      
+      // Generate appropriate message based on rank
       let message;
-      if (rank <= 10) {
-        message = `Great job, ${userName}! You’re ranked #${rank} on the leaderboard!🎉 `;
-        console.log(`Generated custom message for rank ${rank}: ${message}`);
+      if (userRank <= 10) {
+        message = `Congratulations ${userName}! You're ranked #${userRank} on the leaderboard! 🏆`;
+        if (userRank <= 3) {
+          // Special message for top 3
+          const medals = ['🥇', '🥈', '🥉'];
+          message = `Congratulations ${userName}! You are ranked #${userRank} ${medals[userRank - 1]} on the leaderboard!`;
+        }
       } else {
-        // Default message for others
-        message = `${userName}, you made it to the leaderboard!`;
-        console.log(`Generated default message for rank ${rank}: ${message}`);
+        message = `Well done ${userName}! You've reached rank #${userRank} on the leaderboard! 🌟`;
       }
-  
-      // Send notification
-      console.log(`Sending notification to ${userName} (User ID: ${entry.user?.id})...`);
-      await generateNotification(
-        entry.user?.id as string,
-        'ACHIEVEMENT',
-        message,
-        '/dashboard'
-      );
-      console.log(`Notification sent to ${userName} (User ID: ${entry.user?.id})`);
+
+
+
+      console.log(`Sending notification to ${userName} (User ID: ${entry.user?.id}) - Rank: ${userRank}`);
+      
+      if (entry.user?.id) {
+        await generateNotification(
+          entry.user.id,
+          'ACHIEVEMENT',
+          message,
+          '/leaderboard'
+        );
+        console.log(`Notification sent successfully to ${userName}`);
+      } else {
+        console.warn(`Skipped notification for entry with missing user ID: ${entry.id}`);
+      }
     })
   );
-  console.log('All notifications have been sent.');
-};
+}

@@ -83,7 +83,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [endDate, setEndDate] = useState(initialData.endDate);
   const lastWeekSectionRef = useRef<HTMLDivElement>(null);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const achievementUpdateLock = useRef(false); 
+  // const achievementUpdateLock = useRef(false); 
     // Client-side parsed dates
     const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
     const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
@@ -134,8 +134,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-04T18:00:00.000+00:00'),
-        getLeaderboardData(userId, userType, '2024-11-04T18:00:00.000+00:00')
+        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-04T20:00:00.000+00:00'),
+        getLeaderboardData(userId, userType,'2024-11-04T20:00:00.000+00:00')
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
@@ -152,10 +152,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
  
 
       playConfetti(); // Play confetti when timer ends and new data is loaded
-      if (!achievementUpdateLock.current) {
-        achievementUpdateLock.current = true;  // Lock further execution
-        await updateAchievementsAfterLeaderboard(userType);
-      }
+      // if (!achievementUpdateLock.current) {
+      //   achievementUpdateLock.current = true;  // Lock further execution
+      //   await updateAchievementsAfterLeaderboard(userType);
+      // }
     } catch (error) {
       console.error('Error updating leaderboard:', error);
     } finally {
@@ -289,11 +289,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               title="Point Accumulation"
               description="Only beams accumulated during the competition period will count."
             />
-            <RuleItem 
+            {/* <RuleItem 
               icon={<AiFillThunderbolt className="text-green-500" size={24} />}
               title="Tiebreakers"
               description="In case of ties, the user who accumulated the beams first will be ranked higher."
-            />
+            /> */}
             <RuleItem 
               icon={<AiFillCrown className="text-yellow" size={24} />}
               title="Leaderboard Display"

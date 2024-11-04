@@ -29,13 +29,11 @@ export const ReferFriendModal = () => {
 
   const successMessages = [
     "Boom! Link copied! Time to spread the love! 💌",
-    "Your friends are going to thank you! 🎉",
-    "Sharing is caring, and you've just aced it! 👏",
+    "Your friends are going to be delighted! 🎉",
+    "Yippee, sharing is caring!",
     "Let the good times roll with your friends! 🚀",
     "That link is ready for action! Let's go! 🌟",
-    "Good things are coming your way. Link copied! 💫",
-    "Now it's your friends' turn to shine! ✨",
-    "Link locked and loaded. Fire away! 🔥"
+    "Link copied! Feel the good vibes coming your way!💫" 
   ];
 
   const getRandomSuccessMessage = () => {
