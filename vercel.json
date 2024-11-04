@@ -2,7 +2,7 @@
     "crons": [
       {
         "path": "/api/leaderboard",
-        "schedule": "0 14 * * 1"
+        "schedule": "5 15 * * 1"
       }
     ]
   }
