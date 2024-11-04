@@ -45,11 +45,11 @@ export interface LeaderboardResult {
  *          the leaderboard entries and their date range.
  * @throws Will throw an error if there is an issue fetching leaderboard entries.
  */
-const getLeaderboardEntries = async (userType: UserType): Promise<LeaderboardResult> => {
+const getLeaderboardEntries = async (userType: UserType,start?: string): Promise<LeaderboardResult> => {
   try {
     console.log(`Fetching leaderboard entries for userType: ${userType}...`);
     
-    const baseDate = new Date();
+    const baseDate = start ? new Date(start) : new Date(); 
     const now = new Date(baseDate.getTime() + 60 * 1000);
     console.log(`Current date: ${baseDate.toISOString()}, fetching data up to: ${now.toISOString()}`);
   
@@ -110,11 +110,11 @@ export const generateLeaderboardNotifications = async () => {
   console.log('Updating leaderboard achivement for non-student  entries...')
   const nonStudentAchivement = await updateAchievementsAfterLeaderboard('NON_STUDENT')
   console.log('Fetching student leaderboard entries...');
-  const studentResults = await getLeaderboardEntries('STUDENT');
+  const studentResults = await getLeaderboardEntries('STUDENT','2024-11-04T20:00:00.000+00:00');
   console.log(`Fetched ${studentResults.entries.length} student entries.`);
   
   console.log('Fetching non-student leaderboard entries...');
-  const nonStudentResults = await getLeaderboardEntries('NON_STUDENT');
+  const nonStudentResults = await getLeaderboardEntries('NON_STUDENT','2024-11-04T20:00:00.000+00:00');
   console.log(`Fetched ${nonStudentResults.entries.length} non-student entries.`);
   
   // Check if either student or non-student leaderboard has 3 or more entries

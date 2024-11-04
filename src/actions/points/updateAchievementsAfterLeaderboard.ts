@@ -18,7 +18,7 @@ import { leaderboardBadgeTop1, leaderboardBadgeTop10 } from "@/constants/victory
 export const updateAchievementsAfterLeaderboard = async (userType: UserType) => {
   try {
     // Get the top 10 entries from the last week's leaderboard
-    const lastWeekData = await getTop10EntriesForMostRecentWeek(userType);
+    const lastWeekData = await getTop10EntriesForMostRecentWeek(userType,'2024-11-04T20:00:00.000+00:00');
 
     // Only proceed if there are at least 3 entries
     if (lastWeekData.entries.length < 3) {
