@@ -13,7 +13,7 @@ export async function signOutUser() {
   console.log('clicked');
   
   // Calls the signOut function to log out the user
-  const result = await signOut();
+  const result = await signOut({redirectTo : "/auth/login"});
   
   // console.log('signout called');
   

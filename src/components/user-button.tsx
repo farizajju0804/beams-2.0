@@ -83,6 +83,19 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     return null;
   }
 
+
+  const customSignOut = async () => {
+    await signOut();
+
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    window.location.href = "/auth/login";
+  };
   // Define all possible menu items
   const menuItems = [
     // Profile Section
@@ -152,11 +165,17 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     // Logout Item
     <DropdownItem
       key="logout"
-      // onClick={handleSignOut}
-      onClick={async() => await signOut({
-        callbackUrl: '/auth/login',
-        redirect: true
-      })}
+      // onClick={customSignOut}
+      onClick={async() =>
+      {   
+        await signOut({
+        redirectTo: '/auth/login'
+      })
+      await signOutUser()
+      // await deleteAllCookies()
+    }
+
+    }
       startContent={<Logout className="text-red-500" variant="Bold" />}
       color="danger"
     >

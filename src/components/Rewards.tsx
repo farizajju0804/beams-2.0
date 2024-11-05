@@ -27,26 +27,24 @@ interface RewardsModalProps {
 }
 
 const motivationalMessages: string[] = [
-  "You're on fire! 🔥 Keep blazing through those lessons!",
-  "Wow! You're learning faster than a cheetah on a caffeine rush! ☕️🐆",
-  "You're not just smart, you're brilliant! 🌟 Einstein would be jealous!",
-  "You're collecting points like a squirrel hoarding nuts for winter! 🐿️",
-  "Your brain must be huge! 🧠 How do you even fit it in your head?",
-  "You're not just climbing the learning ladder, you're taking the express elevator! 🚀",
-  "If knowledge was a currency, you'd be Jeff Bezos rich! 💰",
-  "Your dedication is so bright, I need sunglasses! 😎",
-  "You're not just reaching for the stars, you're becoming one! ⭐️",
-  "Your progress is more impressive than a cat learning to bark! 🐱🐶",
-  "You're absorbing knowledge like a sponge in an ocean of wisdom! 🌊🧽",
-  "If learning was an Olympic sport, you'd be taking home the gold! 🥇",
-  "You're not just thinking outside the box, you've built a rocket ship! 🚀📦",
-  "Your brain must be doing push-ups because it's getting stronger every day! 💪🧠",
-  "You're leveling up faster than a video game character with cheat codes! 🎮",
-  "Your curiosity is more infectious than a yawn in a boring meeting! 🥱😃",
-  "You're not just connecting dots, you're creating constellations! ✨",
-  "Your learning curve is so steep, it's practically vertical! 📈",
-  "You're not just breaking records, you're setting new standards! 🏆",
-  "If enthusiasm was electricity, you could power a small city! ⚡️🏙️"
+ "You're on fire! 🔥 Keep blazing through! ",
+"Wow! You're learning faster than a cheetah on a caffeine rush! ☕️🐆",
+"You're not just smart, you're brilliant! 🌟 ",
+"You're collecting points like a squirrel hoarding nuts for winter! 🐿️",
+"You're not just climbing the learning ladder, you're taking the express elevator! ",
+"If knowledge was a currency, you'd be Jeff Bezos rich by now! 💰",
+"Your dedication is so bright, I need sunglasses! 😎",
+"You're not just reaching for the stars, you're becoming one! ⭐️",
+"Your progress is more impressive than a cat learning to bark! 🐱🐶",
+"You're absorbing knowledge like a sponge in an ocean of wisdom! 🌊🧽",
+"If learning was an Olympic sport, you'd be taking home the gold! 🥇",
+"You're not just thinking outside the box, you've built a rocket ship! 🚀📦",
+"Your brain must be doing push-ups because it's getting stronger every day! 💪🧠",
+"You're leveling up faster than a video game character with cheat codes! 🎮",
+"Your curiosity is more infectious than a yawn in a boring meeting! 🥱😃",
+"You're not just connecting dots, you're creating constellations! ✨",
+"You're not just breaking records, you're setting new standards! 🏆💫",
+"If enthusiasm was electricity, you could power a small city by now!⚡️🏙️"
 ];
 
 export default function RewardsModal({

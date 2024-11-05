@@ -489,9 +489,9 @@ model LeaderboardAnnouncement {
   userType  UserType
   startDate DateTime
   endDate   DateTime
+  announced   Boolean   @default(false)
   createdAt DateTime @default(now())
-
-  @@unique([userType, startDate, endDate])
+  @@unique([startDate, endDate,userType])
 }
 
 model Achievement {

@@ -31,7 +31,7 @@ export interface LeaderboardData {
  *          the user's position, points, relevant dates, and remaining time.
  */
 export const getLeaderboardData = async (userId: string, userType: UserType, start?: string): Promise<LeaderboardData> => {
-  const { startDate, endDate } = getPreviousAndNextDates(1, start);
+  const { startDate, endDate } = getPreviousAndNextDates(2, start);
   const now = new Date();
 
   console.log(`Fetching leaderboard data from ${startDate.toISOString()} to ${endDate.toISOString()}`);

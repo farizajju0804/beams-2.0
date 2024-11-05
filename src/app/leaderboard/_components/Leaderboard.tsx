@@ -4,7 +4,6 @@ import UserStatus from './UserStatus';
 import {  getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
-import { recalculateLeaderboardRanks2 } from '@/actions/points/updateLeaderboardEntry';
 import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
@@ -14,6 +13,7 @@ import { PiNumberCircleThreeDuotone } from "react-icons/pi";
 import Image from 'next/image';
 import LowerRanksTable from './LowerRanksCard';
 import { updateAchievementsAfterLeaderboard } from '@/actions/points/updateAchievementsAfterLeaderboard';
+import { finalizeLeaderboardPeriod } from '@/actions/points/updateLeaderboardEntry';
 
 interface LeaderboardProps {
   userId: string;
@@ -129,13 +129,15 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     setIsTimerActive(false);
 
     if (startDate && endDate) {
-      await recalculateLeaderboardRanks2(new Date(startDate), new Date(endDate), userType);
+      // await recalculateLeaderboardRanks2(new Date(startDate), new Date(endDate), userType);
+      await finalizeLeaderboardPeriod(new Date(startDate), new Date(endDate), userType);
+
     }
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-04T20:00:00.000+00:00'),
-        getLeaderboardData(userId, userType,'2024-11-04T20:00:00.000+00:00')
+        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-05T20:00:00.000+00:00'),
+        getLeaderboardData(userId, userType,'2024-11-05T20:00:00.000+00:00')
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));

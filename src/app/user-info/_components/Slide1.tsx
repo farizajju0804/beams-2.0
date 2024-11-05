@@ -43,7 +43,7 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
   const feedbackMessages = [
     "[Name], that's a name destined for greatness! 🌟 Let's make it legendary!",
     "Well, hello there, [Name]! 👋 Your name is as awesome as you are!",
-    "Nice to meet you, [Name]! 😄 Let's get this adventure started!",
+    "good to meet you, [Name]! 😄 Let's get this adventure started!",
     "[Name], your name just made our day! 🎉 Now, let's make yours even better!",
     "That's a name to remember, [Name]! 📝 Ready to rock and roll?"
   ];

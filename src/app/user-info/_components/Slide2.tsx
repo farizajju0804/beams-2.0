@@ -99,7 +99,6 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
   const feedbackMessages = [
     "Great choice, [Name]! 🌟 Let’s keep going!",
     "[Name], you’re making awesome progress! 🚀",
-    "You’ve got this, [Name]! 😄 Keep it up!",
     "[Name], you’re on a roll! 🎉 Let’s continue!",
     "Fantastic, [Name]! Let’s finish strong! 💪"
   ];

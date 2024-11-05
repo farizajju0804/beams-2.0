@@ -10,6 +10,7 @@ export default auth(async (req) => {
   const { nextUrl } = req; // Get the requested URL
 
   const isLoggedIn = !!req.auth; // Check if the user is logged in
+  console.log("midlleware logged in status",isLoggedIn)
   const user = await currentUser(); // Fetch the current user data
   // console.log("middleware session",user);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route

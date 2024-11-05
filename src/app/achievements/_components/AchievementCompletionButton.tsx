@@ -33,9 +33,10 @@ const INSPIRING_MESSAGES = [
   "Bravo, {userName}! Your dedication as a {badgeName} is truly inspiring!",
   "You're a true {badgeName} now, {userName}! Time to celebrate this milestone!",
   "The sky's the limit, {userName}! Wear your {badgeName} badge with pride!",
-  "{userName}, you've proven you're a force to be reckoned with as a {badgeName}!",
+  "{userName}, you're a force to be reckoned with as a {badgeName}!",
   "Congratulations, {userName}! You've mastered the art of being a {badgeName}!",
   "{userName}, you're making waves with your new {badgeName} badge! Keep it up!"
+
 ];
 
 const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = ({

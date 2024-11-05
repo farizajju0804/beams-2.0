@@ -4,6 +4,8 @@ import { Suspense } from 'react'; // Importing Suspense for handling lazy loadin
 import { getClientIp } from "@/utils/getClientIp"; // Utility to fetch the client's IP address
 
 import LoginSide from "../_components/LoginSide"; // Importing a side component, possibly a UI element on the login page
+import { currentUser } from "@/libs/auth";
+import { redirect } from "next/navigation";
 
 // Defining the props for the LoginPage component, although no props are used in this case
 interface LoginPageProps {}
@@ -16,6 +18,7 @@ interface LoginPageProps {}
 const LoginPage: FC<LoginPageProps> = async ({}) => {
   const ip = await getClientIp(); // Fetch the client's IP address
 
+  
   return (
     // Wrapping the main content in Suspense for potential lazy loading
     <Suspense>

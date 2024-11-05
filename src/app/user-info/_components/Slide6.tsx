@@ -28,7 +28,6 @@ interface Slide6Props {
 
 const feedbackMessages = [
   "Nice choice, [Name]! 🏫 Your school just gained an extra dose of awesome with you on board!",
-  "Way to rep your school, [Name]! 🎓 You’re officially the coolest student at [School Name]!",
   "[School Name] is lucky to have you, [Name]! 📚 Get ready to make some serious waves!",
   "Look out, [School Name]! [Name] is here to take things to the next level! 🚀",
   "[Name], you and [School Name] are a perfect match! 🎒 Let’s get ready to make some magic happen!"

@@ -92,8 +92,8 @@ const Slide4: React.FC<Slide4Props> = ({ onNext, formData, handleBack,isLoading 
   const feedbackMessages = [
     "Fantastic picks, [Name]! 🎨 Your journey just got a whole lot more interesting!",
     "Great choices, [Name]! 🌟 We're curating something special just for you!",
-    "[Name], you've got style! 😎 Get ready for some personalized content!",
-    "You're all set, [Name]! 🚀 We're tailoring your experience based on your awesome picks!",
+    "[Name], you've got style! 😎 Get ready for some great content!",
+    "You're all set, [Name]! 🚀 We're tailoring your experience based on your awesome interests!",
     "Excellent selection, [Name]! 🎉 We're building a journey around your interests!"
   ];
 
