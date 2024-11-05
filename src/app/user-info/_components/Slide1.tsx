@@ -180,9 +180,12 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
               color="primary"
               aria-label="submit"
               endContent={<FaChevronRight />}
-              className="w-full font-semibold text-lg py-6 md:text-xl text-white"
+              className="w-full flex-1 font-semibold truncate text-lg py-6 md:text-xl text-white"
+              
             >
-              {ctaText}
+               <div className="max-w-[calc(100%-2rem)] overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {ctaText}
+                </div>
             </Button>
           </form>
         </Form>

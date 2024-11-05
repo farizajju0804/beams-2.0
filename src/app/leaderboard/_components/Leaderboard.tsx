@@ -4,7 +4,7 @@ import UserStatus from './UserStatus';
 import {  getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
-import { Avatar, Spinner, Button, Modal, useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { Avatar, Spinner, Button, Modal,Popover, PopoverTrigger, PopoverContent , useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
 import { AiFillQuestionCircle, AiFillClockCircle,  AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
@@ -136,8 +136,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-05T20:00:00.000+00:00'),
-        getLeaderboardData(userId, userType,'2024-11-05T20:00:00.000+00:00')
+        getTop3EntriesForMostRecentWeek(userType,userId),
+        getLeaderboardData(userId, userType)
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
@@ -209,9 +209,22 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                 <Image src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1727176494/achievements/crown-3d_hpf6hs.png" width={300} height={300} alt="Crown" className="w-10 h-10 md:h-16 md:w-16 absolute top-[-30px] md:top-[-40px]" />
               )}
               <Avatar src={user?.user?.image || undefined} showFallback isBordered alt="profile" className="w-12 h-12 md:w-20 md:h-20 mb-3" />
-              <div className={`text-center text-text text-sm md:text-lg mb-3 text-wrap truncate max-w-20 w-full ${user.isYou ? 'font-bold' : 'font-medium'}`}>
+              <Popover showArrow placement="bottom">
+            <PopoverTrigger>
+              <div 
+                className={`text-center text-text text-sm md:text-lg mb-3 text-wrap truncate max-w-20 w-full ${
+                  user.isYou ? 'font-bold' : 'font-medium'
+                } cursor-pointer hover:opacity-80`}
+              >
                 {`${user?.user?.firstName} ${user?.user?.lastName} ${user.isYou ? '(You)' : ''}`}
               </div>
+            </PopoverTrigger>
+            <PopoverContent className="p-2">
+              <div className="text-sm text-center font-normal">
+                {`${user?.user?.firstName} ${user?.user?.lastName} ${user.isYou ? '(You)' : ''}`}
+              </div>
+            </PopoverContent>
+          </Popover>
               <div className="text-center  font-medium p-1 bg-text text-background text-xs md:text-sm">{user?.points} Beams</div>
 
               <div className={`${getHeight(user?.rank)}  ${getColor(user?.rank)} w-full py-6 px-2 md:px-4 flex flex-col items-center justify-center transition-all duration-300 ease-in-out leaderboard-position`}
@@ -291,11 +304,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               title="Point Accumulation"
               description="Only beams accumulated during the competition period will count."
             />
-            {/* <RuleItem 
-              icon={<AiFillThunderbolt className="text-green-500" size={24} />}
-              title="Tiebreakers"
-              description="In case of ties, the user who accumulated the beams first will be ranked higher."
-            /> */}
+           <RuleItem 
+            icon={<AiFillThunderbolt className="text-green-500" size={24} />}
+            title="Tiebreakers"
+            description="If there are ties in beam count, all users with the same beams will receive the same rank. However, for the weekly leaderboard display, the user who accumulated beams first will appear higher, showing only the top entry for each beam count."
+          />
+
             <RuleItem 
               icon={<AiFillCrown className="text-yellow" size={24} />}
               title="Leaderboard Display"

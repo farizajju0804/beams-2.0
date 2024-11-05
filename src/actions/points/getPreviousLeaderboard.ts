@@ -71,7 +71,10 @@ export const getTop3EntriesForMostRecentWeek = async (
     // Fetch the top 10 entries for the most recent week
     const top10Entries = await db.leaderboard.findMany({
       where: { endDate: mostRecentWeek.endDate, userType }, // Filter by the end date and user type
-      orderBy: { rank: 'asc',createdAt :'asc' }, // Order by rank in ascending order
+      orderBy: [
+        { rank: 'asc' },
+        { createdAt: 'asc' }
+      ], // Order by rank in ascending order
       take: 10, // Limit the results to the top 10 entries
       include: {
         user: {

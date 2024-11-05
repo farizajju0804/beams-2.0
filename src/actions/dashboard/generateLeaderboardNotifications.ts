@@ -110,11 +110,11 @@ export const generateLeaderboardNotifications = async () => {
   console.log('Updating leaderboard achivement for non-student  entries...')
   const nonStudentAchivement = await updateAchievementsAfterLeaderboard('NON_STUDENT')
   console.log('Fetching student leaderboard entries...');
-  const studentResults = await getLeaderboardEntries('STUDENT','2024-11-05T20:00:00.000+00:00');
+  const studentResults = await getLeaderboardEntries('STUDENT');
   console.log(`Fetched ${studentResults.entries.length} student entries.`);
   
   console.log('Fetching non-student leaderboard entries...');
-  const nonStudentResults = await getLeaderboardEntries('NON_STUDENT','2024-11-05T20:00:00.000+00:00');
+  const nonStudentResults = await getLeaderboardEntries('NON_STUDENT');
   console.log(`Fetched ${nonStudentResults.entries.length} non-student entries.`);
   
   // Check if either student or non-student leaderboard has 3 or more entries

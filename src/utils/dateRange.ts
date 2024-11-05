@@ -17,25 +17,25 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
         console.log("Today is the target day.");
 
         // Check if the current time is after 6 PM
-        if (now.getUTCHours() >= 14) {
+        if (now.getUTCHours() >= 15) {
             console.log("Current time is after 6 PM.");
             // Set start date to today at 18:00 UTC
-            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 14, 0, 0));
+            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 15, 0, 0));
             console.log("Start Date set to:", startDate.toISOString());
 
             // Set end date to next occurrence of the target day (next week) at 17:59:59.999 UTC
             endDate = new Date(startDate);
             endDate.setUTCDate(endDate.getUTCDate() + 7);
-            endDate.setUTCHours(13,59,59, 999); // Ensure it's set to 17:59:59.999
+            endDate.setUTCHours(14,59,59, 999); // Ensure it's set to 17:59:59.999
             console.log("End Date set to next week:", endDate.toISOString());
         } else {
             console.log("Current time is before 6 PM.");
             // Set start date to previous week at 18:00 UTC
-            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7, 14, 0, 0));
+            startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7, 15, 0, 0));
             console.log("Start Date set to previous week:", startDate.toISOString());
 
             // Set end date to today at 17:59:59.999 UTC
-            endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 13, 59, 59, 999));
+            endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 14, 59, 59, 999));
             console.log("End Date set to today:", endDate.toISOString());
         }
     } else {
@@ -48,13 +48,13 @@ export function getPreviousAndNextDates(targetDay: number, start?: string) {
         console.log("Previous Target Date calculated as:", previousTargetDate.toISOString());
 
         // Set start date to previous target day at 18:00 UTC
-        startDate = new Date(Date.UTC(previousTargetDate.getUTCFullYear(), previousTargetDate.getUTCMonth(), previousTargetDate.getUTCDate(), 14, 0, 0));
+        startDate = new Date(Date.UTC(previousTargetDate.getUTCFullYear(), previousTargetDate.getUTCMonth(), previousTargetDate.getUTCDate(), 15, 0, 0));
         console.log("Start Date set to previous target day:", startDate.toISOString());
         
         // Set end date to the next occurrence of the target day (next week) at 17:59:59.999 UTC
         endDate = new Date(startDate);
         endDate.setUTCDate(endDate.getUTCDate() + 7);
-        endDate.setUTCHours(13,59,59,999); // Ensure it's set to 17:59:59.999
+        endDate.setUTCHours(14,59,59,999); // Ensure it's set to 17:59:59.999
         console.log("End Date set to next occurrence:", endDate.toISOString());
     }
 

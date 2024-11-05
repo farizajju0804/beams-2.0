@@ -108,7 +108,7 @@ export default function RootLayout({
           {/* Favicon and Apple touch icon */}
           <link rel="icon" href="/favicon.ico" sizes="any" />
           {/* <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> */}
-
+          <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
           {/* Preconnects for Google Fonts */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

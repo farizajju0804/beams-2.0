@@ -56,7 +56,7 @@ const VictoryVault: React.FC<VictoryVaultProps> = ({ badges, color }) => {
         {/* Conditional rendering based on the presence of badges */}
         {badges.length === 0 ? (
           <div className="px-4 flex flex-col items-center py-4">
-            <p className="text-center text-sm mb-3 text-gray-600">
+            <p className="text-center text-sm mb-3 text-grey-4">
               Start unlocking badges to fill your Victory Vault!
             </p>
             <Image

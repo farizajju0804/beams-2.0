@@ -187,15 +187,16 @@ const Slide2: React.FC<Slide2Props> = ({ onNext, formData, handleBack }) => {
             <div className="flex justify-between items-center gap-4">
             <BackButton handleBack={handleBack}/>
             <Button
-              type="submit"
-              color="primary"
-              endContent={<FaChevronRight />}
-              className="w-full font-semibold text-lg py-6 md:text-xl text-white"
-              // disabled={!selectedGender} // Disable until a gender is selected
-            >
-              {ctaText}
-            </Button>
-            </div>
+                type="submit"
+                color="primary"
+                endContent={<FaChevronRight />}
+                className="w-full group relative flex items-center justify-center overflow-hidden text-wrap font-semibold text-lg py-6 md:text-xl text-white"
+              >
+                <div className="max-w-[calc(100%-2rem)] overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {ctaText}
+                </div>
+              </Button>
+             </div>
           </form>
         </Form>
       </div>
