@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Image from "next/image";
 import { Button } from "@nextui-org/react";
@@ -7,6 +8,7 @@ import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
 import { Microscope } from "iconsax-react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;  // The topic of the day or null if not available
@@ -18,6 +20,8 @@ interface TopicOfTheDayProps {
  * If no topic is available, a message is displayed instead.
  */
 const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
+  const router = useRouter(); // Initializing the router for navigation
+
   return (
     <div className="w-full py-1 mb-4 text-left relative max-w-6xl mx-auto">
       
@@ -60,16 +64,17 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
               <div className="flex items-center my-2 justify-between w-full">
                 <div className="flex w-full items-center justify-start lg:justify-center flex-1">
                   {/* Beam Now Button */}
-                  <Link href={`/beams-today/${topic.id}`} prefetch>
+                  {/* <Link href={`/beams-today/${topic.id}`} prefetch> */}
                   <Button
                     endContent={<Microscope variant="Bold" className="text-white" />}
                     className="font-semibold text-white text-base md:text-lg p-4 lg:px-8 py-6"
                     size="md"
                     color="primary"
+                    onClick={() => router.push(`/beams-today/${topic.id}`)}
                   >
                     Beam Now
                   </Button>
-                  </Link>
+                  {/* </Link> */}
                 </div>
 
                 {/* Date Component */}
