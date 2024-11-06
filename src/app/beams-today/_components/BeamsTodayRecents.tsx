@@ -11,6 +11,7 @@ import SortByFilter from './SortByFilter';
 import CustomPagination from '@/components/Pagination';
 import FormattedDate from "./FormattedDate";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
+import Link from "next/link";
 
 
 interface Category {
@@ -166,16 +167,16 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                     </motion.div>
 
                     <div className="pt-4 flex justify-between items-center">
+                      <Link href={`/beams-today/${active.id}`} prefetch>
                       <Button
                         endContent={<Microscope variant="Bold" className="text-white" />}
                         className="font-semibold text-white text-lg p-4 lg:px-8 py-6"
                         size="md"
-                        as="a"
-                        href={`/beams-today/${active.id}`}
                         color="primary"
                       >
                         Beam Now
                       </Button>
+                      </Link>
                       <FormattedDate date={active.date.toISOString().split('T')[0]} />
                     </div>
                   </div>

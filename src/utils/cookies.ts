@@ -9,9 +9,10 @@ export async function deleteCookies() {
   
   console.log("cookies")
   cookieStore.delete('authjs.session-token')
-  cookieStore.delete('.authjs.session-token')
+  cookieStore.delete('__Secure-authjs.session-token')
   
 
   
   redirect('/auth/login')
 }
+

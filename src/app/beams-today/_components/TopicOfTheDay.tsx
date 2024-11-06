@@ -6,6 +6,7 @@ import DateComponent from "./DateComponent";
 import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
 import { Microscope } from "iconsax-react";
+import Link from "next/link";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;  // The topic of the day or null if not available
@@ -59,16 +60,16 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
               <div className="flex items-center my-2 justify-between w-full">
                 <div className="flex w-full items-center justify-start lg:justify-center flex-1">
                   {/* Beam Now Button */}
+                  <Link href={`/beams-today/${topic.id}`} prefetch>
                   <Button
                     endContent={<Microscope variant="Bold" className="text-white" />}
                     className="font-semibold text-white text-base md:text-lg p-4 lg:px-8 py-6"
                     size="md"
-                    as="a"
-                    href={`/beams-today/${topic.id}`}
                     color="primary"
                   >
                     Beam Now
                   </Button>
+                  </Link>
                 </div>
 
                 {/* Date Component */}
