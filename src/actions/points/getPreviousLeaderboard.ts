@@ -48,8 +48,8 @@ export const getTop3EntriesForMostRecentWeek = async (
     console.log('getTop3EntriesForMostRecentWeek called with:', { userType, userId, start });
 
     const baseDate = start ? new Date(start) : new Date(); // Determine the base date for the query
-    const now = new Date(baseDate.getTime() + 60 * 1000); // Adjust the current time slightly
-
+    // const now = new Date(baseDate.getTime() + 60 * 1000); // Adjust the current time slightly
+    const now = new Date(baseDate.getTime() );
     console.log('Base date:', baseDate);
     console.log('Current adjusted date (now):', now);
 
@@ -134,7 +134,7 @@ export const getTop10EntriesForMostRecentWeek = async (
     console.log('getTop10EntriesForMostRecentWeek called with:', { userType, start });
 
     const baseDate = start ? new Date(start) : new Date(); // Determine the base date for the query
-    const now = new Date(baseDate.getTime() + 60 * 1000); // Adjust the current time slightly
+    const now = new Date(baseDate.getTime()); // Adjust the current time slightly
 
     console.log('Base date:', baseDate);
     console.log('Current adjusted date (now):', now);
