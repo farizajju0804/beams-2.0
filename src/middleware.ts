@@ -10,7 +10,7 @@ export default auth(async (req) => {
   const { nextUrl } = req; // Get the requested URL
 
   const isLoggedIn = !!req.auth; // Check if the user is logged in
-  console.log("midlleware logged in status",isLoggedIn)
+  // console.log("midlleware logged in status",isLoggedIn)
   const user = await currentUser(); // Fetch the current user data
   // console.log("middleware session",user);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix); // Check if the route is an API authentication route
@@ -69,12 +69,12 @@ export default auth(async (req) => {
       }
 
       // Log the current user state for debugging purposes
-      console.log("Current user state:", {
-        isAccessible: user.isAccessible,
-        userFormCompleted: user.userFormCompleted,
-        onBoardingCompleted: user.onBoardingCompleted,
-        currentPath: nextUrl.pathname
-      });
+      // console.log("Current user state:", {
+      //   isAccessible: user.isAccessible,
+      //   userFormCompleted: user.userFormCompleted,
+      //   onBoardingCompleted: user.onBoardingCompleted,
+      //   currentPath: nextUrl.pathname
+      // });
 
       // Check if the user isAccessible, if not, redirect to /access-code
       if (!user.isAccessible && nextUrl.pathname !== '/access-code') {

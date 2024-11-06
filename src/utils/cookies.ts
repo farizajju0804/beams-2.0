@@ -1,14 +1,17 @@
+// app/actions/auth.ts
 'use server'
 
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-export async function deleteAllCookies() {
+export async function deleteCookies() {
   const cookieStore = cookies()
-  const allCookies = cookieStore.getAll()
+  
+  console.log("cookies")
+  cookieStore.delete('authjs.session-token')
+  cookieStore.delete('.authjs.session-token')
+  
 
-  allCookies.forEach(cookie => {
-    cookieStore.delete(cookie.name)
-  })
-
-  return { success: true, message: 'All cookies deleted successfully' }
+  
+  redirect('/auth/login')
 }

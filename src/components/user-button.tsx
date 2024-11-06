@@ -11,8 +11,9 @@ import { signOutUser } from "@/actions/auth/signout";
 import { ReferFriendModal } from "./ReferalModal";
 import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
 import { useReferralModalStore } from "@/store/referralStore";
-import { deleteAllCookies } from "@/utils/cookies";
+
 import { ReferralStatus } from "@prisma/client";
+import { deleteCookies } from "@/utils/cookies";
 
 interface UserData {
   id: string,
@@ -54,28 +55,7 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     router.push(path);
   };
 
-  const handleSignOut = async () => {
-    try {
-      // Clear your user store
-      setStoreUser(null);
-      
-      // Clear any local storage or cookies if needed
-      deleteAllCookies();
-      
-      // Use signOut with specific configuration
-      const result = await signOutUser()
-      console.log(result)
-      // await signOut({
-      //   redirect: true,
-      //   callbackUrl: '/auth/login'
-      // });
 
-    } catch (error) {
-      console.error('Sign out error:', error);
-      // Fallback redirect
-      router.push('/auth/login');
-    }
-  };
 
   const user = storeUser;
 
@@ -83,19 +63,19 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     return null;
   }
 
-
-  const customSignOut = async () => {
-    await signOut();
-
-    // Clear all cookies
-    document.cookie.split(";").forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
-
-    window.location.href = "/auth/login";
+  const handleSignOut = async () => {
+    try {
+    
+      await deleteCookies()
+      // await signOutUser();
+  
+      
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    }
   };
+
+  
   // Define all possible menu items
   const menuItems = [
     // Profile Section
@@ -166,16 +146,7 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     <DropdownItem
       key="logout"
       // onClick={customSignOut}
-      onClick={async() =>
-      {   
-        await signOut({
-        redirectTo: '/auth/login'
-      })
-      await signOutUser()
-      // await deleteAllCookies()
-    }
-
-    }
+      onClick={handleSignOut}
       startContent={<Logout className="text-red-500" variant="Bold" />}
       color="danger"
     >

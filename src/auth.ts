@@ -13,6 +13,7 @@ import { getAccountByUserId } from "./actions/auth/account";
 import {  getUserByEmail as getUserByEmail2,getUserById2 } from "./actions/auth/getUserByEmail";
 import { UserRole, UserType } from "@prisma/client";
 import { getClientIp } from "./utils/getClientIp";
+import { cookies } from "next/headers";
 
 // Exporting authentication handlers (GET, POST) for use in the Next.js API routes
 export const {
@@ -39,10 +40,17 @@ export const {
          }, // Set emailVerified to the current date
       });
     },
-    async signOut() {
-    
-      return;
-    },
+    // async signOut(message) {
+    //   if ('token' in message && message.token) {
+    //     // Now TypeScript knows this is a token
+    //     const token = message.token;
+    //     token.exp = 0;
+    //     token.iat = 0;
+    //     console.log("Token invalidated during signOut", token);
+    //   }
+    // },
+
+
   },
 
   // Callbacks to customize sign-in, session, and JWT handling
@@ -132,6 +140,11 @@ export const {
       return token
      }
     
+
+    //  if (token && (token.iat === 0 || token.exp === 0)) {
+    //   console.log("Token rejected due to invalidated iat/exp");
+    //   return null;
+    // }
       if (trigger === "update" && session?.user) {
         token = { ...token, ...session.user };
       }
