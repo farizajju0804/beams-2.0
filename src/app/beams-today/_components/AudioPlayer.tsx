@@ -1,3 +1,4 @@
+'use client'
 import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import H5AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';

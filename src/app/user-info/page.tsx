@@ -106,7 +106,7 @@ const Page = () => {
   };
 
   return (
-    <div className='flex flex-col w-full min-h-screen px-4 py-8 items-center justify-center'>
+    <div className='flex flex-col w-full min-h-screen px-8 py-8 items-center justify-center'>
       {currentSlide !== 0 && <ProgressBar totalSlides={totalSlides} currentSlide={currentSlide} />}  {/* Progress Bar */}
 
       {/* Modal for welcome message */}

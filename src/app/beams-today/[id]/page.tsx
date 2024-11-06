@@ -11,6 +11,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BottomNavigation from "../_components/BottomNavigation"; // Ensure correct import
 import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
 import { Metadata } from "next";
+import BeamsTodayContent from "../_components/BeamsTodayContent";
 
 interface BeamsTodayPlayerPageProps {
   params: { id: string };
@@ -89,7 +90,7 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
       
       
       {/* Render tabs and details of the Beams Today topic */}
-      <BeamsTodayTabs beamsToday={beamsToday} />
+      <BeamsTodayContent beamsToday={beamsToday} />
       <BeamsTodayDetails data={beamsToday} />
       
       {/* Render the poll component for user interaction */}

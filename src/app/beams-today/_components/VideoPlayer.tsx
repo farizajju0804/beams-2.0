@@ -1,3 +1,4 @@
+'use client'
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react'; // Import necessary hooks and components from React
 import { CldVideoPlayer } from 'next-cloudinary'; // Import the Cloudinary video player
 import 'next-cloudinary/dist/cld-video-player.css'; // Import the Cloudinary video player CSS styles

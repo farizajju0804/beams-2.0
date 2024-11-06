@@ -27,7 +27,7 @@ const feedbackMessages: Record<Grade, string> = {
   'Grade 4': "[Name], you're officially a Grade 4 legend! 🎒 Ready to unlock the mysteries of the future.",
   'Grade 5': "Grade 5 it is, [Name]! Big things are coming your way!",
   'Grade 6': "Watch out, world—[Name] is in Grade 6! 📚 Time to show everyone that you're the boss of middle school madness!",
-  'Grade 7': "Grade 7 just got a whole lot cooler with [Name] around! 🔥 Get ready to master the art of being awesome (and acing those tests)!",
+  'Grade 7': "Grade 7 just got a whole lot cooler with [Name] around! 🔥 Get ready to master the art of being awesome!",
   'Grade 8': "[Name], Grade 8 — you're at the top! Ready to finish middle school strong!",
   'Grade 9': "High school, beware—[Name] is here! 🏆 Grade 9 is just the beginning of your epic rise to fame and glory!"
 };
@@ -129,13 +129,17 @@ const Slide5: React.FC<Slide5Props> = ({ onNext, formData, handleBack }) => {
             <div className="flex justify-between items-center gap-4">
               <BackButton handleBack={handleBack} />
               <Button
-                type="submit"
-                color="primary"
-                endContent={<FaChevronRight />}
-                className="w-full font-semibold text-lg py-6 md:text-xl text-white"
-              >
-                {ctaText}
-              </Button>
+              type="submit"
+              color="primary"
+              aria-label="submit"
+              endContent={<FaChevronRight />}
+              className="w-full flex-1 font-semibold truncate text-lg py-6 md:text-xl text-white"
+              
+            >
+               <div className="max-w-[calc(100%-2rem)] overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {ctaText}
+                </div>
+            </Button>
             </div>
           </form>
         </Form>
