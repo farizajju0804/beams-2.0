@@ -134,7 +134,7 @@ const Page = () => {
 
       {/* Redirection message */}
       {isRedirecting ? (
-          <RedirectMessage/>
+          <RedirectMessage username={session?.user.firstName}/>
 
       ) : (
         <>

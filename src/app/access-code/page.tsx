@@ -111,7 +111,7 @@ export default function AccessCodeComponent() {
 
   // Display redirection message if still processing referral or redirecting
   if (isRedirecting || !isReferralProcessed) {
-    return <RedirectMessage />;
+    return <RedirectMessage username={session?.user.firstName} />;
   }
 
   return (

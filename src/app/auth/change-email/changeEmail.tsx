@@ -111,7 +111,7 @@ const ChangeEmail = () => {
   return (
     <>
       {isRedirecting ? (
-        <RedirectMessage /> 
+        <RedirectMessage username={undefined} /> 
       ) : (
         <CardWrapper 
           subMessage={!isTokenValid ? "" : "Ready for a change? Enter your new email below, and we'll keep you connected!"} 

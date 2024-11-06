@@ -161,7 +161,7 @@ const OnboardingPage = () => {
     >
       <Toaster position="top-center"/>
       {isRedirecting ? (
-        <RedirectMessage/>
+        <RedirectMessage username={session?.user.firstName}/>
       ) : (
         <>
           <div className="absolute top-4 left-0 right-0 w-full flex justify-between items-center px-6 lg:py-2">

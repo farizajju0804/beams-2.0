@@ -2,7 +2,6 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { currentUser } from '@/libs/auth'
 import ClientTopNav from './ClientTopNav'
 
 const TopNav = async () => {

@@ -114,7 +114,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
 
 
   if(isRedirecting){
-    return <RedirectMessage/>
+    return <RedirectMessage username={undefined}/>
   }
 
   

@@ -67,8 +67,8 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     try {
     
       // await deleteCookies()
-      await signOutUser();
-  
+      // await signOutUser();
+    await signOut()
       
     } catch (error) {
       console.error("Error during sign out:", error);

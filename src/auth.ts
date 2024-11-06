@@ -42,11 +42,18 @@ export const {
     },
     async signOut(message) {
       if ('token' in message && message.token) {
-        // Now TypeScript knows this is a token
-        const token = message.token;
-        token.exp = 0;
-        token.iat = 0;
-        console.log("Token invalidated during signOut", token);
+        if (message.token?.sub) {
+          // Update the user's session validity in the database
+          const updated = await db.user.update({
+            where: { id: message.token.sub },
+            data: { 
+              isSessionValid: false,
+            },
+          });
+
+        console.log("updated after signout",updated)
+
+        }
       }
     },
 

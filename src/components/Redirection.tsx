@@ -5,10 +5,10 @@ import { Spinner } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-export default function RedirectMessage() {
+export default function RedirectMessage({username}: {username : string | undefined}) {
   const [randomMessage, setRandomMessage] = useState("");
-  const user = useCurrentUser();
-  const username = user?.firstName;
+  // const user = useCurrentUser();
+  // const username = user?.firstName;
 
   const messages: string[] = [
     `you’re the sunshine in someone's life! ☀️`,
