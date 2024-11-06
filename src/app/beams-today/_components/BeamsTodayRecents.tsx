@@ -11,8 +11,7 @@ import SortByFilter from './SortByFilter';
 import CustomPagination from '@/components/Pagination';
 import FormattedDate from "./FormattedDate";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
-import Link from "next/link";
-
+import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
 
 interface Category {
   id: string;
@@ -42,7 +41,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
   const [totalPages, setTotalPages] = useState(initialUploads.totalPages);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-
+  const router = useRouter();
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -89,6 +88,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
   const handlePageChange = async (page: number) => {
     await fetchData(page, sortBy);
   };
+
 
   
 
@@ -167,16 +167,17 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                     </motion.div>
 
                     <div className="pt-4 flex justify-between items-center">
-                      <Link href={`/beams-today/${active.id}`} prefetch>
+                      {/* <Link href={`/beams-today/${active.id}`} prefetch> */}
                       <Button
                         endContent={<Microscope variant="Bold" className="text-white" />}
                         className="font-semibold text-white text-lg p-4 lg:px-8 py-6"
                         size="md"
                         color="primary"
+                        onClick={() => router.push(`/beams-today/${active.id}`)}
                       >
                         Beam Now
                       </Button>
-                      </Link>
+                      {/* </Link> */}
                       <FormattedDate date={active.date.toISOString().split('T')[0]} />
                     </div>
                   </div>

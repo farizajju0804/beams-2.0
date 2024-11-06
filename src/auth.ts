@@ -40,15 +40,15 @@ export const {
          }, // Set emailVerified to the current date
       });
     },
-    // async signOut(message) {
-    //   if ('token' in message && message.token) {
-    //     // Now TypeScript knows this is a token
-    //     const token = message.token;
-    //     token.exp = 0;
-    //     token.iat = 0;
-    //     console.log("Token invalidated during signOut", token);
-    //   }
-    // },
+    async signOut(message) {
+      if ('token' in message && message.token) {
+        // Now TypeScript knows this is a token
+        const token = message.token;
+        token.exp = 0;
+        token.iat = 0;
+        console.log("Token invalidated during signOut", token);
+      }
+    },
 
 
   },
@@ -141,10 +141,10 @@ export const {
      }
     
 
-    //  if (token && (token.iat === 0 || token.exp === 0)) {
-    //   console.log("Token rejected due to invalidated iat/exp");
-    //   return null;
-    // }
+     if (token && (token.iat === 0 || token.exp === 0)) {
+      console.log("Token rejected due to invalidated iat/exp");
+      return null;
+    }
       if (trigger === "update" && session?.user) {
         token = { ...token, ...session.user };
       }

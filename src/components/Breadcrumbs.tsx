@@ -32,6 +32,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, linkClassName, pageCla
                 {item.href ? (
                   <BreadcrumbLink
                     href={item.href}
+                    
                     className={`text-xs lg:text-sm ${linkClassName} hover:text-text`}
                   >
                     {item.icon && <span className="mr-2">{item.icon}</span>}

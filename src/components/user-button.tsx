@@ -66,8 +66,8 @@ export default function UserButton({ initialUser }: UserButtonProps) {
   const handleSignOut = async () => {
     try {
     
-      await deleteCookies()
-      // await signOutUser();
+      // await deleteCookies()
+      await signOutUser();
   
       
     } catch (error) {
