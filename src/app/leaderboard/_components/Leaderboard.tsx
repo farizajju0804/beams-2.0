@@ -136,8 +136,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 
     try {
       const [lastWeekData, nextWeekData]:any = await Promise.all([
-        getTop3EntriesForMostRecentWeek(userType,userId,'2024-11-06T07:45:00.000+00:00'),
-        getLeaderboardData(userId, userType,'2024-11-06T07:45:00.000+00:00')
+        getTop3EntriesForMostRecentWeek(userType,userId),
+        getLeaderboardData(userId, userType)
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
