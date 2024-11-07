@@ -12,6 +12,7 @@ import CustomPagination from '@/components/Pagination';
 import FormattedDate from "./FormattedDate";
 import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
+import RedirectMessage from "@/components/Redirection";
 
 interface Category {
   id: string;
@@ -29,11 +30,12 @@ interface PaginatedData {
 interface BeamsTodayRecentsProps {
   initialUploads: PaginatedData;
   clientDate : string;
+  username:string;
 }
 
 type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
 
-export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecentsProps) {
+export function BeamsTodayRecents({ initialUploads,clientDate,username }: BeamsTodayRecentsProps) {
   const [active, setActive] = useState<any | null>(null);
   const [uploads, setUploads] = useState<any[]>(initialUploads.uploads);
   const [sortBy, setSortBy] = useState<SortOption>("dateDesc");
@@ -42,6 +44,8 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false)
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -90,6 +94,9 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
   };
 
 
+  if(isRedirecting){
+    return <RedirectMessage username={username}/>
+  }
   
 
   return (
@@ -173,7 +180,10 @@ export function BeamsTodayRecents({ initialUploads,clientDate }: BeamsTodayRecen
                         className="font-semibold text-white text-lg p-4 lg:px-8 py-6"
                         size="md"
                         color="primary"
-                        onClick={() => router.push(`/beams-today/${active.id}`)}
+                        onClick={() =>{
+                        setIsRedirecting(true)
+                        router.push(`/beams-today/${active.id}`)
+                        }}
                       >
                         Beam Now
                       </Button>

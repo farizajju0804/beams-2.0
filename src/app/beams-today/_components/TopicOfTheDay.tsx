@@ -1,5 +1,5 @@
 'use client'
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@nextui-org/react";
 import { BeamsToday } from "@/types/beamsToday";
@@ -9,19 +9,24 @@ import { Chip } from "@nextui-org/react";
 import { Microscope } from "iconsax-react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
+import RedirectMessage from "@/components/Redirection";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;  // The topic of the day or null if not available
-  clientDate: string;        // The current date on the client side
+  username: string;        // The current date on the client side
 }
 
 /**
  * Component to display the "Topic of the Day" section, with the topic's image, title, and a "Beam Now" button.
  * If no topic is available, a message is displayed instead.
  */
-const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
+const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, username }) => {
   const router = useRouter(); // Initializing the router for navigation
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
+  if(isRedirecting){
+    return <RedirectMessage username={username}/>
+  }
   return (
     <div className="w-full py-1 mb-4 text-left relative max-w-6xl mx-auto">
       
@@ -70,7 +75,12 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, clientDate }) => {
                     className="font-semibold text-white text-base md:text-lg p-4 lg:px-8 py-6"
                     size="md"
                     color="primary"
-                    onClick={() => router.push(`/beams-today/${topic.id}`)}
+                    onClick={() => 
+                      {
+                      setIsRedirecting(true)
+                      router.push(`/beams-today/${topic.id}`)
+                      }
+                    }
                   >
                     Beam Now
                   </Button>

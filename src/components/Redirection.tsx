@@ -1,14 +1,10 @@
 "use client";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { Spinner } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-export default function RedirectMessage({username}: {username : string | undefined}) {
+export default function RedirectMessage({ username }: { username: string | undefined }) {
   const [randomMessage, setRandomMessage] = useState("");
-  // const user = useCurrentUser();
-  // const username = user?.firstName;
 
   const messages: string[] = [
     `you’re the sunshine in someone's life! ☀️`,
@@ -37,7 +33,7 @@ export default function RedirectMessage({username}: {username : string | undefin
     const randomMsg = messages[Math.floor(Math.random() * messages.length)];
     const formattedMessage = username 
       ? `${username}, ${randomMsg}` 
-      : randomMsg.charAt(0).toLowerCase() + randomMsg.slice(1); // Make the first letter lowercase if no username
+      : randomMsg.charAt(0).toUpperCase() + randomMsg.slice(1); // Ensure first letter is uppercase if no username
     setRandomMessage(formattedMessage);
   }, [username]);
 
