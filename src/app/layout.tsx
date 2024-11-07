@@ -77,7 +77,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
+  const siteSecret = process.env.NEXT_PUBLIC_SITE_BEHAVIOUR_SECRET;
   // JSON-LD structured data for SEO (website schema)
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -142,7 +142,7 @@ export default function RootLayout({
              
            (
               function() {
-                var sbSiteSecret = "25321c10-c173-4498-a856-d07cfb1d6a4a";
+                 var sbSiteSecret = "${siteSecret}";
                 window.sitebehaviourTrackingSecret = sbSiteSecret;
                 var scriptElement = document.createElement('script');
                 scriptElement.async = true;
