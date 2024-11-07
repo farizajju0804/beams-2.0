@@ -2,7 +2,10 @@
     "crons": [
       {
         "path": "/api/leaderboard",
-        "schedule": "0 15 * * 2"
+        "schedule": "45 15 * * 4",
+        "headers": {
+          "authorization": "@CRON_SECRET" 
+        }
       }
     ]
   }

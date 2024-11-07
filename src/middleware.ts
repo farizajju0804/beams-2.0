@@ -18,7 +18,7 @@ export default auth(async (req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname); // Check if the route is a public route
  
   if (nextUrl.pathname.startsWith('/api/leaderboard')) {
-    return; // Allow the cron job to run without redirecting
+    return;
   }
 
   if (nextUrl.pathname.startsWith('/api/user')) {
