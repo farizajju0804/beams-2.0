@@ -6,6 +6,10 @@ import FavoriteButton from '@/app/beams-today/_components/FavoriteButton'; // Im
 import { BeamsToday } from '@/types/beamsToday'; // Import the BeamsToday type for TypeScript type safety
 import { getNote } from '@/actions/beams-today/saveUserNote';
 import { BeamsTodayUserNote } from '@prisma/client';
+import { Button } from '@nextui-org/react';
+import Link from 'next/link';
+import { checkConnectionGameStatus } from '@/actions/beams-today/connectionGame';
+
 
 // Define the props for the BeamsTodayDetails component, expecting a 'data' prop of type BeamsToday
 interface BeamsTodayDetailsProps {
@@ -16,7 +20,8 @@ interface BeamsTodayDetailsProps {
 const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = async({ data }) => {
 
   const existingNote:BeamsTodayUserNote | null = await getNote(data.id)
-
+   const connectionGameStatus = await checkConnectionGameStatus(data.id)
+   console.log(connectionGameStatus)
   return (
     <div className="px-4 mt-2 rounded-3xl mb-10 lg:mb-20"> {/* Container with padding, margin, and rounded corners */}
       <h1 className="text-2xl md:text-3xl font-bold my-2">{data?.title}</h1> {/* Title of the beam, responsive font size */}
@@ -30,6 +35,16 @@ const BeamsTodayDetails: React.FC<BeamsTodayDetailsProps> = async({ data }) => {
           )}
         </p>
         <div className="flex items-center gap-4"> {/* Container for action buttons */}
+        {!connectionGameStatus.data?.isCompleted && connectionGameStatus.gameExists && (
+            <Button
+              as={Link}
+              href={`/word-game/${data.id}`}
+              prefetch
+              className="bg-grey-1 text-grey-2 font-medium"
+            >
+              Play Game
+            </Button>
+          )}
           <FavoriteButton beamsTodayId={data.id} /> {/* Button to favorite the beam today, passing the ID */}
           <NoteModal id={data.id} title={data.title} existingNote={existingNote} /> {/* Modal for adding notes, passing the ID and title */}
           <ShareButton data={data} /> {/* Button to share the beam today, passing the data */}

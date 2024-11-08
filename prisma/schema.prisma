@@ -1,14 +1,13 @@
 // Generator block to specify the Prisma Client generator configuration
 generator client {
-  provider = "prisma-client-js" // Specifies that Prisma will generate the Prisma Client for JavaScript
-  previewFeatures = ["fullTextSearch","fullTextIndex"]
+  provider        = "prisma-client-js" // Specifies that Prisma will generate the Prisma Client for JavaScript
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 // Data source configuration block for MongoDB connection
 datasource db {
   provider = "mongodb" // Specifies MongoDB as the database provider
   url      = env("DATABASE_URL") // Database connection URL, sourced from an environment variable
-  
 }
 
 // Enum for defining different user roles
@@ -17,7 +16,6 @@ enum UserRole {
   USER // Regular user role
 }
 
-
 enum PointsSource {
   BEAMS_TODAY
   POLL_PARTICIPATION
@@ -25,6 +23,7 @@ enum PointsSource {
   REFERRAL
   REFERRAL_BONUS
   NETWORK_POINTS
+  CONNECTION_GAME
 }
 
 enum NotificationType {
@@ -50,37 +49,37 @@ enum UserType {
 
 // User model definition for storing user data
 model User {
-  id                     String                 @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  firstName              String? // User's first name (optional)
-  lastName               String? // User's last name (optional)
-  email                  String?                @unique // User's email address (optional and unique)
-  emailVerified          DateTime? // Timestamp of email verification (optional)
-  image                  String? // User profile image URL (optional)
-  password               String? // User's hashed password (optional)
-  dob                    DateTime? // Date of birth of the user (optional)
-  userType               UserType               @default(NON_STUDENT) // Type of user, default is NON_STUDENT
-  grade                  String? // Grade of the student (optional)
-  gender                 String? // Gender of the user (optional)
-  interests              String[]               @default([]) // List of user interests (default is an empty array)
-  securityQuestion1      String? // First security question (optional)
-  securityAnswer1        String? // First security answer (optional)
-  securityQuestion2      String? // Second security question (optional)
-  securityAnswer2        String? // Second security answer (optional)
-  accounts               Account[] // Relationship to the Account model (many-to-one)
-  role                   UserRole               @default(USER) // User's role, default is USER
-  isTwoFactorEnabled     Boolean                @default(false) // Whether two-factor authentication is enabled
-  twoFactorConfirmation  TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
-  createdAt              DateTime               @default(now()) // Timestamp of user account creation
-  updatedAt              DateTime               @updatedAt // Timestamp of last update
-  userFormCompleted      Boolean                @default(false) // Whether the user completed the form
-  onBoardingCompleted    Boolean                @default(false) // Whether the user completed onboarding
-  isAccessible            Boolean              @default(false)
-  notificationPreference Boolean                @default(false)
-  isSessionValid          Boolean             @default(true)
-  isBanned                Boolean              @default(false)
-  schoolId    String?   @db.ObjectId
-  school      School?   @relation(fields: [schoolId], references: [id])
-  referralStatus            ReferralStatus?    
+  id                        String                      @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  firstName                 String? // User's first name (optional)
+  lastName                  String? // User's last name (optional)
+  email                     String?                     @unique // User's email address (optional and unique)
+  emailVerified             DateTime? // Timestamp of email verification (optional)
+  image                     String? // User profile image URL (optional)
+  password                  String? // User's hashed password (optional)
+  dob                       DateTime? // Date of birth of the user (optional)
+  userType                  UserType                    @default(NON_STUDENT) // Type of user, default is NON_STUDENT
+  grade                     String? // Grade of the student (optional)
+  gender                    String? // Gender of the user (optional)
+  interests                 String[]                    @default([]) // List of user interests (default is an empty array)
+  securityQuestion1         String? // First security question (optional)
+  securityAnswer1           String? // First security answer (optional)
+  securityQuestion2         String? // Second security question (optional)
+  securityAnswer2           String? // Second security answer (optional)
+  accounts                  Account[] // Relationship to the Account model (many-to-one)
+  role                      UserRole                    @default(USER) // User's role, default is USER
+  isTwoFactorEnabled        Boolean                     @default(false) // Whether two-factor authentication is enabled
+  twoFactorConfirmation     TwoFactorConfirmation? // Optional relationship to the TwoFactorConfirmation model
+  createdAt                 DateTime                    @default(now()) // Timestamp of user account creation
+  updatedAt                 DateTime                    @updatedAt // Timestamp of last update
+  userFormCompleted         Boolean                     @default(false) // Whether the user completed the form
+  onBoardingCompleted       Boolean                     @default(false) // Whether the user completed onboarding
+  isAccessible              Boolean                     @default(false)
+  notificationPreference    Boolean                     @default(false)
+  isSessionValid            Boolean                     @default(true)
+  isBanned                  Boolean                     @default(false)
+  schoolId                  String?                     @db.ObjectId
+  school                    School?                     @relation(fields: [schoolId], references: [id])
+  referralStatus            ReferralStatus?
   referredById              String?                     @db.ObjectId // Foreign key to store the referrer's referralId
   lastLoginAt               DateTime? // Timestamp of the last login (optional)
   lastLoginIp               String? // IP address of the last login (optional)
@@ -95,10 +94,11 @@ model User {
   notifications             Notification[]
   userAchievements          UserAchievement[]
   factCompletions           FactCompletion[]
-  beamsTodayWatchedContent BeamsTodayWatchedContent?
-  pollResponses          BeamsTodayPollResponse[]
-  Referral Referral?
-  beamPointsHistory      BeamPointsHistory[]
+  beamsTodayWatchedContent  BeamsTodayWatchedContent?
+  pollResponses             BeamsTodayPollResponse[]
+  Referral                  Referral?
+  beamPointsHistory         BeamPointsHistory[]
+  ConnectionGameCompletion  ConnectionGameCompletion[]
 }
 
 // Account model for storing external account login information
@@ -141,7 +141,8 @@ model ChangeToken {
   token   String   @unique // Unique verification token
   uuid    String   @unique
   expires DateTime // Expiration time for the token
-  @@unique([email, token,uuid]) // Ensures unique combination of email and token
+
+  @@unique([email, token, uuid]) // Ensures unique combination of email and token
   @@index([email]) // Index for faster queries on email
 }
 
@@ -176,7 +177,6 @@ model TwoFactorConfirmation {
   @@unique([userId]) // Ensures a unique two-factor confirmation per user
 }
 
-
 model AccessCode {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier
   code      String   @unique // The actual access code
@@ -184,11 +184,10 @@ model AccessCode {
   updatedAt DateTime @updatedAt // Timestamp of last update
 }
 
-
 model School {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  name        String    @unique
-  users       User[]    // Relation to User model
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String @unique
+  users User[] // Relation to User model
 }
 
 // Model for pending verification requests (e.g., email verification)
@@ -219,13 +218,11 @@ model Notification {
 model Referral {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   userId       String   @unique @db.ObjectId // Foreign key to the user who made the referral
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   referralCode String   @unique // Unique referral code for the referrer
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
-
-
 
 // FAQ model for storing frequently asked questions and answers
 model FAQ {
@@ -301,14 +298,41 @@ model BeamsToday {
   exclusiveContents     BeamsTodayExclusiveContent[] // Relationship to exclusive content for Beams Today
   downloadableResources BeamsTodayDownloadableResource[] // Relationship to downloadable resources
   userNotes             BeamsTodayUserNote[] // Relationship to user notes
-  favourites            BeamsTodayFavorite[] // Relationship to user favorites
+  connectionGame        ConnectionGame?
+  BeamsTodayFavorite    BeamsTodayFavorite[]
 
- @@index([published, date]) // For filtering published content and sorting by date
+  @@index([published, date]) // For filtering published content and sorting by date
   @@index([published, categoryId]) // For filtering by category and published status
-  
+  @@index([categoryId]) // Index for faster queries on categoryId
   // Full-text search index
   @@fulltext([title, shortDesc, script]) // For text search across these fields
-  @@index([categoryId]) // Index for faster queries on categoryId
+}
+
+model ConnectionGame {
+  id           String                     @id @default(auto()) @map("_id") @db.ObjectId
+  beamsTodayId String                     @unique @db.ObjectId // One-to-one relation with BeamsToday
+  beamsToday   BeamsToday                 @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade)
+  answer       String
+  hint         String
+  image        String
+  title        String
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+  completions  ConnectionGameCompletion[]
+}
+
+model ConnectionGameCompletion {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  connectionGameId String         @db.ObjectId
+  connectionGame   ConnectionGame @relation(fields: [connectionGameId], references: [id], onDelete: Cascade)
+  userId           String         @db.ObjectId // Reference to your User model
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completed        Boolean        @default(true)
+  completedAt      DateTime       @default(now())
+
+  @@unique([connectionGameId, userId]) // Ensure one completion record per user per game
+  @@index([connectionGameId])
+  @@index([userId])
 }
 
 // Model for tracking user-completed Beams Today content
@@ -364,6 +388,7 @@ model BeamsTodayPollResponse {
   pollOption   BeamsTodayPollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade) // Relationship to the poll option
   createdAt    DateTime             @default(now()) // Timestamp of the response
   user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId]) // Index for faster queries on userId
   @@index([pollOptionId]) // Index for faster queries on pollOptionId
 }
@@ -457,13 +482,14 @@ model UserBeamPoints {
 }
 
 model BeamPointsHistory {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  userId      String   @db.ObjectId // Foreign key to the User model
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  userId      String       @db.ObjectId // Foreign key to the User model
   points      Int // Number of points earned
   source      PointsSource
   description String // Description or reason for the points (e.g., "Watched 3 videos")
-  createdAt   DateTime @default(now()) // Timestamp of when points were earned
-  user      User      @relation(fields: [userId], references: [id],onDelete: Cascade)
+  createdAt   DateTime     @default(now()) // Timestamp of when points were earned
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId]) // Index for faster queries on userId
 }
 
@@ -475,24 +501,25 @@ model Leaderboard {
   startDate DateTime
   endDate   DateTime
   createdAt DateTime? @default(now())
-  user      User      @relation(fields: [userId], references: [id],onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   userType UserType // "STUDENT" or "NON_STUDENT"
 
+  @@unique([userId, startDate, endDate, userType]) // Composite index for efficient queries based on userId and date range
   @@index([userId]) // Index for quick user lookups
   @@index([userType, startDate, endDate]) // Composite index for efficient queries based on user type and date range
-  @@unique([userId, startDate, endDate,userType])   // Composite index for efficient queries based on userId and date range
 }
 
 model LeaderboardAnnouncement {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userType  UserType
-  startDate DateTime
-  endDate   DateTime
-  announced   Boolean   @default(false)
-  achivementCalculated   Boolean   @default(false)
-  createdAt DateTime @default(now())
-  @@unique([startDate, endDate,userType])
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  userType             UserType
+  startDate            DateTime
+  endDate              DateTime
+  announced            Boolean  @default(false)
+  achivementCalculated Boolean  @default(false)
+  createdAt            DateTime @default(now())
+
+  @@unique([startDate, endDate, userType])
 }
 
 model Achievement {
@@ -523,8 +550,8 @@ model UserAchievement {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  user        User        @relation(fields: [userId], references: [id],onDelete: Cascade)
-  achievement Achievement @relation(fields: [achievementId], references: [id],onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
 
   @@unique([userId, achievementId])
   @@index([userId])

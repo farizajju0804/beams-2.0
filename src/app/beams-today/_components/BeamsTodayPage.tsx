@@ -19,6 +19,7 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
   const clientDate = now.toLocaleDateString('en-CA', { timeZone });
 
   const topic: any = await getTopicOfTheDay(clientDate);
+ 
   const initialUploads = await getRecentUploads({
     clientDate: clientDate,
     page: 1,
@@ -37,7 +38,6 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
       <h1 className="font-poppins text-2xl md:text-4xl uppercase font-semibold bg-yellow text-purple p-2">Beams Today</h1>
      
       <TopicOfTheDay topic={topic} username={user.firstName} />
-  
       <TopicSearch userId={user.id} categories={categories} />
 
       <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} username={user.firstName} />
