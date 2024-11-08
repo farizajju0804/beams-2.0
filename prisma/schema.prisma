@@ -490,6 +490,7 @@ model LeaderboardAnnouncement {
   startDate DateTime
   endDate   DateTime
   announced   Boolean   @default(false)
+  achivementCalculated   Boolean   @default(false)
   createdAt DateTime @default(now())
   @@unique([startDate, endDate,userType])
 }

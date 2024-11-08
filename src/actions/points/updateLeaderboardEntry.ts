@@ -271,6 +271,7 @@ export const finalizeLeaderboardPeriod = async (
         startDate,
         endDate,
         userType,
+        achivementCalculated : false,
         announced: true
       },
       update: {

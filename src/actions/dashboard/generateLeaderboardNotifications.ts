@@ -50,7 +50,7 @@ const getLeaderboardEntries = async (userType: UserType,start?: string): Promise
     console.log(`Fetching leaderboard entries for userType: ${userType}...`);
     
     const baseDate = start ? new Date(start) : new Date(); 
-    const now = new Date(baseDate.getTime() + 60 * 1000);
+    const now = new Date(baseDate.getTime());
     console.log(`Current date: ${baseDate.toISOString()}, fetching data up to: ${now.toISOString()}`);
   
     // Fetch the most recent week with completed data
@@ -105,44 +105,164 @@ const getLeaderboardEntries = async (userType: UserType,start?: string): Promise
  */
 export const generateLeaderboardNotifications = async () => {
   try {
-  console.log('Updating leaderboard achivement for student  entries...')
-  const studentAchivement = await updateAchievementsAfterLeaderboard('STUDENT')
-  console.log('Updating leaderboard achivement for non-student  entries...')
-  const nonStudentAchivement = await updateAchievementsAfterLeaderboard('NON_STUDENT')
-  console.log('Fetching student leaderboard entries...');
-  const studentResults = await getLeaderboardEntries('STUDENT');
-  console.log(`Fetched ${studentResults.entries.length} student entries.`);
-  
-  console.log('Fetching non-student leaderboard entries...');
-  const nonStudentResults = await getLeaderboardEntries('NON_STUDENT');
-  console.log(`Fetched ${nonStudentResults.entries.length} non-student entries.`);
-  
-  // Check if either student or non-student leaderboard has 3 or more entries
-  const hasStudentEntries = studentResults.entries.length >= 3;
-  const hasNonStudentEntries = nonStudentResults.entries.length >= 3;
-  
-  if (!hasStudentEntries && !hasNonStudentEntries) {
-    console.log('Neither leaderboard has 3 or more entries. No notifications will be generated.');
-    return; // Don't generate notifications if neither has 3 or more entries
-  }
-  
-  if (hasStudentEntries) {
-    console.log('Generating notifications for student leaderboard...');
-    await generateNotificationsForGroup(studentResults.entries);
-  }
+    // Initial log to indicate function start
+    console.log('Starting generateLeaderboardNotifications function...');
 
-  // Process notifications for non-students if they meet the minimum requirement
-  if (hasNonStudentEntries) {
-    console.log('Generating notifications for non-student leaderboard...');
-    await generateNotificationsForGroup(nonStudentResults.entries);
-  }
+    // Get current date
+    const now = new Date();
+    console.log(`Current date: ${now.toISOString()}`);
 
-  console.log('All notifications have been sent successfully.');
-} catch (error) {
-  console.error('Error in generateLeaderboardNotifications:', error);
-  throw error;
-}
+    // Find most recent leaderboard weeks for both user types
+    console.log('Fetching most recent leaderboard week for STUDENT user type...');
+    const mostRecentStudentWeek = await db.leaderboard.findFirst({
+      where: { 
+        endDate: { lt: now }, 
+        userType: 'STUDENT' 
+      },
+      orderBy: { endDate: 'desc' },
+      select: { startDate: true, endDate: true }
+    });
+    console.log('Most recent STUDENT week:', mostRecentStudentWeek || 'No week found');
+
+    console.log('Fetching most recent leaderboard week for NON_STUDENT user type...');
+    const mostRecentNonStudentWeek = await db.leaderboard.findFirst({
+      where: { 
+        endDate: { lt: now }, 
+        userType: 'NON_STUDENT' 
+      },
+      orderBy: { endDate: 'desc' },
+      select: { startDate: true, endDate: true }
+    });
+    console.log('Most recent NON_STUDENT week:', mostRecentNonStudentWeek || 'No week found');
+
+    // Check for existing announcements using the most recent week dates
+    console.log('Checking for unprocessed announcements for STUDENT user type...');
+    let unprocessedStudentAnnouncement = null;
+    if (mostRecentStudentWeek) {
+      unprocessedStudentAnnouncement = await db.leaderboardAnnouncement.findUnique({
+        where: {
+          startDate_endDate_userType: {
+            startDate: mostRecentStudentWeek.startDate,
+            endDate: mostRecentStudentWeek.endDate,
+            userType: 'STUDENT'
+          }
+        }
+      });
+      console.log('Unprocessed STUDENT announcement found:', unprocessedStudentAnnouncement ? 'Yes' : 'No');
+
+      // If no announcement exists for this week, create one
+      if (!unprocessedStudentAnnouncement) {
+        console.log('Creating a new announcement for STUDENT user type...');
+        unprocessedStudentAnnouncement = await db.leaderboardAnnouncement.create({
+          data: {
+            startDate: mostRecentStudentWeek.startDate,
+            endDate: mostRecentStudentWeek.endDate,
+            userType: 'STUDENT',
+            achivementCalculated: false,
+            announced: false
+          }
+        });
+        console.log('New STUDENT announcement created:', unprocessedStudentAnnouncement);
+      }
+    }
+
+    console.log('Checking for unprocessed announcements for NON_STUDENT user type...');
+    let unprocessedNonStudentAnnouncement = null;
+    if (mostRecentNonStudentWeek) {
+      unprocessedNonStudentAnnouncement = await db.leaderboardAnnouncement.findUnique({
+        where: {
+          startDate_endDate_userType: {
+            startDate: mostRecentNonStudentWeek.startDate,
+            endDate: mostRecentNonStudentWeek.endDate,
+            userType: 'NON_STUDENT'
+          }
+        }
+      });
+      console.log('Unprocessed NON_STUDENT announcement found:', unprocessedNonStudentAnnouncement ? 'Yes' : 'No');
+
+      // If no announcement exists for this week, create one
+      if (!unprocessedNonStudentAnnouncement) {
+        console.log('Creating a new announcement for NON_STUDENT user type...');
+        unprocessedNonStudentAnnouncement = await db.leaderboardAnnouncement.create({
+          data: {
+            startDate: mostRecentNonStudentWeek.startDate,
+            endDate: mostRecentNonStudentWeek.endDate,
+            userType: 'NON_STUDENT',
+            achivementCalculated: false,
+            announced: false
+          }
+        });
+        console.log('New NON_STUDENT announcement created:', unprocessedNonStudentAnnouncement);
+      }
+    }
+
+    // Fetch leaderboard entries only if we have unprocessed achievements
+    let studentResults: any;
+    let nonStudentResults: any;
+
+    if (
+      unprocessedStudentAnnouncement?.achivementCalculated === false ||
+      unprocessedNonStudentAnnouncement?.achivementCalculated === false
+    ) {
+      console.log('Unprocessed achievements found. Fetching leaderboard entries...');
+
+      if (unprocessedStudentAnnouncement?.achivementCalculated === false) {
+        console.log('Fetching STUDENT leaderboard entries...');
+        studentResults = await getLeaderboardEntries('STUDENT');
+        console.log(`Fetched ${studentResults.entries.length} STUDENT entries.`);
+      }
+
+      if (unprocessedNonStudentAnnouncement?.achivementCalculated === false) {
+        console.log('Fetching NON_STUDENT leaderboard entries...');
+        nonStudentResults = await getLeaderboardEntries('NON_STUDENT');
+        console.log(`Fetched ${nonStudentResults.entries.length} NON_STUDENT entries.`);
+      }
+
+      // Process student category if needed
+      if (unprocessedStudentAnnouncement?.achivementCalculated === false &&
+          studentResults?.entries.length >= 3) {
+        console.log('Processing STUDENT category...');
+        console.log('Updating leaderboard achievement for STUDENT entries...');
+        await updateAchievementsAfterLeaderboard('STUDENT');
+
+        console.log('Generating notifications for STUDENT leaderboard...');
+        await generateNotificationsForGroup(studentResults.entries);
+
+        console.log('Marking STUDENT announcement as processed...');
+        await db.leaderboardAnnouncement.update({
+          where: { id: unprocessedStudentAnnouncement.id },
+          data: { achivementCalculated: true }
+        });
+      }
+
+      // Process non-student category if needed
+      if (unprocessedNonStudentAnnouncement?.achivementCalculated === false &&
+          nonStudentResults?.entries.length >= 3) {
+        console.log('Processing NON_STUDENT category...');
+        console.log('Updating leaderboard achievement for NON_STUDENT entries...');
+        await updateAchievementsAfterLeaderboard('NON_STUDENT');
+
+        console.log('Generating notifications for NON_STUDENT leaderboard...');
+        await generateNotificationsForGroup(nonStudentResults.entries);
+
+        console.log('Marking NON_STUDENT announcement as processed...');
+        await db.leaderboardAnnouncement.update({
+          where: { id: unprocessedNonStudentAnnouncement.id },
+          data: { achivementCalculated: true }
+        });
+      }
+
+      console.log('All processing completed successfully.');
+    } else {
+      console.log('No unprocessed leaderboard announcements found. Skipping all processing.');
+    }
+
+  } catch (error) {
+    console.error('Error in generateLeaderboardNotifications:', error);
+    throw error;
+  }
 };
+
  
 /**
  * Helper function to generate notifications for a specific group of users
