@@ -14,6 +14,7 @@ import { z } from "zod";
 import toast, { Toaster } from 'react-hot-toast';
 import { getSchools } from "@/actions/auth/onboarding";
 import { School } from "@prisma/client";
+import { uploadToCloudinary } from "@/libs/cloudinary";
 
 // Define available gender options for the dropdown
 const genders = [
@@ -147,97 +148,34 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ user, isOAuth }) =>
     }
   };
 
-  // Generate SHA-1 hash for Cloudinary signature
-  function sha1(str: string) {
-    const utf8 = new TextEncoder().encode(str);
-    return crypto.subtle.digest('SHA-1', utf8).then((hashBuffer) => {
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-    });
-  }
+
 
   // Handle file selection and upload to Cloudinary
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-  
-      // Validate file type and size
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-      if (!allowedTypes.includes(file.type)) {
-        toast.error("Please select a valid image file (JPEG, PNG, or GIF)", { position: 'top-center' });
-        return;
-      }
-  
-      const maxSize = 200 * 1024; // 200KB
-      if (file.size > maxSize) {
-        toast.error("File size exceeds 200KB. Please choose a smaller image.", { position: 'top-center' });
-        return;
-      }
-  
       setIsUploading(true);
   
       try {
-        // Prepare Cloudinary upload parameters
-        const timestamp = Math.round((new Date()).getTime() / 1000);
-        const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD || "";
-        const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || "";
-        const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET || "";
-        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
-        
-        // Generate signature for secure upload
-        const publicId = `user_${user.id}_profile`;
-        const paramsToSign = {
-          timestamp: timestamp,
-          upload_preset: uploadPreset,
-          public_id: publicId,
-          overwrite: true
-        };
-        
-        const signaturePayload = Object.entries(paramsToSign)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([key, value]) => `${key}=${value}`)
-          .join('&') + apiSecret;
-
-        const signature = await sha1(signaturePayload);
-
-        // Prepare form data for upload
+        // Create FormData to pass to server action
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append("api_key", apiKey);
-        formData.append("timestamp", timestamp.toString());
-        formData.append("signature", signature);
-        formData.append("upload_preset", uploadPreset);
-        formData.append("public_id", publicId);
-        formData.append("overwrite", "true");
+        formData.append('file', file);
+        formData.append('userId', user.id!);
   
-        // Upload to Cloudinary
-        const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: formData,
-        });
-  
-        if (!uploadResponse.ok) {
-          const errorText = await uploadResponse.text();
-          console.error("Cloudinary API error:", uploadResponse.status, errorText);
-          throw new Error(`Cloudinary API error: ${uploadResponse.status} ${errorText}`);
+        const result = await uploadToCloudinary(formData);
+        
+        if (result.error) {
+          toast.error(result.error, { position: 'top-center' });
+          return;
         }
   
-        const uploadResult = await uploadResponse.json();
-  
-        if (uploadResult.secure_url) {
-          await changeProfileImageHandler(uploadResult.secure_url);
-        } else {
-          console.error("Unexpected Cloudinary response:", uploadResult);
-          throw new Error("Unexpected Cloudinary response");
+        if (result.secure_url) {
+          await changeProfileImageHandler(result.secure_url);
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        if (error instanceof Error) {
-          toast.error(`Error uploading image: ${error.message}`, { position: 'top-center' });
-        } else {
-          toast.error("An unexpected error occurred while uploading the image", { position: 'top-center' });
-        }
+        toast.error("An unexpected error occurred while uploading the image", { position: 'top-center' });
       } finally {
         setIsUploading(false);
       }
