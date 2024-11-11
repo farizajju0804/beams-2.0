@@ -38,15 +38,15 @@ const TimeUpModal = ({
               alt="Time's up illustration"
               width={200}
               height={200}
-              className="shadow-defined mb-4 "
+              className="mb-4 "
             />
             
             <div className="space-y-4">
-              <p className="text-xl font-medium text-text">
+              <p className="text-lg font-medium text-text">
                 Aww, {username}! Just ran out of time! 🕒
               </p>
               
-              <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
+              <div className="bg-grey-1 p-4 rounded-lg">
                 <p className="text-sm text-grey-2 mb-2">
                   The correct answer was:
                 </p>

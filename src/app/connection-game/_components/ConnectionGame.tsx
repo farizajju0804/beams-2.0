@@ -197,7 +197,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     } else if (timeLeft === 0 && !isCorrect) {
       setMessage(`Time's up, ${username}! The answer is "${answer}"`);
       setShowTimeUpModal(true);
-      handleGameCompletion();
+      handleGameCompletion2();
     }
   }, [timeLeft, isCorrect, username, answer, beamsTodayId, router]);
 
@@ -317,6 +317,20 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
         setIsRedirecting(true)
         // Redirect to beams-today page
         router.push(`/beams-today/${beamsTodayId}`);
+      } catch (error) {
+        console.error('Error completing game:', error);
+      }
+    }
+  };
+
+  const handleGameCompletion2 = async () => {
+    if (!isCompleting) {
+      setIsCompleting(true);
+      try {
+        // Complete game without points
+        await completeConnectionGame(id, 0);
+        // Redirect to beams-today page
+        // router.push(`/beams-today/${beamsTodayId}`);
       } catch (error) {
         console.error('Error completing game:', error);
       }
