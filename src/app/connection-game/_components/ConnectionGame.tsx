@@ -8,7 +8,8 @@ import LevelupModal from '@/components/LevelupModal';
 import { useRouter } from 'next/navigation';
 import CelebrationModal from './CelebrationModal';
 import RedirectMessage from '@/components/Redirection';
-
+import toast, { Toaster } from 'react-hot-toast';
+import TimeUpModal from './TimeupModal';
 interface WordGuessGameProps {
   id: string;
   image: string;
@@ -173,7 +174,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   const [isCompleting, setIsCompleting] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showTimeUpModal, setShowTimeUpModal] = useState(false);
 
   const router = useRouter();
   // Initialize letter boxes
@@ -195,6 +196,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
       return () => clearInterval(timer);
     } else if (timeLeft === 0 && !isCorrect) {
       setMessage(`Time's up, ${username}! The answer is "${answer}"`);
+      setShowTimeUpModal(true);
       handleGameCompletion();
     }
   }, [timeLeft, isCorrect, username, answer, beamsTodayId, router]);
@@ -283,7 +285,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
           const { leveledUp,newLevel } = result.data;
           setLevelUp(leveledUp);
           setNewLevel(newLevel);
-    setIsSubmitting(false)
+          setIsSubmitting(false)
           setShowModal(true);
         }
       } catch (error) {
@@ -292,10 +294,10 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     } else {
       if (attempts >= 2 && !showHint) {
     setIsSubmitting(false)
-        setMessage(`Hey ${username}, would you like to use a hint? 💡`);
+    toast.error(`Hey ${username}, would you like to use a hint? 💡`);
       } else {
     setIsSubmitting(false)
-        setMessage(getFeedbackMessage(username, attempts));
+        toast.error(getFeedbackMessage(username, attempts));
       }
       // Clear selected letters on wrong guess
       setSelectedLetters([]);
@@ -366,6 +368,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
  
     return (
       <div className="flex items-center mx-auto h-full w-full justify-center max-w-7xl p-2">
+        <Toaster position="top-center" />
       {isSubmitting ? 
        <Spinner size='lg'/>
        :
@@ -460,7 +463,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                 </div>
 
                 {message && (
-                  <div className="text-center text-sm font-medium text-default-700 mt-4 p-2 rounded-lg">
+                  <div className="text-center text-sm font-medium text-red-500 mt-4 p-2 rounded-lg">
                     {message}
                   </div>
                 )}
@@ -473,6 +476,17 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
           username={username}
           points={points}
         />
+         <TimeUpModal
+  isOpen={showTimeUpModal}
+  onClose={() => {
+    setShowTimeUpModal(false);
+    setIsRedirecting(true);
+    router.push(`/beams-today/${beamsTodayId}`);
+  }}
+  username={username}
+  answer={answer}
+  beamsTodayId={beamsTodayId}
+/>
       <LevelupModal
         levelUp={levelUp}
         beams={points}
