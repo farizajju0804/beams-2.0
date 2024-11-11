@@ -137,11 +137,14 @@ export async function checkConnectionGameStatus(beamsTodayId: string): Promise<C
 
 
 
+
+
+
 interface GameCompletionResponse {
   success: boolean;
   data?: {
     userBeamPoints: any;
-    leveledUp: boolean;
+    leveledUp: any;
     newLevel?: any;
     levelCaption?: any;
   };
@@ -192,22 +195,26 @@ export async function completeConnectionGame(
       }
     });
 
+
+    let updateResult
+    if(pointsEarned > 0) {
     // Update user points and leaderboard
-    const updateResult = await updateUserPointsAndLeaderboard(
+    updateResult = await updateUserPointsAndLeaderboard(
       user.id,
       pointsEarned,
       'CONNECTION_GAME',
       `Completed connection game for "${connectionGame.beamsToday.title}"`,
       user.userType
     );
+  }
 
     return {
       success: true,
       data: {
-        userBeamPoints: updateResult.userBeamPoints,
-        leveledUp: updateResult.leveledUp,
-        newLevel: updateResult.newLevel,
-        levelCaption: updateResult.levelCaption
+        userBeamPoints: updateResult?.userBeamPoints,
+        leveledUp: updateResult?.leveledUp,
+        newLevel: updateResult?.newLevel,
+        levelCaption: updateResult?.levelCaption
       }
     };
 
