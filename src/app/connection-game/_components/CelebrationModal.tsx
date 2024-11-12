@@ -1,56 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button } from "@nextui-org/react";
-import { 
-  Star1, 
-  Crown, 
-  EmojiHappy,
-  Medal,
-  Like1
-} from "iconsax-react";
 
 interface CelebrationModalProps {
   isOpen: boolean;
   onClose: () => void;
   username?: string;
-  points?: number;
+  beams?: number;
 }
 
 interface CelebrationMessage {
   text: string;
-  icon: JSX.Element;
 }
 
 const CelebrationModal: React.FC<CelebrationModalProps> = ({ 
   isOpen, 
   onClose, 
   username = "User", 
-  points = 0 
+  beams = 0 
 }) => {
   const [currentMessage, setCurrentMessage] = useState<CelebrationMessage>({
-    text: "",
-    icon: <Star1 variant="Bulk" className="text-yellow-500" size={32}/>
+    text: ""
   });
   
   const celebrationMessages: CelebrationMessage[] = [
     {
-      text: "You're on fire! Keep crushing those goals!",
-      icon: <Medal variant="Bulk" className="text-yellow-500" size={32}/>
+      text: "You're on fire! Keep crushing those goals!"
     },
     {
-      text: "Amazing work! You're reaching new heights!",
-      icon: <Star1 variant="Bulk" className="text-yellow-500" size={32}/>
+      text: "Amazing work! You're reaching new heights!"
     },
     {
-      text: "Spectacular achievement! You're unstoppable!",
-      icon: <Like1 variant="Bulk" className="text-yellow-500" size={32}/>
+      text: "Spectacular achievement! You're unstoppable!"
     },
     {
-      text: "Brilliant performance! You're a superstar!",
-      icon: <Crown variant="Bulk" className="text-yellow-500" size={32}/>
+      text: "Brilliant performance! You're a superstar!"
     },
     {
-      text: "Outstanding job! You're making magic happen!",
-      icon: <EmojiHappy variant="Bulk" className="text-yellow-500" size={32}/>
+      text: "Outstanding job! You're making magic happen!"
     }
   ];
 
@@ -68,11 +54,10 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
       placement="center"
       backdrop="blur"
       classNames={{
-        backdrop: "bg-gradient-to-t from-zinc-900/50 to-zinc-900/50",
-        base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3]",
-        header: "border-b-[1px] border-[#292f46]",
+        base: "bg-white",
+        header: "border-b-0",
         body: "py-6",
-        closeButton: "hover:bg-white/5 active:bg-white/10",
+        closeButton: "hover:bg-gray-100",
       }}
       motionProps={{
         variants: {
@@ -100,59 +85,40 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center justify-center space-x-2">
-                <Medal
-                  variant="Bulk"
-                  className="text-yellow-500 animate-bounce"
-                  size={32}
-                />
-                <h2 className="text-2xl font-bold text-center text-white">
+                <span className="text-3xl">🎈</span>
+                <h2 className="text-2xl font-bold text-center text-text">
                   Congratulations, {username}!
                 </h2>
-                <Medal
-                  variant="Bulk"
-                  className="text-yellow-500 animate-bounce"
-                  size={32}
-                />
+                <span className="text-3xl">🎈</span>
               </div>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
-                {/* Points Display */}
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-400 opacity-25 blur-lg "></div>
-                  <div className="relative bg-white/10 rounded-xl p-6 backdrop-blur-sm border border-white/20">
-                    <div className="flex items-center justify-center gap-4">
-                      <Star1 variant="Bold" className="text-primary" size={40}/>
-                      <div className="text-center">
-                        <p className="text-4xl font-bold text-white">
-                          {points}
-                        </p>
-                        <p className="text-sm text-gray-300">
-                          POINTS EARNED
-                        </p>
-                      </div>
-                      <Star1 variant="Bold" className="text-primary" size={40}/>
-                    </div>
-                  </div>
+                {/* Beams Display */}
+                <div className="text-center">
+                  <span className="text-lg font-medium text-grey-2">
+                    You have earned
+                  </span>
+                  <p className="text-4xl font-bold text-grey-2 mt-2">
+                    {beams} Beams
+                  </p>
                 </div>
 
                 {/* Celebration Message */}
-                <div className="text-center space-y-4">
-                  {/* <div className="flex justify-center">
-                    {currentMessage.icon}
-                  </div> */}
-                  <p className="text-lg text-gray-300 italic">
+                <div className="text-center px-6">
+                  <p className="text-lg text-grey-2">
                     {currentMessage.text}
                   </p>
                 </div>
 
                 {/* Action Button */}
-                <div className="flex justify-center pt-4">
+                <div className="flex justify-center pt-2">
                   <Button
-                    className="bg-primary text-white font-semibold"
+                    color="primary"
                     size="lg"
-                    radius="full"
+                    radius="md"
                     onClick={onClose}
+                    className="font-semibold text-white px-6"
                   >
                     Continue Your Journey
                   </Button>

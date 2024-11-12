@@ -24,8 +24,7 @@ const TimeUpModal = ({
       <ModalContent>
         <div className="bg-background rounded-t-lg p-6">
           <ModalHeader className="flex items-center justify-center gap-3 p-0">
-            <Clock className="w-8 h-8 text-brand" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-brand to-yellow bg-clip-text text-transparent">
+            <span className="text-2xl font-bold text-text">
               Time&apos;s Up!
             </span>
           </ModalHeader>
@@ -43,24 +42,18 @@ const TimeUpModal = ({
             
             <div className="space-y-4">
               <p className="text-lg font-medium text-text">
-                Aww, {username}! Just ran out of time! 🕒
+                Oops, {username}! You just ran out of time!
               </p>
               
               <div className="bg-grey-1 p-4 rounded-lg">
                 <p className="text-sm text-grey-2 mb-2">
-                  The correct answer was:
+                  The correct answer is:
                 </p>
                 <p className="text-lg font-bold text-primary">
                   {answer}
                 </p>
               </div>
               
-              <div className="flex flex-col gap-2">
-                <p className="text-base text-grey-2">
-                  Don&apos;t worry! Every attempt makes you stronger. 💪
-                </p>
-               
-              </div>
             </div>
           </div>
         </ModalBody>
@@ -69,7 +62,7 @@ const TimeUpModal = ({
           <Button
             color="primary"
             variant='shadow'
-            className="px-8 py-2  text-white font-medium rounded-full transition-all duration-200 flex items-center gap-2"
+            className="px-8 py-2  text-white font-semibold text-lg transition-all duration-200 flex items-center gap-2"
             onPress={onClose}
           >
             Continue 
