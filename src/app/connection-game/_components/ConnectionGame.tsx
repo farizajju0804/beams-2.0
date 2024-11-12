@@ -223,20 +223,20 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     } else if (timeLeft === 0 && !isCorrect) {
       setMessage(`Time's up, ${username}! The answer is "${answer}"`);
       setShowTimeUpModal(true);
-      handleGameCompletion();
+      handleGameCompletion2();
     }
   }, [timeLeft, isCorrect, username, answer]);
 
-  // const handleGameCompletion2 = async () => {
-  //   if (!isCompleting) {
-  //     setIsCompleting(true);
-  //     try {
-  //       await completeConnectionGame(id, 0);
-  //     } catch (error) {
-  //       console.error('Error completing game:', error);
-  //     }
-  //   }
-  // };
+  const handleGameCompletion2 = async () => {
+    if (!isCompleting) {
+      setIsCompleting(true);
+      try {
+        await completeConnectionGame(id, 0);
+      } catch (error) {
+        console.error('Error completing game:', error);
+      }
+    }
+  };
 
   const handleGameCompletion = async () => {
     if (!isCompleting) {
