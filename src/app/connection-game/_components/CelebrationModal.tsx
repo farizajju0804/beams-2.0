@@ -85,11 +85,11 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center justify-center space-x-2">
-                <span className="text-3xl">🎈</span>
-                <h2 className="text-2xl font-bold text-center text-text">
-                  Congratulations, {username}!
+                <span className="text-2xl">🎈</span>
+                <h2 className="text-xl font-semibold text-center text-text">
+                  Congratulations {username}!
                 </h2>
-                <span className="text-3xl">🎈</span>
+                <span className="text-2xl">🎈</span>
               </div>
             </ModalHeader>
             <ModalBody>
