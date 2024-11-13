@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button } from "@nextui-org/react";
+import confetti from 'canvas-confetti';
 
 interface CelebrationModalProps {
   isOpen: boolean;
@@ -12,11 +13,49 @@ interface CelebrationMessage {
   text: string;
 }
 
+const balloonConfetti = () => {
+  const scalar = 2;
+  const balloon = confetti.shapeFromText({ text: "🎈", scalar });
+  
+  const defaults = {
+    spread: 360,
+    ticks: 60,
+    gravity: 0.5,
+    decay: 0.94,
+    startVelocity: 10,
+    shapes: [balloon],
+    scalar,
+    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']
+  };
+
+  const shoot = () => {
+    confetti({
+      ...defaults,
+      particleCount: 30,
+    });
+    confetti({
+      ...defaults,
+      particleCount: 5,
+      scalar: scalar * 1.2
+    });
+    confetti({
+      ...defaults,
+      particleCount: 15,
+      scalar: scalar / 2,
+      shapes: ["circle"],
+    });
+  };
+
+  setTimeout(shoot, 0);
+  setTimeout(shoot, 100);
+  setTimeout(shoot, 200);
+};
+
 const CelebrationModal: React.FC<CelebrationModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  username = "User", 
-  beams = 0 
+  isOpen,
+  onClose,
+  username = "User",
+  beams = 0
 }) => {
   const [currentMessage, setCurrentMessage] = useState<CelebrationMessage>({
     text: ""
@@ -44,12 +83,13 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
     if (isOpen) {
       const randomIndex = Math.floor(Math.random() * celebrationMessages.length);
       setCurrentMessage(celebrationMessages[randomIndex]);
+      balloonConfetti();
     }
   }, [isOpen]);
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       placement="center"
       backdrop="blur"
@@ -88,15 +128,12 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
                 <h2 className="text-xl font-semibold text-center text-text">
                   Congratulations {username}!
                 </h2>
-                {/* <span className="text-2xl">🎈</span> */}
               </div>
             </ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-6 items-center justify-center">
-                {/* Beams Display */}
                 <span className="text-5xl text-center mx-auto">🎈</span>
-                <div className="text-center">
-                
+                <div className="text-center">                
                   <span className="text-lg font-medium text-grey-2">
                     You have earned
                   </span>
@@ -104,15 +141,13 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
                     {beams} Beams
                   </p>
                 </div>
-
-                {/* Celebration Message */}
+                
                 <div className="text-center px-6">
                   <p className="text-lg text-grey-2">
                     {currentMessage.text}
                   </p>
                 </div>
-
-                {/* Action Button */}
+                
                 <div className="flex justify-center pt-2">
                   <Button
                     color="primary"

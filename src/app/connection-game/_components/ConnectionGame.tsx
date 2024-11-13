@@ -404,7 +404,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
           </Card>
 
           <CelebrationModal
-            isOpen={true}
+            isOpen={showModal}
             onClose={handleFirstModalClose}
             username={username}
             beams={points}
