@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { FC } from "react";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { motion, useAnimation } from "framer-motion";
+import { Danger } from "iconsax-react";
 
 interface FormErrorProps {
   message?: string;
@@ -42,7 +42,7 @@ const FormError: FC<Readonly<FormErrorProps>> = ({ message }) => {
           animate={borderControls}
           className="absolute top-0 left-0 h-1 bg-red-500"
         />
-        <ExclamationTriangleIcon className="h-4 w-4" />
+        <Danger className="h-4 w-4" />
         <p className="font-semibold">{message}</p>
       </motion.div>
     )

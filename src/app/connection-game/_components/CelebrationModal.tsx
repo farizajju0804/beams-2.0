@@ -24,19 +24,19 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
   
   const celebrationMessages: CelebrationMessage[] = [
     {
-      text: "You're on fire! Keep crushing those goals!"
+      text: "You're on fire! "
     },
     {
-      text: "Amazing work! You're reaching new heights!"
+      text: "Amazing work!"
     },
     {
-      text: "Spectacular achievement! You're unstoppable!"
+      text: "Spectacular achievement!"
     },
     {
-      text: "Brilliant performance! You're a superstar!"
+      text: "Brilliant performance!"
     },
     {
-      text: "Outstanding job! You're making magic happen!"
+      text: "Outstanding job!"
     }
   ];
 
@@ -85,17 +85,18 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center justify-center space-x-2">
-                <span className="text-2xl">🎈</span>
                 <h2 className="text-xl font-semibold text-center text-text">
                   Congratulations {username}!
                 </h2>
-                <span className="text-2xl">🎈</span>
+                {/* <span className="text-2xl">🎈</span> */}
               </div>
             </ModalHeader>
             <ModalBody>
-              <div className="space-y-6">
+              <div className="flex flex-col gap-6 items-center justify-center">
                 {/* Beams Display */}
+                <span className="text-5xl text-center mx-auto">🎈</span>
                 <div className="text-center">
+                
                   <span className="text-lg font-medium text-grey-2">
                     You have earned
                   </span>
@@ -120,7 +121,7 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
                     onClick={onClose}
                     className="font-semibold text-white px-6"
                   >
-                    Continue Your Journey
+                    Continue
                   </Button>
                 </div>
               </div>

@@ -4,77 +4,28 @@
 import React from 'react';
 import { Card, CardBody, Button, CardHeader } from "@nextui-org/react";
 import { 
-  Cloud, 
   Coffee, 
   SecuritySafe, 
   Warning2, 
   Ghost,
   Home2,
   MessageQuestion,
-  ArrowRotateLeft,
   CloudCross,
   Danger
 } from 'iconsax-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 
-
-const getErrorCode = (error: any): string => {
-    // Check for API error responses
-    if (error?.response?.status) {
-      return error.response.status.toString();
-    }
-    
-    // Check for Next.js specific error codes
-    if (error?.digest) {
-      // Next.js adds a digest to certain error types
-      switch (error.digest) {
-        case 'NEXT_NOT_FOUND':
-          return '404';
-        case 'NEXT_REDIRECT':
-          return '307';
-        default:
-          break;
-      }
-    }
-    
-    // Check for custom error codes
-    if (error?.statusCode) {
-      return error.statusCode.toString();
-    }
-  
-    // Check error message for status codes
-    if (error?.message) {
-      const statusMatch = error.message.match(/\b([345]\d{2})\b/);
-      if (statusMatch) {
-        return statusMatch[1];
-      }
-    }
-  
-    // Check for specific error types
-    if (error instanceof TypeError) {
-      return '400';
-    }
-    
-    if (error?.name === 'UnauthorizedError') {
-      return '401';
-    }
-    
-    if (error?.name === 'ForbiddenError') {
-      return '403';
-    }
-  
-    // Default to 500 if no specific error code can be determined
-    return '500';
-  };
+interface ErrorPageProps {
+  code?: string 
+}
 
   
 const ErrorPage = ({ 
   code = '404',
-}: any) => {
-  const router = useRouter();
+}: ErrorPageProps) => {
+ 
 
   const getErrorInfo = (errorCode: any) => {
     switch (errorCode) {

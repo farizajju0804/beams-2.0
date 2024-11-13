@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input, Spinner } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, TickCircle, Gift, Coin, People, PercentageSquare } from "iconsax-react";
+import { Copy, TickCircle, Gift,PercentageSquare } from "iconsax-react";
 import Image from "next/image";
 import {
   FacebookShareButton,
@@ -68,11 +68,7 @@ export const ReferFriendModal = () => {
       title: `Earn ${NETWORK_POINTS_PERCENTAGE*100}% Bonus`,
       description: `Get ${NETWORK_POINTS_PERCENTAGE*100}%  of all Beams your friends earn.`
     },
-    // {
-    //   icon: <People variant="Bold" className="w-6 h-6 text-primary" />,
-    //   title: "Referral Chain",
-    //   description: "Bonus doesn't apply to points from your friend's referrals"
-    // }
+   
   ];
 
   return (

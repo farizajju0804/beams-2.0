@@ -1,19 +1,15 @@
 'use client'
-import React, { useEffect, useState } from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Spinner, DropdownSection, User } from "@nextui-org/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, User } from "@nextui-org/react";
+import { useRouter, } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
-import { getLatestUserData } from "@/actions/auth/getLatestUserData";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ArrowDown2, Gift, Logout } from "iconsax-react";
-import { signOutUser } from "@/actions/auth/signout";
 import { ReferFriendModal } from "./ReferalModal";
-import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
 import { useReferralModalStore } from "@/store/referralStore";
 
 import { ReferralStatus } from "@prisma/client";
-import { deleteCookies } from "@/utils/cookies";
 
 interface UserData {
   id: string,
@@ -65,9 +61,6 @@ export default function UserButton({ initialUser }: UserButtonProps) {
 
   const handleSignOut = async () => {
     try {
-    
-      // await deleteCookies()
-      // await signOutUser();
     await signOut()
       
     } catch (error) {

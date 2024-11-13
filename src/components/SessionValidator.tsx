@@ -1,8 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { validateSession } from '@/actions/auth/getSessionValid'
-import { signOutUser } from '@/actions/auth/signout'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 
 export const SessionValidator = () => {
@@ -17,7 +16,7 @@ export const SessionValidator = () => {
 
       if (!sessionStatus?.isSessionValid || sessionStatus?.isBanned) {
         // console.log("SessionValidator: Session invalid or user banned, signing out")
-        await signOutUser()
+        await signOut()
       }
     }
   }

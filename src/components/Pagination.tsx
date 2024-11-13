@@ -1,6 +1,7 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import { Pagination, Button } from "@nextui-org/react";
-import { ArrowRight, ArrowLeft } from "iconsax-react"; // Ensure this path is correct
+import { ArrowRight, ArrowLeft } from "iconsax-react"; 
 
 interface CustomPaginationProps {
   currentPage: number;

@@ -1,6 +1,5 @@
 
 import React from 'react'
-
 import NotificationPopover from './NotificationPopover'
 import UserButton from './user-button'
 import { fetchAllNotifications } from '@/actions/notifications/notifications';

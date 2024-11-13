@@ -10,6 +10,7 @@ import CelebrationModal from './CelebrationModal';
 import RedirectMessage from '@/components/Redirection';
 import toast, { Toaster } from 'react-hot-toast';
 import TimeUpModal from './TimeupModal';
+import { FaLightbulb } from 'react-icons/fa';
 
 interface WordGuessGameProps {
   id: string;
@@ -30,17 +31,17 @@ const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
         <circle
           cx="32"
           cy="32"
-          r="24"
+          r="16"
           stroke="#f1f5f9"
-          strokeWidth="4"
+          strokeWidth="2"
           fill="none"
         />
         <circle
           cx="32"
           cy="32"
-          r="24"
+          r="16"
           stroke="#334155"
-          strokeWidth="4"
+          strokeWidth="2"
           fill="none"
           strokeLinecap="round"
           style={{
@@ -51,7 +52,7 @@ const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
         />
       </svg>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <span className="text-lg font-medium text-text font-mono tracking-tight">
+        <span className="text-sm font-medium text-text tracking-tight">
           {timeLeft}
         </span>
       </div>
@@ -78,7 +79,7 @@ const getFeedbackMessage = (username: string, attempts: number): string => {
   ];
   
   const feedbackIndex = Math.floor(Math.random() * feedback.length);
-  return `${feedback[feedbackIndex].message}}`;
+  return `${feedback[feedbackIndex].message}`;
 };
 
 const generateRandomLetter = (): string => {
@@ -93,6 +94,10 @@ const shuffleArray = <T,>(array: T[]): T[] => {
     [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
   return newArray;
+};
+
+const countLetterOccurrences = (str: string, letter: string): number => {
+  return str.split('').filter(char => char === letter).length;
 };
 
 const ConnectionGame: React.FC<WordGuessGameProps> = ({ 
@@ -115,42 +120,44 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   const [levelUp, setLevelUp] = useState(false);
   const [newLevel, setNewLevel] = useState<any>();
   const [jumbledLetters, setJumbledLetters] = useState<string[]>([]);
-  const [userInput, setUserInput] = useState<string>('');
+  const [userInputs, setUserInputs] = useState<string[]>([]);
   const [isCompleting, setIsCompleting] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTimeUpModal, setShowTimeUpModal] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
   
+  const router = useRouter();
+  const words = answer.split(' ');
+
   useEffect(() => {
-    // Skip the first render to avoid logging initial state
     if (!isFirstRender) {
     } else {
       setIsFirstRender(false);
     }
-  }, [showHint])
-  const router = useRouter();
+  }, [showHint]);
+
+  useEffect(() => {
+    setUserInputs(Array(words.length).fill(''));
+  }, [answer]);
 
   useEffect(() => {
     const answerLetters = answer.toUpperCase().replace(/\s/g, '').split('');
-    const remainingSpaces = 16 - answerLetters.length;
+    const remainingSpaces = 15 - answerLetters.length;
     const randomLetters = Array(remainingSpaces).fill('').map(() => generateRandomLetter());
     const allLetters = shuffleArray([...answerLetters, ...randomLetters]);
     setJumbledLetters(allLetters);
   }, [answer]);
 
-  const countLetterOccurrences = (str: string, letter: string): number => {
-    return str.split('').filter(char => char === letter).length;
-  };
-
-  const isValidInput = (input: string): boolean => {
+  const isValidInput = (input: string, allInputs: string[]): boolean => {
+    const combinedInput = [...allInputs].join('').toUpperCase();
     const inputChars = input.toUpperCase().split('');
     
     for (const char of inputChars) {
       if (char === ' ') continue;
       
       const availableCount = countLetterOccurrences(jumbledLetters.join(''), char);
-      const usedCount = countLetterOccurrences(input, char);
+      const usedCount = countLetterOccurrences(combinedInput, char);
       
       if (usedCount > availableCount) {
         return false;
@@ -160,34 +167,39 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     return true;
   };
 
+  const handleInputChange = (value: string, index: number) => {
+    const newInputs = [...userInputs];
+    const newValue = value.toUpperCase();
+    
+    if (isValidInput(newValue, [...userInputs.slice(0, index), newValue, ...userInputs.slice(index + 1)])) {
+      newInputs[index] = newValue;
+      setUserInputs(newInputs);
+    }
+  };
+
   const isLetterUsed = (letter: string, index: number): boolean => {
-    if (!userInput.includes(letter)) return false;
+    const combinedInput = userInputs.join('');
+    if (!combinedInput.includes(letter)) return false;
 
     const letterPositionsInJumbled = jumbledLetters
       .map((l, i) => l === letter ? i : -1)
       .filter(i => i !== -1);
     
     const positionIndex = letterPositionsInJumbled.indexOf(index);
-    const usedCount = countLetterOccurrences(userInput, letter);
+    const usedCount = countLetterOccurrences(combinedInput, letter);
     
     return positionIndex < usedCount;
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newInput = event.target.value.toUpperCase();
-    
-    if (isValidInput(newInput)) {
-      setUserInput(newInput);
-    }
-  };
-
   const handleSubmit = async () => {
-    if (!userInput || isSubmitting) return;
+    if (userInputs.some(input => !input) || isSubmitting) return;
     
     setIsSubmitting(true);
     setAttempts(prev => prev + 1);
     
-    if (userInput.toUpperCase() === answer.toUpperCase()) {
+    const combinedInput = userInputs.join(' ').toUpperCase();
+    
+    if (combinedInput === answer.toUpperCase()) {
       setIsCorrect(true);
       const earnedPoints = getPointsForTime(timeLeft, showHint);
       setPoints(earnedPoints);
@@ -212,7 +224,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
         setIsSubmitting(false);
         setMessage(getFeedbackMessage(username, attempts));
       }
-      setUserInput('');
+      setUserInputs(Array(words.length).fill(''));
     }
   };
 
@@ -242,10 +254,8 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     if (!isCompleting) {
       setIsCompleting(true);
       try {
-        // Complete game without points
         await completeConnectionGame(id, 0);
-        setIsRedirecting(true)
-        // Redirect to beams-today page
+        setIsRedirecting(true);
         router.push(`/beams-today/${beamsTodayId}`);
       } catch (error) {
         console.error('Error completing game:', error);
@@ -270,22 +280,17 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   };
 
   useEffect(() => {
-    // Store a flag in sessionStorage when component mounts
     if (!sessionStorage.getItem('gameStarted')) {
       sessionStorage.setItem('gameStarted', 'true');
     } else {
-      setIsRedirecting(true)
-      // If flag exists, it means page was refreshed
+      setIsRedirecting(true);
       router.push(`/beams-today/${beamsTodayId}`);
     }
 
-    // Cleanup on component unmount
     return () => {
       sessionStorage.removeItem('gameStarted');
     };
   }, [beamsTodayId, router]);
-
-
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -300,9 +305,6 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     };
   }, [isCorrect]);
 
-
-
-
   if (isRedirecting) {
     return <RedirectMessage username={username} />;
   }
@@ -315,42 +317,13 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
       ) : (
         <>
           <Card className="w-full max-w-4xl mx-auto">
-         
-            <CardHeader className="flex flex-col items-center px-2 pt-4 pb-6">
-              <h1 className="w-full text-xl md:text-3xl font-bold mt-20 text-center ">
+            <CardHeader className="flex flex-col items-center px-2 pt-2 pb-2">
+              <h1 className="w-full text-xl md:text-3xl font-semibold mt-16 text-center">
                 {title}
               </h1>
-              <Popover shouldBlockScroll showArrow placement='top' onOpenChange={toggleHint} >
-                <PopoverTrigger>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  
-                  className="transition-all absolute top-3 right-3 p-2 duration-300 rounded-full shadow-defined"
-                  size="lg"
-                >
-                  <FcIdea size={28} />
-                </Button>
-                </PopoverTrigger>
-                <PopoverContent className='p-0 border-none outline-none'>
-             
-                <div className="bg-background px-4 py-4 rounded-2xl shadow-defined">
-                  <p className="text-gradient-dark  text-sm font-medium">
-                    💡 <span className="font-bold">Hint:</span> {hint}
-                  </p>
-                </div>
-              
-               </PopoverContent>
-               </Popover>
-           
-              
-              {/* <div className="flex items-center justify-center gap-6 w-full relative"> */}
-                <div className="flex absolute left-3 top-3 items-center">
-                  <CircularTimer timeLeft={timeLeft}  />
-                </div>
-              
-              {/* </div> */}
-              
+              <div className="flex absolute right-3 top-3 items-center">
+                <CircularTimer timeLeft={timeLeft} />
+              </div>
             </CardHeader>
 
             <CardBody className="gap-6 px-4">
@@ -362,14 +335,32 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                   alt="Guess this"
                   className="object-contain h-fit w-full"
                 />
+                <Popover shouldBlockScroll showArrow placement='top' onOpenChange={toggleHint}>
+                  <PopoverTrigger>
+                    <Button
+                      isIconOnly
+                      className="transition-all text-primary absolute top-3 right-3 min-w-0 bg-white p-0 shadow-defined duration-300 rounded-full"
+                      size="sm"
+                    >
+                      <FaLightbulb size={14} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='p-0 border-none outline-none'>
+                    <div className="bg-background px-4 py-4 rounded-2xl shadow-defined">
+                      <p className="text-gradient-dark text-sm font-medium">
+                        💡 <span className="font-bold">Hint:</span> {hint}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-[6px] mb-2 text-lg font-semibold">
+              <div className="flex flex-wrap justify-center gap-2 mb-2 text-lg font-semibold">
                 {jumbledLetters.map((letter, index) => (
                   <span
                     key={index}
                     className={`transition-colors duration-200 ${
-                      isLetterUsed(letter, index) ? 'text-default' : 'text-text'
+                      isLetterUsed(letter, index) ? 'text-default' : 'text-brand'
                     }`}
                   >
                     {letter}
@@ -377,23 +368,27 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                 ))}
               </div>
 
-              <div className="w-full mb-4 max-w-md mx-auto space-y-4">
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={handleInputChange}
-                  className="w-full p-2 text-center text-xl focus:outline-grey-2  font-semibold rounded-lg border-1"
-                  placeholder="Type your answer"
-                  disabled={isCorrect || timeLeft === 0}
-                  style={{ textTransform: 'uppercase' }}
-                />
-                
+              <div className="w-full flex items-center justify-center flex-col mb-4 max-w-md mx-auto gap-6">
+                <div className="flex gap-2 justify-center flex-wrap">
+                  {words.map((word, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      value={userInputs[index]}
+                      onChange={(e) => handleInputChange(e.target.value, index)}
+                      className="w-48 mx-auto p-2 text-center text-xl focus:outline-grey-2 font-semibold rounded-lg border-1"
+                      placeholder={`Word ${index + 1}`}
+                      disabled={isCorrect || timeLeft === 0}
+                      style={{ textTransform: 'uppercase' }}
+                    />
+                  ))}
+                </div>
                 <Button
-                  className="w-full text-lg text-white font-medium"
+                  className="w-60 mx-auto text-lg text-white font-medium"
                   color="primary"
                   size="lg"
                   onClick={handleSubmit}
-                  disabled={!userInput || isCorrect || timeLeft === 0}
+                  disabled={ isCorrect || timeLeft === 0}
                 >
                   Submit Answer
                 </Button>
@@ -409,7 +404,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
           </Card>
 
           <CelebrationModal
-            isOpen={showModal}
+            isOpen={true}
             onClose={handleFirstModalClose}
             username={username}
             beams={points}

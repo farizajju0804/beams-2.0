@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { CheckCircledIcon } from "@radix-ui/react-icons";
 import type { FC } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { TickCircle } from "iconsax-react";
 
 interface FormSuccessProps {
   message?: string;
@@ -35,7 +35,7 @@ const FormSuccess: FC<Readonly<FormSuccessProps>> = ({ message, onHide }) => {
     >
       {isVisible && (
         <div className="bg-emerald-500 p-3 rounded-md flex items-center gap-x-2 font- font-medium text-sm text-white">
-          <CheckCircledIcon className="h-4 w-4" />
+          <TickCircle className="h-4 w-4" />
           <p>{message}</p>
         </div>
       )}

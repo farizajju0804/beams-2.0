@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Chart, Cup, BookSquare, Rank,  ArrowLeft2, ArrowRight2, Microscope, LampCharge } from 'iconsax-react';
+import { Chart, Cup, Rank,  ArrowLeft2, ArrowRight2, Microscope,  } from 'iconsax-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -35,11 +35,7 @@ const Sidebar = () => {
           <AnimatePresence mode="wait">
             {isExpanded ? (
               <motion.div
-                // key="expanded"
-                // initial={{ opacity: 0 }}
-                // animate={{ opacity: 1 }}
-                // exit={{ opacity: 0 }}
-                // transition={{ duration: 0.2 }}
+             
               >
                 <Link href="/">
                   <Image
@@ -52,11 +48,7 @@ const Sidebar = () => {
               </motion.div>
             ) : (
               <motion.div
-                // key="collapsed"
-                // initial={{ opacity: 0 }}
-                // animate={{ opacity: 1 }}
-                // exit={{ opacity: 0 }}
-                // transition={{ duration: 0.2}}
+              
               >
                 <Link href="/">
                   <Image
@@ -110,7 +102,7 @@ const Sidebar = () => {
           <motion.button
             className="w-fit p-2 flex items-center justify-center text-gray-700 hover:text-brand bg-gray-100 rounded-full"
             onClick={() => setIsExpanded(!isExpanded)}
-            // whileHover={{ scale: 1.05 }}
+      
             transition={{ duration: 0.3 }}
           >
             {isExpanded ? (
