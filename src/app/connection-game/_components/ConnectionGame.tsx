@@ -374,7 +374,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
               <div className="w-full flex items-center justify-center flex-col mb-4 max-w-md mx-auto gap-6">
                 <div className="flex gap-2 justify-center flex-wrap">
                   {words.map((word, index) => (
-                    <Input
+                    <input
                       key={index}
                       type="text"
                       value={userInputs[index]}
