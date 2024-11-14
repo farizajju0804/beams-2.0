@@ -374,17 +374,18 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
               <div className="w-full flex items-center justify-center flex-col mb-4 max-w-md mx-auto gap-6">
                 <div className="flex gap-2 justify-center flex-wrap">
                   {words.map((word, index) => (
-                    <input
+                    <Input
                       key={index}
                       type="text"
                       value={userInputs[index]}
                       onChange={(e) => handleInputChange(e.target.value, index)}
                       className="w-48 mx-auto p-2 text-center text-xl focus:outline-grey-2 font-semibold rounded-lg border-1"
-                      placeholder={`Enter Word ${index + 1}`}
+                      placeholder={ words.length < 2 ? `Type the answer` : `Type Word ${index + 1}`}
                       disabled={isCorrect || timeLeft === 0}
                       style={{ textTransform: 'uppercase' }}
                     />
                   ))}
+                  
                 </div>
                 <Button
                   className="w-60 mx-auto text-lg text-white font-semibold"

@@ -55,7 +55,7 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
     orderBy: {
       rank: 'asc',
     },
-    take: 5,
+    take: 10,
   });
 
   const userEntry = await db.leaderboard.findUnique({

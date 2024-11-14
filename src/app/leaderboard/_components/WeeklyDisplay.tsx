@@ -14,6 +14,7 @@ import {
 } from "iconsax-react";
 import { LeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import Link from 'next/link';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 interface LeaderboardDisplayProps {
   data: LeaderboardData;
@@ -27,7 +28,7 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
 
     const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
     const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
-   
+    const currentUser = useCurrentUser()
     useEffect(() => {
       // Ensure dates are only parsed client-side after hydration
       if (data.startDate && data.endDate) {
@@ -59,7 +60,7 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
 
   return (
     <Card className="max-w-md w-full mx-auto">
-      <CardHeader className="flex flex-col gap-1 items-center justify-center">
+      <CardHeader className="flex flex-col p-0 px-3 pt-3 m-0 gap-1 items-center justify-center">
         <h4 className="text-xl md:text-2xl font-bold">Weekly Ranking</h4>
         <p className='text-sm text-grey-2 mt-2'>{` From ${formattedStartDate} to ${formattedEndDate}`}</p>
       </CardHeader>
@@ -86,8 +87,8 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
                 {/* Name/Lock Section */}
                 <div className="flex-1 ml-3">
                   {isCurrentUser ? (
-                    <span className="text-sm font-semibold">
-                      You
+                    <span className="text-sm text-wrap font-semibold">
+                      {currentUser?.firstName}{currentUser?.lastName} (You)
                     </span>
                   ) : (
                     <div className="w-24 h-8 rounded-full bg-default-100 flex items-center justify-center shadow-md">
@@ -111,12 +112,15 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
               </div>
             );
           })}
+          {data.topEntries.length < 3 && (
+            <p className='text-sm px-2 text-grey-2 text-center'>Ranking will be updated here as soon as there are atleast 3 entries.</p>
+          )}
         </div>
 
         {/* User Position (when not in top 10) or Empty State */}
         {(userNotInTop10 || !hasUserPosition) && (
           <>
-            <Divider className="my-4" />
+            <Divider className="my-2" />
             
             {hasUserPosition ? (
               // User's position when not in top 10
@@ -142,7 +146,7 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
               </div>
             ) : (
               // Empty state when user has no position
-              <div className="p-6 text-center space-y-4">
+              <div className="px-6 py-3 text-center space-y-4">
                 <div className="flex justify-center">
                   <Cup 
                     size={48} 
