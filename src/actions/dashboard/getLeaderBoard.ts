@@ -7,6 +7,13 @@ import { differenceInSeconds } from 'date-fns';
 /**
  * Represents the data structure for leaderboard information.
  */
+
+export type LeaderboardEntry = {
+  userId: string;
+  rank: number;
+  points: number;
+};
+
 export interface LeaderboardData {
   userPosition?: number | null;  // The user's position on the leaderboard, if available.
   userPoints?: number;            // The number of points the user has accumulated.
@@ -14,6 +21,7 @@ export interface LeaderboardData {
   startDate: string;              // The start date of the leaderboard period.
   endDate: string;                // The end date of the leaderboard period.
   remainingSeconds: number;       // The remaining seconds until the end date.
+  topEntries: LeaderboardEntry[];
 }
 
 /**
@@ -31,10 +39,24 @@ export interface LeaderboardData {
  *          the user's position, points, relevant dates, and remaining time.
  */
 export const getLeaderboardData = async (userId: string, userType: UserType, start?: string): Promise<LeaderboardData> => {
-  const { startDate, endDate } = getPreviousAndNextDates(3, start);
+  const { startDate, endDate } = getPreviousAndNextDates(6, start);
   const now = new Date();
 
   console.log(`Fetching leaderboard data from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+
+
+  // Get top 10 entries
+  const topEntries = await db.leaderboard.findMany({
+    where: {
+      startDate,
+      endDate,
+      userType,
+    },
+    orderBy: {
+      rank: 'asc',
+    },
+    take: 5,
+  });
 
   const userEntry = await db.leaderboard.findUnique({
     where: {
@@ -52,6 +74,13 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
 
   const remainingSeconds = Math.max(differenceInSeconds(endDate, now), 0); // Calculate remaining seconds.
 
+  const formattedTopEntries = topEntries.map((entry) => ({
+    userId: entry.userId,
+    rank: entry.rank,
+    points: entry.points,
+  }));
+
+
   return {
     userPosition,
     userPoints,
@@ -59,5 +88,6 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
     remainingSeconds,
+    topEntries: formattedTopEntries,
   };
 };

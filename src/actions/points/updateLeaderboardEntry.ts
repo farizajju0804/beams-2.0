@@ -117,7 +117,7 @@ export const updateLeaderboardEntry2 = async (
   console.log(` Points to add: ${points}`);
   console.log(` User Type: ${userType}`);
 
-  const { startDate, endDate } = getPreviousAndNextDates(3);
+  const { startDate, endDate } = getPreviousAndNextDates(6);
   console.log(` Date Range: ${startDate.toISOString()} to ${endDate.toISOString()}`);
 
   try {

@@ -94,7 +94,7 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
       placement="center"
       backdrop="blur"
       classNames={{
-        base: "bg-white",
+        base: "bg-background",
         header: "border-b-0",
         body: "py-6",
         closeButton: "hover:bg-gray-100",
@@ -132,17 +132,21 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
             </ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-6 items-center justify-center">
-                <span className="text-5xl text-center mx-auto">🎈</span>
-                <div className="text-center">                
-                  <span className="text-lg font-medium text-grey-2">
+               
+                <div className="text-center">  
+                <p className="text-7xl mb-2 text-center mx-auto">🎈</p>              
+                  <p className="text-lg  font-medium text-grey-2">
                     You have earned
-                  </span>
+                  </p>
                   <p className="text-4xl font-bold text-grey-2 mt-2">
                     {beams} Beams
                   </p>
                 </div>
                 
                 <div className="text-center px-6">
+                  <p className="text-lg italic text-grey-2">
+                    {currentMessage.text}
+                  </p>
                   <p className="text-lg text-grey-2">
                     {currentMessage.text}
                   </p>

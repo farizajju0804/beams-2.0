@@ -24,6 +24,8 @@ const Page = async () => {
     getTop3EntriesForMostRecentWeek(user?.userType, user?.id) // Fetch top 10 entries for the most recent week
   ]);
 
+  console.log(leaderboardData)
+
 
 
   return (

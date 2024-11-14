@@ -45,7 +45,7 @@ const TimeUpModal = ({
                 Oops, {username}! You just ran out of time!
               </p>
               
-              <div className="bg-grey-1 p-4 rounded-lg">
+              <div className="bg-grey-3 p-4 rounded-lg">
                 <p className="text-sm text-grey-2 mb-2">
                   The correct answer is:
                 </p>

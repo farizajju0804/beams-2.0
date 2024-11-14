@@ -23,31 +23,33 @@ interface WordGuessGameProps {
 }
 
 const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
+  const radius = 16; // Ensure this matches the `r` attribute in the circle
+  const circumference = 2 * Math.PI * radius;
   const percentage = (timeLeft / 60) * 100;
-  
+
   return (
     <div className="relative w-16 h-16">
       <svg className="transform -rotate-90 w-full h-full">
         <circle
           cx="32"
           cy="32"
-          r="16"
-          stroke="#f1f5f9"
+          r={radius}
+          stroke="#f96f2e"
           strokeWidth="2"
           fill="none"
         />
         <circle
           cx="32"
           cy="32"
-          r="16"
-          stroke="#334155"
+          r={radius}
+          stroke="#d2d2d2"
           strokeWidth="2"
           fill="none"
           strokeLinecap="round"
           style={{
-            strokeDasharray: `${2 * Math.PI * 24}`,
-            strokeDashoffset: `${2 * Math.PI * 24 * (1 - percentage / 100)}`,
-            transition: 'all 1s linear'
+            strokeDasharray: circumference,
+            strokeDashoffset: circumference * (1 - percentage / 100),
+            transition: 'all 1s linear',
           }}
         />
       </svg>
@@ -59,6 +61,7 @@ const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
     </div>
   );
 };
+
 
 const getPointsForTime = (timeLeft: number, usedHint: boolean): number => {
   let points = 0;
@@ -316,12 +319,12 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
         <Spinner size='lg' />
       ) : (
         <>
-          <Card className="w-full max-w-4xl mx-auto">
+          <Card className="w-full p-0 shadow-none outline-none border-none max-w-4xl mx-auto">
             <CardHeader className="flex flex-col items-center px-2 pt-2 pb-2">
-              <h1 className="w-full text-xl md:text-3xl font-semibold mt-16 text-center">
+              <h1 className="w-full text-xl md:text-3xl font-semibold mt-10 text-center">
                 {title}
               </h1>
-              <div className="flex absolute right-3 top-3 items-center">
+              <div className="flex absolute right-3 -top-3 items-center">
                 <CircularTimer timeLeft={timeLeft} />
               </div>
             </CardHeader>
@@ -339,10 +342,10 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                   <PopoverTrigger>
                     <Button
                       isIconOnly
-                      className="transition-all text-primary absolute top-3 right-3 min-w-0 bg-white p-0 shadow-defined duration-300 rounded-full"
+                      className="transition-all w-5 h-5 md:w-8 md:h-8  text-primary absolute top-2 right-2 min-w-0 bg-white p-0 shadow-defined duration-300 rounded-full"
                       size="sm"
                     >
-                      <FaLightbulb size={14} />
+                      <FaLightbulb className='md:text-lg text-sm' />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className='p-0 border-none outline-none'>
@@ -377,14 +380,14 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                       value={userInputs[index]}
                       onChange={(e) => handleInputChange(e.target.value, index)}
                       className="w-48 mx-auto p-2 text-center text-xl focus:outline-grey-2 font-semibold rounded-lg border-1"
-                      placeholder={`Word ${index + 1}`}
+                      placeholder={`Enter Word ${index + 1}`}
                       disabled={isCorrect || timeLeft === 0}
                       style={{ textTransform: 'uppercase' }}
                     />
                   ))}
                 </div>
                 <Button
-                  className="w-60 mx-auto text-lg text-white font-medium"
+                  className="w-60 mx-auto text-lg text-white font-semibold"
                   color="primary"
                   size="lg"
                   onClick={handleSubmit}

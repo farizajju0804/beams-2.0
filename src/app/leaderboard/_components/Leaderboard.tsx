@@ -1,19 +1,17 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import UserStatus from './UserStatus';
 import {  getLeaderboardData } from '@/actions/dashboard/getLeaderBoard';
 import confetti from 'canvas-confetti';
 import { UserType } from '@prisma/client';
-import { Avatar, Spinner, Button, Modal,Popover, PopoverTrigger, PopoverContent , useDisclosure, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { Avatar, Spinner, Button,Popover, PopoverTrigger, PopoverContent , useDisclosure } from '@nextui-org/react';
 import { getTop3EntriesForMostRecentWeek } from '@/actions/points/getPreviousLeaderboard';
 import { CountdownTimer } from './CountdownTimer';
-import { AiFillQuestionCircle, AiFillClockCircle,  AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
-import { PiNumberCircleThreeDuotone } from "react-icons/pi";
-
+import { AiFillQuestionCircle } from "react-icons/ai";
 import Image from 'next/image';
 import LowerRanksTable from './LowerRanksCard';
-import { updateAchievementsAfterLeaderboard } from '@/actions/points/updateAchievementsAfterLeaderboard';
 import { finalizeLeaderboardPeriod } from '@/actions/points/updateLeaderboardEntry';
+import WeeklyDisplay from './WeeklyDisplay';
+import { LeaderboardRules } from './LeaderBoardRules';
 
 interface LeaderboardProps {
   userId: string;
@@ -72,10 +70,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   previous
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(initialData.remainingSeconds);
+  const [weekData,setWeekData] = useState(initialData);
   const [isTimerActive, setIsTimerActive] = useState(true);
   const [lastWeekUsers, setLastWeekUsers] = useState<any[]>(previous.entries);
-  const [userPosition, setUserPosition] = useState<number | undefined>(initialData.userPosition);
-  const [userPoints, setUserPoints] = useState<number | undefined>(initialData.userPoints);
   const [lastWeekUserPosition, setLastWeekUserPosition] = useState<number | undefined>(previous.userPosition);
   const [lastWeekUserPoints, setLastWeekUserPoints] = useState<number | undefined>(previous.userPoints);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,16 +82,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   // const achievementUpdateLock = useRef(false); 
     // Client-side parsed dates
-    const [formattedStartDate, setFormattedStartDate] = useState<string | null>(null);
-    const [formattedEndDate, setFormattedEndDate] = useState<string | null>(null);
-   
-    useEffect(() => {
-      // Ensure dates are only parsed client-side after hydration
-      if (startDate && endDate) {
-        setFormattedStartDate(new Date(startDate).toLocaleDateString());
-        setFormattedEndDate(new Date(endDate).toLocaleDateString());
-      }
-    }, [startDate, endDate])
+ 
 
     const markIsYou = (users: any[], userId: string) => {
       return users.map((user) => {
@@ -141,9 +129,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       ]);
 
       setLastWeekUsers(markIsYou(lastWeekData.entries, userId));
-
-      setUserPosition(nextWeekData.userPosition);
-      setUserPoints(nextWeekData.userPoints);
+      setWeekData(nextWeekData)
       setTimeRemaining(nextWeekData.remainingSeconds);
       setStartDate(nextWeekData.startDate);
       setEndDate(nextWeekData.endDate);
@@ -245,17 +231,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     </div>
   ), []);
 
-  const RuleItem = ({ icon, title, description }:any) => (
-    <div className="flex items-start space-x-3">
-      <div className="flex-shrink-0">
-        {icon}
-      </div>
-      <div>
-        <h3 className="font-semibold">{title}</h3>
-        <p className="text-sm opacity-80">{description}</p>
-      </div>
-    </div>
-  );
+
   const renderUserPosition = useCallback(() => {
     if (lastWeekUserPosition && lastWeekUserPosition > 10 ) {
       return (
@@ -267,80 +243,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     }
     return null;
   }, [lastWeekUserPosition, lastWeekUserPoints]);
-  const renderOverlay = () => {
-    
-    return (
-      <Modal 
-      size='2xl'
-        isOpen={isOpen} 
-        onOpenChange={onOpenChange}
-        scrollBehavior="inside"
-        backdrop="blur"
-        className="bg-background"
-        classNames={{
-          wrapper : 'z-[250]'
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-2xl font-bold text-text">Leaderboard Rules</h2>
-              </ModalHeader>
-              <ModalBody className="text-text">
-              <div className="space-y-4">
-            <RuleItem 
-              icon={<AiFillClockCircle className="text-blue-500" size={24} />}
-              title="Weekly Competition"
-              description={`Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM (US Pacific Time).`}
-            />
-            <RuleItem 
-                  icon={<PiNumberCircleThreeDuotone className="text-green-500 text-2xl" />}
-                  title="Minimum Participation"
-                  description="Leaderboard results will only be announced when there are at least 3 entries in the current week."
-                />
-            <RuleItem 
-              icon={<AiFillFire className="text-red-500" size={24} />}
-              title="Point Accumulation"
-              description="Only beams accumulated during the competition period will count."
-            />
-           <RuleItem 
-            icon={<AiFillThunderbolt className="text-green-500" size={24} />}
-            title="Tiebreakers"
-            description="If there are ties in beam count, all users with the same beams will receive the same rank. However, for the weekly leaderboard display, the user who accumulated beams first will appear higher, showing only the top entry for each beam count."
-          />
-
-            <RuleItem 
-              icon={<AiFillCrown className="text-yellow" size={24} />}
-              title="Leaderboard Display"
-              description="The top 10 users will be featured on the leaderboard each week."
-            />
-            {/* <RuleItem 
-              icon={<AiFillGift className="text-pink-500" size={24} />}
-              title="Special Recognition"
-              description="The top 3 users will earn special badges!"
-            /> */}
-          </div>
-               
-             
-               
-              </ModalBody>
-              <ModalFooter>
-                   <Button 
-                  color="warning" 
-                  variant="shadow"
-                  onPress={onClose}
-                  className="mt-4 w-full text-black font-semibold text-lg"
-                >
-                  Got it!
-                </Button>
-                </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    );
-  };
 
   
   return (
@@ -358,20 +260,17 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         <Button isIconOnly className='bg-transparent text-[#888888] cursor-pointer' onPress={onOpen}>
           <AiFillQuestionCircle size={24} />
         </Button>
-        {renderOverlay()} 
+        <LeaderboardRules isOpen={isOpen} onOpenChange={onOpenChange}/>
       </div>      
-      <div className='px-4 w-full mx-auto'>
-        <div className='w-full flex flex-col items-center justify-center'>
+      <div className='px-4 py-2 w-full mx-auto'>
+        <div className='w-full flex flex-col gap-6 items-center justify-center'>
+         
+          <WeeklyDisplay data={weekData} currentUserId={userId}/>
           {isTimerActive && (
-            <div className='w-full max-w-xl'>
-              <p className='my-4 mx-auto text-[#888888] font-medium text-center'>{`Leaders for this week ( ${formattedStartDate} to ${formattedEndDate}) will be announced in`}</p>
+            <div className='w-full  max-w-xl'>
+              <p className='text-sm md:text-base mx-auto text-grey-2 text-center'>{`Leaders will be announced in`}</p>
               <CountdownTimer timeRemaining={timeRemaining} />
             </div>
-          )}
-          {(userPosition && userPoints) ? (
-            <UserStatus rank={userPosition} score={userPoints} />
-          ) : (
-            <p className="w-fit mt-4 text-center p-3 font-semibold rounded-2xl bg-yellow text-black mx-auto">Your current position will be shown here as you start gaining beams.</p>
           )}
           {lastWeekUsers.length >= 3 && (
             <>
