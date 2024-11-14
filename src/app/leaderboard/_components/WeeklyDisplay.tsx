@@ -85,10 +85,10 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
                 </div>
 
                 {/* Name/Lock Section */}
-                <div className="flex-1 ml-3">
+                <div className="flex-1 w-full ml-3">
                   {isCurrentUser ? (
                     <span className="text-sm text-wrap font-semibold">
-                      {currentUser?.firstName}{currentUser?.lastName} (You)
+                      {currentUser?.firstName} {currentUser?.lastName} (You)
                     </span>
                   ) : (
                     <div className="w-24 h-8 rounded-full bg-default-100 flex items-center justify-center shadow-md">

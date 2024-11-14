@@ -10,16 +10,16 @@ import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/libs/mail";
 import { getTwoFactorTokenByEmail } from "./two-factor-token";
 import { db } from "@/libs/db";
 import { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation";
+import { getClientIp } from "@/utils/getClientIp";
 
 /**
  * Handles the login process, including credential verification, email verification, 
  * and two-factor authentication if enabled.
  * 
  * @param {z.infer<typeof LoginSchema>} values - The validated login fields (email, password, code).
- * @param {string} ip - The IP address of the client attempting to log in.
  * @returns {Promise<Object>} - A result object containing success, error, or twoFactor fields.
  */
-export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => {
+export const login = async (values: z.infer<typeof LoginSchema>) => {
   // Validate the input fields
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
@@ -116,7 +116,7 @@ export const login = async (values: z.infer<typeof LoginSchema>, ip: string) => 
   // Final sign-in process
   try {
     await signIn("credentials", { email, password, redirect: false });
-
+    const ip = await getClientIp()
     // Update user login details
     const updated = await db.user.update({
       where: { id: existingUser.id },

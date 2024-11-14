@@ -1,5 +1,4 @@
 import Step1Form from "@/app/auth/_components/Step1"; // Importing the step 1 form for registration
-import { getClientIp } from "@/utils/getClientIp"; // Utility function to get the client's IP address
 import { Suspense } from "react"; // Importing Suspense for handling lazy loading of components
 import RegisterSide from "../_components/RegisterSide"; // Component for the register side UI
 
@@ -8,7 +7,7 @@ import RegisterSide from "../_components/RegisterSide"; // Component for the reg
  * It fetches the client's IP address and checks for any pending email verification.
  */
 const Page = async () => {
-  const ip = await getClientIp(); // Fetch the client's IP address
+
 
   return (
     // Wrapping the main content in Suspense for potential lazy loading
@@ -20,7 +19,7 @@ const Page = async () => {
         {/* Main content area where the registration step form is rendered */}
         <div className="w-full md:pt-6 lg:pt-0 lg:min-h-screen flex items-center justify-center">
           {/* Pass the client's IP and pending email verification status to the Step1Form */}
-          <Step1Form ip={ip}  />
+          <Step1Form   />
         </div>
       </div>
     </Suspense>

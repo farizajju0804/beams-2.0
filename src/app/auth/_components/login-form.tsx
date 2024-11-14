@@ -1,6 +1,6 @@
 "use client"; // Ensures this component runs on the client side
 
-import React, { FC, useEffect, useState } from "react"; // Import React hooks for state and lifecycle management
+import React, { useEffect, useState } from "react"; // Import React hooks for state and lifecycle management
 import { useForm } from "react-hook-form"; // Import React Hook Form for form handling
 import * as z from "zod"; // Import Zod for schema validation
 import { LoginSchema } from "@/schema/index"; // Import the Login schema for validation
@@ -14,20 +14,16 @@ import FormSuccess from "@/components/form-success"; // Component to display suc
 import CardWrapper from "@/app/auth/_components/card-wrapper"; // Card wrapper for consistent UI
 import { zodResolver } from "@hookform/resolvers/zod"; // Resolver to integrate Zod with React Hook Form
 import Link from "next/link"; // Link component for navigation
-import { useSession } from "next-auth/react"; // Hook to manage authentication session
 import { RiLoginCircleFill } from "react-icons/ri"; // Icon for login button
 import RedirectMessage from "@/components/Redirection";
 
-// Interface defining the expected props for the component
-interface LoginFormProps {
-  ip: string; // IP address of the client
-}
+
 
 /**
  * LoginForm component handles the user login flow, including email, password,
  * and two-factor authentication handling.
  */
-const LoginForm: FC<LoginFormProps> = ({ ip }) => {
+const LoginForm = () => {
   const searchParams = useSearchParams(); // Hook to get query parameters from the URL
 
   const [error, setError] = useState<string | undefined>(''); // State for error messages
@@ -81,7 +77,7 @@ const LoginForm: FC<LoginFormProps> = ({ ip }) => {
       return;
     }
     try {
-      const data = await login(values, ip); // Call login action with form values and IP address
+      const data = await login(values); // Call login action with form values and IP address
      
       if (data?.error === "VERIFY_EMAIL") {
         router.push(`/auth/new-verify-email?email=${encodeURIComponent(values.email)}`); // Redirect if email verification is required

@@ -6,11 +6,10 @@ import { RegisterSchema, SecuritySchema } from "@/schema";
 import { db } from "@/libs/db";
 import { getUserByEmail } from "@/actions/auth/getUserByEmail";
 import { getChangeEmailToken, getVerificationToken } from "@/libs/tokens";
-import { sendVerificationEmail, sendVerificationEmail2, sendVerificationEmail3 } from "@/libs/mail";
+import { sendVerificationEmail, sendVerificationEmail2 } from "@/libs/mail";
 import { signIn } from "@/auth";
 import { currentUser } from '@/libs/auth';
 import { getGrowthAmbassadorStatus, } from './getGrowthAmbassadorStatus';
-import { getClient } from "@sentry/nextjs";
 import { getClientIp } from "@/utils/getClientIp";
 
 /**
@@ -21,7 +20,6 @@ import { getClientIp } from "@/utils/getClientIp";
  */
 export const registerAndSendVerification = async (
   values: z.infer<typeof RegisterSchema>, 
-  ip: string, 
   referralCode?: string
 ) => {
   try {

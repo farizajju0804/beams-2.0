@@ -17,16 +17,12 @@ import { useRouter } from "next/navigation"; // Hook for navigation
 import Link from "next/link"; // Link component for navigation
 import { useSearchParams } from 'next/navigation';
 // Props interface for the RegisterForm component
-interface RegisterFormProps {
-  ip: string; // Client's IP address
-  pendingEmail?: any; // Optional pending email
-}
 
 /**
  * Step1Form handles user registration, including form validation, submission,
  * and displaying password strength indicators.
  */
-const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
+const Step1Form = () => {
   const [error, setError] = useState<string | undefined>(""); // State to track error messages
   const [success, setSuccess] = useState<string | undefined>(""); // State to track success messages
   const [isPending, startTransition] = useTransition(); // Transition hook to handle pending state
@@ -54,10 +50,10 @@ const Step1Form: React.FC<RegisterFormProps> = ({ ip, pendingEmail }) => {
       try {
         let result
         if(referralCode){
-        result= await registerAndSendVerification(values, ip,referralCode); 
+        result= await registerAndSendVerification(values,referralCode); 
         }
         if(!referralCode){
-        result = await registerAndSendVerification(values, ip); 
+        result = await registerAndSendVerification(values); 
         }
 
         if (result?.error === "VERIFY_EMAIL") {
