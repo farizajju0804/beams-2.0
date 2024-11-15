@@ -37,8 +37,8 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({ timeRemaining })
         {formatTime(timeRemaining).map((unit) => (
           <div key={unit.label} className="flex flex-col items-center">
             {/* Displaying the value of the time unit in a styled box */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center bg-background rounded-2xl shadow-defined mb-2">
-              <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-text">
+            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-background rounded-2xl shadow-defined mb-2">
+              <span className="text-xl  md:text-3xl font-bold text-text">
                 {unit.value.toString().padStart(2, '0')} {/* Pad with zeros */}
               </span>
             </div>

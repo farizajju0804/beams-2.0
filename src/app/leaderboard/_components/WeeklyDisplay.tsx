@@ -91,8 +91,8 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
                       {currentUser?.firstName} {currentUser?.lastName} (You)
                     </span>
                   ) : (
-                    <div className="w-24 mx-3 h-8 rounded-full bg-default-100 flex items-center justify-center shadow-md">
-                      <Lock1 size={16} className="text-default-400" />
+                    <div className="w-28 mx-3 h-8 rounded-full bg-default-100 flex items-center justify-center shadow-md">
+                      Anonymous 
                     </div>
                   )}
                 </div>

@@ -147,9 +147,6 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
                   <p className="text-lg italic text-grey-2">
                     {currentMessage.text}
                   </p>
-                  <p className="text-lg text-grey-2">
-                    {currentMessage.text}
-                  </p>
                 </div>
                 
                 <div className="flex justify-center pt-2">

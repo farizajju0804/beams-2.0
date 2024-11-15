@@ -268,7 +268,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <WeeklyDisplay data={weekData} currentUserId={userId}/>
           {isTimerActive && (
             <div className='w-full  max-w-xl'>
-              <p className='text-sm md:text-base mx-auto text-grey-2 text-center'>{`Leaders will be announced in`}</p>
+              <p className='text-base font-semibold mx-auto text-grey-2 text-center'>{`Winners will be announced in`}</p>
               <CountdownTimer timeRemaining={timeRemaining} />
             </div>
           )}

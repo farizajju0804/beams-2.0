@@ -33,7 +33,7 @@ const securityQuestions = [
  * in the registration process. It retrieves the email from the URL,
  * and upon submitting valid answers, navigates the user to the next step.
  */
-const Step3Form: React.FC = () => {
+const Page: React.FC = () => {
   const [isPending, startTransition] = useTransition(); // Hook to manage transitions and loading state
   const searchParams = useSearchParams(); // Get URL search params
   const emailFromUrl = searchParams.get("email"); // Extract the email from URL params
@@ -135,4 +135,4 @@ const Step3Form: React.FC = () => {
   );
 };
 
-export default Step3Form; // Export component
+export default Page; // Export component
