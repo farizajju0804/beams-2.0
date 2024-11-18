@@ -4,6 +4,7 @@ import React from 'react'
 import GameOfTheDay from './_components/GameOfTheDay';
 import { currentUser } from '@/libs/auth';
 import RecentGames from './_components/RecentGames';
+import ConnectionModal from './_components/ConnectionModal';
 
 const page = async() => {
 const user:any = await currentUser()
@@ -35,10 +36,9 @@ const user:any = await currentUser()
   return (
          
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-2 md:gap-6 items-center justify-center w-full bg-background ">
-   
+      <ConnectionModal/>
       {game.data && game.success &&
       <GameOfTheDay game={game.data} isCompleted={completionStatus?.data?.isCompleted} username={user.firstName} />
-      
       }
       {initialData && 
       <RecentGames

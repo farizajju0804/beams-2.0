@@ -333,7 +333,7 @@ model ConnectionGameCompletion {
 
   @@unique([connectionGameId, userId]) // Ensure one completion record per user per game
   @@index([connectionGameId])
-  @@index([userId])
+  @@index([userId]) 
 }
 
 // Model for tracking user-completed Beams Today content

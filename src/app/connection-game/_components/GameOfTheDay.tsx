@@ -42,7 +42,7 @@ export default function GameOfTheDay({
 
   return (
     
-    <div className="w-full max-w-4xl mx-auto px-4 py-8">
+    <div className="w-full max-w-4xl mx-auto px-4 pb-4">
       <div
   
       >

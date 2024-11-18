@@ -278,14 +278,14 @@ async function generateNotificationsForGroup(
       // Generate appropriate message based on rank
       let message;
       if (userRank <= 10) {
-        message = `Congratulations ${userName}! You're ranked #${userRank} on the leaderboard! 🏆`;
+        message = `Congratulations ${userName}! You ranked #${userRank} on the leaderboard! 🏆`;
         if (userRank <= 3) {
           // Special message for top 3
           const medals = ['🥇', '🥈', '🥉'];
-          message = `Congratulations ${userName}! You are ranked #${userRank} ${medals[userRank - 1]} on the leaderboard!`;
+          message = `Congratulations ${userName}! You ranked #${userRank} ${medals[userRank - 1]} on the leaderboard!`;
         }
       } else {
-        message = `Well done ${userName}! You've reached rank #${userRank} on the leaderboard! 🌟`;
+        message = `Well done ${userName}! You ranked #${userRank} on the leaderboard! 🌟`;
       }
 
 

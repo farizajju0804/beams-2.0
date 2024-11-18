@@ -2,7 +2,7 @@ import React from 'react' // Importing React
 import UserLevelIndicator from './_components/UserLevelIndicator' // Component to display user's level
 import { currentUser } from '@/libs/auth' // Function to get the current logged-in user
 import { getAllLevels, getUserLevelAndBeams } from '@/actions/points/getAllLevels' // Functions to fetch levels and user's levels and beams
-import LevelsModal from './_components/LevelsModal' // Modal for displaying levels
+import LevelsModal from '../connection-game/_components/ConnectionModal' // Modal for displaying levels
 import { Achievement, UserAchievement } from '@prisma/client' // Importing types for Achievement and UserAchievement
 import { getAllAchievements, getUserAchievements } from '@/actions/points/achievements' // Functions to fetch achievements
 import AchievementsModal from './_components/AchievementsModal' // Modal for displaying achievements
