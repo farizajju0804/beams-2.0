@@ -6,7 +6,6 @@ import { completeConnectionGame } from '@/actions/connection/connectionGame';
 import LevelupModal from '@/components/LevelupModal';
 import { useRouter } from 'next/navigation';
 import CelebrationModal from './CelebrationModal';
-import RedirectMessage from '@/components/Redirection';
 import toast, { Toaster } from 'react-hot-toast';
 import TimeUpModal from './TimeupModal';
 import { FaLightbulb } from 'react-icons/fa';

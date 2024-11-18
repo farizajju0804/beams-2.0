@@ -1,6 +1,6 @@
 import React from 'react'
-import AdminBeamsToday from './_components/AdminPage'
-import ConnectionGamePage from './_components/ConnectionGame'
+import AdminBeamsToday from './_actions/_components/AdminPage'
+import ConnectionGamePage from './_actions/_components/ConnectionGame'
 
 const page = () => {
   return (
