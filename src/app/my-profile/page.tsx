@@ -9,7 +9,7 @@ export default async function UserProfilePage() {
   const user = await getLatestUserData();
   const user2 = await currentUser();
   if (!user) {
-    return <div>Please log in to view settings.</div>;
+    return <div>Please log in to view profile.</div>;
   }
 
   return (

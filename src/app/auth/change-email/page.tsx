@@ -1,6 +1,6 @@
 import React from 'react'; // Import React library
 import LoginSide from '../_components/LoginSide'; // Import the LoginSide component
-import ChangeEmail from './changeEmail'; // Import the ChangeEmail component
+import ChangeEmail from './_components/changeEmail'; // Import the ChangeEmail component
 
 // Define the main page component
 const page = () => {

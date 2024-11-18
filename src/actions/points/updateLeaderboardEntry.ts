@@ -13,98 +13,98 @@ type LeaderboardPeriod = {
   startDate: Date;
   endDate: Date;
   userType: UserType;
-};
+  };
 
-/**
- * Recalculates the ranks of leaderboard entries based on points and updates the database.
- * 
- * @param startDate - The start date of the leaderboard period.
- * @param endDate - The end date of the leaderboard period.
- * @param userType - The type of user (e.g., admin, regular user) to filter leaderboard entries.
- * 
- * @throws Throws an error if an issue occurs during the rank recalculation.
- */
-export const recalculateRanksForPointUpdate = async (
-  period: LeaderboardPeriod,
-): Promise<void> => {
-  const { startDate, endDate, userType } = period;
+  /**
+   * Recalculates the ranks of leaderboard entries based on points and updates the database.
+   * 
+   * @param startDate - The start date of the leaderboard period.
+   * @param endDate - The end date of the leaderboard period.
+   * @param userType - The type of user (e.g., admin, regular user) to filter leaderboard entries.
+   * 
+   * @throws Throws an error if an issue occurs during the rank recalculation.
+   */
+  export const recalculateRanksForPointUpdate = async (
+    period: LeaderboardPeriod,
+  ): Promise<void> => {
+    const { startDate, endDate, userType } = period;
 
-  try {
-    console.log('\n[Rank Recalculation] Starting for period:', {
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      userType
-    });
-
-    // Get all entries sorted by points
-    const entries = await db.leaderboard.findMany({
-      where: {
-        startDate,
-        endDate,
-        userType,
-      },
-      orderBy: [
-        { points: 'desc' }, // Order by points descending
-        { createdAt: 'asc' }, // Order by createdAt ascending (earliest first)
-      ],
-    });
-
-    console.log(`[Rank Recalculation] Found ${entries.length} entries to process`);
-
-    // Calculate ranks with dense ranking
-    let currentRank = 1;  // Current rank being assigned
-    let currentPoints = null;
-    const updates = [];
-
-    for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i];
-      
-      // If points change, increment rank
-      if (entry.points !== currentPoints) {
-        if (currentPoints !== null) {
-          currentRank++;
-        }
-        currentPoints = entry.points;
-      }
-
-      updates.push({
-        id: entry.id,
-        rank: currentRank,
-        points: entry.points,
-        userId: entry.userId
+    try {
+      console.log('\n[Rank Recalculation] Starting for period:', {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        userType
       });
 
-      console.log(
-        `Assigning rank ${currentRank} to user ${entry.userId} with ${entry.points} points`
-      );
+      // Get all entries sorted by points
+      const entries = await db.leaderboard.findMany({
+        where: {
+          startDate,
+          endDate,
+          userType,
+        },
+        orderBy: [
+          { points: 'desc' }, // Order by points descending
+          { createdAt: 'asc' }, // Order by createdAt ascending (earliest first)
+        ],
+      });
+
+      console.log(`[Rank Recalculation] Found ${entries.length} entries to process`);
+
+      // Calculate ranks with dense ranking
+      let currentRank = 1;  // Current rank being assigned
+      let currentPoints = null;
+      const updates = [];
+
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i];
+        
+        // If points change, increment rank
+        if (entry.points !== currentPoints) {
+          if (currentPoints !== null) {
+            currentRank++;
+          }
+          currentPoints = entry.points;
+        }
+
+        updates.push({
+          id: entry.id,
+          rank: currentRank,
+          points: entry.points,
+          userId: entry.userId
+        });
+
+        console.log(
+          `Assigning rank ${currentRank} to user ${entry.userId} with ${entry.points} points`
+        );
+      }
+
+      // Update ranks in batches
+      const batchSize = 100;
+      for (let i = 0; i < updates.length; i += batchSize) {
+        const batch = updates.slice(i, i + batchSize);
+        await Promise.all(
+          batch.map(update =>
+            db.leaderboard.update({
+              where: { id: update.id },
+              data: { rank: update.rank }
+            })
+          )
+        );
+        console.log(`[Rank Recalculation] Updated ${i + batch.length}/${updates.length} entries`);
+      }
+
+      // Log final rankings
+      console.log('\n[Rank Recalculation] Final rankings:');
+      updates.forEach(update => {
+        console.log(`User: ${update.userId}, Points: ${update.points}, Rank: ${update.rank}`);
+      });
+
+    } catch (error) {
+      console.error('Error in rank recalculation:', error);
+      throw error;
     }
-
-    // Update ranks in batches
-    const batchSize = 100;
-    for (let i = 0; i < updates.length; i += batchSize) {
-      const batch = updates.slice(i, i + batchSize);
-      await Promise.all(
-        batch.map(update =>
-          db.leaderboard.update({
-            where: { id: update.id },
-            data: { rank: update.rank }
-          })
-        )
-      );
-      console.log(`[Rank Recalculation] Updated ${i + batch.length}/${updates.length} entries`);
-    }
-
-    // Log final rankings
-    console.log('\n[Rank Recalculation] Final rankings:');
-    updates.forEach(update => {
-      console.log(`User: ${update.userId}, Points: ${update.points}, Rank: ${update.rank}`);
-    });
-
-  } catch (error) {
-    console.error('Error in rank recalculation:', error);
-    throw error;
-  }
-};
+  };
 
 
 export const updateLeaderboardEntry2 = async (

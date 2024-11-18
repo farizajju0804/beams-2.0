@@ -19,6 +19,7 @@ interface LeaderboardProps {
   userType: UserType;
 }
 
+
 interface LeaderboardProps {
   userId: string;
   initialData: any;

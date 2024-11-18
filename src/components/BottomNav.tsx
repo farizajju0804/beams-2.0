@@ -4,14 +4,16 @@ import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Chart, Rank, Microscope, Cup } from "iconsax-react"
+import { Chart, Rank, Microscope, Cup, Game } from "iconsax-react"
 import { Button } from "@nextui-org/react"
 import { FaLightbulb } from "react-icons/fa"
+import { BiSolidJoystick } from "react-icons/bi"
 
 
 const navItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
+  { icon: BiSolidJoystick, label: "Beams Connection", path: "/connection-game" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

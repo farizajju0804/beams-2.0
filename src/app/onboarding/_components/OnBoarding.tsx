@@ -230,32 +230,6 @@ const OnboardingPage = () => {
           </div>
         </>
       )}
-
-      {/* Welcome Modal
-      {isModalOpen && (
-        <div className="fixed inset-0 flex z-[100] items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
-            <Image
-              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725632828/authentication/onboarding-popup_y2qcaa.webp"
-              alt="Welcome image"
-              width={100}
-              height={100}
-              priority
-              className="mx-auto mb-4"
-            />
-            <h2 className="font-bold text-black font-poppins text-2xl mb-4">Beam-tastic! 🎉</h2>
-            <p className="text-black font-medium mb-4">
-              Let&apos;s take a quick spin through Beams and unlock all its potential. You&apos;re going to love what&apos;s in store!
-            </p>
-            <Button 
-              aria-label="submit"
-          
-            className='font-semibold text-lg text-white' color="primary" onClick={() => setIsModalOpen(false)}>
-              Show Me Around!
-            </Button>
-          </div>
-        </div>
-      )} */}
     </div>
   )
 }

@@ -298,7 +298,6 @@ model BeamsToday {
   exclusiveContents     BeamsTodayExclusiveContent[] // Relationship to exclusive content for Beams Today
   downloadableResources BeamsTodayDownloadableResource[] // Relationship to downloadable resources
   userNotes             BeamsTodayUserNote[] // Relationship to user notes
-  connectionGame        ConnectionGame?
   BeamsTodayFavorite    BeamsTodayFavorite[]
 
   @@index([published, date]) // For filtering published content and sorting by date
@@ -310,12 +309,14 @@ model BeamsToday {
 
 model ConnectionGame {
   id           String                     @id @default(auto()) @map("_id") @db.ObjectId
-  beamsTodayId String                     @unique @db.ObjectId // One-to-one relation with BeamsToday
-  beamsToday   BeamsToday                 @relation(fields: [beamsTodayId], references: [id], onDelete: Cascade)
+  date         DateTime                   @unique
   answer       String
   hint         String
   image        String
   title        String
+  answerExplanation String                   @db.String        
+  solutionPoints    String[]     
+  published    Boolean                    @default(false)
   createdAt    DateTime                   @default(now())
   updatedAt    DateTime                   @updatedAt
   completions  ConnectionGameCompletion[]

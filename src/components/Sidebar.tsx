@@ -1,15 +1,16 @@
 'use client'
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Chart, Cup, Rank,  ArrowLeft2, ArrowRight2, Microscope,  } from 'iconsax-react';
+import { Chart, Cup, Rank,  ArrowLeft2, ArrowRight2, Microscope, Game,  } from 'iconsax-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { FaLightbulb } from 'react-icons/fa';
-
+import { BiSolidJoystick } from "react-icons/bi";
 const menuItems = [
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
+  { icon: BiSolidJoystick, label: "Beams Connection", path: "/connection-game" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

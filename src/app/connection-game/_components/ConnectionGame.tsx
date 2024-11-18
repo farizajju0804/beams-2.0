@@ -1,9 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Card, CardBody, CardHeader, Button, Spinner, Input, PopoverTrigger, PopoverContent, Popover } from "@nextui-org/react";
-import { FcIdea } from 'react-icons/fc';
+import { Card, CardBody, CardHeader, Button, Spinner, PopoverTrigger, PopoverContent, Popover } from "@nextui-org/react";
 import Image from 'next/image';
-import { completeConnectionGame } from '@/actions/beams-today/connectionGame';
+import { completeConnectionGame } from '@/actions/connection/connectionGame';
 import LevelupModal from '@/components/LevelupModal';
 import { useRouter } from 'next/navigation';
 import CelebrationModal from './CelebrationModal';
@@ -11,6 +10,7 @@ import RedirectMessage from '@/components/Redirection';
 import toast, { Toaster } from 'react-hot-toast';
 import TimeUpModal from './TimeupModal';
 import { FaLightbulb } from 'react-icons/fa';
+import { GameSolution } from './GameSolution';
 
 interface WordGuessGameProps {
   id: string;
@@ -20,6 +20,9 @@ interface WordGuessGameProps {
   title: string;
   hint: string;
   username?: string;
+  answerExplanation: string;
+  solutionPoints: string[];
+  isCompleted?: boolean;
 }
 
 const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
@@ -110,7 +113,10 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   beamsTodayId,
   title, 
   hint, 
-  username = "Player" 
+  username = "Player" ,
+  answerExplanation,
+  solutionPoints,
+  isCompleted = false
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -125,11 +131,10 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   const [jumbledLetters, setJumbledLetters] = useState<string[]>([]);
   const [userInputs, setUserInputs] = useState<string[]>([]);
   const [isCompleting, setIsCompleting] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTimeUpModal, setShowTimeUpModal] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  
+  const [showSolution, setShowSolution] = useState<boolean>(isCompleted);
   const router = useRouter();
   const words = answer.split(' ');
 
@@ -139,6 +144,12 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
       setIsFirstRender(false);
     }
   }, [showHint]);
+
+  useEffect(() => {
+    if (isCompleted) {
+      setShowSolution(true);
+    }
+  }, [isCompleted]);
 
   useEffect(() => {
     setUserInputs(Array(words.length).fill(''));
@@ -232,34 +243,35 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   };
 
   useEffect(() => {
-    if (timeLeft > 0 && !isCorrect) {
+    if (timeLeft > 0 && !isCorrect && !showSolution) {
       const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
       return () => clearInterval(timer);
-    } else if (timeLeft === 0 && !isCorrect) {
-      setMessage(`Time's up, ${username}! The answer is "${answer}"`);
+    } else if (timeLeft === 0 && !isCorrect && !showSolution) {
       setShowTimeUpModal(true);
-      handleGameCompletion2();
+      handleGameCompletion();
     }
-  }, [timeLeft, isCorrect, username, answer]);
+  }, [timeLeft, isCorrect, showSolution]);
 
-  const handleGameCompletion2 = async () => {
-    if (!isCompleting) {
-      setIsCompleting(true);
-      try {
-        await completeConnectionGame(id, 0);
-      } catch (error) {
-        console.error('Error completing game:', error);
-      }
-    }
-  };
+
 
   const handleGameCompletion = async () => {
     if (!isCompleting) {
       setIsCompleting(true);
       try {
         await completeConnectionGame(id, 0);
-        setIsRedirecting(true);
-        router.push(`/beams-today/${beamsTodayId}`);
+       
+      } catch (error) {
+        console.error('Error completing game:', error);
+      }
+    }
+  };
+  const handleGameCompletion2 = async () => {
+    if (!isCompleting) {
+      setIsCompleting(true);
+      try {
+        await completeConnectionGame(id, 0);
+        setShowSolution(true)
+       
       } catch (error) {
         console.error('Error completing game:', error);
       }
@@ -277,28 +289,16 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
         setIsLevelUpModalOpen(true);
       }, 100);
     } else {
-      setIsRedirecting(true);
-      router.push(`/beams-today/${beamsTodayId}`);
+      setShowSolution(true);
     }
   };
 
-  useEffect(() => {
-    if (!sessionStorage.getItem('gameStarted')) {
-      sessionStorage.setItem('gameStarted', 'true');
-    } else {
-      setIsRedirecting(true);
-      router.push(`/beams-today/${beamsTodayId}`);
-    }
 
-    return () => {
-      sessionStorage.removeItem('gameStarted');
-    };
-  }, [beamsTodayId, router]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (!isCorrect) {
-        handleGameCompletion();
+      if (!isCorrect && !showSolution) {
+        handleGameCompletion2();
       }
     };
 
@@ -306,10 +306,22 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isCorrect]);
+  }, [isCorrect, showSolution]);
 
-  if (isRedirecting) {
-    return <RedirectMessage username={username} />;
+ 
+
+  if (showSolution) {
+    return (
+      <GameSolution
+        image={image}
+        answer={answer}
+        title={title}
+        hint={hint}
+        answerExplanation={answerExplanation}
+        solutionPoints={solutionPoints}
+        showBackButton={false}
+      />
+    );
   }
 
   return (
@@ -417,8 +429,7 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
             isOpen={showTimeUpModal}
             onClose={() => {
               setShowTimeUpModal(false);
-              setIsRedirecting(true);
-              router.push(`/beams-today/${beamsTodayId}`);
+              setShowSolution(true)
             }}
             username={username}
             answer={answer}
@@ -430,8 +441,8 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
             isOpen={isLevelUpModalOpen}
             onClose={() => {
               setIsLevelUpModalOpen(false);
-              setIsRedirecting(true);
-              router.push(`/beams-today/${beamsTodayId}`);
+              setShowSolution(true)
+
             }}
             currentLevel={newLevel}
             pointsAdded={points}

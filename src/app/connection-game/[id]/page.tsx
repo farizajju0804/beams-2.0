@@ -1,6 +1,6 @@
 import React from 'react'
 import { currentUser } from '@/libs/auth'
-import { checkConnectionGameStatus, getWordGame } from '@/actions/beams-today/connectionGame';
+import { checkConnectionGameStatus, getWordGameById } from '@/actions/connection/connectionGame';
 import ConnectionGame from '../_components/ConnectionGame';
 import { redirect } from 'next/navigation';
 
@@ -10,12 +10,9 @@ interface ConnectionGamePageProps {
 const Page = async ({ params }: ConnectionGamePageProps) => {
   const { id } = params;
     const user = await currentUser()
-    const connectionGame = await getWordGame(id)
+    const connectionGame = await getWordGameById(id)
     const completionStatus = await checkConnectionGameStatus(id)
-
-    if(completionStatus.data?.isCompleted){
-      redirect(`/beams-today/${id}`)
-    }
+    
     if(!connectionGame.success){
       return (
         <h1 className='mx-auto w-full text-5xl'>No Game Found</h1>
@@ -33,6 +30,9 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
       title={connectionGame.data?.title}
       hint={connectionGame.data?.hint}
       username={user?.firstName}
+      isCompleted={completionStatus.data?.isCompleted}
+      answerExplanation={connectionGame.data.answerExplantion}
+      solutionPoints={connectionGame.data.solutionPoints}
     />
       )
     }

@@ -8,7 +8,7 @@ import { getNote } from '@/actions/beams-today/saveUserNote';
 import { BeamsTodayUserNote } from '@prisma/client';
 import { Button } from '@nextui-org/react';
 import Link from 'next/link';
-import { checkConnectionGameStatus } from '@/actions/beams-today/connectionGame';
+import { checkConnectionGameStatus } from '@/actions/connection/connectionGame';
 
 
 // Define the props for the BeamsTodayDetails component, expecting a 'data' prop of type BeamsToday

@@ -1,6 +1,6 @@
 import React from 'react'; // Import React library
 import LoginSide from '../_components/LoginSide'; // Import the LoginSide component
-import VerifyEmail from './changeEmailVerify'; // Import the VerifyEmail component
+import VerifyEmail from './_components/changeEmailVerify'; // Import the VerifyEmail component
 
 // Define the main page component
 const page = () => {

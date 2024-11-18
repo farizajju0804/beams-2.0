@@ -26,7 +26,6 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
     sortBy: "dateDesc"
   });
   
-//  const {minDateString,maxDateString}:any= await getMinAndMaxDate()
 
  
   return (

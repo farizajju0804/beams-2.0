@@ -14,13 +14,7 @@ interface SearchParams {
   userId?: string;
 }
 
-// interface SearchResult {
-//   topics: any[];
-//   pagination: {
-//     currentPage: number;
-//     totalPages: number;
-//     totalItems: number;
-//   };
+
 // }
 
 /**
