@@ -72,7 +72,7 @@ const ConnectionModal = () => {
                     description="Hints are available if you get stuck, but using them will reduce your beams reward."
                   />
                <RuleItem 
-                    icon={<AiOutlineTrophy className="text-purple-500" size={24} />} // Trophy icon for rewards
+                    icon={<AiFillTrophy className="text-indigo-500" size={24} />} // Trophy icon for rewards
                     title="Dynamic Beams Rewards"
                     description="Beams are rewarded based on how quickly you solve the challenge and if it's solved on the day of publication. Solving after the day of publication will not count toward beams addition. Early solvers gain more beams!"
                   />
