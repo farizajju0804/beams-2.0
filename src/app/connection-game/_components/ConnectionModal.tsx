@@ -4,7 +4,7 @@ import { AiFillClockCircle, AiOutlineBulb, AiOutlineTrophy, AiOutlineSync, AiFil
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
 import { FaGamepad } from 'react-icons/fa'; // Importing the gamepad icon
 import { BsImageFill } from 'react-icons/bs';
-
+import { TbAbc } from "react-icons/tb";
 const ConnectionModal = () => {
   // useDisclosure hook to manage the modal's open/close state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -12,7 +12,7 @@ const ConnectionModal = () => {
   // RuleItem component for displaying individual level items
   const RuleItem = ({ icon, title, description }: any) => (
     <div className="flex items-start space-x-3"> {/* Flex container for the rule item */}
-      <div className="flex-shrink-0"> {/* Prevents icon from shrinking */}
+      <div className="flex-shrink-0 mt-1"> {/* Prevents icon from shrinking */}
         {icon} {/* Icon for the level item */}
       </div>
       <div>
@@ -27,7 +27,6 @@ const ConnectionModal = () => {
     return (
       <Modal 
         size='2xl' // Size of the modal
-        hideCloseButton={true} // Hides the default close button
         isOpen={isOpen} 
         onOpenChange={onOpenChange} // Handler for opening/closing the modal
         scrollBehavior="inside" // Control modal scroll behavior
@@ -41,18 +40,18 @@ const ConnectionModal = () => {
           {(onClose) => ( // Render the modal content
             <>
               <ModalHeader className="flex flex-col gap-1"> {/* Modal header */}
-                <h2 className="text-2xl font-bold text-text">Game Rules</h2> {/* Header text */}
+                <h2 className="text-2xl mx-auto font-bold text-text">Game Rules</h2> {/* Header text */}
               </ModalHeader>
               <ModalBody className="text-text"> {/* Modal body */}
                 <div className="space-y-8"> {/* Space between items */}
                   {/* RuleItem components for displaying game rules */}
                   <RuleItem 
-                    icon={<BsImageFill className="text-green-500" size={24} />} // Gamepad icon
+                    icon={<BsImageFill className="text-green-500" size={20} />} // Gamepad icon
                     title="Answer Using Image Clues"
                     description="Use the provided image clues to guess the answer, which could be a place, object, or concept."
                   />
                    <RuleItem 
-                    icon={<AiFillClockCircle className="text-pink-500" size={24} />} // Jumbled letters icon (use creative replacement)
+                    icon={<TbAbc className="text-pink-500" size={26} />} // Jumbled letters icon (use creative replacement)
                     title="Jumbled Letters"
                     description="A 15-character string is provided as a visual clue. The answer is NOT within these characters but serves to create suspense."
                   />
@@ -71,14 +70,14 @@ const ConnectionModal = () => {
                     title="Hints for Clues"
                     description="Hints are available if you get stuck, but using them will reduce your beams reward."
                   />
-               <RuleItem 
+                    <RuleItem 
                     icon={<AiFillTrophy className="text-indigo-500" size={24} />} // Trophy icon for rewards
                     title="Dynamic Beams Rewards"
-                    description="Beams are rewarded based on how quickly you solve the challenge and if it's solved on the day of publication. Solving after the day of publication will not count toward beams addition. Early solvers gain more beams!"
+                    description="Beams are rewarded based on how quickly you solve the challenge within 60 seconds. Solving on the day of publication earns full beams, while solving after the publication day results in only 50% of the beams being added. The faster you solve it, the more beams you earn!"
                   />
   
                     <RuleItem 
-                    icon={<AiOutlineSync className="text-blue-500" size={24} />} // Refresh icon
+                    icon={<AiOutlineSync className="text-blue-500" size={26} />} // Refresh icon
                     title="Daily Reset"
                     description="Each day, a new challenge is presented. You only have one chance to solve it per day."
                   />
@@ -102,9 +101,9 @@ const ConnectionModal = () => {
   };
 
   return (
-    <div className='w-full max-w-4xl flex justify-between px-6  my-4'> {/* Main container for the modal trigger */}
+    <div className='w-full px-4 lg:px-4 max-w-4xl flex justify-between my-3'> {/* Main container for the modal trigger */}
       <div className="flex flex-col items-start"> {/* Column for title and underline */}
-        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Beams Connection</h1> {/* Title */}
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Game Of the Day</h1> {/* Title */}
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div> {/* Underline for title */}
       </div>
       <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}> {/* Button to open modal */}

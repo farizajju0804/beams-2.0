@@ -1,21 +1,22 @@
 'use client'; // This indicates that the component is a client component in Next.js
 import React from 'react'; // Importing React
-import { AiFillFire, AiFillTrophy, AiFillHeart, AiFillQuestionCircle, AiFillGift } from 'react-icons/ai'; // Importing icons from react-icons
+import { AiFillFire, AiFillRocket, AiFillHeart, AiFillQuestionCircle } from 'react-icons/ai'; // Importing icons from react-icons
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
+import { FaFlag } from 'react-icons/fa'; // Importing the flag icon
 
-const AchievementsModal = () => {
+const LevelsModal = () => {
   // useDisclosure hook to manage the modal's open/close state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  // RuleItem component for displaying individual achievement items
+  // RuleItem component for displaying individual level items
   const RuleItem = ({ icon, title, description }: any) => (
     <div className="flex items-start space-x-3"> {/* Flex container for the rule item */}
       <div className="flex-shrink-0"> {/* Prevents icon from shrinking */}
-        {icon} {/* Icon for the achievement */}
+        {icon} {/* Icon for the level item */}
       </div>
       <div>
-        <h3 className="font-semibold">{title}</h3> {/* Title of the achievement */}
-        <p className="text-sm opacity-80">{description}</p> {/* Description of the achievement */}
+        <h3 className="font-semibold">{title}</h3> {/* Title of the level item */}
+        <p className="text-sm opacity-80">{description}</p> {/* Description of the level item */}
       </div>
     </div>
   );
@@ -38,30 +39,30 @@ const AchievementsModal = () => {
           {(onClose) => ( // Render the modal content
             <>
               <ModalHeader className="flex flex-col gap-1"> {/* Modal header */}
-                <h2 className="text-2xl font-bold text-text">Unlock Achievements & Earn Badges</h2> {/* Header text */}
+                <h2 className="text-2xl font-bold text-text">Level Up & Earn Beams</h2> {/* Header text */}
               </ModalHeader>
               <ModalBody className="text-text"> {/* Modal body */}
                 <div className="space-y-8"> {/* Space between items */}
-                  {/* RuleItem components for displaying achievement rules */}
+                  {/* RuleItem components for displaying level rules */}
                   <RuleItem 
-                    icon={<AiFillFire className="text-orange-500" size={24} />} // Fire icon for the first rule
-                    title="Complete Activities & Earn Badges"
-                    description="Badges are earned through completing specific tasks. Each badge comes with unique activities, and extra beams await upon completion!"
+                    icon={<AiFillRocket className="text-blue-500" size={24} />} // Rocket icon for the first rule
+                    title="Progress Through Levels"
+                    description="As you gather more beams, you will level up! Keep pushing to reach higher levels!"
                   />
                   <RuleItem 
-                    icon={<AiFillTrophy className="text-green-500" size={24} />} // Trophy icon for the second rule
-                    title="Showcase Your Achievements"
-                    description="Your earned badges will be proudly displayed on your dashboard. Flaunt them and show the world your progress!"
+                    icon={<AiFillFire className="text-red-500" size={24} />} // Fire icon for the second rule
+                    title="Earn Beams Through Activities"
+                    description="Earn beams by engaging in content, and participating in polls. The more active you are, the faster you level up!"
                   />
                   <RuleItem 
-                    icon={<AiFillGift className="text-blue-500" size={24} />} // Gift icon for the third rule
-                    title="Exclusive Rewards for Each Badge"
-                    description="Each completed badge brings with it not only bragging rights but exclusive rewards and extra beams to boost your progress!"
+                    icon={<FaFlag className="text-green-500" size={24} />} // Flag icon for the third rule
+                    title="Unlock Achievements"
+                    description="Achieve special badges and milestones as you reach certain levels. These will be a mark of your hard work and dedication!"
                   />
                   <RuleItem 
-                    icon={<AiFillHeart className="text-red-500" size={24} />} // Heart icon for the fourth rule
-                    title="Stay Inspired"
-                    description="Celebrate each step of your journey and stay motivated as you climb higher."
+                    icon={<AiFillHeart className="text-pink-500" size={24} />} // Heart icon for the fourth rule
+                    title="Stay Motivated"
+                    description="Every time you level up, you get closer to the future! Don’t forget to check out your achievements and celebrate your progress!"
                   />
                 </div>
               </ModalBody>
@@ -72,7 +73,7 @@ const AchievementsModal = () => {
                   onPress={onClose} // Closes the modal when pressed
                   className="mt-4 w-full text-black font-lg font-semibold"
                 >
-                  Let&apos;s Unlock Some Badges! {/* Button text */}
+                  I&apos;m Ready to Level Up! {/* Button text */}
                 </Button>
               </ModalFooter>
             </>
@@ -83,9 +84,9 @@ const AchievementsModal = () => {
   };
 
   return (
-    <div className='w-full flex justify-between px-6 my-4 md:px-8'> {/* Main container for the modal trigger */}
+    <div className='w-full flex justify-between px-6 md:px-8 my-4'> {/* Main container for the modal trigger */}
       <div className="flex flex-col items-start"> {/* Column for title and underline */}
-        <h1 className="text-lg md:text-2xl mx-auto text-text font-poppins font-semibold mb-[1px]">Victory Vault</h1> {/* Title */}
+        <h1 className="text-lg md:text-2xl mx-auto text-text font-poppins font-semibold mb-[1px]">Levels</h1> {/* Title */}
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div> {/* Underline for title */}
       </div>
       <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}> {/* Button to open modal */}
@@ -94,6 +95,6 @@ const AchievementsModal = () => {
       {renderOverlay()} {/* Render the modal overlay */}
     </div>
   );
-};
+}
 
-export default AchievementsModal; // Exporting the AchievementsModal component for use in other parts of the application
+export default LevelsModal; // Exporting the LevelsModal component for use in other parts of the application

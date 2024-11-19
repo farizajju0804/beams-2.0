@@ -1,17 +1,16 @@
 'use client'
-
 import React, { useState } from "react"
-import { Card, CardBody, CardHeader, CardFooter } from "@nextui-org/card"
 import { Button } from "@nextui-org/button"
-import { Select, SelectItem, RadioGroup, Radio, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react"
+import {  RadioGroup, Radio, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react"
 import { Chip } from "@nextui-org/chip"
-import { Calendar, Game, Eye, TickCircle, CloseCircle, InfoCircle } from "iconsax-react"
+import { Game, Eye, TickCircle, CloseCircle, InfoCircle } from "iconsax-react"
 import { useRouter } from 'next/navigation'
 import CustomPagination from "@/components/Pagination"
 import Image from "next/image"
 import { getRecentGames } from "@/actions/connection/connectionGame"
 import FormattedDate from "@/app/beams-today/_components/FormattedDate"
 import { BiSolidJoystick } from "react-icons/bi"
+import SortByFilter from "@/app/beams-today/_components/SortByFilter"
 
 
 interface Game {
@@ -20,6 +19,7 @@ interface Game {
     date: Date
     isCompleted: boolean
     hint: string
+    thumbnail : string
     image: string
   }
   
@@ -61,7 +61,7 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
       const result = await getRecentGames({
         clientDate,
         page,
-        sortBy: sort as 'dateDesc' | 'dateAsc' | 'titleAsc' | 'titleDesc',
+        sortBy: sort as 'dateDesc' | 'dateAsc' | 'nameAsc' | 'nameDesc',
         filterOption: filter as 'all' | 'completed' | 'incomplete',
         userId
       });
@@ -127,22 +127,13 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
   
 
       <div className="pl-2 flex flex-col md:flex-row items-start gap-6 md:justify-between mb-6 md:items-center w-full">
-        <Select
-          label="Sort by"
-          selectedKeys={[sortBy]}
-          className="w-48"
-          onChange={(e) => handleSortChange(e.target.value)}
-        >
-          <SelectItem key="dateDesc" value="dateDesc">Date (Desc)</SelectItem>
-          <SelectItem key="dateAsc" value="dateAsc">Date (Asc)</SelectItem>
-          <SelectItem key="titleAsc" value="titleAsc">Name (A-Z)</SelectItem>
-          <SelectItem key="titleDesc" value="titleDesc">Name (Z-A)</SelectItem>
-        </Select>
+      <SortByFilter sortBy={sortBy} setSortBy={handleSortChange} />
+ 
         <RadioGroup
           orientation="horizontal"
           value={filterOption}
           onValueChange={handleFilterChange}
-          classNames={{ wrapper: "gap-2" }}
+          classNames={{ wrapper: "gap-4" }}
         >
           <Radio 
             classNames={{
@@ -202,46 +193,49 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
         </div>
       )}
 
-      <div className="px-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="px-2 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {games.map(game => (
-          <Card key={game.id} className="w-full">
-            <CardHeader className="flex justify-between items-start">
-              <h3 className="text-lg font-semibold">{game.title}</h3>
-              <Chip
-                color={game.isCompleted ? "success" : "default"}
-                variant="flat"
-                size="sm"
-                startContent={game.isCompleted ? 
-                  <TickCircle size={16} variant="Bold" /> : 
-                  <CloseCircle size={16} variant="Bold" />
-                }
-              >
-                {game.isCompleted ? "Beamed" : "Unbeamed"}
-              </Chip>
-            </CardHeader>
+         <div 
+         key={game.id}
+         className="w-full relative max-w-sm bg-background shadow-defined rounded-2xl overflow-hidden transition-all duration-300 ease-in-out transform "
+       >
+        <Chip color={game.isCompleted ? "success" : "default"} 
+             size="sm" 
+            className="absolute z-20 top-2 right-2"
+            startContent={game.isCompleted ? <TickCircle size={16} 
+            variant="Bold" /> : <CloseCircle size={16} variant="Bold" /> } > 
+            {game.isCompleted ? "Beamed" : "Unbeamed"} 
+            </Chip>
+         <div className="relative h-48 overflow-hidden">
+           <Image
+             src={game.thumbnail}
+             alt={game.title}
+             fill
+             className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform "
+           />
             
-            <CardBody>
-              <div className="flex items-center text-sm text-default-500">
-                <Calendar size={16} variant="Bold" className="mr-2" />
-                 <FormattedDate date={game.date.toISOString().split('T')[0]}/>
-              </div>
-            </CardBody>
-            
-            <CardFooter>
-              <Button 
-                fullWidth
-                className="text-white font-semibold"
-                color={game.isCompleted ? "success" : "primary"}
-                onClick={() => handleGameAction(game.id, game.isCompleted)}
-                startContent={game.isCompleted ? 
-                  <Eye size={20} variant="Bold" /> : 
-                  <BiSolidJoystick size={20}  />
-                }
-              >
-                {game.isCompleted ? "View Solution" : "Play Now"}
-              </Button>
-            </CardFooter>
-          </Card>
+         </div>
+         <div className="p-4">
+           <h3 className="text-lg font-semibold mb-2">{game.title}</h3>
+           <p className="text-sm text-default-600 mb-4">
+             <FormattedDate date={game.date.toISOString().split('T')[0]} />
+           </p>
+           <div className="flex justify-between items-center">
+           <Button 
+            className="text-white font-semibold"
+            color={game.isCompleted ? "success" : "primary"}
+            onClick={() => handleGameAction(game.id, game.isCompleted)}
+            startContent={game.isCompleted ? 
+              <Eye size={20} variant="Bold" /> : 
+              <BiSolidJoystick size={20}  />
+            }
+          >
+            {game.isCompleted ? "View Solution" : "Play Now"}
+          </Button>
+          
+           </div>
+         </div>
+       </div>
         ))}
       </div>
 

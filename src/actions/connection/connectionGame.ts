@@ -15,6 +15,7 @@ interface WordGameResponse {
     hint: string;
     image: string;
     title : string;
+    thumbnail : string;
     answerExplantion : string,
     solutionPoints : string[],
   };
@@ -49,6 +50,7 @@ export async function getWordGame(clientDate: string): Promise<WordGameResponse>
         date : wordGame.date,
         image: wordGame.image,
         title : wordGame.title,
+        thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
         solutionPoints : wordGame.solutionPoints,
       },
@@ -88,6 +90,7 @@ export async function getWordGameById(id: string): Promise<WordGameResponse> {
         hint: wordGame.hint,
         image: wordGame.image,
         title : wordGame.title,
+        thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
         solutionPoints : wordGame.solutionPoints,
       },
@@ -269,7 +272,7 @@ interface GetRecentGamesParams {
   clientDate: string
   page?: number
   limit?: number
-  sortBy?: 'dateDesc' | 'dateAsc' | 'titleAsc' | 'titleDesc'
+  sortBy?: 'dateDesc' | 'dateAsc' | 'nameAsc' | 'nameDesc'
   filterOption?: 'all' | 'completed' | 'incomplete'
   userId?: string
 }
@@ -280,6 +283,7 @@ interface Game {
   date: Date
   hint: string
   image: string
+  thumbnail : string
   isCompleted: boolean
 }
 
@@ -309,9 +313,9 @@ export async function getRecentGames({
     // Define sort order based on sortBy parameter
     const orderBy: Prisma.ConnectionGameOrderByWithRelationInput = (() => {
       switch (sortBy) {
-        case "titleAsc":
+        case "nameAsc":
           return { title: 'asc' };
-        case "titleDesc":
+        case "nameDesc":
           return { title: 'desc' };
         case "dateAsc":
           return { date: 'asc' };
@@ -364,6 +368,7 @@ export async function getRecentGames({
         date: true,
         hint: true,
         image: true,
+        thumbnail: true,
         completions: userId ? {
           where: {
             userId: userId,
@@ -383,6 +388,7 @@ export async function getRecentGames({
       date: game.date,
       hint: game.hint,
       image: game.image,
+      thumbnail : game.thumbnail,
       isCompleted: userId ? game.completions.length > 0 : false
     }));
 

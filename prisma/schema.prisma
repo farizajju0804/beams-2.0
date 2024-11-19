@@ -314,6 +314,7 @@ model ConnectionGame {
   hint         String
   image        String
   title        String
+  thumbnail    String
   answerExplanation String                   @db.String        
   solutionPoints    String[]     
   published    Boolean                    @default(false)

@@ -4,7 +4,6 @@ import { Card, CardBody, CardHeader, Button, Spinner, PopoverTrigger, PopoverCon
 import Image from 'next/image';
 import { completeConnectionGame } from '@/actions/connection/connectionGame';
 import LevelupModal from '@/components/LevelupModal';
-import { useRouter } from 'next/navigation';
 import CelebrationModal from './CelebrationModal';
 import toast, { Toaster } from 'react-hot-toast';
 import TimeUpModal from './TimeupModal';
@@ -22,6 +21,7 @@ interface WordGuessGameProps {
   answerExplanation: string;
   solutionPoints: string[];
   isCompleted?: boolean;
+  gameDate: Date;
 }
 
 const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
@@ -65,14 +65,47 @@ const CircularTimer: React.FC<{ timeLeft: number }> = ({ timeLeft }) => {
 };
 
 
-const getPointsForTime = (timeLeft: number, usedHint: boolean): number => {
+const getPointsForTime = (timeLeft: number, usedHint: boolean, isCurrentDay: boolean): number => {
   let points = 0;
-  if (timeLeft > 45) points = 10;
-  else if (timeLeft > 30) points = 8;
-  else if (timeLeft > 15) points = 5;
-  else points = 2;
+  
+  if (isCurrentDay) {
+    // Full points for current day
+    if (timeLeft > 45) points = 20;
+    else if (timeLeft > 30) points = 16;
+    else if (timeLeft > 15) points = 10;
+    else points = 5;
+  } else {
+    // 50% points for past days
+    if (timeLeft > 45) points = 10;
+    else if (timeLeft > 30) points = 8;
+    else if (timeLeft > 15) points = 5;
+    else points = 2;
+  }
   
   return usedHint ? Math.max(points - 2, 1) : points;
+};
+
+
+
+const isGameCurrentDay = (gameDate: Date): boolean => {
+  try {
+    // Get current date in YYYY-MM-DD format
+    const today = new Date().toLocaleDateString('en-CA');
+    
+    // Convert game date to same YYYY-MM-DD format
+    const formattedGameDate = new Date(gameDate).toLocaleDateString('en-CA');
+
+    console.log({
+      today,
+      gameDate: formattedGameDate,
+      isEqual: today === formattedGameDate
+    });
+    
+    return today === formattedGameDate;
+  } catch (error) {
+    console.error('Error comparing dates:', error);
+    return false;
+  }
 };
 
 const getFeedbackMessage = (username: string, attempts: number): string => {
@@ -115,7 +148,8 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   username = "Player" ,
   answerExplanation,
   solutionPoints,
-  isCompleted = false
+  isCompleted = false,
+  gameDate 
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -134,7 +168,6 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   const [showTimeUpModal, setShowTimeUpModal] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [showSolution, setShowSolution] = useState<boolean>(isCompleted);
-  const router = useRouter();
   const words = answer.split(' ');
 
   useEffect(() => {
@@ -214,7 +247,8 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
     
     if (combinedInput === answer.toUpperCase()) {
       setIsCorrect(true);
-      const earnedPoints = getPointsForTime(timeLeft, showHint);
+      const isCurrentDay = isGameCurrentDay(gameDate);
+      const earnedPoints = getPointsForTime(timeLeft, showHint, isCurrentDay);
       setPoints(earnedPoints);
 
       try {

@@ -7,7 +7,6 @@ import DateComponent from "./DateComponent";
 import FavoriteButton from "./FavoriteButton";
 import { Chip } from "@nextui-org/react";
 import { Microscope } from "iconsax-react";
-import Link from "next/link";
 import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
 import RedirectMessage from "@/components/Redirection";
 

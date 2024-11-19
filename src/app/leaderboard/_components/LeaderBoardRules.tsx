@@ -33,7 +33,7 @@ export const LeaderboardRules = ({isOpen,onOpenChange}:any) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-2xl font-bold text-text">Leaderboard Rules</h2>
+                <h2 className="text-2xl mx-auto font-bold text-text">Leaderboard Rules</h2>
               </ModalHeader>
               <ModalBody className="text-text">
               <div className="space-y-4">

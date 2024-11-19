@@ -1,12 +1,11 @@
 'use client'
 
-import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardBody, CardFooter, CardHeader} from "@nextui-org/react"
-import { Calendar, Game } from 'iconsax-react'
+import React  from "react"
+import { Button} from "@nextui-org/react"
 import { useRouter } from 'next/navigation'
 import { BiSolidJoystick } from "react-icons/bi"
-
+import ConnectionModal from "./ConnectionModal"
+import DateComponent from "./DateComponent"
 
 interface GameOfTheDayProps {
   game: {
@@ -14,6 +13,7 @@ interface GameOfTheDayProps {
     title: string
     date: Date
     hint: string
+    thumbnail : string
   }
   username?: string,
   isCompleted : boolean | undefined
@@ -25,61 +25,56 @@ export default function GameOfTheDay({
   isCompleted
 }: GameOfTheDayProps) {
   const router = useRouter()
-  const [isHovering, setIsHovering] = useState(false)
 
   const handlePlayGame = () => {
     router.push(`/connection-game/${game?.id}`)
   }
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    }).format(date)
-  }
-
   return (
     
-    <div className="w-full max-w-4xl mx-auto px-4 pb-4">
+    <div className="w-full max-w-4xl mx-auto pb-4">
       <div
   
       >
-        <Card className="overflow-hidden bg-background shadow-defined border-2 border-primary/20">
-          <CardHeader className="space-y-1">
-            <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-between">
-              <h4 className="text-2xl font-bold text-primary">Game of the Day</h4>
-              <div className="flex items-center space-x-2 text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                <span className="text-sm">{formatDate(game.date)}</span>
-              </div>
-            </div>
-          </CardHeader>
-          <CardBody className="grid gap-4">
-            <div
-              className="text-center md:py-4"
-            >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground mb-4">
-                {game.title}
-              </h2>
+        <ConnectionModal/>
+        <div 
+      className="relative overflow-hidden"
+      style={{
+        backgroundImage: `url(${game.thumbnail})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        height: '400px'
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+      <div className="relative z-10 flex flex-col h-full justify-between py-6 text-white">
+        <div className="w-full flex justify-end">
+          <div className="inline-block px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm">
+            <DateComponent date={game.date.toISOString().split('T')[0]} />
+          </div>
+        </div>
+        <div className="flex-grow flex items-center justify-center">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-4">
+            {game.title}
+          </h2>
+        </div>
+        <div className="flex justify-center mb-2">
+        <Button
+          endContent={<BiSolidJoystick  />}
+          className="font-semibold text-white text-base md:text-lg p-4 lg:px-8 py-6"
+          size="md"
+          color={isCompleted ?  'success' : 'primary' }
+          onClick={handlePlayGame}
+          >
+          {isCompleted ?  'View Solution' : 'Play Now' }
+          </Button>
+        </div>
+      </div>
+    </div>
 
-            </div>
-          </CardBody>
-          <CardFooter className="flex justify-center pb-8">
-         
-              <Button
-                onClick={handlePlayGame}
-                className="font-semibold text-xl px-8 py-6 bg-primary text-white"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-              >
-                 <BiSolidJoystick className="mr-2 h-5 w-5" />
-               {isCompleted ?  'View Solution' : 'Play Now' }
-              </Button>
-            </CardFooter>
-        </Card>
       </div>
     </div>
   )
 }
+
+

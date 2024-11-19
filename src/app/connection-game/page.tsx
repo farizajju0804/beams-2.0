@@ -36,7 +36,7 @@ const user:any = await currentUser()
   return (
          
     <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-2 md:gap-6 items-center justify-center w-full bg-background ">
-      <ConnectionModal/>
+      <h1 className="font-poppins text-2xl md:text-4xl uppercase font-semibold bg-success text-white p-2">Beams Connect</h1>
       {game.data && game.success &&
       <GameOfTheDay game={game.data} isCompleted={completionStatus?.data?.isCompleted} username={user.firstName} />
       }

@@ -33,6 +33,7 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
       isCompleted={completionStatus.data?.isCompleted}
       answerExplanation={connectionGame.data.answerExplantion}
       solutionPoints={connectionGame.data.solutionPoints}
+      gameDate={connectionGame.data.date}
     />
       )
     }

@@ -2,7 +2,6 @@ import React from 'react' // Importing React
 import UserLevelIndicator from './_components/UserLevelIndicator' // Component to display user's level
 import { currentUser } from '@/libs/auth' // Function to get the current logged-in user
 import { getAllLevels, getUserLevelAndBeams } from '@/actions/points/getAllLevels' // Functions to fetch levels and user's levels and beams
-import LevelsModal from '../connection-game/_components/ConnectionModal' // Modal for displaying levels
 import { Achievement, UserAchievement } from '@prisma/client' // Importing types for Achievement and UserAchievement
 import { getAllAchievements, getUserAchievements } from '@/actions/points/achievements' // Functions to fetch achievements
 import AchievementsModal from './_components/AchievementsModal' // Modal for displaying achievements
@@ -10,6 +9,7 @@ import AchievementCard from './_components/AchievementCard' // Card component fo
 import { ReferFriendModal } from '@/components/ReferalModal' // Modal for referral functionality
 import { getReferralStatus } from '@/actions/auth/getLatestUserData' // Function to get referral status of the user
 import { referalBadgeName } from '@/constants/victoryConstants' // Constant for the referral badge name
+import LevelsModal from './_components/LevelsModal'
 
 // Main page component
 const Page = async() => {
