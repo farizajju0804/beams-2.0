@@ -4,7 +4,7 @@ import React from 'react'
 import GameOfTheDay from './_components/GameOfTheDay';
 import { currentUser } from '@/libs/auth';
 import RecentGames from './_components/RecentGames';
-import ConnectionModal from './_components/ConnectionModal';
+
 
 const page = async() => {
 const user:any = await currentUser()
