@@ -7,11 +7,35 @@ import { markFactAsCompleted } from "@/actions/fod/fod"; // Importing the functi
 
 import DateComponent from "./DateComponent"; // Importing DateComponent for displaying the date
 
+import { AiFillHeart, AiFillQuestionCircle, AiFillStar, AiFillTrophy } from 'react-icons/ai'; // Importing icons for rules
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
+import { FaPollH } from 'react-icons/fa'; // Importing poll icon
+import {  MdNoteAlt } from 'react-icons/md'; // Importing note-taking icon
+import { RiFileListLine } from 'react-icons/ri'; // Importing history icon
+import { GiCardDraw, GiCardRandom } from 'react-icons/gi'; // Importing scratch card icon
 // Defining the props type for the FactOfTheDay component
 interface FactOfTheDayProps {
   userId: string; // User ID for tracking fact completion
   facts: any; // Fact data passed as props
 }
+
+
+
+const RuleItem = ({ icon, title, description }: any) => (
+  <div className="flex items-start space-x-3"> {/* Flex container for the rule item */}
+    <div className="flex-shrink-0 mt-1"> {/* Prevents icon from shrinking */}
+      {icon} {/* Icon for the feature item */}
+    </div>
+    <div>
+      <h3 className="font-semibold">{title}</h3> {/* Title of the feature item */}
+      <p className="text-sm opacity-80">{description}</p> {/* Description of the feature item */}
+    </div>
+  </div>
+);
+
+// Function to render the modal overlay
+
+
 
 // Functional component definition
 const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
@@ -21,7 +45,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
   const [fact, setFact] = useState<any | null>(facts.fact);
   // State to track whether the fact has been completed
   const [isCompleted, setIsCompleted] = useState(facts.completed);
-
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   // Get the current date in 'en-CA' format
   const clientDate = new Date().toLocaleDateString("en-CA");
   console.log("fod",clientDate)
@@ -58,6 +82,65 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
     }
   };
 
+  const renderOverlay = () => {
+    return (
+      <Modal 
+        size='2xl' // Size of the modal
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange} // Handler for opening/closing the modal
+        scrollBehavior="inside" // Control modal scroll behavior
+        backdrop="blur" // Background blur effect
+        className="bg-background" // Background class for modal
+        classNames={{
+          wrapper: 'z-[110]' // Set z-index for modal wrapper
+        }}
+      >
+        <ModalContent>
+          {(onClose) => ( // Render the modal content
+            <>
+              <ModalHeader className="flex flex-col gap-1"> {/* Modal header */}
+                <h2 className="text-2xl mx-auto font-bold text-text">Daily Facts</h2> {/* Header text */}
+              </ModalHeader>
+              <ModalBody className="text-text"> {/* Modal body */}
+                <div className="space-y-8"> {/* Space between items */}
+                  {/* RuleItem components for displaying product features */}
+                  <RuleItem 
+                    icon={<AiFillStar className="text-red-500" size={24} />} // Star icon
+                    title="Engaging Daily Facts"
+                    description="Discover fun and interesting facts daily, each consumable in less than 30 seconds."
+                  />
+                  <RuleItem 
+                    icon={<GiCardRandom className="text-blue-500" size={24} />} // Scratch card icon
+                    title="Scratch Card Mechanism"
+                    description="Reveal the fact of the day through an interactive scratch card experience."
+                  />
+                 
+                  <RuleItem 
+                    icon={<RiFileListLine className="text-green-500" size={24} />} // History icon
+                    title="Access Past Facts"
+                    description="Review and explore past facts to stay informed and never miss out."
+                  />
+                  
+                 
+                </div>
+              </ModalBody>
+              <ModalFooter> {/* Modal footer */}
+                <Button 
+                  color="warning" 
+                  variant="shadow"
+                  onPress={onClose} // Closes the modal when pressed
+                  className="mt-4 w-full text-black font-lg font-semibold"
+                >
+                  Start Discovering!
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    );
+  };
+
   return (
     <div className="w-full mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
       {fact ? ( // Check if there is a fact to display
@@ -69,6 +152,10 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
               </h1>
               <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
             </div>
+            <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}> {/* Button to open modal */}
+        <AiFillQuestionCircle size={24} /> {/* Question icon */}
+      </Button>
+      {renderOverlay()} {/* Render the modal overlay */}
           </div>
           <div className="w-full relative max-w-md shadow-defined-top mx-auto h-[390px] rounded-lg">
             {isCompleted ? ( // Check if the fact is completed

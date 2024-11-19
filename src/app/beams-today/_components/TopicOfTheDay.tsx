@@ -9,6 +9,7 @@ import { Chip } from "@nextui-org/react";
 import { Microscope } from "iconsax-react";
 import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
 import RedirectMessage from "@/components/Redirection";
+import BeamsTodayModal from "./BeamsTodayModal";
 
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;  // The topic of the day or null if not available
@@ -28,12 +29,12 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, username }) => {
   }
   return (
     <div className="w-full py-1 mb-4 text-left relative max-w-6xl mx-auto">
-      
+      <BeamsTodayModal/>
       {/* Heading */}
-      <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
+      {/* <div className="pl-6 lg:pl-0 flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Topic of the Day</h1>
         <div className="border-b-2 border-brand mb-6 w-full" style={{ maxWidth: '10%' }}></div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       {topic ? (
