@@ -45,6 +45,7 @@ interface ConnectionGameFormData {
   hint: string;
   image: string;
   answerExplanation: string;
+  thumbnail: string;
   solutionPoints: string[];
   date: Date;
   published: boolean;
@@ -81,6 +82,7 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     hint: '',
     image: '',
     answerExplanation: '',
+    thumbnail: '',
     solutionPoints: ['', '', ''],
     date: setDateToUTCMidnight(new Date()), 
     published: false
@@ -99,6 +101,7 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     if (!formData.answer.trim()) errors.answer = 'Answer is required';
     if (!formData.hint.trim()) errors.hint = 'Hint is required';
     if (!formData.image.trim()) errors.image = 'Image URL is required';
+    if (!formData.thumbnail.trim()) errors.thumbnail = 'Thumbnail URL is required';
     if (!formData.answerExplanation.trim()) errors.answerExplanation = 'Answer explanation is required';
     if (!formData.solutionPoints.some(point => point.trim())) {
       errors.solutionPoints = 'At least one solution point is required';
@@ -115,6 +118,7 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       answer: '',
       hint: '',
       image: '',
+      thumbnail: '',
       answerExplanation: '',
       solutionPoints: ['', '', ''],
       date: setDateToUTCMidnight(new Date()),
@@ -138,6 +142,7 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       answer: game.answer,
       hint: game.hint,
       image: game.image,
+      thumbnail: game.thumbnail,
       answerExplanation: game.answerExplanation,
       solutionPoints: game.solutionPoints,
       date: setDateToUTCMidnight(new Date(game.date)),
@@ -298,6 +303,15 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
               errorMessage={formErrors.image}
             />
 
+            <Input
+              label="Thumbnail URL"
+              placeholder="Enter thumbnail URL"
+              value={formData.thumbnail}
+              onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
+              variant="bordered"
+              isInvalid={!!formErrors.thumbnail}
+              errorMessage={formErrors.thumbnail}
+            />
               <Input
               type="date"
               label="Schedule Date"
