@@ -18,6 +18,7 @@ const sourceMap: { [key: string]: string } = {
   REFERRAL: 'Referral',
   REFERRAL_BONUS: 'Welcome Bonus',
   NETWORK_POINTS: "Network Points",
+  CONNECTION_GAME : "Beams Connect"
 };
 
 // Mapping source codes to their representative colors
@@ -27,7 +28,8 @@ const colorMap: { [key: string]: string } = {
   ACHIEVEMENT: '#1E90FF',          
   REFERRAL: '#FF1493',            
   REFERRAL_BONUS: '#7344EB',       
-  NETWORK_POINTS: '#17cd92',       
+  NETWORK_POINTS: '#17cd92',   
+  CONNECTION_GAME : "#14b8a6"    
 };
 
 // Component to display the score in an animated manner

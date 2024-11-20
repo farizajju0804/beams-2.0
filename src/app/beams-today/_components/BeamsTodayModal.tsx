@@ -104,7 +104,7 @@ const BeamsTodayModal = () => {
   return (
     <div className='w-full lg:w-4/6 px-4 lg:px-4 max-w-4xl mx-auto flex justify-between my-3'> {/* Main container for the modal trigger */}
       <div className="flex flex-col items-start"> {/* Column for title and underline */}
-        <h1 className="text-lg md:text-2xl mx-auto text-text font-poppins font-semibold mb-[1px]">Beams Today</h1> {/* Title */}
+        <h1 className="text-lg md:text-2xl mx-auto text-text font-poppins font-semibold mb-[1px]">Topic Of The Day</h1> {/* Title */}
         <div className="border-b-2 border-brand mb-3 w-[60px]"></div> {/* Underline for title */}
       </div>
       <Button isIconOnly className='bg-transparent text-[#a2a2a2] cursor-pointer' onPress={onOpen}> {/* Button to open modal */}

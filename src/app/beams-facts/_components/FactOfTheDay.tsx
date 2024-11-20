@@ -7,12 +7,11 @@ import { markFactAsCompleted } from "@/actions/fod/fod"; // Importing the functi
 
 import DateComponent from "./DateComponent"; // Importing DateComponent for displaying the date
 
-import { AiFillHeart, AiFillQuestionCircle, AiFillStar, AiFillTrophy } from 'react-icons/ai'; // Importing icons for rules
+import {  AiFillQuestionCircle, AiFillStar } from 'react-icons/ai'; // Importing icons for rules
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
-import { FaPollH } from 'react-icons/fa'; // Importing poll icon
-import {  MdNoteAlt } from 'react-icons/md'; // Importing note-taking icon
+
 import { RiFileListLine } from 'react-icons/ri'; // Importing history icon
-import { GiCardDraw, GiCardRandom } from 'react-icons/gi'; // Importing scratch card icon
+import { GiCardRandom } from 'react-icons/gi'; // Importing scratch card icon
 // Defining the props type for the FactOfTheDay component
 interface FactOfTheDayProps {
   userId: string; // User ID for tracking fact completion
@@ -142,13 +141,11 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
   };
 
   return (
-    <div className="w-full mb-2 text-left relative max-w-md md:rounded-3xl mx-auto">
-      {fact ? ( // Check if there is a fact to display
-        <>
+    <div className="w-full mb-2 text-left relative max-w-sm md:rounded-3xl mx-auto">
           <div className="px-6 lg:px-0 flex justify-between items-start lg:items-center">
             <div className="w-full flex-1">
               <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">
-                {fact.title} {/* Display the title of the fact */}
+                Fact Of The Day {/* Display the title of the fact */}
               </h1>
               <div className="border-b-2 border-brand mb-4 w-full" style={{ maxWidth: '10%' }}></div>
             </div>
@@ -157,9 +154,11 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
       </Button>
       {renderOverlay()} {/* Render the modal overlay */}
           </div>
-          <div className="w-full relative max-w-md shadow-defined-top mx-auto h-[390px] rounded-lg">
+          {fact ? ( // Check if there is a fact to display
+        <>
+          <div className="w-full relative max-w-sm shadow-defined-top mx-auto h-[390px] rounded-lg">
             {isCompleted ? ( // Check if the fact is completed
-              <div className="max-w-md w-full h-full relative">
+              <div className="max-w-sm w-full h-full relative">
                 <Image
                   src={fact.finalImage} // Show the final image of the fact
                   alt="fact" // Alternative text for the image
@@ -168,9 +167,12 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, facts }) => {
                   style={{ objectFit: "cover" }} // Cover the area of the container
                   className="z-2 w-full h-full aspect-auto lg:rounded-lg" // Additional styling
                 />
+                <h1 className="absolute top-2 left-3 z-20 text-lg text-black font-poppins font-semibold mb-[1px]">
+                {fact.title}
+              </h1>
         
               {fact?.date && ( 
-                  <div className="absolute top-2  right-2 z-10">
+                  <div className="absolute top-2  right-3 z-10">
                     <DateComponent date={fact.date.toISOString().split('T')[0]} /> 
                   </div>
                 )}

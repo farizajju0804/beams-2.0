@@ -54,7 +54,7 @@ export default function GameOfTheDay({
           </div>
         </div>
         <div className="flex-grow flex items-center justify-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-center mb-4">
             {game.title}
           </h2>
         </div>

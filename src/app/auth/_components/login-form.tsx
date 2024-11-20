@@ -6,7 +6,7 @@ import * as z from "zod"; // Import Zod for schema validation
 import { LoginSchema } from "@/schema/index"; // Import the Login schema for validation
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"; // Import custom form components
 import { Button, Input } from "@nextui-org/react"; // Import Input and Button components from NextUI
-import { Eye, EyeSlash, Sms } from "iconsax-react"; // Icons for UI
+import { Eye, EyeSlash,  } from "iconsax-react"; // Icons for UI
 import { login } from "@/actions/auth/login"; // Action to handle login logic
 import { useRouter, useSearchParams } from "next/navigation"; // Hooks for routing and query parameters
 import FormError from "@/components/form-error"; // Component to display form errors

@@ -35,7 +35,7 @@ export default async function Layout({
   const user = await currentUser()
   return (
     <SessionProviders>
-      <div className="relative w-full h-screen overflow-hidden flex">
+      <div className="relative w-full h-screen flex">
         {user?.firstName && 
         <div className="h-full">
           <Sidebar />
@@ -44,9 +44,9 @@ export default async function Layout({
 }
         <div className="flex flex-col flex-grow overflow-auto">
         {user ?  <TopNav/> : <PublicNav/>}
-          <div className="flex-grow">
-            {children} 
-          </div>
+        <main className="flex-grow">
+            {children}
+          </main>
           <PublicFooter />
         </div>
       </div>

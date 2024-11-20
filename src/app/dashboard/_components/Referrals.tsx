@@ -34,17 +34,26 @@ export default function ReferralSection({ referrals }: Referral) {
                 >
                   {/* User component to display the referral's name and avatar */}
                   <User
+                  classNames={{
+                    name : "text-xs md:text-sm",
+                    
+                  }}
                     name={`${referral.firstName} ${referral.lastName}`} // Full name of the referral
                     avatarProps={{
                       src: getAvatarSrc(referral), // Avatar source
                       showFallback: true, // Show fallback if no image is available
                       name: "", // Placeholder for name
                       alt: `${referral.firstName} ${referral.lastName}`, // Alt text for accessibility
+                      classNames : {
+                        img : "flex-1 flex-grow"
+                          
+                        
+                      }
                     }}
                   />
                   {/* Display Beams earned from the referral */}
-                  <div className="flex items-center space-x-2">
-                    <span className="text-brand font-semibold">+{REFERRAL_POINTS}</span> {/* Amount of Beams earned */}
+                  <div className="flex items-center">
+                    <span className="text-brand text-sm mr-1 font-semibold">{REFERRAL_POINTS}</span> {/* Amount of Beams earned */}
                     <span className="text-sm text-grey-2">Beams</span> {/* Label for Beams */}
                   </div>
                 </div>

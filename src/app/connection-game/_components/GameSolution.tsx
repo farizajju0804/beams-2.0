@@ -87,7 +87,7 @@ export const GameSolution = ({
           className="flex items-center mx-auto mb-2 font-semibold text-grey-2"
         >
           <ArrowLeft2 className="w-4 h-4 mr-1" />
-          Back
+          Explore Other Connects
         </Button>
         </CardFooter>
       </Card>

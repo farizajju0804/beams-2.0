@@ -142,7 +142,7 @@ export default function RewardsModal({
                   transition={{ delay: 0.2 }}
                   className="text-3xl font-bold"
                 >
-                  Level Up!
+                  Congrats, You Leveled Up!
                 </motion.div>
               </ModalHeader>
               <ModalBody>
@@ -173,7 +173,7 @@ export default function RewardsModal({
                     style={{ color: currentLevel.bgColor }} 
                     className="text-6xl font-bold mt-6"
                   >
-                    +{count}
+                    {count}
                   </motion.div>
 
                   <motion.div

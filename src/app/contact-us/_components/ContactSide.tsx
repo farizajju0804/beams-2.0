@@ -27,7 +27,7 @@ const ContactSide: React.FC = () => {
           height={340} 
           
         />
-      </div>
+      </div>  
     </div>
   )
 }

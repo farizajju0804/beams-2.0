@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import SearchBar from './SearchBar';
+
 
 // Header component for FAQ page with animated heading and optional image
 const FAQHeader: React.FC = () => {

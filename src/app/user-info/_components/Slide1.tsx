@@ -99,7 +99,7 @@ const Slide1: React.FC<Slide1Props> = ({ onNext, formData }) => {
         width={150}
         priority
         height={200}
-        className="mx-auto mb-4"
+        className="mx-auto mb-4"  
       />
       <div className="w-full max-w-md">
         <Form {...form}>

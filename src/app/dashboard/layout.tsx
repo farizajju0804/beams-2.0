@@ -51,16 +51,16 @@ export default function Layout({
 }) {
   return (
     <SessionProviders>
-      <div className="relative w-full h-screen overflow-hidden flex">
+      <div className="relative w-full h-screen flex">
         <div className="h-full">
           <Sidebar />
           <BottomNav /> 
         </div>
         <div className="flex flex-col flex-grow overflow-auto">
           <TopNav />
-          <div className="flex-grow">
+          <main className="flex-grow">
             {children} 
-          </div>
+          </main>
           <PublicFooter />
         </div>
       </div>

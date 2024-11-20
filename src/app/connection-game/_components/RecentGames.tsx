@@ -117,7 +117,7 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
     <div className="w-full max-w-4xl mx-auto px-4 py-4 md:py-8">
       <div className="pl-2 lg:pl-0 w-full flex flex-col items-start lg:items-center">
         <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">
-          Recent Games
+          Trending Connects
         </h1>
         <div
           className="border-b-2 mb-6 border-brand w-full"
@@ -193,19 +193,13 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
         </div>
       )}
 
-      <div className="px-2 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="px-2 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
         {games.map(game => (
          <div 
          key={game.id}
          className="w-full relative max-w-sm bg-background shadow-defined rounded-2xl overflow-hidden transition-all duration-300 ease-in-out transform "
        >
-        <Chip color={game.isCompleted ? "success" : "default"} 
-             size="sm" 
-            className="absolute z-20 top-2 right-2"
-            startContent={game.isCompleted ? <TickCircle size={16} 
-            variant="Bold" /> : <CloseCircle size={16} variant="Bold" /> } > 
-            {game.isCompleted ? "Beamed" : "Unbeamed"} 
-            </Chip>
+    
          <div className="relative h-48 overflow-hidden">
            <Image
              src={game.thumbnail}

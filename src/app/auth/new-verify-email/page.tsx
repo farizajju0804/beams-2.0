@@ -5,7 +5,6 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { verifyCode } from "@/actions/auth/verifyCode"
-
 import FormError from "@/components/form-error"
 import CardWrapper from "@/app/auth/_components/card-wrapper"
 import { useSearchParams } from "next/navigation"

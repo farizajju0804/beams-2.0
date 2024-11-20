@@ -9,17 +9,17 @@ import { Metadata } from 'next';
 
 
 export const metadata: Metadata = {
-  title: 'Beams Today: 2-Minute Tech Insights',
-  description: 'Learn about futuristic tech in just 2 minutes. Access audio, text, and video formats for quick, insightful learning.',
+  title: 'Beams Connect: 1-Minute Tech Puzzle Game',
+  description: 'Engage in a 1-minute image-based connection game. Solve puzzles and uncover answers related to technology and knowledge.',
   keywords: [
-    'tech learning',
-    '2-minute insights',
-    'futuristic technology',
-    'Beams Today',
-    'quick tech',
-    'audio learning',
-    'video learning',
-    'text learning'
+    'tech puzzle game',
+    '1-minute challenge',
+    'image-based game',
+    'Beams Connection',
+    'technology trivia',
+    'knowledge game',
+    'quick puzzles',
+    'interactive learning'
   ],
   authors: [
     {
@@ -28,10 +28,10 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    title: 'Beams Today: 2-Minute Futuristic Tech Insights',
-    description: 'Quick learning in audio, text, and video formats about the latest in futuristic technology.',
+    title: 'Beams Connection: 1-Minute Tech Puzzle Game',
+    description: 'Solve quick, engaging image-based puzzles in 1 minute and expand your knowledge of technology.',
     type: 'website',
-    url: 'https://www.beams.world/beams-today',
+    url: 'https://www.beams.world/connection-game',
     siteName: 'Beams',
   },
   robots: {
@@ -45,6 +45,7 @@ export const metadata: Metadata = {
     },
   },
 };
+
 
 
 export default function Layout({

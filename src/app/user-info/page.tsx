@@ -114,7 +114,7 @@ const Page = () => {
         <div className="fixed inset-0 flex z-[100] items-center justify-center  bg-black bg-opacity-50">
           <div className="bg-white rounded-3xl p-6 max-w-md mx-auto shadow-md text-center relative">
             <Image
-              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1725629881/authentication/welcome_jdqwjj.webp"
+              src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1732029038/authentication/idea-welcome-673caa5248c73_zormhf.webp"
               alt="Welcome image"
               width={150}
               priority
