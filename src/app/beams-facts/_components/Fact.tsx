@@ -40,8 +40,11 @@ export function FactDisplay({
         <div className="flex justify-between items-center mb-2">
             {category && 
           <Chip
-            className="text-xs font-semibold py-1"
+            className=" py-1"
             style={{ backgroundColor: category.color, color: '#fff' }}
+            classNames={{
+                content : "text-xs font-semibold"
+            }}
           >
             {category.name}
           </Chip>

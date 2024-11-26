@@ -10,6 +10,7 @@ import Image from "next/image";
 import { motion } from 'framer-motion'
 import { FactCard } from "./FactCard";
 import { FactModal } from "./FactModal";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface TrendingFactsProps {
   initialData: {
@@ -30,7 +31,7 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
   const [totalPages, setTotalPages] = useState(initialData.totalPages);
   const [filterOption, setFilterOption] = useState("all");
   const [selectedFact, setSelectedFact] = useState<any>(null);
-
+  const user:any = useCurrentUser()
   const fetchData = async (page: number, sort: string, filter: string) => {
     try {
       const result = await getTrendingFacts({
@@ -184,6 +185,7 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
             isOpen={!!selectedFact}
             onClose={() => setSelectedFact(null)}
             fact={selectedFact}
+            userId={user?.id}
           />
         )}
 

@@ -29,22 +29,25 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
           alt={title}
           width={1000}
           height={1000}
-          className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+          className="object-cover w-full h-44 "
           
         />
 
       </div>
       <div className="flex-1 p-4 flex flex-col justify-center gap-2">
         <div>
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-semibold text-lg mb-2">
             {title}
           </h3>
         </div>
-        <div className="flex flex-col md:flex-row items-start gap-4 md:items-center justify-between text-xs text-muted-foreground">
+        <div className="flex flex-col items-start gap-4  justify-between text-xs text-muted-foreground">
           <div className="flex items-center">
             <FormattedDate date={date.toISOString().split('T')[0]}/>
           </div>
           <Chip
+           classNames={{
+            content : "text-xs font-semibold"
+        }}
             className="text-xs text-white font-semibold py-1 px-2  "
             style={{ backgroundColor: `${category.color}` }}
           >
@@ -65,7 +68,7 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
         </div>
         </div>
       </div>
-      <div className="w-1 bg-gradient-to-b from-primary/50 to-primary transition-all duration-300 transform origin-bottom scale-y-0 group-hover:scale-y-100" />
+      {/* <div className="w-1 bg-gradient-to-b from-primary/50 to-primary transition-all duration-300 transform origin-bottom scale-y-0 group-hover:scale-y-100" /> */}
     </Card>
   )
 }

@@ -79,6 +79,53 @@ export const markFactAsCompleted = async (userId: string, factId: string, client
   }
 };
 
+
+
+
+export const markFactAsCompleted2 = async (userId: string, factId: string) => {
+  try {
+    // Check if the user has already completed the fact
+    const existingCompletion = await db.factCompletion.findUnique({
+      where: {
+        factId_userId: {
+          factId,
+          userId,
+        },
+      },
+    });
+
+    if (!existingCompletion) {
+      // Create new completion record if none exists
+      await db.factCompletion.create({
+        data: {
+          factId,
+          userId,
+          completed: true,
+          completedAt: new Date(),
+        },
+      });
+    } else {
+      // Update existing completion record
+      await db.factCompletion.update({
+        where: {
+          factId_userId: {
+            factId,
+            userId,
+          },
+        },
+        data: {
+          completed: true,
+          completedAt: new Date(),
+        },
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`Error marking fact as completed:`, error);
+    return false;
+  }
+};
 /**
  * Updates the achievement progress for a user based on completion.
  * 
