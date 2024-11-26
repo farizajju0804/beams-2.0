@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 import RecentActivity from './RecentActivity';
-import { Cup, Icon, InfoCircle, MessageQuestion, Share, TickCircle } from 'iconsax-react';
+import {  Icon, TickCircle } from 'iconsax-react';
 import { PointsSource } from '@prisma/client';
 
 

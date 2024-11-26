@@ -1,6 +1,6 @@
 'use client'
 import {  Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
-import { AiFillQuestionCircle, AiFillClockCircle,  AiFillGift, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
+import {  AiFillClockCircle, AiFillCrown, AiFillThunderbolt, AiFillFire } from "react-icons/ai";
 import { PiNumberCircleThreeDuotone } from 'react-icons/pi';
 
 const RuleItem = ({ icon, title, description }:any) => (

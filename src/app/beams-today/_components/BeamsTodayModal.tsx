@@ -3,7 +3,7 @@ import React from 'react'; // Importing React
 import {  AiFillHeart, AiFillQuestionCircle, AiFillStar, AiFillTrophy } from 'react-icons/ai'; // Importing icons for rules
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
 import { FaPollH } from 'react-icons/fa'; // Importing poll icon
-import { MdFormatListBulleted, MdNoteAlt } from 'react-icons/md'; // Importing note-taking icon
+import {  MdNoteAlt } from 'react-icons/md'; // Importing note-taking icon
 import { RiFileListLine } from 'react-icons/ri'; // Importing history icon
 import { BsSoundwave,} from 'react-icons/bs'; // Importing audio and video icons
 

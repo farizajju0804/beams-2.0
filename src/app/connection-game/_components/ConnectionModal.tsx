@@ -1,6 +1,6 @@
 'use client'; // This indicates that the component is a client component in Next.js
 import React from 'react'; // Importing React
-import { AiFillClockCircle, AiOutlineBulb, AiOutlineTrophy, AiOutlineSync, AiFillQuestionCircle, AiFillTrophy, AiFillBulb } from 'react-icons/ai'; // Importing icons for rules
+import { AiFillClockCircle, AiOutlineSync, AiFillQuestionCircle, AiFillTrophy, AiFillBulb } from 'react-icons/ai'; // Importing icons for rules
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'; // Importing NextUI components
 import { FaGamepad } from 'react-icons/fa'; // Importing the gamepad icon
 import { BsImageFill } from 'react-icons/bs';

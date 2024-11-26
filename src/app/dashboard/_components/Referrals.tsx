@@ -45,8 +45,7 @@ export default function ReferralSection({ referrals }: Referral) {
                       name: "", // Placeholder for name
                       alt: `${referral.firstName} ${referral.lastName}`, // Alt text for accessibility
                       classNames : {
-                        img : "flex-1 flex-grow"
-                          
+                        img : "flex-1 flex-grow"      
                         
                       }
                     }}

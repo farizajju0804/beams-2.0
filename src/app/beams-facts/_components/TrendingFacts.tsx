@@ -2,26 +2,18 @@
 
 import React, { useState } from "react";
 import CustomPagination from "@/components/Pagination";
-import AnimatedImageCard from "./AnimatedImageCard";
 import { getTrendingFacts } from "@/actions/fod/fod";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { Popover, PopoverContent, PopoverTrigger, Radio, RadioGroup } from "@nextui-org/react";
 import { InfoCircle } from "iconsax-react";
 import Image from "next/image";
+import { motion } from 'framer-motion'
+import { FactCard } from "./FactCard";
+import { FactModal } from "./FactModal";
 
-// Define the structure of a Fact object
-interface Fact {
-  id: string;
-  title: string;
-  finalImage: string;
-  date: string;
-  isCompleted: boolean;
-}
-
-// Define the props for the TrendingFacts component
 interface TrendingFactsProps {
   initialData: {
-    facts: Fact[];
+    facts: any;
     totalPages: number;
     currentPage: number;
   };
@@ -29,18 +21,16 @@ interface TrendingFactsProps {
   clientDate: string;
 }
 
-// Define the sort options available
 type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
 
-// TrendingFacts component definition
 export function TrendingFacts({ initialData, userId, clientDate }: TrendingFactsProps) {
-  const [facts, setFacts] = useState<Fact[]>(initialData.facts); // State for the list of facts
-  const [sortBy, setSortBy] = useState("dateDesc"); // State for sorting option
-  const [currentPage, setCurrentPage] = useState(initialData.currentPage); // State for the current page
-  const [totalPages, setTotalPages] = useState(initialData.totalPages); // State for total pages
-  const [filterOption, setFilterOption] = useState("all"); // State for filter option
+  const [facts, setFacts] = useState<any>(initialData.facts);
+  const [sortBy, setSortBy] = useState("dateDesc");
+  const [currentPage, setCurrentPage] = useState(initialData.currentPage);
+  const [totalPages, setTotalPages] = useState(initialData.totalPages);
+  const [filterOption, setFilterOption] = useState("all");
+  const [selectedFact, setSelectedFact] = useState<any>(null);
 
-  // Function to fetch data based on page, sort, and filter
   const fetchData = async (page: number, sort: string, filter: string) => {
     try {
       const result = await getTrendingFacts({
@@ -51,32 +41,28 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
         userId
       });
 
-      setFacts(result.facts); // Update the facts state with fetched data
-      setTotalPages(result.totalPages); // Update the total pages state
-      setCurrentPage(result.currentPage); // Update the current page state
+      setFacts(result.facts);
+      setTotalPages(result.totalPages);
+      setCurrentPage(result.currentPage);
     } catch (error) {
-      console.error('Error fetching data:', error); // Log any errors encountered
+      console.error('Error fetching data:', error);
     }
   };
 
-  // Handle change in sorting option
   const handleSortChange = async (newSortBy: string) => {
-    setSortBy(newSortBy); // Update the sorting state
-    await fetchData(1, newSortBy, filterOption); // Fetch data for the first page with new sort option
+    setSortBy(newSortBy);
+    await fetchData(1, newSortBy, filterOption);
   };
 
-  // Handle change in filter option
   const handleFilterChange = async (newFilter: string) => {
-    setFilterOption(newFilter); // Update the filter state
-    await fetchData(1, sortBy, newFilter); // Fetch data for the first page with new filter option
+    setFilterOption(newFilter);
+    await fetchData(1, sortBy, newFilter);
   };
 
-  // Handle page change
   const handlePageChange = async (page: number) => {
-    await fetchData(page, sortBy, filterOption); // Fetch data for the selected page
+    await fetchData(page, sortBy, filterOption);
   };
 
-  // InfoIcon component for displaying popover information
   const InfoIcon = ({ content }: { content: string }) => (
     <Popover placement="top">
       <PopoverTrigger>
@@ -172,15 +158,34 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
           </div>
         )}
 
-        <ul className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-12">
-          {facts.map((fact) => (
-            <AnimatedImageCard
+        <div className="max-w-5xl px-6 mx-auto w-full grid grid-cols-1 md:grid-cols-2 items-start gap-12">
+          {facts.map((fact: any, index: number) => (
+            <motion.div
               key={fact.id}
-              imageUrl={fact.finalImage}
-              name={fact.title}
-            />
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <FactCard
+                thumbnail={fact.thumbnail}
+                category={fact.category}
+                id={fact.id}
+                title={fact.title}
+                date={fact.date}
+                hashtags={fact.hashtags}
+                onClick={() => setSelectedFact(fact)}
+              />
+            </motion.div>
           ))}
-        </ul>
+        </div>
+
+        {selectedFact && (
+          <FactModal
+            isOpen={!!selectedFact}
+            onClose={() => setSelectedFact(null)}
+            fact={selectedFact}
+          />
+        )}
 
         <div className="mt-6 md:mt-8">
           {totalPages > 1 && (

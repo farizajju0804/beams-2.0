@@ -2,8 +2,7 @@
 import React, { useState } from "react"
 import { Button } from "@nextui-org/button"
 import {  RadioGroup, Radio, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react"
-import { Chip } from "@nextui-org/chip"
-import { Game, Eye, TickCircle, CloseCircle, InfoCircle } from "iconsax-react"
+import { Game, Eye, InfoCircle } from "iconsax-react"
 import { useRouter } from 'next/navigation'
 import CustomPagination from "@/components/Pagination"
 import Image from "next/image"

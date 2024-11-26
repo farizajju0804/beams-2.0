@@ -1,9 +1,9 @@
 import React from 'react'; // Importing React library
-import FactOfTheDay from './_components/FactOfTheDay'; // Importing the FactOfTheDay component
 import { currentUser } from '@/libs/auth'; // Importing the currentUser function to retrieve user data
 import { TrendingFacts } from './_components/TrendingFacts'; // Importing the TrendingFacts component
-import { getCompletedFacts, getFactAndCompletionStatus, getTrendingFacts } from '@/actions/fod/fod'; // Importing functions for fetching facts
+import {  getFactAndCompletionStatus, getTrendingFacts } from '@/actions/fod/fod'; // Importing functions for fetching facts
 import { cookies } from 'next/headers'; // Importing cookies utility from Next.js headers
+import FactOfTheDay from './_components/FactOfTheDay';
 
 // Asynchronous page component to fetch and display facts
 const page = async () => {
@@ -21,7 +21,7 @@ const page = async () => {
     const clientDate = now.toLocaleDateString('en-CA', { timeZone });
 
     // Fetch the fact of the day and completion status for the current user
-    const fact = await getFactAndCompletionStatus(user.id, clientDate);
+    const factData = await getFactAndCompletionStatus(user.id, clientDate);
 
     // Extract the user ID for further use
     const userId = user.id;
@@ -35,15 +35,15 @@ const page = async () => {
         userId
     });
 
+
     // Render the component
     return (
         <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-2 md:gap-6 items-center justify-center w-full bg-background">
             <h1 className="font-poppins my-3 md:my-0 text-2xl md:text-4xl uppercase font-semibold bg-purple text-yellow p-2">
                 Beams Facts
             </h1>
-            {/* Display the Fact of the Day component */}
-            <FactOfTheDay userId={user?.id} facts={fact} />
-            {/* Display the Trending Facts component with initial data */}
+            <FactOfTheDay fact={factData} userId={userId}/>
+          
             <TrendingFacts initialData={initialData} userId={userId} clientDate={clientDate} />
         </div>
     );

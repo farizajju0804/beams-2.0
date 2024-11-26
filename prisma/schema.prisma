@@ -248,12 +248,26 @@ model ContactFormResponse {
 }
 
 model FactOfTheday {
-  id           String           @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  date         DateTime         @unique // Date of the Beams Today content
-  title        String
-  finalImage   String // Title of the Beams Today content
-  scratchImage String? // Title of the Beams Today content
-  completions  FactCompletion[]
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  date          DateTime         @unique // Date of the Beams Today content
+  title         String
+  finalImage    String // Title of the Beams Today content
+  thumbnail     String
+  published     Boolean          @default(false)
+  referenceLink1 String? // First optional reference link
+  referenceLink2 String? // Second optional reference link
+  hashtags      String[]        // Array of hashtags
+  categoryId    String          @db.ObjectId // Foreign key to FactCategory
+  category      FactCategory    @relation(fields: [categoryId], references: [id])
+  completions   FactCompletion[]
+}
+
+
+model FactCategory {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String         @unique // Name of the category
+  color       String
+  facts       FactOfTheday[] // Relation to FactOfTheday
 }
 
 model FactCompletion {

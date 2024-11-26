@@ -6,6 +6,7 @@ import { date } from "zod"; // Importing date validation from the Zod library.
 import { generateNotification } from "../notifications/notifications"; // Importing the notification generation function.
 import { Prisma } from "@prisma/client"; // Importing Prisma types.
 import { streakBadge } from "@/constants/victoryConstants"; // Importing constant for streak achievements.
+import { Category } from "iconsax-react";
 
 /**
  * Marks the fact as completed for a given user.
@@ -242,8 +243,10 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
     const factWithCompletion = await db.factOfTheday.findFirst({
       where: {
         date: new Date(clientDate),
+        published : true
       },
       include: {
+        category : true,
         completions: {
           where: { userId },
         },
@@ -258,16 +261,21 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
       ? factWithCompletion.completions[0].completed
       : false;
 
-    return {
-      fact: {
+      return {
         id: factWithCompletion.id,
-        finalImage: factWithCompletion.finalImage,
-        scratchImage: factWithCompletion.scratchImage,
         date: factWithCompletion.date,
-        title: factWithCompletion.title
-      },
-      completed: isCompleted,
-    };
+        title: factWithCompletion.title,
+        finalImage: factWithCompletion.finalImage,
+        thumbnail: factWithCompletion.thumbnail,
+        referenceLink1: factWithCompletion.referenceLink1 || undefined,
+        referenceLink2: factWithCompletion.referenceLink2 || undefined,
+        hashtags: factWithCompletion.hashtags,
+        category: {
+          name: factWithCompletion.category.name,
+          color: factWithCompletion.category.color
+        },
+        completed: isCompleted
+      };
   } catch (error) {
     console.error(`[getFactAndCompletionStatus] Error fetching fact and completion status for userId: ${userId}, clientDate: ${clientDate}:`, error);
     throw new Error(`Error fetching fact and completion status: ${(error as Error).message}`);
@@ -318,6 +326,7 @@ export const getTrendingFacts = async ({
       date: {
         lt: today,
       },
+      published : true
     };
 
     if (filterOption !== "all" && userId) {
@@ -346,11 +355,8 @@ export const getTrendingFacts = async ({
       orderBy,
       skip,
       take: limit,
-      select: {
-        id: true,
-        finalImage: true,
-        title: true,
-        date: true,
+      include : {
+        category : true,
         completions: {
           where: {
             userId: userId,
@@ -360,7 +366,7 @@ export const getTrendingFacts = async ({
             id: true
           }
         }
-      },
+      }
     });
 
     const transformedFacts = trendingFacts.map(fact => ({
@@ -368,6 +374,14 @@ export const getTrendingFacts = async ({
       finalImage: fact.finalImage,
       title: fact.title,
       date: fact.date,
+      thumbnail : fact.thumbnail,
+      hashtags : fact.hashtags,
+      referenceLink1 :  fact.referenceLink1,
+      referenceLink2 : fact.referenceLink2,
+      category : {
+        name : fact.category.name,
+        color : fact.category.color
+      },
       isCompleted: fact.completions.length > 0
     }));
 
