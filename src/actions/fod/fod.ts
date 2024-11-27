@@ -471,3 +471,223 @@ export const getCompletedFacts = async (userId: string) => {
     throw new Error("Failed to fetch completed facts");
   }
 };
+
+
+
+interface GetFactsByHashtagParams {
+  hashtag: string;
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
+}
+
+interface PaginatedResponse {
+  facts: any[];
+  totalPages: number;
+  currentPage: number;
+}
+
+export const getFactsByHashtag = async ({
+  hashtag,
+  userId,
+  page = 1,
+  limit = 9,
+  sortBy = "dateDesc"
+}: GetFactsByHashtagParams): Promise<PaginatedResponse> => {
+  try {
+    // Remove '#' from hashtag if present
+    const cleanHashtag = hashtag.startsWith('#') ? hashtag.substring(1) : hashtag;
+    
+    const skip = (page - 1) * limit;
+
+    // Define the sorting order based on sortBy parameter
+    const orderBy: Prisma.FactOfThedayOrderByWithRelationInput = (() => {
+      switch (sortBy) {
+        case "nameAsc":
+          return { title: Prisma.SortOrder.asc };
+        case "nameDesc":
+          return { title: Prisma.SortOrder.desc };
+        case "dateAsc":
+          return { date: Prisma.SortOrder.asc };
+        case "dateDesc":
+        default:
+          return { date: Prisma.SortOrder.desc };
+      }
+    })();
+
+    // Define the where clause for the query
+    const whereClause: Prisma.FactOfThedayWhereInput = {
+      hashtags: {
+        has: cleanHashtag
+      },
+      published: true
+    };
+
+    // Get total count for pagination
+    const totalCount = await db.factOfTheday.count({
+      where: whereClause,
+    });
+
+    // Fetch facts with category and completion status
+    const facts = await db.factOfTheday.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+      include: {
+        category: true,
+        completions: userId ? {
+          where: {
+            userId: userId,
+            completed: true
+          },
+          select: {
+            id: true
+          }
+        } : false
+      }
+    });
+
+    // Transform the facts to match your existing pattern
+    const transformedFacts = facts.map(fact => ({
+      id: fact.id,
+      finalImage: fact.finalImage,
+      title: fact.title,
+      date: fact.date,
+      thumbnail: fact.thumbnail,
+      hashtags: fact.hashtags,
+      referenceLink1: fact.referenceLink1,
+      referenceLink2: fact.referenceLink2,
+      category: {
+        name: fact.category.name,
+        color: fact.category.color
+      },
+      isCompleted: userId ? fact.completions.length > 0 : false
+    }));
+
+    return {
+      facts: transformedFacts,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    };
+
+  } catch (error) {
+    console.error(`Error fetching facts by hashtag: ${hashtag}`, error);
+    throw new Error(`Failed to fetch facts by hashtag: ${(error as Error).message}`);
+  }
+};
+
+
+
+interface GetFactsByCategoryParams {
+  categoryName: string;
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
+}
+
+interface GetFactsByCategoryParams {
+  categoryName: string;
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
+}
+
+export const getFactsByCategory = async ({
+  categoryName,
+  userId,
+  page = 1,
+  limit = 9,
+  sortBy = "dateDesc"
+}: GetFactsByCategoryParams): Promise<PaginatedResponse> => {
+  try {
+    const skip = (page - 1) * limit;
+
+    // Find the category first
+    const category = await db.factCategory.findFirst({
+      where: {
+        name: categoryName
+      }
+    });
+
+    if (!category) {
+      throw new Error(`Category '${categoryName}' not found`);
+    }
+
+    // Define the sorting order based on sortBy parameter
+    const orderBy: Prisma.FactOfThedayOrderByWithRelationInput = (() => {
+      switch (sortBy) {
+        case "nameAsc":
+          return { title: Prisma.SortOrder.asc };
+        case "nameDesc":
+          return { title: Prisma.SortOrder.desc };
+        case "dateAsc":
+          return { date: Prisma.SortOrder.asc };
+        case "dateDesc":
+        default:
+          return { date: Prisma.SortOrder.desc };
+      }
+    })();
+
+    // Define the where clause for the query
+    const whereClause: Prisma.FactOfThedayWhereInput = {
+      categoryId: category.id,
+      published: true
+    };
+
+    // Get total count for pagination
+    const totalCount = await db.factOfTheday.count({
+      where: whereClause,
+    });
+
+    // Fetch facts with category and completion status
+    const facts = await db.factOfTheday.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: limit,
+      include: {
+        category: true,
+        completions: userId ? {
+          where: {
+            userId: userId,
+            completed: true
+          },
+          select: {
+            id: true
+          }
+        } : false
+      }
+    });
+
+    // Transform the facts to match your existing pattern
+    const transformedFacts = facts.map(fact => ({
+      id: fact.id,
+      finalImage: fact.finalImage,
+      title: fact.title,
+      date: fact.date,
+      thumbnail: fact.thumbnail,
+      hashtags: fact.hashtags,
+      referenceLink1: fact.referenceLink1,
+      referenceLink2: fact.referenceLink2,
+      category: {
+        name: fact.category.name,
+        color: fact.category.color
+      },
+      isCompleted: userId ? fact.completions.length > 0 : false
+    }));
+
+    return {
+      facts: transformedFacts,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    };
+
+  } catch (error) {
+    console.error(`Error fetching facts by category name: ${categoryName}`, error);
+    throw new Error(`Failed to fetch facts by category: ${(error as Error).message}`);
+  }
+};

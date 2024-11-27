@@ -1,8 +1,8 @@
 import FormattedDate from "@/app/beams-today/_components/FormattedDate"
 import { Card } from "@/components/ui/card"
 import { Chip } from "@nextui-org/react"
-import { Hashtag } from "iconsax-react"
 import Image from "next/image"
+import Link from "next/link"
 
 interface FactCardProps {
   id: string
@@ -29,8 +29,7 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
           alt={title}
           width={1000}
           height={1000}
-          className="object-cover w-full h-44 "
-          
+          className="object-cover w-full h-44"
         />
 
       </div>
@@ -48,6 +47,8 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
            classNames={{
             content : "text-xs font-semibold"
         }}
+        as={Link}
+        href={`/beams-facts/category/${category.name}`}
             className="text-xs text-white font-semibold py-1 px-2  "
             style={{ backgroundColor: `${category.color}` }}
           >
@@ -56,19 +57,18 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
           <div className="lg:flex w-full hidden gap-3">
           {hashtags.map((tag, index) => (
             <Chip
-                variant="bordered"
+                variant="flat"
                 size="sm"
                 key={index}
-                startContent={<Hashtag className="w-3 h-3" />}
+                as={Link}
+                href={`/beams-facts/tag/${tag}`}
             >
-                {tag}
+                #{tag}
             </Chip>
-            
         ))}
         </div>
         </div>
       </div>
-      {/* <div className="w-1 bg-gradient-to-b from-primary/50 to-primary transition-all duration-300 transform origin-bottom scale-y-0 group-hover:scale-y-100" /> */}
     </Card>
   )
 }

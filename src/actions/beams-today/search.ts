@@ -131,7 +131,6 @@ function transformMongoDocument(doc: MongoDBDocument): TransformedBeamsToday {
     }
   };
 }
-
 export async function searchTopics({
   query,
   page,
@@ -141,122 +140,115 @@ export async function searchTopics({
   beamedStatus,
   userId
 }: SearchParams): Promise<SearchResult> {
-  const itemsPerPage = 9; // Constant page size
+  const itemsPerPage = 9;
 
   try {
-    if (query) {
-      const pipeline = [
-        {
-          $search: {
-            index: "searchIndex",
-            text: {
-              query: query,
-              path: ["title","shortDesc"],
-              fuzzy: {
-          maxEdits: 2,
-          prefixLength: 0,
-          maxExpansions: 50
-        }
-            }
-          }
-        },
-        {
-          $match: {
-            published: true,
-            ...(selectedDate && {
-              date: {
-                $gte: new Date(`${selectedDate}T00:00:00.000Z`),
-                $lt: new Date(`${selectedDate}T23:59:59.999Z`)
-              }
-            }),
-            ...(categories?.length && {
-              categoryId: {
-                $in: categories.map(id => ({ $oid: id }))
-              }
-            })
-          }
-        },
-        {
-          $lookup: {
-            from: "BeamsTodayCategory",
-            localField: "categoryId",
-            foreignField: "_id",
-            as: "category"
-          }
-        },
-        {
-          $unwind: "$category"
-        },
-        {
-          $sort: getSortOrder(sortBy, true)
-        }
-      ];
+    const pipeline: any[] = [];
 
-      // Get all results first
-      const allResults: any = await db.$runCommandRaw({
-        aggregate: "BeamsToday",
-        pipeline: pipeline,
-        cursor: {}
+    if (query) {
+      pipeline.push({
+        $search: {
+          index: "searchIndex",
+          compound: {
+            must: [{
+              text: {
+                query: query,
+                path: ["title", "shortDesc"],
+                fuzzy: {
+                  maxEdits: 1,
+                  prefixLength: 2
+                }
+              }
+            }],
+            should: [
+              {
+                text: {
+                  query: query,
+                  path: "title",
+                  score: { boost: { value: 3 } }
+                }
+              },
+              {
+                text: {
+                  query: query,
+                  path: "shortDesc",
+                  score: { boost: { value: 2 } }
+                }
+              }
+            ]
+          }
+        }
       });
 
-      let allTopics = (allResults.cursor?.firstBatch || []).map((doc: MongoDBDocument) => 
-        transformMongoDocument(doc)
-      );
-
-      if (beamedStatus && userId) {
-        const watchedContent = await db.beamsTodayWatchedContent.findUnique({
-          where: { userId },
-          select: { completedBeamsToday: true },
-        });
-
-        const completedIds = watchedContent?.completedBeamsToday || [];
-        allTopics = beamedStatus === 'beamed'
-          ? allTopics.filter((topic:any) => completedIds.includes(topic.id))
-          : allTopics.filter((topic:any) => !completedIds.includes(topic.id));
-      }
-
-      const totalItems = allTopics.length;
-      const startIndex = (page - 1) * itemsPerPage;
-      const topics = allTopics.slice(startIndex, startIndex + itemsPerPage);
-
-      return {
-        topics,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(totalItems / itemsPerPage),
-          totalItems,
-        },
-      };
+      // Add search score
+      pipeline.push({
+        $addFields: {
+          searchScore: { $meta: "searchScore" }
+        }
+      });
     }
 
-    // Non-search query logic
-    const whereClause: any = {
-      published: true,
-    };
+    // Match stage for filtering
+    const matchStage: any = { published: true };
 
     if (selectedDate) {
-      whereClause.date = {
-        gte: new Date(`${selectedDate}T00:00:00.000Z`),
-        lt: new Date(`${selectedDate}T23:59:59.999Z`),
+      matchStage.date = {
+        $gte: new Date(`${selectedDate}T00:00:00.000Z`),
+        $lt: new Date(`${selectedDate}T23:59:59.999Z`)
       };
     }
 
     if (categories?.length) {
-      whereClause.categoryId = {
-        in: categories,
+      matchStage.categoryId = {
+        $in: categories.map(id => ({ $oid: id }))
       };
     }
 
-    // Get all results for consistent pagination
-    const allTopics = await db.beamsToday.findMany({
-      where: whereClause,
-      orderBy: getSortOrder(sortBy),
-      include: {
-        category: true,
+    pipeline.push({ $match: matchStage });
+
+    // Category lookup
+    pipeline.push(
+      {
+        $lookup: {
+          from: "BeamsTodayCategory",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "category"
+        }
       },
+      {
+        $unwind: "$category"
+      }
+    );
+
+    // Sort the results
+    if (query) {
+      // If searching, prioritize search score first, then apply requested sort
+      pipeline.push({
+        $sort: {
+          searchScore: -1,
+          ...getSortOrder(sortBy, true)
+        }
+      });
+    } else {
+      // If not searching, just apply requested sort
+      pipeline.push({
+        $sort: getSortOrder(sortBy, true)
+      });
+    }
+
+    // Execute the pipeline
+    const allResults: any = await db.$runCommandRaw({
+      aggregate: "BeamsToday",
+      pipeline: pipeline,
+      cursor: {}
     });
 
-    let filteredTopics = allTopics;
+    let allTopics = (allResults.cursor?.firstBatch || []).map((doc: MongoDBDocument) => 
+      transformMongoDocument(doc)
+    );
+
+    // Apply beamed status filtering
     if (beamedStatus && userId) {
       const watchedContent = await db.beamsTodayWatchedContent.findUnique({
         where: { userId },
@@ -264,14 +256,14 @@ export async function searchTopics({
       });
 
       const completedIds = watchedContent?.completedBeamsToday || [];
-      filteredTopics = beamedStatus === 'beamed'
-        ? allTopics.filter(topic => completedIds.includes(topic.id))
-        : allTopics.filter(topic => !completedIds.includes(topic.id));
+      allTopics = beamedStatus === 'beamed'
+        ? allTopics.filter((topic: any) => completedIds.includes(topic.id))
+        : allTopics.filter((topic: any) => !completedIds.includes(topic.id));
     }
 
-    const totalItems = filteredTopics.length;
+    const totalItems = allTopics.length;
     const startIndex = (page - 1) * itemsPerPage;
-    const topics = filteredTopics.slice(startIndex, startIndex + itemsPerPage);
+    const topics = allTopics.slice(startIndex, startIndex + itemsPerPage);
 
     return {
       topics,

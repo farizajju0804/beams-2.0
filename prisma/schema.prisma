@@ -254,6 +254,7 @@ model FactOfTheday {
   finalImage    String // Title of the Beams Today content
   thumbnail     String
   published     Boolean          @default(false)
+  factContent   String           
   referenceLink1 String? // First optional reference link
   referenceLink2 String? // Second optional reference link
   hashtags      String[]        // Array of hashtags

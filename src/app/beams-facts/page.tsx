@@ -4,6 +4,8 @@ import { TrendingFacts } from './_components/TrendingFacts'; // Importing the Tr
 import {  getFactAndCompletionStatus, getTrendingFacts } from '@/actions/fod/fod'; // Importing functions for fetching facts
 import { cookies } from 'next/headers'; // Importing cookies utility from Next.js headers
 import FactOfTheDay from './_components/FactOfTheDay';
+import FactSearch from './_components/FactsSearch';
+import { getAllFactCategories } from '@/actions/fod/search';
 
 // Asynchronous page component to fetch and display facts
 const page = async () => {
@@ -25,7 +27,7 @@ const page = async () => {
 
     // Extract the user ID for further use
     const userId = user.id;
-
+    const categories = await getAllFactCategories();
     // Fetch the initial trending facts based on the current date and user ID
     const initialData = await getTrendingFacts({
         clientDate: clientDate,
@@ -43,7 +45,7 @@ const page = async () => {
                 Beams Facts
             </h1>
             <FactOfTheDay fact={factData} userId={userId}/>
-          
+            <FactSearch categories={categories} userId={userId} /> 
             <TrendingFacts initialData={initialData} userId={userId} clientDate={clientDate} />
         </div>
     );

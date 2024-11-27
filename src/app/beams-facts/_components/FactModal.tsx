@@ -114,13 +114,16 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.3 + index * 0.1, duration: 0.2 }}
                         >
-                          <Chip
-                            variant="bordered"
+                           <Chip 
+                            key={tag}
                             size="sm"
-                            startContent={<Hashtag className="w-3 h-3" />}
-                          >
-                            {tag}
-                          </Chip>
+                            variant="flat" 
+                            className="text-xs"
+                            as={Link}
+                            href={`/beams-facts/tag/${tag}`}
+                            >
+                            #{tag}
+                            </Chip>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -139,10 +142,10 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                               target="_blank" 
                               rel="noopener noreferrer"
                               isIconOnly 
-                              variant="ghost" 
+                              variant="light" 
                               size="sm"
                             >
-                              <GoLinkExternal className="w-3 h-3" />
+                              <GoLinkExternal className="w-5 h-5" />
                               {hasBothLinks && (
                                 <span className="font-medium text-[8px] absolute bottom-[2px] right-[5px]">1</span>
                               )}
@@ -157,10 +160,10 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                               target="_blank" 
                               rel="noopener noreferrer"
                               isIconOnly 
-                              variant="ghost" 
+                              variant="light" 
                               size="sm"
                             >
-                              <GoLinkExternal className="w-3 h-3" />
+                              <GoLinkExternal className="w-5 h-5" />
                               {hasBothLinks && (
                                 <span className="font-medium text-[8px] absolute bottom-[2px] right-[5px]">2</span>
                               )}

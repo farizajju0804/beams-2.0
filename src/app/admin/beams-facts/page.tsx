@@ -19,7 +19,8 @@ import {
   Select,
   SelectItem,
   Chip,
-  Switch
+  Switch,
+  Textarea
 } from "@nextui-org/react";
 import { FactOfTheday, FactCategory } from '@prisma/client';
 import { getFacts, createFact, updateFact, deleteFact, getCategories, createCategory } from './_actions/facts';
@@ -173,6 +174,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const [categories, setCategories] = useState<FactCategory[]>([]);
   const [newHashtag, setNewHashtag] = useState('');
   const [published, setPublished] = useState(fact?.published ?? false);
+  const [factContent, setFactContent] = useState(fact?.factContent || '');
   const { isOpen: isCategoryModalOpen, onOpen: onCategoryModalOpen, onClose: onCategoryModalClose } = useDisclosure();
 
   useEffect(() => {
@@ -213,7 +215,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !title || !finalImage || !thumbnail || !categoryId) {
+    if (!date || !title || !finalImage || !thumbnail || !categoryId || !factContent) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -228,7 +230,8 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
       referenceLink2: referenceLink2 || null,
       hashtags,
       categoryId,
-      published
+      published,
+      factContent 
     };
 
     onSubmit(data);
@@ -270,6 +273,20 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
           value={referenceLink2}
           onChange={(e) => setReferenceLink2(e.target.value)}
         />
+         <div className="w-full">
+          <Textarea
+            label="Fact Content"
+            placeholder="Enter the fact content here..."
+            value={factContent}
+            onChange={(e) => setFactContent(e.target.value)}
+            minRows={4}
+            isRequired
+            classNames={{
+              base: "w-full",
+              input: "resize-y min-h-[100px]"
+            }}
+          />
+        </div>
         
         <div>
           <div className="flex gap-2 mb-2">

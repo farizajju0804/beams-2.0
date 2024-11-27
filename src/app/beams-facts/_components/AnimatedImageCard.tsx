@@ -3,7 +3,6 @@
 import React, { useState } from "react"; // Importing React and useState for managing component state
 import { motion, AnimatePresence } from "framer-motion"; // Importing motion components for animations
 import Image from "next/image"; // Importing Next.js Image component for optimized images
-import { CloseIcon } from "@/app/beams-today/_components/BeamsTodayRecents"; // Importing a close icon component
 import { CloseCircle } from "iconsax-react";
 
 // Defining the props type for the AnimatedImageCard component
