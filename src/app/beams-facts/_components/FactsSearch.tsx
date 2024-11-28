@@ -380,6 +380,7 @@ const FactSearch: React.FC<FactSearchProps> = ({
                 thumbnail={fact.thumbnail}
                 category={fact.category}
                 id={fact.id}
+                key={fact.id}
                 title={fact.title}
                 date={fact.date}
                 hashtags={fact.hashtags}
