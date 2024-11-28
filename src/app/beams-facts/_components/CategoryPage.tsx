@@ -8,6 +8,8 @@ import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { FactModal } from './FactModal';
 import { Chip } from "@nextui-org/react";
 import { FlipFactCard } from './FlipFactCard';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { FactCard } from './FactCard';
 
 interface CategoryFactsProps {
   initialData: {
@@ -63,14 +65,27 @@ export function CategoryFacts({
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-3">
       {/* Header Section */}
+      <div className="mb-4">
+        {/* Breadcrumbs navigation */}
+        <Breadcrumbs
+          pageClassName="text-text"
+          linkClassName="text-default-500"
+          items={[
+            // { href: "/", name: "Home" },
+            { name: "Beams Facts", href: "/beams-facts" },
+            { name: categoryName }
+          ]}
+        />
+      </div>
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        className="text-center mb-6"
       >
-        <h1 className="text-2xl md:text-4xl font-bold mb-4">
+        
+        <h1 className="text-2xl md:text-4xl font-bold">
           Facts in{' '}
           <Chip
             className="text-white font-semibold text-2xl md:text-3xl"
@@ -87,7 +102,7 @@ export function CategoryFacts({
       </motion.div>
 
       {/* Filter Section */}
-      <div className="flex justify-end mb-8">
+      <div className="flex justify-start mb-6">
         <SortByFilter sortBy={sortBy} setSortBy={handleSortChange} />
       </div>
 
@@ -118,11 +133,23 @@ export function CategoryFacts({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <FlipFactCard
-              fact={fact}
-              index={index}
-              userId={userId}
-            />
+           <FactCard
+                thumbnail={fact.thumbnail}
+                category={fact.category}
+                id={fact.id}
+                title={fact.title}
+                date={fact.date}
+                hashtags={fact.hashtags}
+                onClick={() => setSelectedFact(fact)}
+              />
+               {selectedFact && (
+          <FactModal
+            isOpen={!!selectedFact}
+            onClose={() => setSelectedFact(null)}
+            fact={selectedFact}
+            userId={userId}
+          />
+        )}
           </motion.div>
         ))}
       </div>

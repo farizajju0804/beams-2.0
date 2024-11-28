@@ -252,6 +252,7 @@ model FactOfTheday {
   date          DateTime         @unique // Date of the Beams Today content
   title         String
   finalImage    String // Title of the Beams Today content
+  finalImageDark   String
   thumbnail     String
   published     Boolean          @default(false)
   factContent   String           

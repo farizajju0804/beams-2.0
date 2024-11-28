@@ -1,12 +1,8 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Input, Button } from '@nextui-org/react';
 import { CloseCircle, Filter } from 'iconsax-react';
-
 import CustomPagination from '@/components/Pagination';
-
-import { FaSearch } from 'react-icons/fa';
 import { NoResultsState } from '@/components/ui/NoResultsState';
 import { searchFacts, TransformedFact } from '@/actions/fod/search';
 import SortByFilter from '@/app/beams-today/_components/SortByFilter';
@@ -14,8 +10,8 @@ import FilterChips from '@/app/beams-today/_components/FilterChips';
 import FilterDrawer from '@/app/beams-today/_components/FilterDrawer';
 import SearchLoader from '@/components/SearchLoader';
 import { FactCard } from './FactCard';
-import { FlipFactCard } from './FlipFactCard';
-
+import { CiSearch } from "react-icons/ci";
+import { FactModal } from './FactModal';
 
 interface Category {
   id: string;
@@ -95,7 +91,8 @@ const FactSearch: React.FC<FactSearchProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [beamedStatus, setBeamedStatus] = useState<string>("all");
   const [error, setError] = useState<string | null>(null);
-
+  const [selectedFact, setSelectedFact] = useState<any>(null);
+  
   const ITEMS_PER_PAGE = 9;
 
  
@@ -202,6 +199,7 @@ const FactSearch: React.FC<FactSearchProps> = ({
 
     if (!newQuery.trim()) {
       setSearchResults(null);
+      setCurrentPage(1);
       return;
     }
 
@@ -211,18 +209,18 @@ const FactSearch: React.FC<FactSearchProps> = ({
 
     const newTimeout = setTimeout(() => {
       if (!isValidQuery(newQuery)) {
-        // Show no results state for invalid queries
-        setSearchResults({
-          facts: [],
-          pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
-        });
+        // Only show no results state if there's actually input
+        if (newQuery.trim()) {
+          setSearchResults({
+            facts: [],
+            pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+          });
+        }
         return;
       }
 
-      if (newQuery.trim()) {
-        setCurrentPage(1);
-        performSearch({ page: 1 });
-      }
+      setCurrentPage(1);
+      performSearch({ page: 1 });
     }, 800);
 
     setTypingTimeout(newTimeout);
@@ -245,7 +243,7 @@ const FactSearch: React.FC<FactSearchProps> = ({
   
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 px-6">
+    <div className="w-full max-w-5xl mx-auto space-y-6 my-3 px-6">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 max-w-2xl mx-auto w-full">
@@ -263,11 +261,11 @@ const FactSearch: React.FC<FactSearchProps> = ({
                   <CloseCircle
                     size="20"
                     variant="Bold"
-                    className="text-grey-2 cursor-pointer mr-2"
+                    className="text-default-500 cursor-pointer mr-2"
                     onClick={resetSearch}
                   />
                 ) : (
-                  <FaSearch size="20" className="text-grey-2 mr-2" />
+                  <CiSearch size="20" className="text-default-500 mr-2" />
                 )
               }
             />
@@ -343,7 +341,7 @@ const FactSearch: React.FC<FactSearchProps> = ({
         </div>
       )}
 
-      {!isLoading && searchResults && (
+      {!isLoading && searchResults && query.trim() && (
         <div className="space-y-6">
           {(searchResults.facts?.length ?? 0) > 0 && (
             <div className="pb-2">
@@ -367,7 +365,7 @@ const FactSearch: React.FC<FactSearchProps> = ({
             </div>
           )}
 
-           {(searchResults.facts?.length ?? 0) === 0 && (
+           {(searchResults.facts?.length ?? 0) === 0 && query.trim() && (
             <NoResultsState 
               query={query} 
               message={getNoResultsMessage(query)}
@@ -377,8 +375,25 @@ const FactSearch: React.FC<FactSearchProps> = ({
           {(searchResults.facts?.length ?? 0) > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {searchResults.facts.map((fact: TransformedFact, index:number) => (
-                <FlipFactCard key={fact.id} userId={userId} index={index} fact={fact} />
+                // <FlipFactCard key={fact.id} userId={userId} index={index} fact={fact} />
+                <FactCard
+                thumbnail={fact.thumbnail}
+                category={fact.category}
+                id={fact.id}
+                title={fact.title}
+                date={fact.date}
+                hashtags={fact.hashtags}
+                onClick={() => setSelectedFact(fact)}
+              />
               ))}
+               {selectedFact && (
+          <FactModal
+            isOpen={!!selectedFact}
+            onClose={() => setSelectedFact(null)}
+            fact={selectedFact}
+            userId={userId}
+          />
+        )}
             </div>
           )}
 

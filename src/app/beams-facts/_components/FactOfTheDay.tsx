@@ -53,7 +53,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, fact }) => {
   };
 
   useEffect(() => {
-    if (!fact?.completed) {
+    if (!fact?.completed && fact.id) {
       // Start timer for 10-second completion
       timeoutRef.current = setTimeout(() => {
         handleCompletion();
@@ -125,6 +125,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, fact }) => {
     );
   };
 
+
   return (
     <div 
       className="w-full mb-2 text-left relative max-w-lg md:rounded-3xl mx-auto"
@@ -141,12 +142,13 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, fact }) => {
         </Button>
         {renderOverlay()} 
       </div>
-      {fact ? 
+      {fact.id ? 
         <FactDisplay
           id={fact.id}
           date={fact.date}
           title={fact.title}
           finalImage={fact.finalImage}
+          finalImageDark={fact.finalImageDark}
           thumbnail={fact.thumbnail}
           referenceLink1={fact.referenceLink1}
           referenceLink2={fact.referenceLink2}
@@ -154,7 +156,7 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, fact }) => {
           category={fact.category}
         />
         : (
-          <p className="text-lg text-left md:text-center font-semibold text-grey-500 pl-6 md:pl-0">
+          <p className="text-lg text-left md:text-center font-semibold text-default-500 pl-6 md:pl-0">
             No fact available for today
           </p>
         )}

@@ -20,7 +20,7 @@ interface FactCardProps {
 export function FactCard({ title, date, thumbnail, category, onClick,hashtags }: FactCardProps) {
   return (
     <Card 
-      className="group flex overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
+      className="group flex w-full max-w-sm shadow-none border-1 border-default-200 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
       onClick={onClick}
     >
       <div className="relative w-1/3 min-w-[120px]">
@@ -43,18 +43,8 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
           <div className="flex items-center">
             <FormattedDate date={date.toISOString().split('T')[0]}/>
           </div>
-          <Chip
-           classNames={{
-            content : "text-xs font-semibold"
-        }}
-        as={Link}
-        href={`/beams-facts/category/${category.name}`}
-            className="text-xs text-white font-semibold py-1 px-2  "
-            style={{ backgroundColor: `${category.color}` }}
-          >
-            {category.name}
-          </Chip>
-          <div className="lg:flex w-full hidden gap-3">
+    
+          {/* <div className="lg:flex w-full hidden gap-3">
           {hashtags.map((tag, index) => (
             <Chip
                 variant="flat"
@@ -66,7 +56,7 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
                 #{tag}
             </Chip>
         ))}
-        </div>
+        </div> */}
         </div>
       </div>
     </Card>

@@ -1,15 +1,19 @@
+'use client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GoLinkExternal } from "react-icons/go";
 import Image from "next/image"
 import Link from "next/link"
 import { Button, Chip } from "@nextui-org/react"
 import FormattedDate from "@/app/beams-today/_components/FormattedDate";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 interface FactOfTheDayProps {
   id: string | undefined
   date: Date | undefined
   title: string | undefined
-  finalImage: string | undefined
+  finalImage: string | undefined 
+  finalImageDark: string | undefined
   thumbnail: string | undefined
   referenceLink1?: string
   referenceLink2?: string
@@ -25,6 +29,7 @@ export function FactDisplay({
   date,
   title,
   finalImage,
+  finalImageDark,
   thumbnail,
   referenceLink1,
   referenceLink2,
@@ -32,7 +37,38 @@ export function FactDisplay({
   category,
 }: FactOfTheDayProps) {
   const hasBothLinks = referenceLink1 && referenceLink2;
+  const [mounted, setMounted] = useState(false);
+  const { theme, resolvedTheme } = useTheme();
+  
+  // Use state to track the current image
+  const [currentImage, setCurrentImage] = useState(finalImage);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      // Use resolvedTheme instead of theme for more reliable theme detection
+      const imageToUse = (resolvedTheme === 'dark' ? finalImageDark : finalImage) || finalImage;
+      setCurrentImage(imageToUse);
+      
+      // Debug logging
+      console.log({
+        resolvedTheme,
+        theme,
+        imageToUse,
+        finalImage,
+        finalImageDark,
+        currentImage: imageToUse
+      });
+    }
+  }, [mounted, resolvedTheme, theme, finalImage, finalImageDark]);
+
+  // Don't render anything until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
   return (
     <Card className="w-full rounded-none md:rounded-xl border-1 border-default/50 shadow-none max-w-lg mx-auto overflow-hidden">
       <CardHeader className="pb-0 pt-4 px-4">
@@ -51,10 +87,10 @@ export function FactDisplay({
       </CardHeader>
       <CardContent className="p-0">
         <div className="relative w-full">
-            {finalImage && title &&
-          <Image
-            src={finalImage}
-            alt={title}
+        {currentImage && title && 
+            <Image
+              src={currentImage}
+              alt={title}
             width={1000}
             height={1000}
             className="object-cover w-full h-full"
@@ -87,7 +123,7 @@ export function FactDisplay({
               variant="flat" 
               className="text-xs"
               as={Link}
-              href={`/beams-facts/fact/${tag}`}
+              href={`/beams-facts/tag/${tag}`}
             >
               #{tag}
             </Chip>

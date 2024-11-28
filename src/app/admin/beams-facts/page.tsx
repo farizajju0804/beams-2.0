@@ -166,6 +166,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   });
   const [title, setTitle] = useState(fact?.title || '');
   const [finalImage, setFinalImage] = useState(fact?.finalImage || '');
+  const [finalImageDark, setFinalImageDark] = useState(fact?.finalImageDark || '');
   const [thumbnail, setThumbnail] = useState(fact?.thumbnail || '');
   const [referenceLink1, setReferenceLink1] = useState(fact?.referenceLink1 || '');
   const [referenceLink2, setReferenceLink2] = useState(fact?.referenceLink2 || '');
@@ -215,7 +216,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !title || !finalImage || !thumbnail || !categoryId || !factContent) {
+    if (!date || !title || !finalImage || !finalImageDark || !thumbnail || !categoryId || !factContent) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -225,6 +226,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
       date: formattedDate,
       title,
       finalImage,
+      finalImageDark,
       thumbnail,
       referenceLink1: referenceLink1 || null,
       referenceLink2: referenceLink2 || null,
@@ -252,9 +254,15 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
           isRequired
         />
         <Input
-          label="Final Image URL"
+          label="Light Mode Fact Image URL"
           value={finalImage}
           onChange={(e) => setFinalImage(e.target.value)}
+          isRequired
+        />
+         <Input
+          label="Dark Mode Fact Image URL"
+          value={finalImageDark}
+          onChange={(e) => setFinalImageDark(e.target.value)}
           isRequired
         />
         <Input

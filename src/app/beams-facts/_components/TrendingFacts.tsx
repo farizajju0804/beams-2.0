@@ -81,7 +81,7 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
 
   return (
     <>
-      <div className="flex mt-4 flex-col w-full">
+      <div className="flex mt-2 flex-col w-full">
         <div className="pl-6 lg:pl-0 w-full flex flex-col items-start lg:items-center">
           <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">
             Trending Facts
@@ -154,7 +154,7 @@ export function TrendingFacts({ initialData, userId, clientDate }: TrendingFacts
               />
             </div>
             <h3 className="text-sm text-grey-4 mb-2">
-              Facts are looking a bit lonely here! Try different hashtags.
+              Facts are looking a bit lonely here! Try adjusting your filters.
             </h3>
           </div>
         )}

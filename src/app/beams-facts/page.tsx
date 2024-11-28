@@ -40,7 +40,7 @@ const page = async () => {
 
     // Render the component
     return (
-        <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-2 md:gap-6 items-center justify-center w-full bg-background">
+        <div className="flex mx-auto max-w-[100vw] lg:max-w-5xl flex-col gap-3 md:gap-6 items-center justify-center w-full bg-background">
             <h1 className="font-poppins my-3 md:my-0 text-2xl md:text-4xl uppercase font-semibold bg-purple text-yellow p-2">
                 Beams Facts
             </h1>

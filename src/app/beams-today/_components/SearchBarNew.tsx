@@ -14,6 +14,7 @@ import SearchLoader from '@/components/SearchLoader';
 import { FaSearch } from 'react-icons/fa';
 import { NoResultsState } from '@/components/ui/NoResultsState';
 import { getNoResultsMessage, isValidQuery } from '@/app/beams-facts/_components/FactsSearch';
+import { CiSearch } from 'react-icons/ci';
 
 // Type definitions for the component's data structures
 interface Category {
@@ -242,6 +243,8 @@ const getResultsRange = (currentPage: number, totalItems: number, currentPageIte
 
     if (!newQuery.trim()) {
       setSearchResults(null);
+      setCurrentPage(1);
+
       return;
     }
 
@@ -252,17 +255,17 @@ const getResultsRange = (currentPage: number, totalItems: number, currentPageIte
     const newTimeout = setTimeout(() => {
       if (!isValidQuery(newQuery)) {
         // Show no results state for invalid queries
-        setSearchResults({
-          topics: [],
-          pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
-        });
+        if (newQuery.trim()) {
+          setSearchResults({
+            topics: [],
+            pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+          });
+        }
         return;
       }
 
-      if (newQuery.trim()) {
-        setCurrentPage(1);
-        performSearch({ page: 1 });
-      }
+      setCurrentPage(1);
+      performSearch({ page: 1 });
     }, 800);
 
     setTypingTimeout(newTimeout);
@@ -304,7 +307,7 @@ const getResultsRange = (currentPage: number, totalItems: number, currentPageIte
                     onClick={resetSearch}
                   />
                 ) : (
-                  <FaSearch size="20" className="text-grey-2 mr-2" />
+                  <CiSearch size="20" className="text-default-500 mr-2" />
                 )
               }
             />
@@ -386,7 +389,7 @@ const getResultsRange = (currentPage: number, totalItems: number, currentPageIte
       )}
 
       {/* Search results */}
-      {!isLoading && searchResults && (
+      {!isLoading && searchResults && query.trim() && (
         <div className="space-y-6">
           {/* Results count */}
           {(searchResults.topics?.length ?? 0) > 0 && (
@@ -412,7 +415,7 @@ const getResultsRange = (currentPage: number, totalItems: number, currentPageIte
           )}
 
           {/* No results state */}
-           {(searchResults.topics?.length ?? 0) === 0 && (
+          {(searchResults.topics?.length ?? 0) === 0 && query.trim() && (
             <NoResultsState 
               query={query} 
               message={getNoResultsMessage(query)}

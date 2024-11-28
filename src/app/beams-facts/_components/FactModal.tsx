@@ -9,6 +9,7 @@ import FormattedDate from '@/app/beams-today/_components/FormattedDate'
 import { Hashtag } from 'iconsax-react'
 import { GoLinkExternal } from 'react-icons/go'
 import { markFactAsCompleted2 } from '@/actions/fod/fod'
+import { useTheme } from 'next-themes'
 
 interface FactModalProps {
   isOpen: boolean
@@ -18,6 +19,7 @@ interface FactModalProps {
     title: string
     date: Date
     finalImage: string
+    finalImageDark: string
     category: {
       name: string
       color: string
@@ -33,7 +35,7 @@ interface FactModalProps {
 export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
   const [isMounted, setIsMounted] = useState(false)
   const clientDate = new Date().toLocaleDateString("en-CA");
-
+  const {theme} = useTheme()
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -60,7 +62,8 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
   }
 
   const hasBothLinks = fact.referenceLink1 && fact.referenceLink2;
-  
+
+  const currentImage = theme === "light" ? fact.finalImage : fact.finalImageDark;
   return (
     <Modal 
       isOpen={isOpen} 
@@ -93,13 +96,24 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                     className="relative aspect-auto w-full"
                   >
                     <Image
-                      src={fact.finalImage}
+                      src={currentImage}
                       alt={fact.title}
                       width={1000}
                       height={1000}
                       className="object-cover w-full h-full"
                     />
                   </motion.div>
+                  <Chip
+           classNames={{
+            content : "text-xs font-semibold"
+        }}
+        as={Link}
+        href={`/beams-facts/category/${fact.category.name}`}
+            className="text-xs text-white font-semibold mt-1 mb-3 py-1 mx-4 "
+            style={{ backgroundColor: `${fact.category.color}` }}
+          >
+            {fact.category.name}
+          </Chip>
                   <div className='flex w-full justify-between mb-4 items-center'>
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}

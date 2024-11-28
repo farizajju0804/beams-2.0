@@ -313,6 +313,7 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
         date: factWithCompletion.date,
         title: factWithCompletion.title,
         finalImage: factWithCompletion.finalImage,
+        finalImageDark: factWithCompletion.finalImageDark,
         thumbnail: factWithCompletion.thumbnail,
         referenceLink1: factWithCompletion.referenceLink1 || undefined,
         referenceLink2: factWithCompletion.referenceLink2 || undefined,
@@ -419,6 +420,7 @@ export const getTrendingFacts = async ({
     const transformedFacts = trendingFacts.map(fact => ({
       id: fact.id,
       finalImage: fact.finalImage,
+      finalImageDark: fact.finalImageDark,
       title: fact.title,
       date: fact.date,
       thumbnail : fact.thumbnail,
@@ -553,6 +555,7 @@ export const getFactsByHashtag = async ({
     const transformedFacts = facts.map(fact => ({
       id: fact.id,
       finalImage: fact.finalImage,
+      finalImageDark: fact.finalImageDark,
       title: fact.title,
       date: fact.date,
       thumbnail: fact.thumbnail,
@@ -667,6 +670,7 @@ export const getFactsByCategory = async ({
     const transformedFacts = facts.map(fact => ({
       id: fact.id,
       finalImage: fact.finalImage,
+      finalImageDark: fact.finalImageDark,
       title: fact.title,
       date: fact.date,
       thumbnail: fact.thumbnail,

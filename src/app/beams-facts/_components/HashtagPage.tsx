@@ -6,7 +6,10 @@ import { getFactsByHashtag } from "@/actions/fod/fod";
 import CustomPagination from "@/components/Pagination";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { FactModal } from './FactModal';
-import { FlipFactCard } from './FlipFactCard';
+
+import { FactCard } from './FactCard';
+import Breadcrumbs from '@/components/Breadcrumbs';
+
 
 interface HashtagFactsProps {
   initialData: {
@@ -56,20 +59,32 @@ export function HashtagFacts({ initialData, hashtag, userId }: HashtagFactsProps
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-3">
       {/* Header Section */}
+      <div className="mb-4">
+        {/* Breadcrumbs navigation */}
+        <Breadcrumbs
+          pageClassName="text-text"
+          linkClassName="text-default-500"
+          items={[
+            // { href: "/", name: "Home" },
+            { name: "Beams Facts", href: "/beams-facts" },
+            { name: `#${hashtag}` }
+          ]}
+        />
+      </div>
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        className="text-center mb-6"
       >
-        <h1 className="text-2xl md:text-4xl font-bold mb-4">
+        <h1 className="text-2xl md:text-4xl font-bold">
           Facts tagged with <span className="text-brand">#{hashtag}</span>
         </h1>
       </motion.div>
 
       {/* Filter Section */}
-      <div className="flex justify-end mb-8">
+      <div className="flex justify-start mb-6">
         <SortByFilter sortBy={sortBy} setSortBy={handleSortChange} />
       </div>
 
@@ -85,26 +100,38 @@ export function HashtagFacts({ initialData, hashtag, userId }: HashtagFactsProps
             />
           </div>
           <h3 className="text-sm text-grey-4 mb-2">
-            Facts are looking a bit lonely here! Try tweaking your filters to find more facts.
+            Facts are looking a bit lonely here! Try different hashtags.
           </h3>
         </div>
       )}
  
       {/* Facts Grid */}
-      <div className="w-full items-center grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
+      <div className="w-full  grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
         {facts.map((fact: any,index:any) => (
           <motion.div
             key={fact.id}
-            className='mx-auto'
+            className=''
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <FlipFactCard
-            fact={fact}
-            index={index}
+           <FactCard
+                thumbnail={fact.thumbnail}
+                category={fact.category}
+                id={fact.id}
+                title={fact.title}
+                date={fact.date}
+                hashtags={fact.hashtags}
+                onClick={() => setSelectedFact(fact)}
+              />
+               {selectedFact && (
+          <FactModal
+            isOpen={!!selectedFact}
+            onClose={() => setSelectedFact(null)}
+            fact={selectedFact}
             userId={userId}
-            />
+          />
+        )}
           </motion.div>
         ))}
       </div>
