@@ -65,3 +65,31 @@ export const getNewBeamsToday = async () => {
     throw new Error(`Error fetching videos: ${(error as Error).message}`);
   }
 };
+
+
+
+export const getAllBeamsToday5 = async () => {
+  try {
+    // Fetch all records from the 'beamsToday' table, ordered by date in ascending order.
+    const videos = await db.beamsToday.findMany({
+      where : {
+        published : true
+      },
+      orderBy: { date: 'desc' }, // Order the videos by their date (earliest first)
+      take : 5,
+      include: {
+        category: true, // Include the category details
+      },
+    });
+
+    if (!videos || videos.length === 0) {
+      // If no videos are found, throw an error.
+      throw new Error("No videos found");
+    }
+
+    return videos; // Return the fetched list of videos.
+  } catch (error) {
+    // Throw an error with a descriptive message if something goes wrong during the query.
+    throw new Error(`Error fetching videos: ${(error as Error).message}`);
+  }
+};

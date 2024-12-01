@@ -6,7 +6,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence } from 'framer-motion'
 import FormattedDate from '@/app/beams-today/_components/FormattedDate'
-import { Hashtag } from 'iconsax-react'
 import { GoLinkExternal } from 'react-icons/go'
 import { markFactAsCompleted2 } from '@/actions/fod/fod'
 import { useTheme } from 'next-themes'

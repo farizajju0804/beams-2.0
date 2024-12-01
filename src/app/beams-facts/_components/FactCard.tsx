@@ -20,7 +20,7 @@ interface FactCardProps {
 export function FactCard({ title, date, thumbnail, category, onClick,hashtags }: FactCardProps) {
   return (
     <Card 
-      className="group flex w-full max-w-sm shadow-none border-1 border-default-200 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
+      className="group flex w-full max-w-md shadow-none border-1 border-default-200 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg"
       onClick={onClick}
     >
       <div className="relative w-1/3 min-w-[120px]">
@@ -35,7 +35,7 @@ export function FactCard({ title, date, thumbnail, category, onClick,hashtags }:
       </div>
       <div className="flex-1 p-4 flex flex-col justify-center gap-2">
         <div>
-          <h3 className="font-semibold text-lg mb-2">
+          <h3 className="font-semibold text-lg  md:text-xl mb-2">
             {title}
           </h3>
         </div>

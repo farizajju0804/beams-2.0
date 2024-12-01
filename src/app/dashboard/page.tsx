@@ -16,6 +16,7 @@ import AccordionMenu from './_components/AccordionMenu'; // Importing AccordionM
 import { Activity, Book, Coin1, User } from 'iconsax-react'; // Importing icons
 import VibrantBeamsBreakdown from './_components/PieChart'; // Importing VibrantBeamsBreakdown component
 import { getReferralStatus } from '@/actions/auth/getLatestUserData'; // Action to fetch referral status
+import GlobalSearchComponent from '@/components/Search';
 
 // Main DashboardPage functional component
 const DashboardPage = async () => {
