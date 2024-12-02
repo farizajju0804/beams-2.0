@@ -7,7 +7,9 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { FaLightbulb } from 'react-icons/fa';
 import { BiSolidJoystick } from "react-icons/bi";
+import { HiHome } from 'react-icons/hi2';
 const menuItems = [
+  { icon: HiHome, label: "Home", path: "/home" },
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
   { icon: BiSolidJoystick, label: "Beams Connection", path: "/connection-game" },

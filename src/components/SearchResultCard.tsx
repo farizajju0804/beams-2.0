@@ -81,7 +81,7 @@ export const SearchResultCard: React.FC<SearchResultCardProps> = ({
             priority={true}
           />
         </div>
-        <div className="flex-1 flex items-start justify-center gap-4 flex-col px-4 pb-4 min-w-0 space-y-2">
+        <div className="flex-1 flex items-start justify-center gap-3 flex-col px-4 pb-4 min-w-0 space-y-2">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
             <h3 className="font-semibold text-lg line-clamp-2 flex-1">
               {result.title}

@@ -695,3 +695,50 @@ export const getFactsByCategory = async ({
     throw new Error(`Failed to fetch facts by category: ${(error as Error).message}`);
   }
 };
+
+
+
+export const getTop5Facts = async (userId: string) => {
+  try {
+    const facts = await db.factOfTheday.findMany({
+      where: {
+        published: true,
+      },
+      orderBy: {
+        date: 'desc'
+      },
+      take: 5,
+      include: {
+        category: {
+          select: {
+            name: true,
+            color: true
+          }
+        },
+        completions: {
+          where: {
+            userId: userId
+          }
+        }
+      }
+    });
+
+    return facts.map(fact => ({
+      id: fact.id,
+      title: fact.title,
+      thumbnail: fact.thumbnail,
+      hashtags : fact.hashtags,
+      finalImage : fact.finalImage,
+      finalImageDark : fact.finalImageDark,
+      date : fact.date,
+      category: {
+        name: fact.category.name,
+        color: fact.category.color
+      },
+      completed: fact.completions.length > 0 ? fact.completions[0].completed : false
+    }));
+  } catch (error) {
+    console.error('Error fetching top facts:', error);
+    throw new Error(`Error fetching top facts: ${(error as Error).message}`);
+  }
+};

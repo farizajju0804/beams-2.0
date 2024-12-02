@@ -65,6 +65,81 @@ export async function getWordGame(clientDate: string): Promise<WordGameResponse>
 }
 
 
+interface WordGameData {
+  id: string;
+  answer: string;
+  hint: string;
+  date: Date;
+  image: string;
+  title: string;
+  thumbnail: string;
+  answerExplanation: string;
+  solutionPoints: string[];
+  isCompleted: boolean;
+}
+
+interface WordGamesResponse {
+  success: boolean;
+  data?: WordGameData[];
+  error?: string;
+}
+
+export async function getTop5WordGames(userId: string): Promise<WordGamesResponse> {
+  try {
+    const wordGames = await db.connectionGame.findMany({
+      where: {
+        published: true,
+      },
+      orderBy: {
+        date: 'desc'
+      },
+      take: 5,
+      include: {
+        completions: {
+          where: {
+            userId: userId
+          },
+          select: {
+            completed: true
+          }
+        }
+      }
+    });
+
+    if (!wordGames || wordGames.length === 0) {
+      return {
+        success: false,
+        error: 'No word games found'
+      };
+    }
+
+    const formattedGames: WordGameData[] = wordGames.map(game => ({
+      id: game.id,
+      answer: game.answer,
+      hint: game.hint,
+      date: game.date,
+      image: game.image,
+      title: game.title,
+      thumbnail: game.thumbnail,
+      answerExplanation: game.answerExplanation,
+      solutionPoints: game.solutionPoints,
+      isCompleted: game.completions.length > 0 ? game.completions[0].completed : false
+    }));
+
+    return {
+      success: true,
+      data: formattedGames
+    };
+
+  } catch (error) {
+    console.error('Error fetching word games:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch word games'
+    };
+  }
+}
+
 export async function getWordGameById(id: string): Promise<WordGameResponse> {
 
   try {

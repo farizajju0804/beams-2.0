@@ -1,7 +1,7 @@
 // Generator block to specify the Prisma Client generator configuration
 generator client {
   provider        = "prisma-client-js" // Specifies that Prisma will generate the Prisma Client for JavaScript
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+
 }
 
 // Data source configuration block for MongoDB connection

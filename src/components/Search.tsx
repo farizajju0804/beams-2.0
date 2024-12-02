@@ -237,7 +237,8 @@ useEffect(() => {
         <div className="flex flex-col md:flex-row gap-4">
           <Select
             className="w-40"
-            
+            radius='full'
+            variant='faded'
             selectedKeys={[selectedContentType]}
             onChange={(e) => setSelectedContentType(e.target.value)}
           >
@@ -254,7 +255,8 @@ useEffect(() => {
                 input: ["placeholder:text-grey-2 md:text-lg"],
               }}
               radius="full"
-              placeholder="Find insights and knowledge..."
+              variant='faded'
+              placeholder="Enter your search term..."
               value={query}
               aria-label='search'
               onChange={(e) => setQuery(e.target.value)}

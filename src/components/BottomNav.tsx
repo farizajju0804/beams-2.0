@@ -7,10 +7,11 @@ import { motion } from "framer-motion"
 import { Chart, Rank, Microscope, Cup, Game } from "iconsax-react"
 import { Button } from "@nextui-org/react"
 import { FaLightbulb } from "react-icons/fa"
-import { BiSolidJoystick } from "react-icons/bi"
-
+import {  BiSolidJoystick } from "react-icons/bi"
+import { HiHome } from "react-icons/hi2";
 
 const navItems = [
+  { icon: HiHome, label: "Home", path: "/home" },
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
   { icon: BiSolidJoystick, label: "Beams Connection", path: "/connection-game" },
