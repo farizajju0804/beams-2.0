@@ -319,8 +319,7 @@ model BeamsToday {
   @@index([published, date]) // For filtering published content and sorting by date
   @@index([published, categoryId]) // For filtering by category and published status
   @@index([categoryId]) // Index for faster queries on categoryId
-  // Full-text search index
-  @@fulltext([title, shortDesc, script]) // For text search across these fields
+
 }
 
 model ConnectionGame {
