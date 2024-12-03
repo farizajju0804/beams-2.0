@@ -15,48 +15,54 @@ import { Metadata } from "next";
 interface BeamsTodayPlayerPageProps {
   params: { id: string };
 }
-
-// app/beams-today/[id]/page.tsx
 export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): Promise<Metadata> {
   const { id } = params;
-  const beamsToday = await getBeamsTodayById(id);
+  
+  try {
+    const beamsToday = await getBeamsTodayById(id);
+    
+    if (!beamsToday) {
+      return {
+        title: 'Not Found | Beams Today',
+        description: 'Content not found'
+      };
+    }
 
-  return {
-    metadataBase: new URL('https://www.beams.world'),
-    title: `${beamsToday.title} | Beams Today`,
-    description: beamsToday.shortDesc || 'Learn about futuristic tech in 2 minutes with audio, text, and video formats.',
-    keywords: [
-      'tech learning',
-      'futuristic technology',
-      'Beams Today',
-      beamsToday.category.name,
-      beamsToday.title,
-    ],
-    openGraph: {
+    const metadata: Metadata = {
+      metadataBase: new URL('https://www.beams.world'),
       title: `${beamsToday.title} | Beams Today`,
-      description: beamsToday.shortDesc || 'Quick learning in audio, text, and video formats about the latest in futuristic technology.',
-      type: 'article',
-      url: `https://www.beams.world/beams-today/${id}`,
-      siteName: 'Beams',
-      images: [
-        {
-          url: beamsToday.thumbnailUrl || 'https://res.cloudinary.com/your-default-image.jpg',
+      description: beamsToday.shortDesc,
+      openGraph: {
+        type: 'article',
+        title: `${beamsToday.title} | Beams Today`,
+        description: beamsToday.shortDesc,
+        url: `/beams-today/${id}`,
+        siteName: 'Beams',
+        images: [{
+          url: beamsToday.thumbnailUrl || "",
           width: 1200,
           height: 630,
           alt: beamsToday.title,
-        }
-      ],
-      locale: 'en_US',
-      section: beamsToday.category.name,
-    
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${beamsToday.title} | Beams Today`,
-      description: beamsToday.shortDesc,
-      images: [beamsToday.thumbnailUrl || 'https://res.cloudinary.com/your-default-image.jpg'],
-    },
-  };
+        }],
+        locale: 'en_US',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${beamsToday.title} | Beams Today`,
+        description: beamsToday.shortDesc,
+        images: beamsToday.thumbnailUrl ? [beamsToday.thumbnailUrl] : "" ,
+      },
+    };
+
+    return metadata;
+
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Error | Beams Today',
+      description: 'An error occurred while loading the content'
+    };
+  }
 }
 
 const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
@@ -121,5 +127,5 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   );
 };
 
-export const dynamic = 'force-dynamic';
+
 export default BeamsTodayPlayerPage;

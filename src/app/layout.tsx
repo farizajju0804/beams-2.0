@@ -37,9 +37,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.beams.world',
-    title: 'Beams - Next-gen Learning Platform',
-    description: 'Beams is an innovative next-gen learning platform providing various products for different types of learning in emerging new topics.',
     siteName: 'Beams',
     images: [
       {
