@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: 'Beams',
     images: [
       {
-        url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1724853253/Beams%20today/AI%20Headphones/ai-headphones-thumbnail-v7zzwd-66cf2bf769602_pj7aka.webp', // Image for Open Graph
+        url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733237502/og-674f1a2694d71_rvlkk2.webp', // Image for Open Graph
         width: 1200,
         height: 630,
         alt: 'Beams - Next-gen Learning Platform',

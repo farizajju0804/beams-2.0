@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, Input, Spinner } from "@nextui-org/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Copy, TickCircle, Gift,PercentageSquare } from "iconsax-react";
+import { Copy, TickCircle, Gift, PercentageSquare } from "iconsax-react";
 import Image from "next/image";
 import {
   FacebookShareButton,
@@ -19,22 +19,58 @@ import {
 import { useReferralModalStore } from "@/store/referralStore";
 import { useReferralUrl } from "@/hooks/useReferralUrl";
 import { NETWORK_POINTS_PERCENTAGE } from "@/constants/pointsConstants";
+import { shareMetadataConfig } from "@/constants/shareMetadata";
 
-export const ReferFriendModal = () => {
+export function ReferFriendModal() {
   const { isOpen, closeModal } = useReferralModalStore();
   const { referralUrl, isLoading, error } = useReferralUrl();
   const [copied, setCopied] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const { title, description, imageUrl } = shareMetadataConfig.referral;
+
   const successMessages = [
     "Boom! Link copied! Time to spread the love! 💌",
     "Your friends are going to be delighted! 🎉",
-    "Yippee, sharing is caring!",
+    "Yippee, sharing is caring! 🎈",
     "Let the good times roll with your friends! 🚀",
     "That link is ready for action! Let's go! 🌟",
-    "Link copied! Feel the good vibes coming your way!💫" 
+    "Link copied! Feel the good vibes coming your way! 💫"
   ];
+
+  // Platform-specific share content
+  const shareContent = {
+    facebook: {
+      quote: `${description}\n\nJoin me on this amazing learning journey! 🎓`,
+      hashtag: "#BeamsLearning"
+    },
+    twitter: {
+      text: "🚀 Join me on @BeamsWorld and get 20 free Beams!\n\n💡 Access exclusive content\n📚 Learn emerging topics\n✨ Earn while you learn\n\nStart your journey here:",
+      hashtags: ['BeamsLearning', 'FutureOfLearning']
+    },
+    linkedin: {
+      title: title,
+      summary: `${description}\n\nJoin me in shaping the future of learning! 🎓`
+    },
+    whatsapp: {
+      text: `🎓 Hey! Check this out!\n\n✨ I'm learning on Beams and thought you'd love it too!\n\n🎁 Join using my link to get:\n• 20 free Beams instantly\n• Access to exclusive content\n• Amazing learning experiences\n\nLet's learn together! 🚀`
+    },
+    email: {
+      subject: "🎁 Join me on Beams - Get 20 Free Beams!",
+      body: `Hey!
+
+I'm excited to invite you to join Beams - an incredible learning platform I'm using to explore emerging topics and earn rewards.
+
+🎁 When you join using my link:
+• You'll get 20 Beams instantly
+• Access exclusive content
+• Learn cutting-edge topics
+• Earn while you learn!
+
+I'd love to have you join me on this learning adventure! Click here:`
+    }
+  };
 
   const getRandomSuccessMessage = () => {
     const randomIndex = Math.floor(Math.random() * successMessages.length);
@@ -46,16 +82,15 @@ export const ReferFriendModal = () => {
       navigator.clipboard.writeText(referralUrl);
       setCopied(true);
       setSuccessMessage(getRandomSuccessMessage());
-   
-        setShowSuccessMessage(true);
+      setShowSuccessMessage(true);
 
-     
+      // Reset copy state after 3 seconds
+      setTimeout(() => {
+        setCopied(false);
+        setShowSuccessMessage(false);
+      }, 3000);
     }
   };
-
-  const shareTitle = "Join me on Beams and let's earn rewards together!";
-  const emailSubject = "Check out this awesome platform!";
-  const emailBody = `Hey there! I thought you might be interested in Beams.\n\n ${shareTitle}\n\n Here's my referral link:`;
 
   const benefitRows = [
     {
@@ -66,9 +101,8 @@ export const ReferFriendModal = () => {
     {
       icon: <PercentageSquare variant="Bold" className="w-6 h-6 text-primary" />,
       title: `Earn ${NETWORK_POINTS_PERCENTAGE*100}% Bonus`,
-      description: `Get ${NETWORK_POINTS_PERCENTAGE*100}%  of all Beams your friends earn.`
-    },
-   
+      description: `Get ${NETWORK_POINTS_PERCENTAGE*100}% of all Beams your friends earn.`
+    }
   ];
 
   return (
@@ -105,8 +139,8 @@ export const ReferFriendModal = () => {
                   <Image
                     src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1728543913/authentication/gift-3d_yvf0u5.webp"
                     alt="Referral illustration"
-                    width={125}
-                    height={125}
+                    width={200}
+                    height={200}
                     className="mx-auto"
                   />
                 </div>
@@ -185,19 +219,44 @@ export const ReferFriendModal = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <FacebookShareButton url={referralUrl} title={emailBody}>
+                    <FacebookShareButton 
+                      url={referralUrl}
+                      title={shareContent.facebook.quote}
+                      hashtag={shareContent.facebook.hashtag}
+                    >
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
-                    <TwitterShareButton url={referralUrl} title={shareTitle}>
+                    
+                    <TwitterShareButton 
+                      url={referralUrl}
+                      title={shareContent.twitter.text}
+                      hashtags={shareContent.twitter.hashtags}
+                    >
                       <TwitterIcon size={32} round />
                     </TwitterShareButton>
-                    <LinkedinShareButton url={referralUrl} title={shareTitle}>
+                    
+                    <LinkedinShareButton 
+                      url={referralUrl}
+                      title={shareContent.linkedin.title}
+                      summary={shareContent.linkedin.summary}
+                    >
                       <LinkedinIcon size={32} round />
                     </LinkedinShareButton>
-                    <WhatsappShareButton url={referralUrl} title={shareTitle}>
+                    
+                    <WhatsappShareButton 
+                      url={referralUrl}
+                      title={shareContent.whatsapp.text}
+                      separator="\n\n"
+                    >
                       <WhatsappIcon size={32} round />
                     </WhatsappShareButton>
-                    <EmailShareButton url={referralUrl} subject={emailSubject} body={emailBody}>
+                    
+                    <EmailShareButton 
+                      url={referralUrl}
+                      subject={shareContent.email.subject}
+                      body={shareContent.email.body}
+                      separator="\n\n"
+                    >
                       <EmailIcon size={32} round />
                     </EmailShareButton>
                   </motion.div>
@@ -209,4 +268,4 @@ export const ReferFriendModal = () => {
       </ModalContent>
     </Modal>
   );
-};
+}

@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 
+
 const AuthLayout: FC<Readonly<AuthLayoutProps>> = ({ children }) => {
   return (
     <SessionProviders>
