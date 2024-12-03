@@ -16,13 +16,11 @@ interface BeamsTodayPlayerPageProps {
   params: { id: string };
 }
 
+// app/beams-today/[id]/page.tsx
 export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): Promise<Metadata> {
   const { id } = params;
-  
-  // Fetch Beams Today topic data by ID for metadata
   const beamsToday = await getBeamsTodayById(id);
 
-  // Generate metadata dynamically
   return {
     title: `${beamsToday.title} | Beams Today`,
     description: beamsToday.shortDesc || 'Learn about futuristic tech in 2 minutes with audio, text, and video formats.',
@@ -36,18 +34,29 @@ export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): P
     openGraph: {
       title: `${beamsToday.title} | Beams Today`,
       description: beamsToday.shortDesc || 'Quick learning in audio, text, and video formats about the latest in futuristic technology.',
-      type: 'website',
+      type: 'article',
       url: `https://www.beams.world/beams-today/${id}`,
       siteName: 'Beams',
+      images: [
+        {
+          url: beamsToday.thumbnailUrl || 'https://res.cloudinary.com/your-default-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: beamsToday.title,
+        }
+      ],
+      locale: 'en_US',
+      section: beamsToday.category.name,
+    
     },
-    robots: {
-      index: true,
-      follow: true,
-      nocache: true,
+    twitter: {
+      card: 'summary_large_image',
+      title: `${beamsToday.title} | Beams Today`,
+      description: beamsToday.shortDesc,
+      images: [beamsToday.thumbnailUrl || 'https://res.cloudinary.com/your-default-image.jpg'],
     },
   };
 }
-
 
 const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   // Destructure the topic ID from params

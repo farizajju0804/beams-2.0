@@ -88,7 +88,7 @@ export function BeamsFactsSlideshow({ slides, userId }: BeamsSlideshowProps) {
   const currentSlide = slides[currentIndex]
 
   return (
-    <div className="relative mt-2 mb-6 w-full max-w-5xl mx-auto">
+    <div className="relative cursor-pointer mt-2 mb-6 w-full max-w-5xl mx-auto">
       <div className="absolute top-[6px] left-0 z-10">
         <Link 
           href="/beams-facts"

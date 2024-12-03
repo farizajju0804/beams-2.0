@@ -20,69 +20,95 @@ interface ShareButtonProps {
 }
 
 const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
-  // Create a state to store the share URL
   const [shareUrl, setShareUrl] = useState<string>('');
-  
-  // Create states to track feature availability
   const [hasShareAPI, setHasShareAPI] = useState<boolean>(false);
   const [hasClipboard, setHasClipboard] = useState<boolean>(false);
 
-  // Initialize browser-dependent values after component mounts
   useEffect(() => {
-    // Set the share URL from window.location after component mounts
-    setShareUrl(window.location.href);
+    // Set canonical URL for sharing
+    const baseUrl = 'https://www.beams.world';
+    const path = `/beams-today/${data.id}`;
+    setShareUrl(window.location.hostname === 'localhost' ? `${baseUrl}${path}` : window.location.href);
     
-    // Check for Web Share API availability
     setHasShareAPI('share' in navigator);
-    
-    // Check for Clipboard API availability
     setHasClipboard('clipboard' in navigator);
-  }, []); // Empty dependency array means this runs once on mount
+  }, [data.id]);
 
-  // Prepare share content - moved outside of render to avoid recreation on each render
-  const shareTitle = `Hey, Check out this fascinating content on Beams! ${data?.title}`;
-  const shareText = `Hey, Check out this fascinating content on Beams! ${data?.title}\n\n${data?.shortDesc}`;
+  const shareContent = {
+    facebook: {
+      quote: `🎯 Exploring "${data.title}" on Beams Today!
 
-  // Handle native sharing with try-catch for better error handling
+${data.shortDesc}
+
+Join me in discovering fascinating insights about emerging technologies! 🚀`,
+      hashtag: '#BeamsLearning'
+    },
+    twitter: {
+      text: `🎯 Fascinating read on @BeamsWorld!
+
+"${data.title}"
+
+Join me in exploring the future of technology!`,
+      hashtags: ['BeamsLearning', 'FutureOfTech', 'TechLearning'],
+      via: 'BeamsWorld'
+    },
+    linkedin: {
+      title: `${data.title} | Beams Today`,
+      summary: `🎯 I just learned about "${data.title}" on Beams Today!
+
+${data.shortDesc}
+
+Join me in exploring emerging technologies and shaping the future of learning! 🚀`,
+      source: 'Beams Today'
+    },
+    whatsapp: {
+      text: `🎯 Check out what I'm learning on Beams Today!
+
+📚 *${data.title}*
+
+${data.shortDesc}
+
+Join me in exploring this fascinating topic! 🚀`
+    }
+  };
+
   const handleNativeShare = async () => {
     const shareData = {
-      title: shareTitle,
-      text: shareText,
-      url: shareUrl,
+      title: `${data.title} | Beams Today`,
+      text: `🎯 Check out what I'm learning on Beams Today!
+
+📚 ${data.title}
+
+${data.shortDesc}
+
+Join me in exploring this fascinating topic!`,
+      url: shareUrl
     };
 
     try {
       if (hasShareAPI) {
-        // Use Web Share API if available
         await navigator.share(shareData);
-        console.log('Successfully shared');
       } else if (hasClipboard) {
-        // Fallback to clipboard
-        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
-        alert('Content copied to clipboard. You can now paste it to share.');
+        await navigator.clipboard.writeText(`${shareData.text}\n\n${shareUrl}`);
+        alert('Content copied to clipboard!');
       } else {
-        // Final fallback if neither is available
         alert('Sharing not supported on your browser. Please copy the link manually.');
       }
     } catch (error) {
-      // Comprehensive error handling
-      console.error('Error during share operation:', error);
-      if (error instanceof Error) {
-        // If user aborted the share operation, don't show error
-        if (error.name === 'AbortError') return;
-        
-        // Show user-friendly error message
-        alert(`Unable to share: ${error.message}`);
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share error:', error);
       }
     }
   };
 
-  // Don't render share buttons until we have the URL (prevents hydration mismatch)
   if (!shareUrl) {
     return (
-      <Button size="sm" isIconOnly startContent={<Share size={20} className="text-grey-2" />} className="bg-grey-1">
-        {/* Loading state button */}
-      </Button>
+      <Button 
+        size="sm" 
+        isIconOnly 
+        startContent={<Share size={20} className="text-grey-2" />} 
+        className="bg-grey-1"
+      />
     );
   }
 
@@ -97,29 +123,53 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
         />
       </PopoverTrigger>
       <PopoverContent>
-        <div className="p-2">
-          <div className="mb-2 font-bold">Share this content</div>
-          <div className="flex gap-2">
-            {/* Only render social share buttons if we have a URL */}
-            <WhatsappShareButton url={shareUrl} title={shareTitle}>
-              <WhatsappIcon size={32} round />
+        <div className="p-4">
+          <div className="mb-3 font-semibold text-lg">Share This Topic</div>
+          <div className="flex gap-3">
+            <WhatsappShareButton 
+              url={shareUrl} 
+              title={shareContent.whatsapp.text}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <WhatsappIcon size={36} round />
             </WhatsappShareButton>
-            <FacebookShareButton url={shareUrl} title={shareTitle}>
-              <FacebookIcon size={32} round />
+
+            <FacebookShareButton 
+              url={shareUrl} 
+              title={shareContent.facebook.quote}
+              hashtag={shareContent.facebook.hashtag}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <FacebookIcon size={36} round />
             </FacebookShareButton>
-            <TwitterShareButton url={shareUrl} title={shareTitle}>
-              <TwitterIcon size={32} round />
+
+            <TwitterShareButton 
+              url={shareUrl} 
+              title={shareContent.twitter.text}
+              hashtags={shareContent.twitter.hashtags}
+              via={shareContent.twitter.via}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <TwitterIcon size={36} round />
             </TwitterShareButton>
-            <LinkedinShareButton url={shareUrl} title={shareTitle} summary={shareText}>
-              <LinkedinIcon size={32} round />
+
+            <LinkedinShareButton 
+              url={shareUrl} 
+              title={shareContent.linkedin.title}
+              summary={shareContent.linkedin.summary}
+              source={shareContent.linkedin.source}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <LinkedinIcon size={36} round />
             </LinkedinShareButton>
+
             <Button 
-              size="sm" 
-              color="warning" 
+              size="lg"
+              className="bg-primary text-white hover:opacity-90 transition-all"
               onClick={handleNativeShare}
               disabled={!hasShareAPI && !hasClipboard}
             >
-              Others
+              More
             </Button>
           </div>
         </div>

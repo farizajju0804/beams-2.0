@@ -76,7 +76,7 @@ export default function BeamsTodayCarousel({ beams }: BeamsTodayCarouselProps) {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex pb-4 -ml-4">
           {beams.map((beam) => (
-            <div key={beam.id} className="flex-[0_0_100%] min-w-0 pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
+            <div key={beam.id} className="cursor-pointer flex-[0_0_100%] min-w-0 pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
               <Link href={`/beams-today/${beam.id}`} className="block">
                 <Card className="max-w-sm  border-default-200 shadow-none overflow-hidden transition-transform duration-300">
                   <CardContent className="p-0">

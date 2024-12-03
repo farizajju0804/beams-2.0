@@ -41,34 +41,64 @@ export function ReferFriendModal() {
 
   // Platform-specific share content
   const shareContent = {
+    whatsapp: {
+      // Add extra line breaks and remove any extra spaces to ensure clean formatting
+      text: `🎓 Hey! Check this out!
+
+✨ I'm learning on Beams and thought you'd love it too!
+
+🎁 Join using my link to get:
+- 20 free Beams instantly
+- Access to exclusive content
+- Amazing learning experiences
+
+Let's learn together! 🚀
+
+Join here:`
+    },
     facebook: {
-      quote: `${description}\n\nJoin me on this amazing learning journey! 🎓`,
+      quote: `Join me on Beams and get 20 free Beams! 🎓
+  
+✨ Access exclusive content
+📚 Learn emerging topics
+💫 Earn while you learn
+  
+Join me in shaping the future of learning!`,
       hashtag: "#BeamsLearning"
     },
     twitter: {
-      text: "🚀 Join me on @BeamsWorld and get 20 free Beams!\n\n💡 Access exclusive content\n📚 Learn emerging topics\n✨ Earn while you learn\n\nStart your journey here:",
+      text: `🚀 Join me on @BeamsWorld and get 20 free Beams!
+  
+💡 Access exclusive content
+📚 Learn emerging topics
+✨ Earn while you learn
+  
+Start your journey here:`,
       hashtags: ['BeamsLearning', 'FutureOfLearning']
     },
     linkedin: {
       title: title,
-      summary: `${description}\n\nJoin me in shaping the future of learning! 🎓`
-    },
-    whatsapp: {
-      text: `🎓 Hey! Check this out!\n\n✨ I'm learning on Beams and thought you'd love it too!\n\n🎁 Join using my link to get:\n• 20 free Beams instantly\n• Access to exclusive content\n• Amazing learning experiences\n\nLet's learn together! 🚀`
+      summary: `Join me on Beams and get 20 free Beams! 🎓
+  
+✨ Access exclusive content
+📚 Learn emerging topics
+💫 Earn while you learn
+  
+Join me in shaping the future of learning!`
     },
     email: {
       subject: "🎁 Join me on Beams - Get 20 Free Beams!",
       body: `Hey!
-
+  
 I'm excited to invite you to join Beams - an incredible learning platform I'm using to explore emerging topics and earn rewards.
-
+  
 🎁 When you join using my link:
 • You'll get 20 Beams instantly
 • Access exclusive content
 • Learn cutting-edge topics
 • Earn while you learn!
-
-I'd love to have you join me on this learning adventure! Click here:`
+  
+I'd love to have you join me on this learning adventure!`
     }
   };
 
@@ -246,7 +276,7 @@ I'd love to have you join me on this learning adventure! Click here:`
                     <WhatsappShareButton 
                       url={referralUrl}
                       title={shareContent.whatsapp.text}
-                      separator="\n\n"
+                       
                     >
                       <WhatsappIcon size={32} round />
                     </WhatsappShareButton>

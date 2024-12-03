@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { cn } from '@/utils/cn'
 import { Button, Chip } from '@nextui-org/react'
 import { ArrowLeft2, ArrowRight2 } from 'iconsax-react'
+import { useRouter } from 'next/navigation'
 
 export interface Slide {
     id: string
@@ -26,7 +27,7 @@ interface BeamsSlideshowProps {
 export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(0)
-
+ const router = useRouter()
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 1000 : -1000,
@@ -62,10 +63,12 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
   const currentSlide = slides[currentIndex]
 
   return (
-    <div className="relative mt-2 mb-6 w-full max-w-5xl mx-auto">
+  
+    <div onClick={() => router.push(`/beams-today/${currentSlide.id}`)} className="relative cursor-pointer mt-2 mb-6 w-full max-w-5xl mx-auto">
       <div className="absolute top-[6px] left-0 z-10">
         <Link 
           href="/beams-today"
+          onClick={(e) => e.stopPropagation() }
           className="bg-yellow px-4 py-2 text-lg md:text-xl font-poppins text-black font-semibold transition-colors"
         >
           Beams Today
@@ -80,7 +83,6 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
         </div>
       )}
 
-      <Link href={`/beams-today/${currentSlide.id}`} className="pointer-events-none">
         <div className="relative h-[400px] w-full overflow-hidden ">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
@@ -129,7 +131,7 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
             </motion.div>
           </AnimatePresence>
         </div>
-      </Link>
+      
 
       {/* Navigation Buttons */}
       <div className="absolute inset-x-0 bottom-4 flex gap-4 inset-y-0 left-4 right-4 flex-row items-center justify-between">
@@ -157,6 +159,7 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
         </Button>
       </div>
     </div>
+    
   )
 }
 
