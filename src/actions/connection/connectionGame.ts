@@ -65,7 +65,7 @@ export async function getWordGame(clientDate: string): Promise<WordGameResponse>
 }
 
 
-interface WordGameData {
+export interface WordGameData {
   id: string;
   answer: string;
   hint: string;

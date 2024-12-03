@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod"; // Resolver to integrate 
 import Link from "next/link"; // Link component for navigation
 import { RiLoginCircleFill } from "react-icons/ri"; // Icon for login button
 import RedirectMessage from "@/components/Redirection";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 
 
@@ -93,7 +94,7 @@ const LoginForm = () => {
        
         setIsLoading(false);
         setIsRedirecting(true)
-        router.push("/beams-today"); // Redirect to the main page
+        router.push(DEFAULT_LOGIN_REDIRECT); // Redirect to the main page
       } else if (data?.twoFactor) {
         setShowTwoFactor(true); // Show two-factor authentication field if required
         setUserEmail(values.email);

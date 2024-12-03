@@ -28,7 +28,7 @@ interface GlobalSearchProps {
 }
 
 const contentTypes = [
-  { value: "all", label: "All Content" },
+  { value: "all", label: "All" },
   { value: "beamsToday", label: "Beams Today" },
   { value: "fact", label: "Beams Facts" },
   { value: "connectionGame", label: "Beams Connect" }
@@ -234,29 +234,42 @@ useEffect(() => {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 my-3 px-6">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <Select
-            className="w-40"
-            radius='full'
-            variant='faded'
-            selectedKeys={[selectedContentType]}
-            onChange={(e) => setSelectedContentType(e.target.value)}
-          >
-            {contentTypes.map((type) => (
-              <SelectItem key={type.value} value={type.value}>
-                {type.label}
-              </SelectItem>
-            ))}
-          </Select>
-
+        <div className="w-full flex flex-row gap-2 md:gap-4">
+        <Select
+  className="w-[80px] text-xs"
+  radius='full'
+  classNames={{
+    base: "text-xs",
+    trigger: "text-xs",
+    value: "text-xs",
+    popoverContent: "min-w-[140px] text-xs",
+    listboxWrapper: "text-xs",
+     
+    // Target items using data attributes for more precise styling
+    listbox: "text-xs [&_[role=option]_[data-label=true]]:text-xs flex-0",
+  }}
+  variant='faded'
+  selectedKeys={[selectedContentType]}
+  onChange={(e) => setSelectedContentType(e.target.value)}
+>
+  {contentTypes.map((type) => (
+    <SelectItem 
+      key={type.value} 
+      value={type.value}
+    >
+      {type.label}
+    </SelectItem>
+  ))}
+</Select>
           <div className="flex-1">
             <Input
               classNames={{
-                input: ["placeholder:text-grey-2 md:text-lg"],
+                input: ["placeholder:text-grey-2 text-sm"],
               }}
               radius="full"
+              
               variant='faded'
-              placeholder="Enter your search term..."
+              placeholder="Enter your search term here"
               value={query}
               aria-label='search'
               onChange={(e) => setQuery(e.target.value)}
@@ -274,7 +287,7 @@ useEffect(() => {
             />  
             </div>
           </div>
-          {searchResults?.results.length > 0 && (
+          {query && searchResults?.results.length > 0 && (
           <div className="flex w-full mt-2 justify-between items-center">
           <Button
             className="bg-transparent"

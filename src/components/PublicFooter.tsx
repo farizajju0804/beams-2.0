@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { currentUser } from '@/libs/auth'; // Imports function to get current user data
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
 // Footer component definition
 const PublicFooter: React.FC = async () => {
@@ -19,7 +20,7 @@ const PublicFooter: React.FC = async () => {
           <div className="pt-4 flex flex-col md:flex-row justify-between items-center fade-in">
             {/* Logo Link (conditionally navigates based on user status) */}
             <div className="my-4 md:my-0">
-              <Link prefetch href={user ? '/beams-today' : '/'}>
+              <Link prefetch href={user ? DEFAULT_LOGIN_REDIRECT : '/'}>
                 <Image
                   src="/images/logo.png" // Image path for the logo
                   alt="Beams Logo"

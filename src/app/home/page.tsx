@@ -3,13 +3,14 @@ import { getCategories } from '@/actions/home/search';
 import GlobalSearch from '@/components/Search';
 import { currentUser } from '@/libs/auth';
 import { getAllBeamsToday5 } from '@/actions/beams-today/getAllBeamsToday';
-import { DailyHeader } from '@/components/daily-header';
-import BeamsTodayCarousel from '@/components/beams-today-carousel';
-import BeamsConnectCarousel from '@/components/beams-connect-carousel';
-import { getTop5WordGames } from '@/actions/connection/connectionGame';
-import SwipeCards from '@/components/swipe-cards';
-import { getTop5Facts } from '@/actions/fod/fod';
+import { DailyHeader } from '@/app/home/_components/daily-header';
 
+import { getTop5WordGames } from '@/actions/connection/connectionGame';
+
+import { getTop5Facts } from '@/actions/fod/fod';
+import { BeamsSlideshow } from './_components/beams-today-slideshow copy';
+import { BeamsConnectSlideshow } from './_components/beams-connect-slideshow';
+import { BeamsFactsSlideshow } from './_components/beams-facts-slideshow';
 
 async function getSearchData() {
   const user:any = await currentUser()
@@ -36,12 +37,13 @@ export default async function SearchPage() {
           userId={userId}
         />
       </Suspense>
-      <BeamsTodayCarousel beams={beamsToday} />
-      {wordGamesResponse.success && wordGamesResponse.data && (
-        <BeamsConnectCarousel games={wordGamesResponse.data} />
-      )}
+      <BeamsSlideshow slides={beamsToday} />
+    
 
-    <SwipeCards userId={userId} initialFacts={facts} />
+  <BeamsFactsSlideshow userId={userId} slides={facts}/>
+  {wordGamesResponse.success && wordGamesResponse.data &&
+      <BeamsConnectSlideshow  slides={wordGamesResponse.data}  />
+  }
     </div>
   )
 

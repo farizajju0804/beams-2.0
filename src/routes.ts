@@ -56,5 +56,5 @@ export const publicRoutes = [
    * 
    * @type {string}
    */
-  export const DEFAULT_LOGIN_REDIRECT = "/beams-today"; // Default redirect after login
+  export const DEFAULT_LOGIN_REDIRECT = "/home"; // Default redirect after login
   
