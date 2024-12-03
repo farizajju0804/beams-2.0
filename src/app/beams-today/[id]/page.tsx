@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): P
   const beamsToday = await getBeamsTodayById(id);
 
   return {
+    metadataBase: new URL('https://www.beams.world'),
     title: `${beamsToday.title} | Beams Today`,
     description: beamsToday.shortDesc || 'Learn about futuristic tech in 2 minutes with audio, text, and video formats.',
     keywords: [
@@ -120,4 +121,5 @@ const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   );
 };
 
+export const dynamic = 'force-dynamic';
 export default BeamsTodayPlayerPage;
