@@ -1,10 +1,17 @@
 import React from 'react';
 import OnboardingPage from './_components/OnBoarding';  // Import the OnboardingPage component
+import { currentUser } from '@/libs/auth';
 
-// Functional component for rendering the onboarding page
-const page = () => {
+
+const page = async () => {
+  const user = await currentUser()
+  if(!user){
+    return
+  }
+  const userType = user.userType
+
   return (
-    <OnboardingPage />  // Render the OnboardingPage component
+    <OnboardingPage userType={userType} />  // Render the OnboardingPage component
   );
 }
 

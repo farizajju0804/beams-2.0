@@ -12,55 +12,90 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { motion } from 'framer-motion';
 import RedirectMessage from "@/components/Redirection";
 import toast, { Toaster } from "react-hot-toast";
+import { UserType } from "@prisma/client";
 
-const OnboardingPage = () => {
+const OnboardingPage = ({userType}: { userType : UserType}) => {
   const [isPending, startTransition] = useTransition()
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  // const [isModalOpen, setIsModalOpen] = useState(true);
+
   const { data: session, update } = useSession();
   const router = useRouter();
   
-  const slides = [
+  const studentSlides = [
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723791783/onboarding/boy_flying_mlb9at.png',
       title: 'Welcome to Beams',
-      content: 'Explore innovation like never before with Beams. From daily insights to interactive games, we’ve got it all.',
+      content: 'Explore <b class="text-secondary-2">innovation</b> like never before with Beams. From daily insights to interactive games, we’ve got it all.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792299/onboarding/formats_ialiwf.png',
       title: 'Beams Today: Your Daily Dose',
-      content: 'Discover tech revolutions in less than 2 minutes. Learn through <b class="text-purple">video, audio,</b> and <b class="text-purple">text</b> formats, and join the daily poll to share your views.',
+      content: 'Discover tech revolutions in less than <b class="text-secondary-2">2 minutes.</b> Learn through <b class="text-secondary-2">video, audio,</b> and <b class="text-secondary-2">text</b> formats, and join the daily poll to share your views.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723820625/onboarding/discover_p39zka.png',
       title: 'Beams Facts: Knowledge in Seconds',
-      content: 'Uncover fascinating facts and quick insights in less than 10 seconds. Learning has never been this effortless!',
+      content: 'Uncover fascinating facts and quick insights in less than <b class="text-secondary-2">10 seconds.</b> Learning has never been this effortless!',
     },
     {
-      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/poll_gbkqsh.png',
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733312998/onboarding/game-onboarding-675041b637d7c_mxi7xp.webp',
       title: 'Beams Connect: Play & Learn',
-      content: 'Challenge yourself with image-based games. Connect the dots and test your knowledge of new technologies daily.',
+      content: 'Challenge yourself with <b class="text-secondary-2">image-based games.</b> Connect the dots and test your knowledge of new technologies daily.',
     },
     {
-      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798017/onboarding/features_qgakm7.png',
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733313016/onboarding/award-onboarding-675041b5f37aa_pka4qe.webp',
       title: 'Gamify Your Experience',
-      content: 'Earn badges, climb leaderboards, and level up as you explore, learn, and play. Make every moment count!',
+      content: 'Earn <b class="text-secondary-2">badges</b>, climb <b class="text-secondary-2">leaderboards</b>, and <b class="text-secondary-2">level up</b> as you explore, learn, and play. Make every moment count!',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/ready_tgikcv.png',
       title: 'Your Journey Starts Here',
-      content: "Explore Beams Today, Beams Facts, and Beams Connect. Start your journey of discovery and innovation now!",
+      content: 'Explore <b class="text-secondary-2">Beams Today, Beams Facts, and Beams Connect.</b> Start your journey of discovery and innovation now!',
     },
   ];
   
+  const nonStudentSlides =[
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733320924/onboarding/innovation-675060cdbf24c_wnzfkn.webp',
+      title: 'Welcome to Beams',
+      content: 'Explore <b class="text-secondary-2">innovation</b> like never before with Beams. From daily insights to interactive games, we’ve got it all.',
+    },
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733321267/onboarding/slide-2-non-student-67506225036ce_chf8yt.webp',
+      title: 'Beams Today: Your Daily Dose',
+      content: 'Discover tech revolutions in less than <b class="text-secondary-2">2 minutes.</b> Learn through <b class="text-secondary-2">video, audio,</b> and <b class="text-secondary-2">text</b> formats, and join the daily poll to share your views.',
+    },
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733321465/onboarding/facts-non-student-675062d6c5df2_jpo4jz.webp',
+      title: 'Beams Facts: Knowledge in Seconds',
+      content: 'Uncover fascinating facts and quick insights in less than <b class="text-secondary-2">10 seconds.</b> Learning has never been this effortless!',
+    },
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733322212/onboarding/connect-non-student-6750645bf29dc_fgimap.webp',
+      title: 'Beams Connect: Play & Learn',
+      content: 'Challenge yourself with <b class="text-secondary-2">image-based games.</b> Connect the dots and test your knowledge of new technologies daily.',
+    },
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733322621/onboarding/gamify-non-student-675067651e98a_kbcn4a.webp',
+      title: 'Gamify Your Experience',
+      content: 'Earn <b class="text-secondary-2">badges</b>, climb <b class="text-secondary-2">leaderboards</b>, and <b class="text-secondary-2">level up</b> as you explore, learn, and play. Make every moment count!',
+    },
+    {
+      mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733322621/onboarding/last-non-student-6750676518348_xlarr0.webp',
+      title: 'Your Journey Starts Here',
+      content: 'Explore <b class="text-secondary-2">Beams Today, Beams Facts, and Beams Connect.</b> Start your journey of discovery and innovation now!',
+    },
+  ];
 
+ 
+  const isStudent = userType === 'STUDENT';
+  const slides = isStudent ? studentSlides : nonStudentSlides;
   const totalSlides = slides.length;
-  const isEvenSlide = currentSlide % 2 === 0;
   const [isMobile, setIsMobile] = useState(false);
-  const activeColor = isEvenSlide ? '#370075' : '#F9D42E'; 
-  const inactiveColor = isEvenSlide ? '#fefefe' : '#ffffff'; 
-
+  const activeColor =  '#F9642e'; 
+  const inactiveColor = '#d1d1d1'; 
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 767);
@@ -102,13 +137,7 @@ const OnboardingPage = () => {
     frame();
   };
 
-  const backgroundImage = isEvenSlide 
-    ? isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/yellow-bg-mobile_xxtark.png'
-        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/yellow-bg-dektop_vvd0c0.png' 
-    : isMobile 
-        ? 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723837246/onboarding/purple-bg-mobile_oarvy7.png'
-        : 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792297/onboarding/purple-bg-dektop_yljvfl.png';
+ 
 
   const handleDotClick = (index: number) => {
     setCurrentSlide(index);
@@ -157,8 +186,8 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="flex relative flex-col items-center gap-0 justify-around bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2"
-    style={{ backgroundImage: `url(${backgroundImage})` , height : '100svh'}}
+    <div className={`flex relative flex-col items-center justify-center gap-12  bg-cover object-cover bg-center lg:bg-bottom transition-all duration-500 ease-in-out pt-4 pb-2`}
+    style={{  height: '100svh' }}
     >
       <Toaster position="top-center"/>
       {isRedirecting ? (
@@ -166,18 +195,20 @@ const OnboardingPage = () => {
       ) : (
         <>
           <div className="absolute top-4 left-0 right-0 w-full flex justify-between items-center px-6 lg:py-2">
-            <ProgressDots
-              totalDots={totalSlides}
-              activeDot={currentSlide}
-              activeColor={activeColor}
-              inactiveColor={inactiveColor}
-              onDotClick={handleDotClick}
-            />
+        
+              <ProgressDots
+                totalDots={totalSlides}
+                activeDot={currentSlide}
+                activeColor={activeColor}
+                inactiveColor={inactiveColor}
+                onDotClick={handleDotClick}
+              />
+            
             <Button
               onClick={handleCompletion}
               size='sm'
               aria-label="skip"
-              className="w-fit text-sm bg-white text-black rounded-full"
+              className="w-fit text-sm bg-default-100 text-default-600 rounded-full"
               isLoading={isPending}
             >
               Skip
@@ -199,22 +230,26 @@ const OnboardingPage = () => {
               alt="Onboarding illustration"
               // layout="fill"
               priority
-              width={300}
-              height={300}
+              width={2000}
+              height={2000}
               // objectFit="contain"
-              className="object-cover mb-8 h-72 w-72 md:h-80 md:w-80 mx-auto"
+              className={`object-cover mb-0 h-auto w-72 px-6  md:w-80 mx-auto`}
             />
           </motion.div>
 
           <div className='flex flex-col items-center justify-center min-h-44 md:min-h-60 lg:min-h-44'>
             <div className="flex flex-col items-center justify-start">
               <div className="px-6 mt-4 text-center max-w-3xl">
-                <h2 className="text-3xl text-purple lg:text-4xl font-bold font-poppins mb-4">
+                <h2 
+                className={`text-3xl lg:text-4xl font-bold font-poppins mb-4 
+                   'text-text'
+                `}
+                >
                   {slides[currentSlide].title}
                 </h2>
                 <p 
                   dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} 
-                  className="mb-8 lg:mb-8 text-black text-sm md:text-base lg:text-lg"
+                  className='text-text mb-8 lg:mb-8  text-sm md:text-base lg:text-lg'
                 />
               </div>
             </div>
@@ -225,7 +260,7 @@ const OnboardingPage = () => {
               onPrev={handlePrev}
               onNext={handleNext}
               onComplete={handleCompletion}
-              completeBtnText="Yes I'm Ready"
+              completeBtnText="Let's Begin"
               isPending={isPending}
             />
           </div>

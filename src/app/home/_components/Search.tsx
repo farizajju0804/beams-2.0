@@ -240,11 +240,16 @@ useEffect(() => {
             <Input
               classNames={{
                 input: ["placeholder:text-grey-2 text-sm pl-24"],
-                innerWrapper: "flex items-center",
-                inputWrapper : "pr-4 pl-0 bg-transparent",
+                innerWrapper: "flex items-center outline-none",
+                inputWrapper: [
+                  "pr-4 pl-0 bg-transparent",
+                  "border hover:border-default-400", // Override hover border
+                  "group-data-[focused=true]:border-default-400", // Override focus border
+                  "!ring-0 !ring-offset-0" // Remove ring effect
+                ],
                 base:" bg-transparent"
               }}
-              radius="full"
+              radius="sm"
               variant='faded'
               placeholder="Enter your search term here"
               value={query}
@@ -253,12 +258,12 @@ useEffect(() => {
               startContent={
                 
                    <Select
-                      className="w-[100px] text-xs"
-                      radius='full'
+                      className="w-[100px] text-xs border-0"
+                      radius='sm'
                       variant='faded'
                       classNames={{
-                        base: "text-xs",
-                        trigger: "text-xs pl-2",
+                        base: "text-xs bg-transparent",
+                        trigger: "text-xs bg-transparent pl-2",
                         value: "text-xs",
                         popoverContent: "min-w-[140px] text-xs",
                         listboxWrapper: "text-xs",

@@ -44,12 +44,12 @@ export const metadata: Metadata = {
       template: "%s | Beams"
     },
     images: [
-      {
-        url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733237502/og-674f1a2694d71_rvlkk2.webp', // Image for Open Graph
-        width: 1200,
-        height: 630,
-        alt: 'Beams - Next-gen Learning Platform',
-      },
+      // {
+      //   url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733237502/og-674f1a2694d71_rvlkk2.webp', // Image for Open Graph
+      //   width: 1200,
+      //   height: 630,
+      //   alt: 'Beams - Next-gen Learning Platform',
+      // },
     ],
   },
   // Uncomment and customize the Twitter metadata if needed

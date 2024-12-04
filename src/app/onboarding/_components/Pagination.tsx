@@ -48,13 +48,13 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={handlePrevClick}
         disabled={isFirstSlide} // Disable if it's the first slide
         className={`w-fit rounded-full transition-all duration-300 ${
-          isFirstSlide ? 'bg-gray-100' : clickedArrow === 'left' ? 'bg-brand text-white' : 'bg-[#d2d2d2]'
+          isFirstSlide ? 'bg-default-50' : clickedArrow === 'left' ? 'bg-brand text-white' : 'bg-default-100'
         }`}
         aria-label="Previous slide"
       >
         <ArrowLeft2
           size="16"
-          className={`${isFirstSlide ? 'text-[#9CA3AF]' : clickedArrow === 'left' ? 'text-white' : 'text-[#181818]'}`}
+          className={`${isFirstSlide ? 'text-default-400' : clickedArrow === 'left' ? 'text-white' : 'text-default-500'}`}
         />
       </Button>
 
@@ -74,7 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
           size="sm"
           onClick={handleNextClick}
           className={`w-fit rounded-full transition-all duration-300 ${
-            clickedArrow === 'right' ? 'bg-primary text-white' : 'bg-[#d2d2d2] text-[#181818]'
+            clickedArrow === 'right' ? 'bg-primary text-white' : 'bg-default-100 text-default-500'
           }`}
           aria-label="Next slide"
           isDisabled={isPending} // Disable button when pending
