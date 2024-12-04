@@ -57,11 +57,11 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
   const currentSlide = slides[currentIndex]
 
   return (
-    <div  onClick={() => router.push(`/connection-game/${currentSlide.id}`)} className="relative cursor-pointer mt-2 w-full max-w-5xl mx-auto">
+    <div  onClick={() => router.push(`/connection-game/${currentSlide.id}`)} className="relative cursor-pointer mt-4 w-full max-w-5xl mx-auto">
       <div className="absolute top-[6px] left-0 z-10">
         <Link 
           href="/beams-connect"
-          className="bg-success px-4 py-2 text-lg md:text-xl text-black font-semibold font-poppins transition-colors"
+          className="bg-success px-3 py-2 text-sm md:text-lg text-black font-semibold font-poppins transition-colors"
         >
           Beams Connect
         </Link>
@@ -102,7 +102,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm">
                 <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                  <h2 className="text-white text-2xl md:text-4xl font-bold mb-4">
+                  <h2 className="text-white text-xl md:text-4xl font-bold mb-4">
                     {currentSlide.title}
                   </h2>
                   <p className="text-white/80 text-sm md:text-base">
@@ -123,6 +123,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
       <div className="absolute inset-x-0 bottom-4 flex gap-4 inset-y-0 left-4 right-4 flex-row items-center justify-between">
         <Button
            isIconOnly
+          size='sm'
           className={cn(
             "bg-default-100 transition-all duration-300 ease-in-out z-10",
             direction === -1 && "bg-primary text-white"
@@ -134,6 +135,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
         </Button>
         <Button
           isIconOnly
+          size='sm'
           className={cn(
             "bg-default-100 transition-all duration-300 ease-in-out z-10",
             direction === 1 && "bg-primary text-white"

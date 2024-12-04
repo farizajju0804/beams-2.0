@@ -53,7 +53,7 @@ const ConnectionModal = () => {
                    <RuleItem 
                     icon={<TbAbc className="text-pink-500" size={26} />} // Jumbled letters icon (use creative replacement)
                     title="Jumbled Letters"
-                    description="A 15-character string is provided as a visual clue. The answer is NOT within these characters but serves to create suspense."
+                    description="A 15-character string is provided as a visual clue. The answer is within these characters."
                   />
                   <RuleItem 
                     icon={<FaGamepad className="text-cyan-500" size={24} />} // Input boxes icon (use creative replacement)

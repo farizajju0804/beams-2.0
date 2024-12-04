@@ -36,7 +36,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
 
   const shareContent = {
     facebook: {
-      quote: `🎯 Exploring "${data.title}" on Beams Today!
+      quote: `Exploring "${data.title}" on Beams Today!
 
 ${data.shortDesc}
 
@@ -44,7 +44,7 @@ Join me in discovering fascinating insights about emerging technologies! 🚀`,
       hashtag: '#BeamsLearning'
     },
     twitter: {
-      text: `🎯 Fascinating read on @BeamsWorld!
+      text: `Fascinating read on @BeamsWorld!
 
 "${data.title}"
 
@@ -62,13 +62,13 @@ Join me in exploring emerging technologies and shaping the future of learning! �
       source: 'Beams Today'
     },
     whatsapp: {
-      text: `🎯 Check out what I'm learning on Beams Today!
+      text: `Hey, Check out what I'm learning on Beams Today!
 
-📚 *${data.title}*
+ *${data.title}*
 
 ${data.shortDesc}
 
-Join me in exploring this fascinating topic! 🚀`
+Join me in exploring this fascinating topic!`
     }
   };
 

@@ -36,7 +36,7 @@
 }
 
 
-/* input[type="color"],
+input[type="color"],
 input[type="date"],
 input[type="datetime"],
 input[type="datetime-local"],
@@ -53,7 +53,7 @@ input[type="week"],
 select:focus,
 textarea {
   font-size: 16px !important;
-} */
+}
 
 
 .shadow-defined{

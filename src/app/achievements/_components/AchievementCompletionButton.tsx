@@ -169,12 +169,12 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
     setShowConfetti(true);
   };
 
-   // Data for sharing on social platforms
-  const shareData = {
-    title: `${userFirstName} just unlocked the ${badgeName} badge!`,
-    shortDesc: `I'm excited to share that I earned the ${badgeName} badge and gained ${beamsToGain} Beams!`,
-    url: window.location.href, // Current page URL to be shared
-  };
+  //  // Data for sharing on social platforms
+  // const shareData = {
+  //   title: `${userFirstName} just unlocked the ${badgeName} badge!`,
+  //   shortDesc: `I'm excited to share that I earned the ${badgeName} badge and gained ${beamsToGain} Beams!`,
+  //   url: window.location.href, // Current page URL to be shared
+  // };
 
     // If loading, show a spinner overlay
   if (loading) {
@@ -218,11 +218,11 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
               {hasGainedBeams ? (
                 <>
                   <p className="text-sm mb-4">{inspiringMessage}</p>
-                  <ShareButton
+                  {/* <ShareButton
                     url={shareData.url}
                     shareTitle={shareData.title}
                     shareText={shareData.shortDesc}
-                  />
+                  /> */}
                 </>
               ) : (
                 <>
@@ -262,11 +262,11 @@ const AchievementCompletionButton: React.FC<AchievementCompletionButtonProps> = 
 
                  
 
-                  <ShareButton
+                  {/* <ShareButton
                     url={shareData.url}
                     shareTitle={shareData.title}
                     shareText={shareData.shortDesc}
-                  />
+                  /> */}
                   </div>
                 </>
               )}

@@ -43,7 +43,7 @@ export function ReferFriendModal() {
   const shareContent = {
     whatsapp: {
       // Add extra line breaks and remove any extra spaces to ensure clean formatting
-      text: `🎓 Hey! Check this out!
+      text: `Hey! Check this out!
 
 ✨ I'm learning on Beams and thought you'd love it too!
 

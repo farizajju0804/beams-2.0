@@ -235,44 +235,52 @@ useEffect(() => {
     <div className="w-full max-w-7xl mx-auto space-y-6 my-3 px-6">
       <div className="flex flex-col gap-4">
         <div className="w-full flex flex-row gap-2 md:gap-4">
-        <Select
-  className="w-[80px] text-xs"
-  radius='full'
-  classNames={{
-    base: "text-xs",
-    trigger: "text-xs",
-    value: "text-xs",
-    popoverContent: "min-w-[140px] text-xs",
-    listboxWrapper: "text-xs",
      
-    // Target items using data attributes for more precise styling
-    listbox: "text-xs [&_[role=option]_[data-label=true]]:text-xs flex-0",
-  }}
-  variant='faded'
-  selectedKeys={[selectedContentType]}
-  onChange={(e) => setSelectedContentType(e.target.value)}
->
-  {contentTypes.map((type) => (
-    <SelectItem 
-      key={type.value} 
-      value={type.value}
-    >
-      {type.label}
-    </SelectItem>
-  ))}
-</Select>
-          <div className="flex-1">
+<div className="flex-1 relative">
             <Input
               classNames={{
-                input: ["placeholder:text-grey-2 text-sm"],
+                input: ["placeholder:text-grey-2 text-sm pl-24"],
+                innerWrapper: "flex items-center",
+                inputWrapper : "pr-4 pl-0 bg-transparent",
+                base:" bg-transparent"
               }}
               radius="full"
-              
               variant='faded'
               placeholder="Enter your search term here"
               value={query}
               aria-label='search'
               onChange={(e) => setQuery(e.target.value)}
+              startContent={
+                
+                   <Select
+                      className="w-[100px] text-xs"
+                      radius='full'
+                      variant='faded'
+                      classNames={{
+                        base: "text-xs",
+                        trigger: "text-xs pl-2",
+                        value: "text-xs",
+                        popoverContent: "min-w-[140px] text-xs",
+                        listboxWrapper: "text-xs",
+                        
+                        // Target items using data attributes for more precise styling
+                        listbox: "text-xs [&_[role=option]_[data-label=true]]:text-xs flex-0",
+                      }}
+                    
+                      selectedKeys={[selectedContentType]}
+                      onChange={(e) => setSelectedContentType(e.target.value)}
+                    >
+                      {contentTypes.map((type) => (
+                        <SelectItem 
+                          key={type.value} 
+                          value={type.value}
+                        >
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                // </div>
+              }
               endContent={
                 query ? (
                   <CloseCircle
@@ -284,8 +292,8 @@ useEffect(() => {
                   <CiSearch size="20" className="text-default-500 mr-2" />
                 )
               }
-            />  
-            </div>
+            />
+          </div>
           </div>
           {query && searchResults?.results.length > 0 && (
           <div className="flex w-full mt-2 justify-between items-center">
@@ -310,7 +318,7 @@ useEffect(() => {
           </div>
        
         )}
-        {getActiveFilters().length > 0 && (
+        {query && searchResults?.results.length > 0 && getActiveFilters().length > 0 && (
           <FilterChips
             filters={getActiveFilters()}
             removeFilter={removeFilter}

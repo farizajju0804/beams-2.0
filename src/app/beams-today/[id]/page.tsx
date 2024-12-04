@@ -10,12 +10,15 @@ import BarPoll from "@/app/beams-today/_components/BarPoll";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BottomNavigation from "../_components/BottomNavigation"; // Ensure correct import
 import { getAllBeamsToday } from "@/actions/beams-today/getAllBeamsToday";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 
 interface BeamsTodayPlayerPageProps {
   params: { id: string };
 }
-export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: BeamsTodayPlayerPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { id } = params;
   
   try {
@@ -28,33 +31,29 @@ export async function generateMetadata({ params }: BeamsTodayPlayerPageProps): P
       };
     }
 
-    const metadata: Metadata = {
-      metadataBase: new URL('https://www.beams.world'),
-      title: `${beamsToday.title} | Beams Today`,
+    return {
+      title: beamsToday.title,  // This will use the template from root layout
       description: beamsToday.shortDesc,
       openGraph: {
         type: 'article',
-        title: `${beamsToday.title} | Beams Today`,
+        title: beamsToday.title,
         description: beamsToday.shortDesc,
         url: `/beams-today/${id}`,
         siteName: 'Beams',
         images: [{
-          url: beamsToday.thumbnailUrl || "",
+          url: beamsToday.thumbnailUrl || '',
           width: 1200,
           height: 630,
           alt: beamsToday.title,
         }],
-        locale: 'en_US',
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${beamsToday.title} | Beams Today`,
+        title: beamsToday.title,
         description: beamsToday.shortDesc,
-        images: beamsToday.thumbnailUrl ? [beamsToday.thumbnailUrl] : "" ,
+        images: beamsToday.thumbnailUrl ? [beamsToday.thumbnailUrl] : [],
       },
     };
-
-    return metadata;
 
   } catch (error) {
     console.error('Error generating metadata:', error);
