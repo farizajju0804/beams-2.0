@@ -24,35 +24,36 @@ const OnboardingPage = () => {
   const slides = [
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723791783/onboarding/boy_flying_mlb9at.png',
-      title: 'Welcome to Beams Today',
-      content: 'Your daily dose of the innovation shaping the future.',
+      title: 'Welcome to Beams',
+      content: 'Explore innovation like never before with Beams. From daily insights to interactive games, we’ve got it all.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723792299/onboarding/formats_ialiwf.png',
-      title: 'Learn Your Way',
-      content: 'Watch, listen, or read—experience innovation in <b class="text-purple">video, audio,</b> and <b class="text-purple" >text</b> formats, all designed to fit your style.',
+      title: 'Beams Today: Your Daily Dose',
+      content: 'Discover tech revolutions in less than 2 minutes. Learn through <b class="text-purple">video, audio,</b> and <b class="text-purple">text</b> formats, and join the daily poll to share your views.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723820625/onboarding/discover_p39zka.png',
-      title: 'Discover the latest breakthroughs ',
-      content: 'Explore cutting-edge innovations across various categories like Technology, Medicine, etc.',
+      title: 'Beams Facts: Knowledge in Seconds',
+      content: 'Uncover fascinating facts and quick insights in less than 10 seconds. Learning has never been this effortless!',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/poll_gbkqsh.png',
-      title: 'Voice Your Opinion',
-      content: 'Participate in our daily polls and shape the future. Share your insights on how these technologies can make a difference.',
+      title: 'Beams Connect: Play & Learn',
+      content: 'Challenge yourself with image-based games. Connect the dots and test your knowledge of new technologies daily.',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798017/onboarding/features_qgakm7.png',
-      title: 'Make It Yours',
-      content: 'Favorite topics, take notes, and never miss a moment. Access past topics anytime.',
+      title: 'Gamify Your Experience',
+      content: 'Earn badges, climb leaderboards, and level up as you explore, learn, and play. Make every moment count!',
     },
     {
       mainImage: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1723798016/onboarding/ready_tgikcv.png',
-      title: 'Ready to Dive In?',
-      content: "Your journey to tomorrow starts here. Explore today's innovation and stay ahead of the curve.",
+      title: 'Your Journey Starts Here',
+      content: "Explore Beams Today, Beams Facts, and Beams Connect. Start your journey of discovery and innovation now!",
     },
   ];
+  
 
   const totalSlides = slides.length;
   const isEvenSlide = currentSlide % 2 === 0;
