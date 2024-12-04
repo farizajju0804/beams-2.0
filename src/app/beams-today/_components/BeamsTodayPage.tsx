@@ -5,7 +5,7 @@ import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
 import TopicSearch from "./SearchBarNew";
-import GlobalSearchComponent from "@/components/Search";
+
 
 interface BeamsTodayPageProps {
   user: any;
