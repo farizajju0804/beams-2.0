@@ -21,6 +21,10 @@ export default auth(async (req) => {
     return;
   }
 
+  if (nextUrl.pathname.startsWith('/api/metadata')) {
+    return;
+  }
+
   if (nextUrl.pathname.startsWith('/api/user')) {
     return; // Allow the cron job to run without redirecting
   }

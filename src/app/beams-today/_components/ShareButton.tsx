@@ -27,8 +27,8 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   useEffect(() => {
     // Set canonical URL for sharing
     const baseUrl = 'https://www.beams.world';
-    const path = `/beams-today/${data.id}`;
-    setShareUrl(window.location.hostname === 'localhost' ? `${baseUrl}${path}` : window.location.href);
+    const path = `/api/metadata/beams-today/${data.id}`;
+    setShareUrl(window.location.hostname === 'localhost' ? `${baseUrl}${path}` : `${window.location.origin}${path}`);
     
     setHasShareAPI('share' in navigator);
     setHasClipboard('clipboard' in navigator);
