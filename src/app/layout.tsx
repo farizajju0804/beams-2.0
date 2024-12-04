@@ -39,11 +39,10 @@ export const metadata: Metadata = {
     locale: 'en_US',
     siteName: 'Beams',
   
-      title: {
-        template: '%s | Beams',
-        default: 'Beams - Next-gen Learning Platform'
-      },
-  
+    title: {
+      default: "Beams - Next-gen Learning Platform",
+      template: "%s | Beams"
+    },
     images: [
       {
         url: 'https://res.cloudinary.com/drlyyxqh9/image/upload/v1733237502/og-674f1a2694d71_rvlkk2.webp', // Image for Open Graph

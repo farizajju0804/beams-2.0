@@ -31,27 +31,31 @@ export async function generateMetadata(
       };
     }
 
+    const title = `${beamsToday.title} | Beams Today`;  // Directly construct the full title
+
     return {
-      title: beamsToday.title,  // This will use the template from root layout
+      title,  // Use full title instead of template
       description: beamsToday.shortDesc,
       openGraph: {
         type: 'article',
-        title: beamsToday.title,
+        title,  // Use the same full title
         description: beamsToday.shortDesc,
-        url: `/beams-today/${id}`,
+        url: `https://www.beams.world/beams-today/${id}`,
         siteName: 'Beams',
-        images: [{
-          url: beamsToday.thumbnailUrl || '',
-          width: 1200,
-          height: 630,
-          alt: beamsToday.title,
-        }],
+        images: beamsToday.thumbnailUrl ? [
+          {
+            url: beamsToday.thumbnailUrl,
+            width: 1200,
+            height: 630,
+            alt: beamsToday.title,
+          }
+        ] : undefined,  // Use undefined instead of empty array
       },
       twitter: {
         card: 'summary_large_image',
-        title: beamsToday.title,
+        title,  // Use the same full title
         description: beamsToday.shortDesc,
-        images: beamsToday.thumbnailUrl ? [beamsToday.thumbnailUrl] : [],
+        images: beamsToday.thumbnailUrl ? [beamsToday.thumbnailUrl] : undefined,
       },
     };
 
@@ -63,7 +67,6 @@ export async function generateMetadata(
     };
   }
 }
-
 const BeamsTodayPlayerPage = async ({ params }: BeamsTodayPlayerPageProps) => {
   // Destructure the topic ID from params
   const { id } = params;
