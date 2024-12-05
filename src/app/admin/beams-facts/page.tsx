@@ -30,7 +30,7 @@ import { CalendarDate } from "@internationalized/date";
 
 
 interface FactFormProps {
-  fact?: FactOfTheday & { category: FactCategory };
+  fact1?: FactOfTheday & { category: FactCategory };
   onSubmit: (data: Omit<FactOfTheday, 'id'>) => void;
   onCancel: () => void;
 }
@@ -156,25 +156,25 @@ function CategoryForm({ onSubmit, onClose }: any) {
   );
 }
 
-function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
+function FactForm({ fact1, onSubmit, onCancel }: FactFormProps) {
   const [date, setDate] = useState<CalendarDate | undefined>(() => {
-    if (fact) {
-      const factDate = new Date(fact.date);
+    if (fact1) {
+      const factDate = new Date(fact1.date);
       return new CalendarDate(factDate.getUTCFullYear(), factDate.getUTCMonth() + 1, factDate.getUTCDate());
     }
     return undefined;
   });
-  const [title, setTitle] = useState(fact?.title || '');
-  const [whyItsImportant, setWhyItsImportant] = useState(fact?.whyItsImportant || '');
-  const [thumbnail, setThumbnail] = useState(fact?.thumbnail || '');
-  const [referenceLink1, setReferenceLink1] = useState(fact?.referenceLink1 || '');
-  const [referenceLink2, setReferenceLink2] = useState(fact?.referenceLink2 || '');
-  const [hashtags, setHashtags] = useState<string[]>(fact?.hashtags || []);
-  const [categoryId, setCategoryId] = useState(fact?.categoryId || '');
+  const [title, setTitle] = useState(fact1?.title || '');
+  const [whyItsImportant, setWhyItsImportant] = useState(fact1?.whyItsImportant || '');
+  const [thumbnail, setThumbnail] = useState(fact1?.thumbnail || '');
+  const [referenceLink1, setReferenceLink1] = useState(fact1?.referenceLink1 || '');
+  const [referenceLink2, setReferenceLink2] = useState(fact1?.referenceLink2 || '');
+  const [hashtags, setHashtags] = useState<string[]>(fact1?.hashtags || []);
+  const [categoryId, setCategoryId] = useState(fact1?.categoryId || '');
   const [categories, setCategories] = useState<FactCategory[]>([]);
   const [newHashtag, setNewHashtag] = useState('');
-  const [published, setPublished] = useState(fact?.published ?? false);
-  const [factContent, setFactContent] = useState(fact?.fact || '');
+  const [published, setPublished] = useState(fact1?.published ?? false);
+  const [fact, setFact] = useState(fact1?.fact || '');
   const { isOpen: isCategoryModalOpen, onOpen: onCategoryModalOpen, onClose: onCategoryModalClose } = useDisclosure();
 
   useEffect(() => {
@@ -215,7 +215,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !title || !whyItsImportant || !thumbnail || !categoryId || !factContent) {
+    if (!date || !title || !whyItsImportant || !thumbnail || !categoryId || !fact) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -231,7 +231,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
       hashtags,
       categoryId,
       published,
-      factContent 
+      fact
     };
 
     onSubmit(data);
@@ -270,9 +270,9 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
          <div className="w-full">
           <Textarea
             label="Fact"
-            placeholder="Enter the fact content here..."
-            value={factContent}
-            onChange={(e) => setFactContent(e.target.value)}
+            placeholder="Enter the fact here..."
+            value={fact}
+            onChange={(e) => setFact(e.target.value)}
             minRows={4}
             isRequired
             classNames={{
@@ -511,7 +511,7 @@ export default function AdminPage() {
           <ModalHeader>{selectedFact ? 'Edit' : 'Create'} Fact</ModalHeader>
           <ModalBody>
             <FactForm 
-              fact={selectedFact || undefined} 
+              fact1={selectedFact || undefined} 
               onSubmit={selectedFact ? handleUpdate : handleCreate}
               onCancel={onClose}
             />

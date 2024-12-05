@@ -27,9 +27,16 @@ export async function createFact(data: Omit<FactOfTheday, 'id'>): Promise<FactOf
 }
 
 export async function updateFact(id: string, data: Partial<Omit<FactOfTheday, 'id'>>): Promise<FactOfTheday> {
+  const { categoryId, ...rest } = data;
+  
   return db.factOfTheday.update({
     where: { id },
-    data
+    data: {
+      ...rest,
+      category: categoryId ? {
+        connect: { id: categoryId }
+      } : undefined
+    }
   });
 }
 
