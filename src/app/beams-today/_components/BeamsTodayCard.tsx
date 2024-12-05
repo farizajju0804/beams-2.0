@@ -1,7 +1,7 @@
 // 'use client'
 import React from 'react';
 // import { useRouter } from 'next/navigation'; // Next.js router for navigation
-import FavoriteButton from './FavoriteButton'; // Button component for marking favorites
+
 import FormattedDate from './FormattedDate'; // Component to format the date
 import { BeamsToday } from '@/types/beamsToday'; // Type definition for BeamsToday data
 import { Chip } from "@nextui-org/react"; // UI library component for category chips

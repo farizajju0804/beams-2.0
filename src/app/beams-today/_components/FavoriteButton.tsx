@@ -1,41 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@nextui-org/react';
 import { Heart } from 'iconsax-react';
 import { motion } from 'framer-motion';
 import { toast, Toaster } from 'react-hot-toast';
 import { toggleFavorite } from '@/actions/beams-today/favoriteActions';
-import { isFavoriteBeamsToday } from '@/actions/beams-today/favoriteActions'; // Import your favorite check action
 
-interface FavoriteButtonProps {
-  beamsTodayId: string; // Unique identifier for the beam item
+interface FavoriteButtonMainProps {
+  favoriteStatus: boolean; // Unique identifier for the beam item
+  beamsTodayId : string
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({ beamsTodayId }) => {
+const FavoriteButton: React.FC<FavoriteButtonMainProps> = ({ favoriteStatus,beamsTodayId }) => {
   // Local state management
   const [isAnimating, setIsAnimating] = useState(false);         // Controls heart animation
-  const [isFavoriteState, setIsFavoriteState] = useState(false); // Tracks favorite status
+  const [isFavoriteState, setIsFavoriteState] = useState(favoriteStatus); // Tracks favorite status
   const [isProcessing, setIsProcessing] = useState(false);       // Prevents double-clicks
 
-  // Fetch initial favorite status on component mount
-  useEffect(() => {
-    const fetchFavoriteStatus = async () => {
-      try {
-        // Check if the item is already favorited and set the initial state
-        setIsProcessing(true);
-        const favoriteStatus = await isFavoriteBeamsToday(beamsTodayId);
-        setIsFavoriteState(favoriteStatus);
-        setIsProcessing(false);
-      } catch (error) {
-        console.error("Failed to fetch favorite status:", error);
-        // Display error notification if fetching fails
-        toast.error("Failed to load favorite status. Please try again later.");
-      }
-    };
 
-    fetchFavoriteStatus();
-  }, [beamsTodayId]); // Dependency array includes beamsTodayId to re-fetch if it changes
+  
 
   // Helper function to check for network connectivity
   const checkNetworkConnection = (): boolean => {

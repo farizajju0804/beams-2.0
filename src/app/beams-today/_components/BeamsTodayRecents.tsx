@@ -14,10 +14,6 @@ import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { useRouter } from 'next/navigation'; // Importing the Next.js router for navigation
 import RedirectMessage from "@/components/Redirection";
 
-interface Category {
-  id: string;
-  name: string;
-}
 
 
 
@@ -46,6 +42,8 @@ export function BeamsTodayRecents({ initialUploads,clientDate,username }: BeamsT
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false)
 
+
+  
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -160,7 +158,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate,username }: BeamsT
                       >
                         {active.title}
                       </motion.h3>
-                      <FavoriteButton beamsTodayId={active.id} />
+                      <FavoriteButton favoriteStatus={active.favoriteStatus} beamsTodayId={active.id} />
                     </div>
 
                     <motion.div
@@ -238,7 +236,7 @@ export function BeamsTodayRecents({ initialUploads,clientDate,username }: BeamsT
                       className="rounded-2xl flex flex-row items-start justify-start"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <FavoriteButton beamsTodayId={topic.id} />
+                      <FavoriteButton favoriteStatus={topic.favoriteStatus} beamsTodayId={topic.id} />
                     </div>
                   </motion.div>
                   <div className="absolute bottom-0 left-0 right-0 mt-auto [backdrop-filter:blur(5px)] rounded-b-3xl [background:linear-gradient(90deg,_#fff5ed,_rgba(255,_255,_255,_0.2)_100%)] flex flex-col items-start justify-start p-4 gap-2 text-left text-base md:text-lg text-black">

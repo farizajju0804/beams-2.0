@@ -2,6 +2,7 @@
 import { db } from "@/libs/db";
 import { getTopicOfTheDay } from "./getTopicOfTheDay";
 import { Prisma } from '@prisma/client';
+import { currentUser } from "@/libs/auth";
 
 type SortOption = "dateDesc" | "dateAsc" | "nameAsc" | "nameDesc";
 
@@ -34,6 +35,7 @@ export const getRecentUploads = async ({
   const today = new Date(clientDate);
   today.setUTCHours(0, 0, 0, 0);
 
+  const user = await currentUser()
   try {
     // Get the topic of the day based on the client date
     const topicOfTheDay = await getTopicOfTheDay(clientDate);
@@ -100,13 +102,24 @@ export const getRecentUploads = async ({
       skip,
       take: limit,
       include: {
-        category: true // Include category information in the result
+        category: true,
+        BeamsTodayFavorite: user ? {
+          where: {
+            userId: user.id
+          }
+        } : false
       }
     });
 
+    const uploadsWithFavoriteStatus = recentVideos.map(video => ({
+      ...video,
+      favoriteStatus: video.BeamsTodayFavorite?.length > 0 || false,
+      favorites: undefined // Remove the favorites array from the response
+    }));
+
     // Return the uploads along with pagination info
     return {
-      uploads: recentVideos,
+      uploads: uploadsWithFavoriteStatus,
       totalPages: Math.ceil(totalCount / limit),
       currentPage: page,
     };

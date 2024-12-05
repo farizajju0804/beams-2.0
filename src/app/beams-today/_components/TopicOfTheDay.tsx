@@ -14,13 +14,14 @@ import BeamsTodayModal from "./BeamsTodayModal";
 interface TopicOfTheDayProps {
   topic: BeamsToday | null;  // The topic of the day or null if not available
   username: string;        // The current date on the client side
+  favoriteStatus : boolean
 }
 
 /**
  * Component to display the "Topic of the Day" section, with the topic's image, title, and a "Beam Now" button.
  * If no topic is available, a message is displayed instead.
  */
-const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, username }) => {
+const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, username, favoriteStatus }) => {
   const router = useRouter(); // Initializing the router for navigation
   const [isRedirecting, setIsRedirecting] = useState(false)
 
@@ -41,7 +42,7 @@ const TopicOfTheDay: React.FC<TopicOfTheDayProps> = ({ topic, username }) => {
         <div className="relative w-full lg:w-4/6 mx-auto h-96 md:h-[360px] rounded-lg">
           {/* Favorite Button */}
           <div className="absolute top-4 right-4 z-[3]">
-            <FavoriteButton beamsTodayId={topic.id} />
+            <FavoriteButton favoriteStatus={favoriteStatus} beamsTodayId={topic.id} />
           </div>
 
           {/* Category Chip */}

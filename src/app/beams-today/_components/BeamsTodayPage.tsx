@@ -5,6 +5,7 @@ import { getRecentUploads } from "@/actions/beams-today/getRecentUploads";
 import { getTopicOfTheDay } from "@/actions/beams-today/getTopicOfTheDay";
 import TopicOfTheDay from "./TopicOfTheDay";
 import TopicSearch from "./SearchBarNew";
+import {  isFavoriteBeamsToday } from "@/actions/beams-today/favoriteActions";
 
 
 interface BeamsTodayPageProps {
@@ -18,13 +19,13 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
   const timeZone = cookieStore.get('client_time_zone')?.value || 'UTC';
   const now = new Date();
   const clientDate = now.toLocaleDateString('en-CA', { timeZone });
-
   const topic: any = await getTopicOfTheDay(clientDate);
- 
+  const favoriteStatus = await isFavoriteBeamsToday(topic.id)
   const initialUploads = await getRecentUploads({
     clientDate: clientDate,
     page: 1,
-    sortBy: "dateDesc"
+    sortBy: "dateDesc",
+    
   });
   
 
@@ -37,10 +38,10 @@ const BeamsTodayPage: React.FC<BeamsTodayPageProps> = async({  user,  categories
    
       <h1 className="font-poppins text-2xl md:text-4xl uppercase font-semibold bg-yellow text-purple p-2">Beams Today</h1>
      
-      <TopicOfTheDay topic={topic} username={user.firstName} />
+      <TopicOfTheDay favoriteStatus={favoriteStatus} topic={topic} username={user.firstName} />
       <TopicSearch userId={user.id} categories={categories} />
 
-      <BeamsTodayRecents clientDate={clientDate} initialUploads={initialUploads} username={user.firstName} />
+      <BeamsTodayRecents  clientDate={clientDate} initialUploads={initialUploads} username={user.firstName} />
   
     </div>
     </>
