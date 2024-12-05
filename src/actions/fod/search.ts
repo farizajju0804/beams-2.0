@@ -18,9 +18,9 @@ export interface TransformedFact {
   id: string;
   date: Date;
   title: string;
-  finalImage: string;
   thumbnail: string;
-  factContent: string;
+  fact: string;
+  whyItsImportant: string;
   published: boolean;
   referenceLink1?: string | null;
   referenceLink2?: string | null;
@@ -82,8 +82,15 @@ export async function searchFacts({
                 {
                   text: {
                     query: query,
-                    path: "factContent",
+                    path: "fact",
                     score: { boost: { value: 2 } }
+                  }
+                },
+                {
+                  text: {
+                    query: query,
+                    path: "whyItsImportant",
+                    score: { boost: { value: 4} }
                   }
                 }
               ]
@@ -227,9 +234,9 @@ function transformMongoFact(doc: any): TransformedFact {
     id: doc._id.$oid,
     date: new Date(doc.date.$date),
     title: doc.title,
-    finalImage: doc.finalImage,
     thumbnail: doc.thumbnail,
-    factContent: doc.factContent,
+    fact: doc.fact,
+    whyItsImportant : doc.whyItsImportant,
     published: doc.published,
     referenceLink1: doc.referenceLink1 || null,
     referenceLink2: doc.referenceLink2 || null,
