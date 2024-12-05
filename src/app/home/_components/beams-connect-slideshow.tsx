@@ -58,7 +58,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
 
   return (
     <div  onClick={() => router.push(`/connection-game/${currentSlide.id}`)} className="relative cursor-pointer mt-4 w-full max-w-5xl mx-auto">
-      <div className="absolute top-[6px] left-0 z-10">
+      <div className="absolute top-[5px] md:top-[6px] left-0 z-10">
         <Link 
           href="/beams-connect"
           className="bg-success px-3 py-2 text-sm md:text-lg text-black font-semibold font-poppins transition-colors"
@@ -69,7 +69,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
 
     
 
-        <div className="relative h-[400px] w-full overflow-hidden ">
+        <div className="relative h-[360px] md:h-[400px] w-full overflow-hidden ">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentIndex}
@@ -100,7 +100,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${currentSlide.thumbnail})` }}
               />
-              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm">
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80  to-black/10 backdrop-blur-sm">
                 <div className="absolute inset-0 p-8 flex flex-col justify-end">
                   <h2 className="text-white text-xl md:text-4xl font-bold mb-4">
                     {currentSlide.title}
@@ -124,8 +124,9 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
         <Button
            isIconOnly
           size='sm'
+          variant='bordered'
           className={cn(
-            "bg-default-100 transition-all duration-300 ease-in-out z-10",
+            "bg-default-100  min-w-0 w-7 h-7 md:w-8 md:h-8 transition-all duration-300 ease-in-out z-10",
             direction === -1 && "bg-primary text-white"
           )}
           onClick={() => paginate(-1)}
@@ -136,8 +137,9 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
         <Button
           isIconOnly
           size='sm'
+          variant='bordered'
           className={cn(
-            "bg-default-100 transition-all duration-300 ease-in-out z-10",
+            "bg-default-100  min-w-0 w-7 h-7 md:w-8 md:h-8transition-all duration-300 ease-in-out z-10",
             direction === 1 && "bg-primary text-white"
           )}
           onClick={() => paginate(1)}

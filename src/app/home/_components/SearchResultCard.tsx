@@ -18,8 +18,8 @@ export interface SearchResult {
   content?: string;
   viewCount?: number;
   completionCount?: number;
-  finalImage?: string;      // Add this
-  finalImageDark?: string;  // Add this
+  fact?: string;      // Add this
+  whyItsImportant?: string;  // Add this
   hashtags?: string[];  
 }
 

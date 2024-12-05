@@ -37,6 +37,8 @@ const page = async () => {
         userId
     });
 
+    // console.log(initialData)
+
 
     // Render the component
     return (

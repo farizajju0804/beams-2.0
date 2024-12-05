@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Checkbox } from "@nextui-org/react";
 import ConnectionGame from './ConnectionGame';
+import { updatePopupPreference } from '@/actions/connection/connectionGame';
+import { useRouter } from 'next/navigation';
 
 interface ConnectionGameWrapperProps {
   id: string;
@@ -16,85 +18,94 @@ interface ConnectionGameWrapperProps {
   solutionPoints: string[];
   isCompleted?: boolean;
   gameDate: Date;
+  popupPreference : boolean;
 }
-
-const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({ 
-  id, 
-  image, 
-  answer, 
-  beamsTodayId, 
-  title, 
-  hint, 
-  username = "Player", 
-  answerExplanation, 
-  solutionPoints, 
-  isCompleted = false, 
-  gameDate 
+const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
+  id,
+  image,
+  answer,
+  beamsTodayId,
+  title,
+  hint,
+  username = "Player",
+  answerExplanation,
+  solutionPoints,
+  isCompleted = false,
+  gameDate,
+  popupPreference
 }) => {
-    const [showRules, setShowRules] = useState<boolean>(!isCompleted);
-  const [gameStarted, setGameStarted] = useState<boolean>(isCompleted);
+  const router = useRouter();
+  const [showRules, setShowRules] = useState<boolean>(!isCompleted && popupPreference);
+  const [gameStarted, setGameStarted] = useState<boolean>(isCompleted || !popupPreference);
+  const [dontShowAgain, setDontShowAgain] = useState<boolean>(false);
 
- 
-  const handleStartGame = (): void => {
+  const handleStartGame = async (): Promise<void> => {
     setShowRules(false);
     setGameStarted(true);
+    
+    if (dontShowAgain) {
+      await updatePopupPreference();
+    }
+  };
+
+  const handleClose = () => {
+    router.back();
   };
 
   if (!gameStarted) {
     return (
-      <Modal 
+      <Modal
         size="2xl"
         isOpen={showRules}
-        onClose={() => {}}
-        hideCloseButton
+        onClose={handleClose}
         placement='center'
         className="bg-background"
+        isDismissable={true}
       >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">
-            <h2 className="text-2xl mx-auto font-bold text-text">Before you Start</h2>
-          </ModalHeader>
-          <ModalBody className="text-text">
-            <ol className="list-decimal space-y-4 pl-4">
-             
-              <li>
-                <strong>Time Limit:</strong>
-                <p className="mt-1 text-sm ">
-                  You have only 60 seconds to answer each question. Make sure to think fast!
-                </p>
-              </li>
-              <li>
-                <strong>Important Warning:</strong>
-                <p className="mt-1 text-sm opacity-80">
-                  Do not refresh or go back during the game. Doing so will result in 0 Beams for the challenge.
-                </p>
-              </li>
-              {/* <li>
-                <strong>Jumbled Letters:</strong>
-                <p className="mt-1 text-sm">
-                  A 15-character string is provided as a visual clue. The answer is within these characters.
-                </p>
-              </li>
-              <li>
-                <strong>Hints Available:</strong>
-                <p className="mt-1 text-sm ">
-                  Hints are available if you get stuck, but using them will reduce your beams reward.
-                </p>
-              </li> */}
-              
-              
-            </ol>
-          </ModalBody>
-          <ModalFooter>
-            <Button 
-              color="warning"
-              variant="shadow"
-              onPress={handleStartGame}
-              className="w-full text-black font-lg font-semibold"
-            >
-              I&apos;m Ready to Play!
-            </Button>
-          </ModalFooter>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-row justify-start items-center">
+                <h2 className="text-2xl font-bold text-text">Before you Start</h2>
+                
+              </ModalHeader>
+              <ModalBody className="text-text">
+              <ol className="list-decimal space-y-4 pl-4 text-base font-bold">
+                    <li>
+                      <span className="font-bold">Time Limit</span>
+                      <p className="mt-1 font-normal">
+                        You have 60 seconds to answer each question.
+                      </p>
+                    </li>
+                    <li>
+                      <span className="font-bold">Important</span>
+                      <p className="mt-1 font-normal">
+                        Do not refresh or go back during the game. Doing so will result in 0 Beams.
+                      </p>
+                    </li>
+                  </ol>
+                <div className="mt-4">
+                  <Checkbox
+                    color="warning"
+                    checked={dontShowAgain}
+                    onChange={(e) => setDontShowAgain(e.target.checked)}
+                  >
+                    Don&apos;t show this again
+                  </Checkbox>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="warning"
+                  variant="shadow"
+                  onPress={handleStartGame}
+                  className="w-full text-black font-lg font-semibold"
+                >
+                  I&apos;m Ready to Play!
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     );

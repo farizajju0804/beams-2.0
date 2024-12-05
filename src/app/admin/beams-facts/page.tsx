@@ -165,8 +165,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
     return undefined;
   });
   const [title, setTitle] = useState(fact?.title || '');
-  const [finalImage, setFinalImage] = useState(fact?.finalImage || '');
-  const [finalImageDark, setFinalImageDark] = useState(fact?.finalImageDark || '');
+  const [whyItsImportant, setWhyItsImportant] = useState(fact?.whyItsImportant || '');
   const [thumbnail, setThumbnail] = useState(fact?.thumbnail || '');
   const [referenceLink1, setReferenceLink1] = useState(fact?.referenceLink1 || '');
   const [referenceLink2, setReferenceLink2] = useState(fact?.referenceLink2 || '');
@@ -175,7 +174,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const [categories, setCategories] = useState<FactCategory[]>([]);
   const [newHashtag, setNewHashtag] = useState('');
   const [published, setPublished] = useState(fact?.published ?? false);
-  const [factContent, setFactContent] = useState(fact?.factContent || '');
+  const [factContent, setFactContent] = useState(fact?.fact || '');
   const { isOpen: isCategoryModalOpen, onOpen: onCategoryModalOpen, onClose: onCategoryModalClose } = useDisclosure();
 
   useEffect(() => {
@@ -216,7 +215,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!date || !title || !finalImage || !finalImageDark || !thumbnail || !categoryId || !factContent) {
+    if (!date || !title || !whyItsImportant || !thumbnail || !categoryId || !factContent) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -225,8 +224,7 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
     const data: any = {
       date: formattedDate,
       title,
-      finalImage,
-      finalImageDark,
+      whyItsImportant,
       thumbnail,
       referenceLink1: referenceLink1 || null,
       referenceLink2: referenceLink2 || null,
@@ -254,18 +252,6 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
           isRequired
         />
         <Input
-          label="Light Mode Fact Image URL"
-          value={finalImage}
-          onChange={(e) => setFinalImage(e.target.value)}
-          isRequired
-        />
-         <Input
-          label="Dark Mode Fact Image URL"
-          value={finalImageDark}
-          onChange={(e) => setFinalImageDark(e.target.value)}
-          isRequired
-        />
-        <Input
           label="Thumbnail URL"
           value={thumbnail}
           onChange={(e) => setThumbnail(e.target.value)}
@@ -283,10 +269,24 @@ function FactForm({ fact, onSubmit, onCancel }: FactFormProps) {
         />
          <div className="w-full">
           <Textarea
-            label="Fact Content"
+            label="Fact"
             placeholder="Enter the fact content here..."
             value={factContent}
             onChange={(e) => setFactContent(e.target.value)}
+            minRows={4}
+            isRequired
+            classNames={{
+              base: "w-full",
+              input: "resize-y min-h-[100px]"
+            }}
+          />
+        </div>
+        <div className="w-full">
+          <Textarea
+            label="Why Its Important"
+            placeholder="Enter Why Its Important content here..."
+            value={whyItsImportant}
+            onChange={(e) => setWhyItsImportant(e.target.value)}
             minRows={4}
             isRequired
             classNames={{

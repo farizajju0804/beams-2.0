@@ -1,6 +1,6 @@
 import React from 'react'
 import { currentUser } from '@/libs/auth'
-import { checkConnectionGameStatus, getWordGameById } from '@/actions/connection/connectionGame';
+import { checkConnectionGameStatus, getGamePopupPreference, getWordGameById } from '@/actions/connection/connectionGame';
 import ConnectionGameWrapper from '../_components/ConnectionGameWrapper';
 
 interface ConnectionGamePageProps {
@@ -11,7 +11,8 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
     const user = await currentUser()
     const connectionGame = await getWordGameById(id)
     const completionStatus = await checkConnectionGameStatus(id)
-    
+    const preference = await getGamePopupPreference()
+
     if(!connectionGame.success){
       return (
         <h1 className='mx-auto w-full text-5xl'>No Game Found</h1>
@@ -33,6 +34,7 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
         answerExplanation={connectionGame.data.answerExplantion}
         solutionPoints={connectionGame.data.solutionPoints}
         gameDate={connectionGame.data.date}
+        popupPreference={preference}
       />
       )
     }

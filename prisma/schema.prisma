@@ -77,6 +77,7 @@ model User {
   notificationPreference    Boolean                     @default(false)
   isSessionValid            Boolean                     @default(true)
   isBanned                  Boolean                     @default(false)
+  gamePopupPreference       Boolean                     @default(true)
   schoolId                  String?                     @db.ObjectId
   school                    School?                     @relation(fields: [schoolId], references: [id])
   referralStatus            ReferralStatus?
@@ -121,6 +122,15 @@ model Account {
 
   @@unique([provider, providerAccountId]) // Ensures unique provider-account ID pair
   @@index([userId]) // Index for faster queries on userId
+}
+
+
+
+model ShortUrl {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
+  shortPath String   @unique  // This will be like "xyz123"
+  fullUrl   String
+  clicks    Int      @default(0)
 }
 
 // Model for storing verification tokens used for email verification
@@ -251,11 +261,10 @@ model FactOfTheday {
   id            String           @id @default(auto()) @map("_id") @db.ObjectId
   date          DateTime         @unique // Date of the Beams Today content
   title         String
-  finalImage    String // Title of the Beams Today content
-  finalImageDark   String
   thumbnail     String
   published     Boolean          @default(false)
-  factContent   String           
+  fact          String           
+  whyItsImportant String  
   referenceLink1 String? // First optional reference link
   referenceLink2 String? // Second optional reference link
   hashtags      String[]        // Array of hashtags

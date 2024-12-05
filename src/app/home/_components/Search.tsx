@@ -13,7 +13,7 @@ import { globalSearch } from '@/actions/home/search';
 import SortByFilter from '@/app/beams-today/_components/SortByFilter';
 import FilterChips from '@/app/beams-today/_components/FilterChips';
 import FilterDrawer from '@/app/beams-today/_components/FilterDrawer';
-import { SearchResult, SearchResultCard } from './SearchResultCard';
+import {  SearchResultCard } from './SearchResultCard';
 import { FactModal } from '@/app/beams-facts/_components/FactModal';
 export type SortByValue = 'dateDesc' | 'dateAsc' | 'nameAsc' | 'nameDesc';
 interface Category {
@@ -235,11 +235,10 @@ useEffect(() => {
     <div className="w-full max-w-7xl mx-auto space-y-6 my-3 px-6">
       <div className="flex flex-col gap-4">
         <div className="w-full flex flex-row gap-2 md:gap-4">
-     
-<div className="flex-1 relative">
+          <div className="flex-1 relative">
             <Input
               classNames={{
-                input: ["placeholder:text-grey-2 text-sm pl-24"],
+                input: ["placeholder:text-default-foreground placeholder:md:text-sm placeholder:text-xs pl-24"],
                 innerWrapper: "flex items-center outline-none",
                 inputWrapper: [
                   "pr-4 pl-0 bg-transparent",
@@ -263,10 +262,10 @@ useEffect(() => {
                       variant='faded'
                       classNames={{
                         base: "text-xs bg-transparent",
-                        trigger: "text-xs bg-transparent pl-2",
-                        value: "text-xs",
-                        popoverContent: "min-w-[140px] text-xs",
-                        listboxWrapper: "text-xs",
+                        trigger: "text-xs  bg-transparent pl-2 border-0  border-r-1 border-default-200",
+                        value: "text-xs  md:text-sm",
+                        popoverContent: "min-w-[140px]  md:text-sm text-xs",
+                        listboxWrapper: "text-xs md:text-sm",
                         
                         // Target items using data attributes for more precise styling
                         listbox: "text-xs [&_[role=option]_[data-label=true]]:text-xs flex-0",
@@ -284,17 +283,16 @@ useEffect(() => {
                         </SelectItem>
                       ))}
                     </Select>
-                // </div>
               }
               endContent={
                 query ? (
                   <CloseCircle
-                    size="20"
+                    size="24"
                     className="text-default-500 cursor-pointer mr-2"
                     onClick={resetSearch}
                   />
                 ) : (
-                  <CiSearch size="20" className="text-default-500 mr-2" />
+                  <CiSearch size="24" className="text-default-500 mr-2" />
                 )
               }
             />
@@ -329,9 +327,7 @@ useEffect(() => {
             removeFilter={removeFilter}
           />
         )}
-         
       </div>
-
       <FilterDrawer
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
@@ -394,7 +390,11 @@ useEffect(() => {
                 <SearchResultCard
                   key={`${result.type}-${result.id}`}
                   result={result}
-                  onSelect={(result) => setSelectedFact(result)}
+                  onSelect={(result) =>
+                  {
+                    console.log(result)
+                    setSelectedFact(result)
+                  }}
                 />
               ))}
             </div>
@@ -407,7 +407,6 @@ useEffect(() => {
           userId={userId}
         />
       )}
-
             {searchResults?.pagination.totalPages > 1 && (
                 <CustomPagination
                     currentPage={searchResults.pagination.currentPage}

@@ -312,8 +312,8 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
         id: factWithCompletion.id,
         date: factWithCompletion.date,
         title: factWithCompletion.title,
-        finalImage: factWithCompletion.finalImage,
-        finalImageDark: factWithCompletion.finalImageDark,
+        fact: factWithCompletion.fact,
+        whyItsImportant: factWithCompletion.whyItsImportant,
         thumbnail: factWithCompletion.thumbnail,
         referenceLink1: factWithCompletion.referenceLink1 || undefined,
         referenceLink2: factWithCompletion.referenceLink2 || undefined,
@@ -329,6 +329,7 @@ export const getFactAndCompletionStatus = async (userId: string, clientDate: str
     throw new Error(`Error fetching fact and completion status: ${(error as Error).message}`);
   }
 };
+
 
 /**
  * Fetches trending facts with optional filtering and sorting.
@@ -419,8 +420,8 @@ export const getTrendingFacts = async ({
 
     const transformedFacts = trendingFacts.map(fact => ({
       id: fact.id,
-      finalImage: fact.finalImage,
-      finalImageDark: fact.finalImageDark,
+      fact: fact.fact,
+      whyItsImportant : fact.whyItsImportant,
       title: fact.title,
       date: fact.date,
       thumbnail : fact.thumbnail,
@@ -554,8 +555,8 @@ export const getFactsByHashtag = async ({
     // Transform the facts to match your existing pattern
     const transformedFacts = facts.map(fact => ({
       id: fact.id,
-      finalImage: fact.finalImage,
-      finalImageDark: fact.finalImageDark,
+      fact: fact.fact,
+      whyItsImportant: fact.whyItsImportant,
       title: fact.title,
       date: fact.date,
       thumbnail: fact.thumbnail,
@@ -669,8 +670,8 @@ export const getFactsByCategory = async ({
     // Transform the facts to match your existing pattern
     const transformedFacts = facts.map(fact => ({
       id: fact.id,
-      finalImage: fact.finalImage,
-      finalImageDark: fact.finalImageDark,
+      fact: fact.fact,
+      whyItsImportant: fact.whyItsImportant,
       title: fact.title,
       date: fact.date,
       thumbnail: fact.thumbnail,
@@ -728,8 +729,8 @@ export const getTop5Facts = async (userId: string) => {
       title: fact.title,
       thumbnail: fact.thumbnail,
       hashtags : fact.hashtags,
-      finalImage : fact.finalImage,
-      finalImageDark : fact.finalImageDark,
+      fact : fact.fact,
+      whyItsImportant : fact.whyItsImportant,
       date : fact.date,
       category: {
         name: fact.category.name,

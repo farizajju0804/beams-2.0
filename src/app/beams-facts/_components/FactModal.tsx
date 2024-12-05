@@ -2,15 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import Image from "next/image"
 import Link from "next/link"
 import { Chip } from "@nextui-org/react"
 import { GoLinkExternal } from 'react-icons/go'
 import { CloseCircle } from 'iconsax-react'
 import FormattedDate from '@/app/beams-today/_components/FormattedDate'
 import { markFactAsCompleted2 } from '@/actions/fod/fod'
-import { useTheme } from 'next-themes'
-
+import Image from 'next/image'
 
 
 interface FactModalProps {
@@ -20,8 +18,9 @@ interface FactModalProps {
     id: string
     title: string
     date: Date
-    finalImage: string
-    finalImageDark: string
+    fact: string
+    thumbnail : string
+    whyItsImportant: string
     category: {
       name: string
       color: string
@@ -35,33 +34,11 @@ interface FactModalProps {
 }
 
 
-const useOutsideClick = (ref: React.RefObject<HTMLDivElement>, callback: Function) => {
-  useEffect(() => {
-    const listener = (event: MouseEvent | TouchEvent) => {
-      if (!ref.current || ref.current.contains(event.target as Node)) {
-        return;
-      }
-      callback(event);
-    };
-
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
-
-    return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
-    };
-  }, [ref, callback]);
-};
 export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
   const [isMounted, setIsMounted] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
-  const backdropRef = useRef<HTMLDivElement>(null)
   const clientDate = new Date().toLocaleDateString("en-CA")
-  const {theme} = useTheme()
-
-  
-
+  console.log(fact)
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -95,7 +72,7 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
   if (!isMounted || !isOpen) return null;
 
   const hasBothLinks = fact.referenceLink1 && fact.referenceLink2;
-  const currentImage = theme === "light" ? fact.finalImage : fact.finalImageDark;
+ 
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -107,11 +84,11 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
   
   
   return (
-    <div   onClick={handleBackdropClick}
+    <div onClick={handleBackdropClick}
     onMouseUp={handleBackdropClick}
     onMouseDown={handleBackdropClick} 
     className="fixed inset-0 z-[250] flex items-center justify-center overflow-y-auto">
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-md" />
       
       <div className="relative z-50 my-auto w-full max-w-lg mx-auto h-auto">
         <AnimatePresence>
@@ -137,7 +114,7 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
               </button>
 
               <div className="p-4 flex flex-col">
-                <div className="flex px-3 lg:px-6 flex-col gap-1">
+                <div className="flex flex-col gap-1">
                   <h2 className="text-xl md:text-2xl font-bold">{fact.title}</h2>
                   <p className="text-sm text-default-500 flex items-center">
                     <FormattedDate date={fact.date.toISOString().split('T')[0]}/>
@@ -148,15 +125,20 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1, duration: 0.3 }}
-                  className="relative mt-4"
+                  className="relative mt-4 flex flex-col gap-4"
                 >
+                  <p className='text-text font-medium text-base'>{fact.fact}</p>
                   <Image
-                    src={currentImage}
+                    src={fact.thumbnail}
                     alt={fact.title}
                     width={1000}
                     height={1000}
                     className="object-cover w-full h-full rounded-lg"
                   />
+                  <div className='flex flex-col gap-2'>
+                  <p className='text-xl italic underline underline-offset-4 decoration-brand font-semibold'>Why It&apos;s Important</p>
+                  <p className='text-text italic font-medium text-base'>{fact.whyItsImportant}</p>
+                  </div>
                 </motion.div>
 
                 <div className="mt-4">
@@ -166,13 +148,13 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                     }}
                     as={Link}
                     href={`/beams-facts/category/${fact.category.name}`}
-                    className="text-xs ml-3 text-white font-semibold py-1"
+                    className="text-xs text-white font-semibold py-1"
                     style={{ backgroundColor: `${fact.category.color}` }}
                   >
                     {fact.category.name}
                   </Chip>
 
-                  <div className="flex w-full px-3 justify-between mt-4 items-center">
+                  <div className="flex w-full  justify-between mt-4 items-center">
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -210,7 +192,7 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                           href={fact.referenceLink1}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                          className="relative p-2 rounded-full transition-colors"
                         >
                           <GoLinkExternal className="w-5 h-5" />
                           {hasBothLinks && (
@@ -223,7 +205,7 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                           href={fact.referenceLink2}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                          className="relative p-2 rounded-full transition-colors"
                         >
                           <GoLinkExternal className="w-5 h-5" />
                           {hasBothLinks && (

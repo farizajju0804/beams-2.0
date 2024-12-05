@@ -64,7 +64,7 @@ export async function searchFacts({
               must: [{
                 text: {
                   query: query,
-                  path: ["title", "factContent", "hashtags"],
+                  path: ["title", "fact", "whyItsImportant", "hashtags"],
                   fuzzy: {
                     maxEdits: 1,
                     prefixLength: 2

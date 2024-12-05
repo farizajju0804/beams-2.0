@@ -5,15 +5,14 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button, Chip } from "@nextui-org/react"
 import FormattedDate from "@/app/beams-today/_components/FormattedDate";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+
 
 interface FactOfTheDayProps {
   id: string | undefined
   date: Date | undefined
   title: string | undefined
-  finalImage: string | undefined 
-  finalImageDark: string | undefined
+  fact: string | undefined 
+  whyItsImportant: string | undefined
   thumbnail: string | undefined
   referenceLink1?: string
   referenceLink2?: string
@@ -28,8 +27,8 @@ interface FactOfTheDayProps {
 export function FactDisplay({
   date,
   title,
-  finalImage,
-  finalImageDark,
+  fact,
+  whyItsImportant,
   thumbnail,
   referenceLink1,
   referenceLink2,
@@ -37,41 +36,12 @@ export function FactDisplay({
   category,
 }: FactOfTheDayProps) {
   const hasBothLinks = referenceLink1 && referenceLink2;
-  const [mounted, setMounted] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
-  
-  // Use state to track the current image
-  const [currentImage, setCurrentImage] = useState(finalImage);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      // Use resolvedTheme instead of theme for more reliable theme detection
-      const imageToUse = (resolvedTheme === 'dark' ? finalImageDark : finalImage) || finalImage;
-      setCurrentImage(imageToUse);
-      
-      // Debug logging
-      console.log({
-        resolvedTheme,
-        theme,
-        imageToUse,
-        finalImage,
-        finalImageDark,
-        currentImage: imageToUse
-      });
-    }
-  }, [mounted, resolvedTheme, theme, finalImage, finalImageDark]);
 
-  // Don't render anything until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return null;
-  }
   return (
     <Card className="w-full rounded-none md:rounded-xl border-1 border-default/50 shadow-none max-w-lg mx-auto overflow-hidden">
-      <CardHeader className="pb-0 pt-4 px-4">
+      <CardHeader className="pb-0 pt-4 px-6">
         <div className="flex justify-between items-center">
                   
         {title && 
@@ -86,18 +56,23 @@ export function FactDisplay({
       
       </CardHeader>
       <CardContent className="p-0">
-        <div className="relative w-full">
-        {currentImage && title && 
+        <div className="relative px-6 my-4 w-full flex flex-col gap-4">
+        <p className='text-text font-medium text-base'>{fact}</p>
+        {thumbnail && title && 
             <Image
-              src={currentImage}
+              src={thumbnail}
               alt={title}
-            width={1000}
-            height={1000}
-            className="object-cover w-full h-full"
-          />
-        }
+              width={1000}
+              height={1000}
+              className="object-cover w-full h-full rounded-lg"
+            />
+            }
+          <div className='flex flex-col gap-2'>
+          <p className='text-xl italic underline underline-offset-4 decoration-brand font-semibold'>Why It&apos;s Important</p>
+          <p className='text-text italic font-medium text-base'>{whyItsImportant}</p>
+          </div>
         </div>
-        <div className="flex px-4 justify-between items-center w-full mb-4">
+        <div className="flex px-6 justify-between items-center w-full mb-4">
 
         {category && 
           <Chip
@@ -113,7 +88,7 @@ export function FactDisplay({
           </Chip>
             }
             </div>
-        <div className="flex px-4 justify-between items-center w-full mb-4">
+        <div className="flex px-6 justify-between items-center w-full mb-4">
         {hashtags && 
         <div className="flex  flex-wrap gap-2 ">
           {hashtags.map((tag) => (

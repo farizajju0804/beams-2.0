@@ -249,7 +249,7 @@ const OnboardingPage = ({userType}: { userType : UserType}) => {
                 </h2>
                 <p 
                   dangerouslySetInnerHTML={{ __html: slides[currentSlide].content }} 
-                  className='text-text mb-8 lg:mb-8  text-sm md:text-base lg:text-lg'
+                  className='text-text mb-8 lg:mb-8  text-base lg:text-lg'
                 />
               </div>
             </div>

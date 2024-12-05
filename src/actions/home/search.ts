@@ -16,12 +16,11 @@ interface MongoDocument {
     color?: string;
   };
   score: number;
-  factContent?: string;
   shortDesc?: string;
   viewCount?: number;
   completionCount?: number;
-  finalImage?: string;      // Add this
-  finalImageDark?: string;  // Add this
+  fact?: string;      // Add this
+  whyItsImportant?: string;  // Add this
   hashtags?: string[];      // Add this
 }
 
@@ -65,8 +64,8 @@ export interface BaseSearchResult {
   content?: string;
   viewCount?: number;
   completionCount?: number;
-  finalImage?: string;      // Add this
-  finalImageDark?: string;  // Add this
+  fact?: string;      // Add this
+  whyItsImportant?: string;  // Add this
   hashtags?: string[];      // Add this
 }
 
@@ -140,7 +139,7 @@ export async function globalSearch({
 
     const pipelines = {
       facts: [
-        ...(query ? [createSearchStage(query, "factSearchIndex", ["title", "factContent", "hashtags"])] : []),
+        ...(query ? [createSearchStage(query, "factSearchIndex", ["title", "fact", "whyItsImportant", "hashtags"])] : []),
         { $match: { ...baseMatch, ...categoryMatch } },
         {
           $lookup: {
@@ -178,9 +177,8 @@ export async function globalSearch({
             date: 1,
             thumbnail: 1,
             hashtags: 1,
-            finalImage : 1,
-            finalImageDark :1,
-            factContent: 1,
+            whyItsImportant: 1,
+            fact: 1,
             category: {
               _id: "$category._id",
               name: "$category.name",
@@ -331,7 +329,7 @@ export async function globalSearch({
      
         thumbnail: doc.thumbnail || doc.thumbnailUrl || '',
         date: new Date(doc.date.$date),
-        content: doc.factContent || doc.shortDesc || '',
+        content: doc.fact || doc.shortDesc || '',
         
         category: doc.category ? {
           id: doc.category._id.$oid,
@@ -341,8 +339,8 @@ export async function globalSearch({
         completed: 'completed' in doc ? doc.completed : undefined,
         viewCount: doc.viewCount,
         completionCount: doc.completionCount,
-        finalImage: doc.finalImage,
-        finalImageDark: doc.finalImageDark,
+        fact: doc.fact,
+        whyItsImportant: doc.whyItsImportant,
         hashtags: doc.hashtags || []
       }));
 

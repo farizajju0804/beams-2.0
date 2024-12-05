@@ -485,3 +485,48 @@ export async function getRecentGames({
     };
   }
 }
+
+
+
+export async function getGamePopupPreference(){
+  const user = await currentUser()
+  if(!user){
+    return false
+  }
+
+
+  
+ const preference = await db.user.findUnique({
+  where : {
+    id : user.id
+  },
+  select : {
+    gamePopupPreference : true
+  }
+ })
+
+ return preference?.gamePopupPreference ?? false
+
+ 
+}
+
+
+export async function updatePopupPreference() {
+
+try {
+  const user = await currentUser();
+  if (!user) return;
+
+  await db.user.update({
+    where: {
+      id: user.id
+    },
+    data: {
+      gamePopupPreference: false
+    }
+  });
+} catch (error) {
+  console.error('Failed to update preference:', error);
+}
+
+}

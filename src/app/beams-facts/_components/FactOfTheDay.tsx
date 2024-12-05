@@ -147,8 +147,8 @@ const FactOfTheDay: React.FC<FactOfTheDayProps> = ({ userId, fact }) => {
           id={fact.id}
           date={fact.date}
           title={fact.title}
-          finalImage={fact.finalImage}
-          finalImageDark={fact.finalImageDark}
+          fact={fact.fact}
+          whyItsImportant={fact.whyItsImportant}
           thumbnail={fact.thumbnail}
           referenceLink1={fact.referenceLink1}
           referenceLink2={fact.referenceLink2}
