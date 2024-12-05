@@ -127,10 +127,16 @@ model Account {
 
 
 model ShortUrl {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId // Unique identifier, uses MongoDB ObjectId
-  shortPath String   @unique  // This will be like "xyz123"
-  fullUrl   String
-  clicks    Int      @default(0)
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  shortPath   String    @unique
+  fullUrl     String
+  clicks      Int       @default(0)
+  lastClicked DateTime?
+  title       String
+  description String
+  imageUrl    String?
+  type        String    @default("website")  // article, website, etc.
+  createdAt   DateTime  @default(now())
 }
 
 // Model for storing verification tokens used for email verification

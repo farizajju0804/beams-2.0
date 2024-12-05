@@ -10,6 +10,7 @@ import { ReferFriendModal } from "./ReferalModal";
 import { useReferralModalStore } from "@/store/referralStore";
 
 import { ReferralStatus } from "@prisma/client";
+import handleSignOut from "@/utils/signout";
 
 interface UserData {
   id: string,
@@ -59,14 +60,14 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     return null;
   }
 
-  const handleSignOut = async () => {
-    try {
-    await signOut()
+  // const handleSignOut = async () => {
+  //   try {
+  //   await signOut({redirectTo : "/auth/login"})
       
-    } catch (error) {
-      console.error("Error during sign out:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error during sign out:", error);
+  //   }
+  // };
 
   
   // Define all possible menu items

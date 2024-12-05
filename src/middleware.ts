@@ -21,7 +21,7 @@ export default auth(async (req) => {
     return;
   }
 
-  if (nextUrl.pathname.startsWith('/api/metadata')) {
+  if (nextUrl.pathname.startsWith('/s')) {
     return;
   }
 

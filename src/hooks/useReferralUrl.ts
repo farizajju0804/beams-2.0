@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { getOrCreateReferralCode } from "@/actions/auth/getOrCreateReferralCode";
+import { createShortUrl } from '@/utils/urlShortener';
+import { shareMetadataConfig } from '@/constants/shareMetadata';
 
 export const useReferralUrl = () => {
   const [referralUrl, setReferralUrl] = useState<string | null>(null);
@@ -12,7 +14,17 @@ export const useReferralUrl = () => {
       try {
         setIsLoading(true);
         const referralCode = await getOrCreateReferralCode();
-        setReferralUrl(`${window.location.origin}/auth/register?referral=${referralCode}`);
+        const fullUrl = `/auth/register?referral=${referralCode}`;
+        const shortPath = await createShortUrl(
+          fullUrl,
+          {
+            title: shareMetadataConfig.referral.title,
+            description: shareMetadataConfig.referral.description,
+            imageUrl: shareMetadataConfig.referral.imageUrl,
+            type: 'website'
+          }
+        );
+        setReferralUrl(`${window.location.origin}/s/${shortPath}`);
         setError(null);
       } catch (err) {
         setError('Failed to fetch referral URL');

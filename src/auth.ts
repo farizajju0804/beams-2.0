@@ -39,19 +39,19 @@ export const {
          }, // Set emailVerified to the current date
       });
     },
-    async signOut(message) {
-      if ('token' in message && message.token) {
-        if (message.token?.sub) {
-          // Update the user's session validity in the database
-          const updated = await db.user.update({
-            where: { id: message.token.sub },
-            data: { 
-              isSessionValid: false,
-            },
-          });
-        }
-      }
-    },
+    // async signOut(message) {
+    //   if ('token' in message && message.token) {
+    //     if (message.token?.sub) {
+    //       // Update the user's session validity in the database
+    //       const updated = await db.user.update({
+    //         where: { id: message.token.sub },
+    //         data: { 
+    //           isSessionValid: false,
+    //         },
+    //       });
+    //     }
+    //   }
+    // },
 
 
   },

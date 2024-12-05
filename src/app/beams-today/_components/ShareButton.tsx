@@ -14,6 +14,7 @@ import {
   WhatsappIcon,
 } from 'react-share';
 import { BeamsToday } from '@/types/beamsToday';
+import { createShortUrl } from '@/utils/urlShortener';
 
 interface ShareButtonProps {
   data: BeamsToday;
@@ -25,13 +26,21 @@ const ShareButton: React.FC<ShareButtonProps> = ({ data }) => {
   const [hasClipboard, setHasClipboard] = useState<boolean>(false);
 
   useEffect(() => {
-    // Set canonical URL for sharing
-    const baseUrl = 'https://www.beams.world';
-    const path = `/api/metadata/beams-today/${data.id}`;
-    setShareUrl(window.location.hostname === 'localhost' ? `${baseUrl}${path}` : `${window.location.origin}${path}`);
-    
-    setHasShareAPI('share' in navigator);
-    setHasClipboard('clipboard' in navigator);
+    const generateShareUrl = async () => {
+      const shortPath = await createShortUrl(
+        `/beams-today/${data.id}`,
+        {
+          title: `${data.title} | Beams Today`,
+          description: data.shortDesc,
+          imageUrl: data.thumbnailUrl,
+          type: 'article'
+        }
+      );
+      
+      setShareUrl(`${window.location.origin}/s/${shortPath}`);
+    };
+  
+    generateShareUrl();
   }, [data.id]);
 
   const shareContent = {
