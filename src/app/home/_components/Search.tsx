@@ -264,8 +264,6 @@ useEffect(() => {
                         value: "text-xs  md:text-sm",
                         popoverContent: "min-w-[140px]  md:text-sm text-xs",
                         listboxWrapper: "text-xs md:text-sm",
-                        
-                        // Target items using data attributes for more precise styling
                         listbox: "text-xs [&_[role=option]_[data-label=true]]:text-xs flex-0",
                       }}
                     

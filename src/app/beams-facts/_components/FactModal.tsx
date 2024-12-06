@@ -28,7 +28,7 @@ interface FactModalProps {
     hashtags: string[]
     referenceLink1?: string
     referenceLink2?: string,
-    completed: boolean
+    completed: boolean  
   }
   userId: string
 }

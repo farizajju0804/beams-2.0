@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection, User } from "@nextui-org/react";
 import { useRouter, } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
-import { signOut } from "next-auth/react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ArrowDown2, Gift, Logout } from "iconsax-react";
 import { ReferFriendModal } from "./ReferalModal";
@@ -60,16 +59,7 @@ export default function UserButton({ initialUser }: UserButtonProps) {
     return null;
   }
 
-  // const handleSignOut = async () => {
-  //   try {
-  //   await signOut({redirectTo : "/auth/login"})
-      
-  //   } catch (error) {
-  //     console.error("Error during sign out:", error);
-  //   }
-  // };
 
-  
   // Define all possible menu items
   const menuItems = [
     // Profile Section

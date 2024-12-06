@@ -8,7 +8,7 @@ import { DailyHeader } from '@/app/home/_components/daily-header';
 import { getTop5WordGames } from '@/actions/connection/connectionGame';
 
 import { getTop5Facts } from '@/actions/fod/fod';
-import { BeamsSlideshow } from './_components/beams-today-slideshow copy';
+import { BeamsSlideshow } from './_components/beams-today-slideshow';
 import { BeamsConnectSlideshow } from './_components/beams-connect-slideshow';
 import { BeamsFactsSlideshow } from './_components/beams-facts-slideshow';
 import GlobalSearch from './_components/Search';

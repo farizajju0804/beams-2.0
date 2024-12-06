@@ -1,8 +1,6 @@
 import FormattedDate from "@/app/beams-today/_components/FormattedDate"
 import { Card } from "@/components/ui/card"
-import { Chip } from "@nextui-org/react"
 import Image from "next/image"
-import Link from "next/link"
 
 interface FactCardProps {
   id: string

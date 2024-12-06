@@ -58,10 +58,7 @@ export default auth(async (req) => {
   }
 
 
-  // if(!user?.isSessionValid){
-  //   return Response.redirect(new URL('/auth/login', nextUrl));
 
-  // }
   // Logic for logged-in users
   if (isLoggedIn) {
     try {
@@ -72,13 +69,6 @@ export default auth(async (req) => {
         return Response.redirect(new URL('/auth/login', nextUrl)); // Redirect to login if the user is not found
       }
 
-      // Log the current user state for debugging purposes
-      // console.log("Current user state:", {
-      //   isAccessible: user.isAccessible,
-      //   userFormCompleted: user.userFormCompleted,
-      //   onBoardingCompleted: user.onBoardingCompleted,
-      //   currentPath: nextUrl.pathname
-      // });
 
       // Check if the user isAccessible, if not, redirect to /access-code
       if (!user.isAccessible && nextUrl.pathname !== '/access-code') {

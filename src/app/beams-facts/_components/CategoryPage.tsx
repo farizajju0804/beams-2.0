@@ -7,7 +7,6 @@ import CustomPagination from "@/components/Pagination";
 import SortByFilter from "@/app/beams-today/_components/SortByFilter";
 import { FactModal } from './FactModal';
 import { Chip } from "@nextui-org/react";
-import { FlipFactCard } from './FlipFactCard';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { FactCard } from './FactCard';
 
