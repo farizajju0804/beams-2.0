@@ -108,7 +108,7 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${currentSlide.thumbnailUrl})` }}
               />
-              <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 to-black/10 backdrop-blur-sm">
+              <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 to-black/30 backdrop-blur-sm">
                 <div className="absolute inset-0 p-8 flex flex-col justify-end">
                   <h2 className="text-white text-xl md:text-4xl font-bold mb-4">
                     {currentSlide.title}
@@ -132,7 +132,7 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
         <Button
            isIconOnly
           size='sm'
-          variant='bordered'
+        
           className={cn(
             "bg-default-100 min-w-0 w-7 h-7 md:w-8 md:h-8 transition-all duration-300 ease-in-out z-10",
             direction === -1 && "bg-primary text-white"
@@ -145,7 +145,7 @@ export function BeamsSlideshow({ slides }: BeamsSlideshowProps) {
         <Button
           isIconOnly
           size='sm'
-             variant='bordered'
+    
           className={cn(
             "bg-default-100 min-w-0 w-7 h-7 md:w-8 md:h-8 transition-all duration-300 ease-in-out z-10",
             direction === 1 && "bg-primary text-white"

@@ -1,12 +1,10 @@
 // app/components/search/GlobalSearch.tsx
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Select, SelectItem } from '@nextui-org/react';
 import { CloseCircle, Filter } from 'iconsax-react';
 import CustomPagination from '@/components/Pagination';
 import { NoResultsState } from '@/components/ui/NoResultsState';
-
 import SearchLoader from '@/components/SearchLoader';
 import { CiSearch } from "react-icons/ci";
 import { globalSearch } from '@/actions/home/search';
@@ -262,7 +260,7 @@ useEffect(() => {
                       variant='faded'
                       classNames={{
                         base: "text-xs bg-transparent",
-                        trigger: "text-xs  bg-transparent pl-2 border-0  border-r-1 border-default-200",
+                        trigger: "text-xs  bg-transparent pl-2 border-0 rounded-none border-r-1 border-default-200",
                         value: "text-xs  md:text-sm",
                         popoverContent: "min-w-[140px]  md:text-sm text-xs",
                         listboxWrapper: "text-xs md:text-sm",
@@ -287,12 +285,14 @@ useEffect(() => {
               endContent={
                 query ? (
                   <CloseCircle
-                    size="24"
-                    className="text-default-500 cursor-pointer mr-2"
-                    onClick={resetSearch}
+                    size={24}
+                    className="text-default-500 cursor-pointer mr-2 min-w-[24px] min-h-[24px]" 
                   />
                 ) : (
-                  <CiSearch size="24" className="text-default-500 mr-2" />
+                  <CiSearch 
+                    size={24}
+                    className="text-default-500 mr-2 min-w-[24px] min-h-[24px]" 
+                  />
                 )
               }
             />

@@ -85,7 +85,11 @@ const DashboardPage = async () => {
 
   // Return the dashboard layout
   return (
-    <div className='w-full flex flex-col px-6 md:px-8 gap-10 py-4'>
+    <div className='w-full flex flex-col px-6 md:px-8 gap-4 py-4'>
+      <div className="w-full flex flex-col items-start"> {/* Column for title and underline */}
+        <h1 className="text-lg md:text-2xl text-text font-poppins font-semibold mb-[1px]">Dashboard</h1> {/* Title */}
+        <div className="border-b-2 border-brand mb-3 w-[60px]"></div> {/* Underline for title */}
+      </div>
       <div className="grid gap-8 w-full grid-cols-1 md:grid-cols-1 lg:grid-cols-12 md:gap-8">
         <div className="lg:col-span-2">
           <ProfilePictureForm user={user} /> {/* Profile picture form */}

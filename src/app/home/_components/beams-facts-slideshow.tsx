@@ -162,7 +162,7 @@ export function BeamsFactsSlideshow({ slides, userId }: BeamsSlideshowProps) {
         <Button
           isIconOnly
           size='sm'
-          variant='bordered'
+          
           className={cn(
             "bg-default-100 min-w-0 w-7 h-7 md:w-8 md:h-8 transition-all duration-300 ease-in-out z-10",
             direction === -1 && "bg-primary text-white"
@@ -178,7 +178,7 @@ export function BeamsFactsSlideshow({ slides, userId }: BeamsSlideshowProps) {
         <Button
           isIconOnly
           size='sm'
-          variant='bordered'
+         
           className={cn(
             "bg-default-100  min-w-0 w-7 h-7 md:w-8 md:h-8 transition-all duration-300 ease-in-out z-10",
             direction === 1 && "bg-primary text-white"

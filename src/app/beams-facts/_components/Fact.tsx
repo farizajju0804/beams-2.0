@@ -45,7 +45,7 @@ export function FactDisplay({
         <div className="flex justify-between items-center">
                   
         {title && 
-        <h1 className="text-lg md:text-xl lg:text-2xl font-poppins decoration-brand underline underline-offset-[6px] font-medium">{title}</h1>
+        <h1 className="text-lg md:text-xl lg:text-2xl font-bold ">{title}</h1>
         }
         {date && 
           <div className="flex items-center text-muted-foreground text-sm">
@@ -68,8 +68,8 @@ export function FactDisplay({
             />
             }
           <div className='flex flex-col gap-2'>
-          <p className='text-xl italic underline underline-offset-4 decoration-brand font-semibold'>Why It&apos;s Important</p>
-          <p className='text-text italic font-medium text-base'>{whyItsImportant}</p>
+          <p className='text-base md:text-lg lg:text-xl italic underline underline-offset-4 decoration-brand font-medium'>Why It&apos;s Important</p>
+          <p className='text-text font-medium text-base'>{whyItsImportant}</p>
           </div>
         </div>
         <div className="flex px-6 justify-between items-center w-full mb-4">

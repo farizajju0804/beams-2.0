@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Checkbox } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Checkbox, Divider } from "@nextui-org/react";
 import ConnectionGame from './ConnectionGame';
 import { updatePopupPreference } from '@/actions/connection/connectionGame';
 import { useRouter } from 'next/navigation';
@@ -74,7 +74,7 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
                     <li>
                       <span className="font-bold">Time Limit</span>
                       <p className="mt-1 font-normal">
-                        You have 60 seconds to answer each question.
+                        You have 60 seconds to complete the game.
                       </p>
                     </li>
                     <li>
@@ -84,13 +84,14 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
                       </p>
                     </li>
                   </ol>
-                <div className="mt-4">
+                  <Divider/>
+                <div className="">
                   <Checkbox
                     color="warning"
                     checked={dontShowAgain}
                     onChange={(e) => setDontShowAgain(e.target.checked)}
                   >
-                    Don&apos;t show this again
+                    Don&apos;t show this message again
                   </Checkbox>
                 </div>
               </ModalBody>

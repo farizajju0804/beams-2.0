@@ -6,11 +6,11 @@ interface NoResultsStateProps {
 }
 
 export const NoResultsState = ({ query, message }: NoResultsStateProps) => (
-  <div className="flex flex-col items-center justify-center py-12 text-center">
-    <div className="w-40 h-40 mb-6 relative">
+  <div className="flex flex-col items-center justify-center py-6 text-center">
+    <div className="w-32 h-32 mb-6 relative">
       <Image
-        width={200}
-        height={200}
+        width={130}
+        height={130}
         src="https://res.cloudinary.com/drlyyxqh9/image/upload/v1729587896/achievements/search-empty_wzzuq9.webp"
         className="object-contain"
         alt="No results found"
@@ -25,7 +25,7 @@ export const NoResultsState = ({ query, message }: NoResultsStateProps) => (
       )}
     </h3>
     <p className="text-grey-2 max-w-sm">
-      Try adjusting your filters or search terms to find what you&apos;re looking for!
+    No exact matches found. Why not try another search to find what you need?
     </p>
   </div>
 );

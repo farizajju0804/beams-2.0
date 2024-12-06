@@ -136,8 +136,8 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
                     className="object-cover w-full h-full rounded-lg"
                   />
                   <div className='flex flex-col gap-2'>
-                  <p className='text-xl italic underline underline-offset-4 decoration-brand font-semibold'>Why It&apos;s Important</p>
-                  <p className='text-text italic font-medium text-base'>{fact.whyItsImportant}</p>
+                  <p className='text-xl italic underline underline-offset-4 decoration-brand font-medium'>Why It&apos;s Important</p>
+                  <p className='text-text font-medium text-base'>{fact.whyItsImportant}</p>
                   </div>
                 </motion.div>
 
