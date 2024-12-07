@@ -45,7 +45,7 @@ export function FactDisplay({
         <div className="flex justify-between items-center">
                   
         {title && 
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold ">{title}</h1>
+        <h1 className="text-lg md:text-xl  lg:text-2xl font-medium underline underline-offset-4 decoration-brand ">{title}</h1>
         }
         {date && 
           <div className="flex items-center text-muted-foreground text-sm">

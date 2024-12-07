@@ -114,8 +114,8 @@ export function FactModal({ isOpen, onClose, fact, userId }: FactModalProps) {
               </button>
 
               <div className="p-4 flex flex-col">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-xl md:text-2xl font-bold">{fact.title}</h2>
+                <div className="flex flex-col gap-2">
+                  <h2 className="text-xl md:text-2xl font-medium underline underline-offset-[6px] decoration-brand">{fact.title}</h2>
                   <p className="text-sm text-default-500 flex items-center">
                     <FormattedDate date={fact.date.toISOString().split('T')[0]}/>
                   </p>

@@ -66,7 +66,7 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-row justify-start items-center">
-                <h2 className="text-2xl font-bold text-text">Before you Start</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-text">Before you Start</h2>
                 
               </ModalHeader>
               <ModalBody className="text-text">
@@ -100,9 +100,9 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
                   color="warning"
                   variant="shadow"
                   onPress={handleStartGame}
-                  className="w-full text-black font-lg font-semibold"
+                  className="w-full text-black text-lg font-semibold"
                 >
-                  I&apos;m Ready to Play!
+                  I&apos;m Ready to Play
                 </Button>
               </ModalFooter>
             </>

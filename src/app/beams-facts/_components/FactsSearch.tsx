@@ -57,7 +57,7 @@ export const getNoResultsMessage = (query: string): string => {
     if (containsOnlyStopwords(query)) {
       return "Please enter more specific search terms";
     }
-    return `No results found for "${query}"`;
+    return `No results found for "${query}". Try another search term to find what you need`;
   }; 
 
    // Function to check if query contains only stopwords
