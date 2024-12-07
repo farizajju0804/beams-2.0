@@ -113,7 +113,7 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
             );
           })}
           {data.topEntries.length < 3 && (
-            <p className='text-sm px-2 text-grey-2 text-center'>Ranking will be updated here as soon as there are atleast 3 entries.</p>
+            <p className='text-sm px-2 text-grey-2 text-center'>Ranking will be updated here as soon as there are at least 3 entries.</p>
           )}
         </div>
 
