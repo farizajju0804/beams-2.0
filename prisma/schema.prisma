@@ -342,9 +342,12 @@ model ConnectionGame {
   date         DateTime                   @unique
   answer       String
   hint         String
-  image        String
+  firstImage  String
+  secondImage  String
+  thirdImage   String
   title        String
   thumbnail    String
+  referenceLink  String
   answerExplanation String                   @db.String        
   solutionPoints    String[]     
   published    Boolean                    @default(false)

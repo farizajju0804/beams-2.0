@@ -12,7 +12,10 @@ import { GameSolution } from './GameSolution';
 
 interface WordGuessGameProps {
   id: string;
-  image: string;
+  firstImage: string;
+  secondImage: string;
+  thirdImage: string;
+  referenceLink : string;
   answer: string;
   beamsTodayId: string;
   title: string;
@@ -140,7 +143,10 @@ const countLetterOccurrences = (str: string, letter: string): number => {
 
 const ConnectionGame: React.FC<WordGuessGameProps> = ({ 
   id,
-  image, 
+  firstImage,
+  secondImage,
+  thirdImage,
+  referenceLink,
   answer, 
   beamsTodayId,
   title, 
@@ -346,7 +352,10 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   if (showSolution) {
     return (
       <GameSolution
-        image={image}
+        firstImage={firstImage}
+        secondImage={secondImage}
+        thirdImage={thirdImage}
+        referenceLink={referenceLink}
         answer={answer}
         title={title}
         hint={hint}
@@ -375,33 +384,48 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
             </CardHeader>
 
             <CardBody className="gap-6 px-4">
-              <div className="relative w-full rounded-lg overflow-hidden">
-                <Image
-                  src={image}
-                  width={1000}
-                  height={500}
-                  alt="Guess this"
-                  className="object-contain h-fit w-full"
-                />
-                <Popover shouldBlockScroll showArrow placement='top' onOpenChange={toggleHint}>
-                  <PopoverTrigger>
-                    <Button
-                      isIconOnly
-                      className="transition-all w-5 h-5 md:w-8 md:h-8  text-primary absolute top-2 right-2 min-w-0 bg-white p-0 shadow-defined duration-300 rounded-full"
-                      size="sm"
-                    >
-                      <FaLightbulb className='md:text-lg text-sm' />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className='p-0 border-none outline-none'>
-                    <div className="bg-background px-4 py-4 rounded-2xl shadow-defined">
-                      <p className="text-gradient-dark text-sm font-medium">
-                        💡 <span className="font-bold">Hint:</span> {hint}
-                      </p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
+            <div className="relative w-full rounded-lg overflow-hidden grid grid-cols-3">
+                  <Image
+                    src={firstImage}
+                    width={400}
+                    height={360}
+                    alt="First image"
+                    className="object-contain h-fit w-full"
+                  />
+                  <Image
+                    src={secondImage}
+                    width={400}
+                    height={360}
+                    alt="Second image"
+                    className="object-contain h-fit w-full"
+                  />
+                  <Image
+                    src={thirdImage}
+                    width={400}
+                    height={360}
+                    alt="Third image"
+                    className="object-contain h-fit w-full"
+                  />
+                  
+                  <Popover shouldBlockScroll showArrow placement='top' onOpenChange={toggleHint}>
+                    <PopoverTrigger>
+                      <Button
+                        isIconOnly
+                        className="transition-all w-5 h-5 md:w-8 md:h-8 text-primary absolute top-2 right-2 min-w-0 bg-white p-0 shadow-defined duration-300 rounded-full z-10"
+                        size="sm"
+                      >
+                        <FaLightbulb className='md:text-lg text-sm' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='p-0 border-none outline-none'>
+                      <div className="bg-background px-4 py-4 rounded-2xl shadow-defined">
+                        <p className="text-gradient-dark text-sm font-medium">
+                          💡 <span className="font-bold">Hint:</span> {hint}
+                        </p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
 
               <div className="flex flex-wrap justify-center gap-2 mb-2 text-lg font-semibold">
                 {jumbledLetters.map((letter, index) => (

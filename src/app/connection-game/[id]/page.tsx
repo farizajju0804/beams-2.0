@@ -25,7 +25,10 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
         <ConnectionGameWrapper
         id={connectionGame.data.id}
         beamsTodayId={id}
-        image={connectionGame.data?.image}
+        firstImage={connectionGame.data?.firstImage}
+        secondImage={connectionGame.data?.secondImage}
+        thirdImage={connectionGame.data.thirdImage}
+        referenceLink={connectionGame.data.referenceLink}
         answer={connectionGame.data?.answer}
         title={connectionGame.data?.title}
         hint={connectionGame.data?.hint}

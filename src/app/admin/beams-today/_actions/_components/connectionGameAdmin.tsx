@@ -43,7 +43,10 @@ interface ConnectionGameFormData {
   title: string;
   answer: string;
   hint: string;
-  image: string;
+  firstImage: string;
+  secondImage: string;
+  thirdImage: string;
+  referenceLink: string;
   answerExplanation: string;
   thumbnail: string;
   solutionPoints: string[];
@@ -80,7 +83,10 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     title: '',
     answer: '',
     hint: '',
-    image: '',
+    firstImage: '',
+    secondImage: '',
+    thirdImage: '',
+    referenceLink: '',
     answerExplanation: '',
     thumbnail: '',
     solutionPoints: ['', '', ''],
@@ -100,9 +106,12 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     if (!formData.title.trim()) errors.title = 'Title is required';
     if (!formData.answer.trim()) errors.answer = 'Answer is required';
     if (!formData.hint.trim()) errors.hint = 'Hint is required';
-    if (!formData.image.trim()) errors.image = 'Image URL is required';
+    if (!formData.firstImage.trim()) errors.firstImage = 'First Image URL is required';
+    if (!formData.secondImage.trim()) errors.secondImage = 'Second Image URL is required';
+    if (!formData.thirdImage.trim()) errors.thirdImage = 'Third Image URL is required';
     if (!formData.thumbnail.trim()) errors.thumbnail = 'Thumbnail URL is required';
     if (!formData.answerExplanation.trim()) errors.answerExplanation = 'Answer explanation is required';
+    if (!formData.referenceLink.trim()) errors.referenceLink = 'Reference Link is required';
     if (!formData.solutionPoints.some(point => point.trim())) {
       errors.solutionPoints = 'At least one solution point is required';
     }
@@ -117,9 +126,12 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       title: '',
       answer: '',
       hint: '',
-      image: '',
+      firstImage: '',
+      secondImage: '',
+      thirdImage: '',
       thumbnail: '',
       answerExplanation: '',
+      referenceLink: '',
       solutionPoints: ['', '', ''],
       date: setDateToUTCMidnight(new Date()),
       published: false
@@ -141,9 +153,12 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       title: game.title,
       answer: game.answer,
       hint: game.hint,
-      image: game.image,
+      firstImage: game.firstImage,
+      secondImage: game.secondImage,
+      thirdImage : game.thirdImage,
       thumbnail: game.thumbnail,
       answerExplanation: game.answerExplanation,
+      referenceLink: game.referenceLink,
       solutionPoints: game.solutionPoints,
       date: setDateToUTCMidnight(new Date(game.date)),
       published: game.published
@@ -294,15 +309,34 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
             />
 
             <Input
-              label="Image URL"
-              placeholder="Enter image URL"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              label="First Image URL"
+              placeholder="Enter first image URL"
+              value={formData.firstImage}
+              onChange={(e) => setFormData({ ...formData, firstImage: e.target.value })}
               variant="bordered"
-              isInvalid={!!formErrors.image}
-              errorMessage={formErrors.image}
+              isInvalid={!!formErrors.firstImage}
+              errorMessage={formErrors.firstImage}
             />
 
+              <Input
+              label="Second Image URL"
+              placeholder="Enter second image URL"
+              value={formData.secondImage}
+              onChange={(e) => setFormData({ ...formData, secondImage: e.target.value })}
+              variant="bordered"
+              isInvalid={!!formErrors.secondImage}
+              errorMessage={formErrors.secondImage}
+            />
+            
+            <Input
+              label="Third Image URL"
+              placeholder="Enter third image URL"
+              value={formData.thirdImage}
+              onChange={(e) => setFormData({ ...formData, thirdImage: e.target.value })}
+              variant="bordered"
+              isInvalid={!!formErrors.thirdImage}
+              errorMessage={formErrors.thirdImage}
+            />
             <Input
               label="Thumbnail URL"
               placeholder="Enter thumbnail URL"
@@ -311,6 +345,15 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
               variant="bordered"
               isInvalid={!!formErrors.thumbnail}
               errorMessage={formErrors.thumbnail}
+            />
+             <Input
+              label="Reference link"
+              placeholder="Enter reference link"
+              value={formData.referenceLink}
+              onChange={(e) => setFormData({ ...formData, referenceLink: e.target.value })}
+              variant="bordered"
+              isInvalid={!!formErrors.referenceLink}
+              errorMessage={formErrors.referenceLink}
             />
               <Input
               type="date"

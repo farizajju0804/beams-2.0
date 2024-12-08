@@ -8,7 +8,10 @@ import { useRouter } from 'next/navigation';
 
 interface ConnectionGameWrapperProps {
   id: string;
-  image: string;
+  firstImage: string;
+  secondImage : string;
+  thirdImage : string;
+  referenceLink: string;
   answer: string;
   beamsTodayId: string;
   title: string;
@@ -22,7 +25,10 @@ interface ConnectionGameWrapperProps {
 }
 const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
   id,
-  image,
+  firstImage,
+  secondImage,
+  thirdImage,
+  referenceLink,
   answer,
   beamsTodayId,
   title,
@@ -115,7 +121,10 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
   return (
     <ConnectionGame
       id={id}
-      image={image}
+      firstImage={firstImage}
+      secondImage={secondImage}
+      thirdImage={thirdImage}
+      referenceLink={referenceLink}
       answer={answer}
       beamsTodayId={beamsTodayId}
       title={title}

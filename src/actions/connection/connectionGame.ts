@@ -13,7 +13,10 @@ interface WordGameResponse {
     answer: string;
     date : Date;
     hint: string;
-    image: string;
+    firstImage: string;
+    secondImage: string;
+    thirdImage: string;
+    referenceLink : string;
     title : string;
     thumbnail : string;
     answerExplantion : string,
@@ -48,7 +51,10 @@ export async function getWordGame(clientDate: string): Promise<WordGameResponse>
         answer: wordGame.answer,
         hint: wordGame.hint,
         date : wordGame.date,
-        image: wordGame.image,
+        firstImage: wordGame.firstImage,
+        secondImage : wordGame.secondImage,
+        thirdImage : wordGame.thirdImage,
+        referenceLink : wordGame.referenceLink,
         title : wordGame.title,
         thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
@@ -70,7 +76,10 @@ export interface WordGameData {
   answer: string;
   hint: string;
   date: Date;
-  image: string;
+  firstImage: string;
+  secondImage: string;
+  thirdImage: string;
+  referenceLink : string;
   title: string;
   thumbnail: string;
   answerExplanation: string;
@@ -118,7 +127,10 @@ export async function getTop5WordGames(userId: string): Promise<WordGamesRespons
       answer: game.answer,
       hint: game.hint,
       date: game.date,
-      image: game.image,
+      firstImage : game.firstImage,
+      secondImage : game.secondImage,
+      thirdImage : game.thirdImage,
+      referenceLink : game.referenceLink,
       title: game.title,
       thumbnail: game.thumbnail,
       answerExplanation: game.answerExplanation,
@@ -163,7 +175,10 @@ export async function getWordGameById(id: string): Promise<WordGameResponse> {
         answer: wordGame.answer,
         date : wordGame.date,
         hint: wordGame.hint,
-        image: wordGame.image,
+        firstImage: wordGame.firstImage,
+        secondImage : wordGame.secondImage,
+        thirdImage : wordGame.thirdImage,
+        referenceLink : wordGame.referenceLink,
         title : wordGame.title,
         thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
@@ -357,7 +372,10 @@ interface Game {
   title: string
   date: Date
   hint: string
-  image: string
+  firstImage: string;
+  secondImage: string;
+  thirdImage: string;
+  referenceLink : string;
   thumbnail : string
   isCompleted: boolean
 }
@@ -442,7 +460,10 @@ export async function getRecentGames({
         title: true,
         date: true,
         hint: true,
-        image: true,
+        firstImage: true,
+        secondImage: true,
+        thirdImage : true,
+        referenceLink : true,
         thumbnail: true,
         completions: userId ? {
           where: {
@@ -462,7 +483,10 @@ export async function getRecentGames({
       title: game.title,
       date: game.date,
       hint: game.hint,
-      image: game.image,
+      firstImage: game.firstImage,
+      secondImage: game.secondImage,
+      thirdImage : game.thirdImage,
+      referenceLink : game.referenceLink,
       thumbnail : game.thumbnail,
       isCompleted: userId ? game.completions.length > 0 : false
     }));

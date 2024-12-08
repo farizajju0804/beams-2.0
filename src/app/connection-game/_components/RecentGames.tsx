@@ -18,18 +18,14 @@ interface Game {
     date: Date
     isCompleted: boolean
     hint: string
+    firstImage: string;
+    secondImage: string;
+    thirdImage: string;
+    referenceLink : string;
     thumbnail : string
-    image: string
   }
   
-  // Define the server response type
-  interface PaginatedGamesResponse {
-    success: boolean
-    games?: Game[]
-    totalPages?: number
-    currentPage?: number
-    error?: string
-  }
+
   
   // Define the props interface with required initial data structure
   interface RecentGamesProps {
