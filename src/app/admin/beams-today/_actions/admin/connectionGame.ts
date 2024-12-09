@@ -18,7 +18,7 @@ export async function getConnectionGames() {
 export async function createConnectionGame(data: ConnectionGameInput): Promise<{ success: boolean; data?: ConnectionGame; error?: string }> {
   try {
     const game = await db.connectionGame.create({ data });
-    revalidatePath('/admin/connection-games');
+    revalidatePath('/admin/beams-connects');
     return { success: true, data: game };
   } catch (error) {
     return { success: false, error: 'Failed to create connection game' };
@@ -34,7 +34,7 @@ export async function updateConnectionGame(
       where: { id },
       data
     });
-    revalidatePath('/admin/connection-games');
+    revalidatePath('/admin/beams-connects');
     return { success: true, data: game };
   } catch (error) {
     return { success: false, error: 'Failed to update connection game' };
@@ -46,7 +46,7 @@ export async function deleteConnectionGame(id: string): Promise<{ success: boole
     const game = await db.connectionGame.delete({
       where: { id }
     });
-    revalidatePath('/admin/connection-games');
+    revalidatePath('/admin/beams-connects');
     return { success: true, data: game };
   } catch (error) {
     return { success: false, error: 'Failed to delete connection game' };

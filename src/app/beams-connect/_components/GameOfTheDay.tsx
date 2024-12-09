@@ -27,7 +27,7 @@ export default function GameOfTheDay({
   const router = useRouter()
 
   const handlePlayGame = () => {
-    router.push(`/connection-game/${game?.id}`)
+    router.push(`/beams-connect/${game?.id}`)
   }
 
   return (

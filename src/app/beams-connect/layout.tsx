@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: 'Beams Connection: 1-Minute Tech Puzzle Game',
     description: 'Solve quick, engaging image-based puzzles in 1 minute and expand your knowledge of technology.',
     type: 'website',
-    url: 'https://www.beams.world/connection-game',
+    url: 'https://www.beams.world/beams-connect',
     siteName: 'Beams',
   },
   robots: {

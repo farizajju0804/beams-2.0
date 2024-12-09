@@ -113,7 +113,7 @@ export const SearchResultCard: React.FC<SearchResultCardProps> = ({
       case 'fact':
         return `/facts/${result.id}`;
       case 'connectionGame':
-        return `/connection-game/${result.id}`;
+        return `/beams-connect/${result.id}`;
     }
   };
 

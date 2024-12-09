@@ -87,9 +87,9 @@ export default function RecentGames({ initialData, userId, clientDate }: RecentG
 
   const handleGameAction = (gameId: string, completed: boolean) => {
     if (completed) {
-      router.push(`/connection-game/${gameId}`)
+      router.push(`/beams-connect/${gameId}`)
     } else {
-      router.push(`/connection-game/${gameId}`)
+      router.push(`/beams-connect/${gameId}`)
     }
   }
 

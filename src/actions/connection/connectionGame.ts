@@ -16,6 +16,8 @@ interface WordGameResponse {
     firstImage: string;
     secondImage: string;
     thirdImage: string;
+    letterChoiceStudent : string[];
+    letterChoiceNonStudent : string[];
     referenceLink : string;
     title : string;
     thumbnail : string;
@@ -55,6 +57,8 @@ export async function getWordGame(clientDate: string): Promise<WordGameResponse>
         secondImage : wordGame.secondImage,
         thirdImage : wordGame.thirdImage,
         referenceLink : wordGame.referenceLink,
+        letterChoiceStudent : wordGame.letterChoiceStudent,
+        letterChoiceNonStudent : wordGame.letterChoiceNonStudent,
         title : wordGame.title,
         thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
@@ -80,6 +84,8 @@ export interface WordGameData {
   secondImage: string;
   thirdImage: string;
   referenceLink : string;
+  letterChoiceStudent : string[];
+  letterChoiceNonStudent : string[];
   title: string;
   thumbnail: string;
   answerExplanation: string;
@@ -134,6 +140,8 @@ export async function getTop5WordGames(userId: string): Promise<WordGamesRespons
       title: game.title,
       thumbnail: game.thumbnail,
       answerExplanation: game.answerExplanation,
+      letterChoiceStudent : game.letterChoiceStudent,
+      letterChoiceNonStudent : game.letterChoiceNonStudent,
       solutionPoints: game.solutionPoints,
       isCompleted: game.completions.length > 0 ? game.completions[0].completed : false
     }));
@@ -179,6 +187,8 @@ export async function getWordGameById(id: string): Promise<WordGameResponse> {
         secondImage : wordGame.secondImage,
         thirdImage : wordGame.thirdImage,
         referenceLink : wordGame.referenceLink,
+        letterChoiceStudent : wordGame.letterChoiceStudent,
+        letterChoiceNonStudent : wordGame.letterChoiceNonStudent,
         title : wordGame.title,
         thumbnail : wordGame.thumbnail,
         answerExplantion : wordGame.answerExplanation,
@@ -375,6 +385,8 @@ interface Game {
   firstImage: string;
   secondImage: string;
   thirdImage: string;
+  letterChoiceStudent : string[];
+  letterChoiceNonStudent : string[];
   referenceLink : string;
   thumbnail : string
   isCompleted: boolean
@@ -464,6 +476,8 @@ export async function getRecentGames({
         secondImage: true,
         thirdImage : true,
         referenceLink : true,
+        letterChoiceNonStudent : true,
+        letterChoiceStudent : true,
         thumbnail: true,
         completions: userId ? {
           where: {
@@ -487,6 +501,8 @@ export async function getRecentGames({
       secondImage: game.secondImage,
       thirdImage : game.thirdImage,
       referenceLink : game.referenceLink,
+      letterChoiceStudent : game.letterChoiceStudent,
+      letterChoiceNonStudent : game.letterChoiceNonStudent,
       thumbnail : game.thumbnail,
       isCompleted: userId ? game.completions.length > 0 : false
     }));

@@ -12,6 +12,7 @@ import LowerRanksTable from './LowerRanksCard';
 import { finalizeLeaderboardPeriod } from '@/actions/points/updateLeaderboardEntry';
 import WeeklyDisplay from './WeeklyDisplay';
 import { LeaderboardRules } from './LeaderBoardRules';
+import { FormattedDateTime } from './FormattedDateTIme';
 
 interface LeaderboardProps {
   userId: string;
@@ -62,6 +63,7 @@ const getSize = (position: number) => {
     default: return 'text-4l';
   }
 };
+
 
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ 
@@ -269,8 +271,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           <WeeklyDisplay data={weekData} currentUserId={userId}/>
           {isTimerActive && (
             <div className='w-full  max-w-xl'>
-              <p className='text-base font-semibold mx-auto text-grey-2 text-center'>{`Winners will be announced in`}</p>
+              <p className='text-base font-semibold mx-auto text-grey-2 text-center'>{`Winners for this week will be announced in`}</p>
+              <FormattedDateTime dateString={endDate}/>
               <CountdownTimer timeRemaining={timeRemaining} />
+              
             </div>
           )}
           {lastWeekUsers.length >= 3 && (

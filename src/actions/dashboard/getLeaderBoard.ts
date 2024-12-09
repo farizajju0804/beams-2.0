@@ -24,6 +24,7 @@ export interface LeaderboardData {
   topEntries: LeaderboardEntry[];
 }
 
+
 /**
  * Fetches leaderboard data for a specific user within a specified date range.
  * 
@@ -69,6 +70,7 @@ export const getLeaderboardData = async (userId: string, userType: UserType, sta
     },
   });
 
+  
   const userPosition = userEntry && userEntry.rank; // Get user rank if entry exists.
   const userPoints = userEntry ? userEntry.points : 0; // Default to 0 points if no entry.
 

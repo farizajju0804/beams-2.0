@@ -32,11 +32,18 @@ const WeeklyDisplay: React.FC<LeaderboardDisplayProps> = ({
     useEffect(() => {
       // Ensure dates are only parsed client-side after hydration
       if (data.startDate && data.endDate) {
-        setFormattedStartDate(new Date(data.startDate).toLocaleDateString());
-        setFormattedEndDate(new Date(data.endDate).toLocaleDateString());
+        const formatDate = (date: Date) => {
+          return date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        };
+        
+        setFormattedStartDate(formatDate(new Date(data.startDate)));
+        setFormattedEndDate(formatDate(new Date(data.endDate)));
       }
-    }, [data.startDate, data.endDate])
-
+    }, [data.startDate, data.endDate]);
   const getRankDisplay = (rank: number) => {
     const colors = {
       1: "bg-primary text-white",

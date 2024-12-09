@@ -24,7 +24,7 @@ import {
   Switch,
   Chip,
 } from "@nextui-org/react";
-import { Edit2, Trash } from "iconsax-react";
+import { Add, Edit2, Minus, Trash } from "iconsax-react";
 import { ConnectionGame } from '@prisma/client';
 import FormattedDate from '@/app/beams-today/_components/FormattedDate';
 import { createConnectionGame, deleteConnectionGame, updateConnectionGame } from '../admin/connectionGame';
@@ -47,6 +47,8 @@ interface ConnectionGameFormData {
   secondImage: string;
   thirdImage: string;
   referenceLink: string;
+  letterChoiceStudent: string[];
+  letterChoiceNonStudent: string[];
   answerExplanation: string;
   thumbnail: string;
   solutionPoints: string[];
@@ -89,6 +91,8 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     referenceLink: '',
     answerExplanation: '',
     thumbnail: '',
+    letterChoiceStudent: [''],  // Initialize with one empty string
+    letterChoiceNonStudent: [''],  // Initialize with one empty string
     solutionPoints: ['', '', ''],
     date: setDateToUTCMidnight(new Date()), 
     published: false
@@ -115,6 +119,12 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     if (!formData.solutionPoints.some(point => point.trim())) {
       errors.solutionPoints = 'At least one solution point is required';
     }
+    if (!formData.letterChoiceStudent.some(choice => choice.trim())) {
+      errors.letterChoiceStudent = 'At least one letter choice for students is required';
+    }
+    if (!formData.letterChoiceNonStudent.some(choice => choice.trim())) {
+      errors.letterChoiceNonStudent = 'At least one letter choice for non-students is required';
+    }
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -133,6 +143,8 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       answerExplanation: '',
       referenceLink: '',
       solutionPoints: ['', '', ''],
+      letterChoiceStudent: [''], 
+      letterChoiceNonStudent: [''],
       date: setDateToUTCMidnight(new Date()),
       published: false
     });
@@ -140,6 +152,32 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
     setFormErrors({});
   };
 
+  const addLetterChoice = (type: 'student' | 'nonStudent') => {
+    const field = type === 'student' ? 'letterChoiceStudent' : 'letterChoiceNonStudent';
+    setFormData({
+      ...formData,
+      [field]: [...formData[field], '']
+    });
+  };
+
+  const removeLetterChoice = (index: number, type: 'student' | 'nonStudent') => {
+    const field = type === 'student' ? 'letterChoiceStudent' : 'letterChoiceNonStudent';
+    if (formData[field].length > 1) {  // Prevent removing the last input
+      const newChoices = [...formData[field]];
+      newChoices.splice(index, 1);
+      setFormData({
+        ...formData,
+        [field]: newChoices
+      });
+    }
+  };
+  const handleLetterChoiceChange = (index: number, value: string, type: 'student' | 'nonStudent') => {
+    const field = type === 'student' ? 'letterChoiceStudent' : 'letterChoiceNonStudent';
+    const newChoices = [...formData[field]];
+
+    newChoices[index] = value.toUpperCase();
+    setFormData({ ...formData, [field]: newChoices });
+  }
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = new Date(e.target.value);
     const utcDate = setDateToUTCMidnight(selectedDate);
@@ -160,6 +198,8 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
       answerExplanation: game.answerExplanation,
       referenceLink: game.referenceLink,
       solutionPoints: game.solutionPoints,
+      letterChoiceStudent: game.letterChoiceStudent.map(choice => choice.toUpperCase()),
+      letterChoiceNonStudent: game.letterChoiceNonStudent.map(choice => choice.toUpperCase()),
       date: setDateToUTCMidnight(new Date(game.date)),
       published: game.published
     });
@@ -377,6 +417,92 @@ export const ConnectionGameAdmin: React.FC<ConnectionGameAdminProps> = ({ initia
                   isInvalid={!!formErrors.solutionPoints}
                   errorMessage={index === 0 ? formErrors.solutionPoints : undefined}
                 />
+              ))}
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Letter Choices for Students</h3>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  color="primary"
+                  variant="flat"
+                  onClick={() => addLetterChoice('student')}
+                >
+                  <Add />
+                </Button>
+              </div>
+              {formData.letterChoiceStudent.map((choice, index) => (
+                <div key={index} className="flex gap-2">
+                  <Input
+                    className="flex-1"
+                    label={`Letter Choice ${index + 1}`}
+                    placeholder={`Enter letter choice ${index + 1} for students`}
+                    value={choice}
+                    classNames={{
+                      input: "uppercase" // Add CSS class for uppercase display
+                    }}
+                    onChange={(e) => handleLetterChoiceChange(index, e.target.value, 'student')}
+                    variant="bordered"
+                    isInvalid={!!formErrors.letterChoiceStudent && !choice.trim()}
+                    errorMessage={index === 0 && formErrors.letterChoiceStudent}
+                  />
+                  {formData.letterChoiceStudent.length > 1 && (
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      color="danger"
+                      variant="flat"
+                      onClick={() => removeLetterChoice(index, 'student')}
+                    >
+                      <Minus />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Letter Choices for Non-Students</h3>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  color="primary"
+                  variant="flat"
+                  onClick={() => addLetterChoice('nonStudent')}
+                >
+                  <Add />
+                </Button>
+              </div>
+              {formData.letterChoiceNonStudent.map((choice, index) => (
+                <div key={index} className="flex gap-2">
+                  <Input
+                    className="flex-1"
+                    label={`Letter Choice ${index + 1}`}
+                    placeholder={`Enter letter choice ${index + 1} for non-students`}
+                    value={choice}
+                    onChange={(e) => handleLetterChoiceChange(index, e.target.value, 'nonStudent')}
+                    variant="bordered"
+                    classNames={{
+                      input: "uppercase" // Add CSS class for uppercase display
+                    }}
+                    isInvalid={!!formErrors.letterChoiceNonStudent && !choice.trim()}
+                    errorMessage={index === 0 && formErrors.letterChoiceNonStudent}
+                  />
+                  {formData.letterChoiceNonStudent.length > 1 && (
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      color="danger"
+                      variant="flat"
+                      onClick={() => removeLetterChoice(index, 'nonStudent')}
+                    >
+                      <Minus />
+                    </Button>
+                  )}
+                </div>
               ))}
             </div>
 

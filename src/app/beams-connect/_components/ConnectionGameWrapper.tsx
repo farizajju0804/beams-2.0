@@ -14,6 +14,8 @@ interface ConnectionGameWrapperProps {
   referenceLink: string;
   answer: string;
   beamsTodayId: string;
+  letterChoicesStudent : string[];
+  letterChoicesNonStudent : string[];
   title: string;
   hint: string;
   username?: string;
@@ -38,7 +40,9 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
   solutionPoints,
   isCompleted = false,
   gameDate,
-  popupPreference
+  popupPreference,
+  letterChoicesNonStudent,
+  letterChoicesStudent
 }) => {
   const router = useRouter();
   const [showRules, setShowRules] = useState<boolean>(!isCompleted && popupPreference);
@@ -129,6 +133,8 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
       beamsTodayId={beamsTodayId}
       title={title}
       hint={hint}
+      letterChoiceStudent={letterChoicesStudent}
+      letterChoiceNonStudent={letterChoicesNonStudent}
       username={username}
       answerExplanation={answerExplanation}
       solutionPoints={solutionPoints}

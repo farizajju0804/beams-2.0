@@ -33,10 +33,17 @@ const LibraryTabs: React.FC<LibraryTabsProps> = ({ notes, favorites }) => {
   ];
 
   return (
-    <Tabs aria-label="Library Tabs"> {/* Main Tabs component */}
+    <Tabs color='warning' 
+    className='mx-auto mb-4 text-grey-2'
+    classNames={{
+      tabContent: "group-data-[selected=true]:text-black group-data-[selected=true]:font-medium",
+      panel: "w-full"
+    }}
+    aria-label="Library Tabs"> {/* Main Tabs component */}
       {tabs.map((tab) => (
         <Tab
           key={tab.key}
+          
           title={
             <div className="flex items-center space-x-2">
               {tab.icon} {/* Display the tab icon */}

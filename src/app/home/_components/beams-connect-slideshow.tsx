@@ -57,7 +57,7 @@ export function BeamsConnectSlideshow({ slides }: BeamsSlideshowProps) {
   const currentSlide = slides[currentIndex]
 
   return (
-    <div  onClick={() => router.push(`/connection-game/${currentSlide.id}`)} className="relative cursor-pointer mt-4 w-full max-w-5xl mx-auto">
+    <div  onClick={() => router.push(`/beams-connect/${currentSlide.id}`)} className="relative cursor-pointer mt-4 w-full max-w-5xl mx-auto">
       <div className="absolute top-[5px] md:top-[6px] left-0 z-10">
         <Link 
           href="/beams-connect"

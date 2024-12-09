@@ -37,6 +37,8 @@ const Page = async ({ params }: ConnectionGamePageProps) => {
         answerExplanation={connectionGame.data.answerExplantion}
         solutionPoints={connectionGame.data.solutionPoints}
         gameDate={connectionGame.data.date}
+        letterChoicesNonStudent={connectionGame.data.letterChoiceNonStudent}
+        letterChoicesStudent={connectionGame.data.letterChoiceStudent}
         popupPreference={preference}
       />
       )

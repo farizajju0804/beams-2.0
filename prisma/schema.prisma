@@ -348,6 +348,8 @@ model ConnectionGame {
   title        String
   thumbnail    String
   referenceLink  String
+  letterChoiceStudent String[]
+  letterChoiceNonStudent String[]
   answerExplanation String                   @db.String        
   solutionPoints    String[]     
   published    Boolean                    @default(false)

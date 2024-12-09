@@ -12,7 +12,7 @@ const menuItems = [
   { icon: HiHome, label: "Home", path: "/home" },
   { icon: Microscope, label: "Beams Today", path: "/beams-today" },
   { icon: FaLightbulb, label: "Beams Facts", path: "/beams-facts" },
-  { icon: BiSolidJoystick, label: "Beams Connect", path: "/connection-game" },
+  { icon: BiSolidJoystick, label: "Beams Connect", path: "/beams-connect" },
   { icon: Chart, label: "Dashboard", path: "/dashboard" },
   { icon: Cup, label: "Achievements", path: "/achievements" },
   { icon: Rank, label: "Leaderboard", path: "/leaderboard" },

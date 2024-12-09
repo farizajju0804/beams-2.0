@@ -157,7 +157,7 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
                     onClick={onClose}
                     className="font-semibold text-white px-6"
                   >
-                    Continue
+                    I&apos;m Ready for More!
                   </Button>
                 </div>
               </div>

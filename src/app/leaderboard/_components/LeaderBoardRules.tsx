@@ -40,7 +40,7 @@ export const LeaderboardRules = ({isOpen,onOpenChange}:any) => {
             <RuleItem 
               icon={<AiFillClockCircle className="text-blue-500" size={24} />}
               title="Weekly Competition"
-              description={`Starts every Saturday at 11:00 AM (US Pacific Time) and ends the following Saturday at 10:59 AM (US Pacific Time).`}
+              description={`Starts every Saturday and ends the following Saturday.`}
             />
             <RuleItem 
               icon={<PiNumberCircleThreeDuotone className="text-green-500 text-2xl" />}
