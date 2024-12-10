@@ -130,7 +130,6 @@ const ConnectionGameWrapper: React.FC<ConnectionGameWrapperProps> = ({
       thirdImage={thirdImage}
       referenceLink={referenceLink}
       answer={answer}
-      beamsTodayId={beamsTodayId}
       title={title}
       hint={hint}
       letterChoiceStudent={letterChoicesStudent}
