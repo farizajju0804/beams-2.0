@@ -18,7 +18,6 @@ interface WordGuessGameProps {
   thirdImage: string;
   referenceLink: string;
   answer: string;
-  beamsTodayId: string;
   title: string;
   hint: string;
   letterChoiceStudent: string[];
@@ -101,7 +100,6 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
   thirdImage,
   referenceLink,
   answer, 
-  beamsTodayId,
   letterChoiceStudent,
   letterChoiceNonStudent,
   title, 
@@ -494,9 +492,9 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                         onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
                         data-row={rowIndex}
                         data-col={colIndex}
-                        className={`w-7 custom-font-size h-7 md:w-8 md:h-8 font-medium text-center rounded-md
-                          ${isPrefilled ? 'bg-brand text-white' : 'bg-default-100 text-text border-default-200'}
-                          border-2 focus:outline-none focus:border-primary transition-colors`}
+                        className={`w-7 h-8 font-medium text-center rounded-md
+                          ${isPrefilled ? 'bg-brand text-white border-0' : 'bg-default-100 text-text border-1 border-default-200'}
+                           focus:outline-none focus:border-primary transition-colors`}
                         disabled={isPrefilled}
                       />
                       );
@@ -505,8 +503,8 @@ const ConnectionGame: React.FC<WordGuessGameProps> = ({
                 ))}
               </div>
               <Button
-                className="w-60 mx-auto text-lg text-white font-semibold"
-                color="primary"
+                className={`w-60 mx-auto text-lg ${(!isGridComplete() || isCorrect || timeLeft === 0) ? "text-text" : "text-white"} font-semibold`}
+                color={(!isGridComplete() || isCorrect || timeLeft === 0) ? "default" : "primary"}
                 size="lg"
                 onClick={handleSubmit}
                 isDisabled={!isGridComplete() || isCorrect || timeLeft === 0}
